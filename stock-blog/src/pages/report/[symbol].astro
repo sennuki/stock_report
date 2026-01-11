@@ -1,0 +1,174 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import stocks from "@/data/stocks.json";
+import fs from "node:fs";
+import path from "node:path";
+
+export async function getStaticPaths() {
+  return stocks.map(stock => ({
+    params: { symbol: stock.Symbol_YF },
+  }));
+}
+
+const { symbol } = Astro.params;
+const filePath = path.join(process.cwd(), "public", "output_reports_full", `${symbol}.html`);
+
+let headContent = "";
+let bodyContent = "";
+
+try {
+  if (fs.existsSync(filePath)) {
+    const htmlContent = fs.readFileSync(filePath, "utf-8");
+    
+    const headMatch = htmlContent.match(/<head[^>]*>([\s\S]*?)<\/head>/i);
+    const bodyMatch = htmlContent.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+    
+    if (headMatch) {
+       headContent = headMatch[1]
+         .replace(/<title>.*?<\/title>/i, "")
+         .replace(/<meta charset.*?>/i, "")
+         .replace(/<meta name="viewport".*?>/i, "")
+         // Remove body style to prevent breaking layout
+         .replace(/body\s*{[^}]*}/g, ""); 
+    }
+    
+    if (bodyMatch) {
+      bodyContent = bodyMatch[1];
+    }
+  } else {
+    bodyContent = `<div class="text-center py-10">Report not found for ${symbol}</div>`;
+  }
+} catch (e) {
+  console.error(e);
+  bodyContent = `<div class="text-center py-10">Error loading report for ${symbol}</div>`;
+}
+
+const stockInfo = stocks.find(s => s.Symbol_YF === symbol);
+const title = `銘柄分析: ${symbol} - ${stockInfo?.Security || ''}`;
+---
+
+<Layout title={title}>
+  <Header />
+  
+  {/* Inject extracted scripts and styles. 
+      Note: Scripts will run, styles will be applied globally. */}
+  <div id="report-head-injection">
+      <Fragment set:html={headContent} />
+  </div>
+
+  <main id="main-content" class="px-4 py-8 max-w-6xl mx-auto">
+    <div class="mb-6">
+       <a href="/" class="text-skin-accent hover:underline inline-flex items-center">
+         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+         </svg>
+         銘柄一覧に戻る
+       </a>
+    </div>
+
+    <div class="report-content bg-skin-card p-6 rounded-lg border border-skin-line shadow-sm">
+      <Fragment set:html={bodyContent} />
+    </div>
+  </main>
+  <Footer />
+</Layout>
+
+<script>
+  // Function to manually execute scripts inserted via innerHTML
+  function executeScripts(container) {
+    if (!container) return;
+    const scripts = container.querySelectorAll('script');
+    scripts.forEach((oldScript) => {
+      const newScript = document.createElement('script');
+      
+      // Copy attributes
+      Array.from(oldScript.attributes).forEach(attr => {
+        newScript.setAttribute(attr.name, attr.value);
+      });
+      
+      // Copy content
+      newScript.textContent = oldScript.textContent;
+      
+      // Replace old script with new one to trigger execution
+      oldScript.parentNode.replaceChild(newScript, oldScript);
+    });
+  }
+
+  // Run on initial load and after View Transitions navigation
+  document.addEventListener('astro:page-load', () => {
+    // Execute scripts in the head injection area
+    const headInjection = document.getElementById('report-head-injection');
+    if (headInjection) {
+        executeScripts(headInjection);
+    }
+    
+    // Execute scripts in the body content area
+    const reportContent = document.querySelector('.report-content');
+    if (reportContent) {
+        executeScripts(reportContent);
+    }
+    
+    // Force Plotly resize if present
+    setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+    }, 500);
+  });
+</script>
+
+<style is:global>
+  /* Style overrides for the injected report content */
+  .report-content {
+    overflow-x: auto; /* Handle wide tables/content */
+    width: 100%;
+  }
+  /* Force all direct children and common block elements to fit */
+  .report-content > *,
+  .report-content div,
+  .report-content iframe,
+  .report-content table {
+    max-width: 100%;
+  }
+  
+  .report-content h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    color: rgb(var(--color-text-base));
+  }
+  .report-content h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid rgb(var(--color-border));
+    padding-bottom: 0.5rem;
+    color: rgb(var(--color-text-base));
+  }
+  .report-content p {
+    margin-bottom: 1rem;
+    color: rgb(var(--color-text-base));
+  }
+  /* Ensure plotly graphs fit */
+  .plotly-graph-div {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+  /* Ensure TradingView widgets fit */
+  .tradingview-widget-container {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .tradingview-widget-container__widget {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  /* Force images and other elements to be responsive */
+  .report-content img,
+  .report-content svg {
+      max-width: 100%;
+      height: auto;
+  }
+</style>

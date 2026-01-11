@@ -1,0 +1,75 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import stocks from "@/data/stocks.json";
+
+const sectorTranslations = {
+  "Communication Services": "通信サービス",
+  "Consumer Discretionary": "一般消費財",
+  "Consumer Staples": "生活必需品",
+  "Energy": "エネルギー",
+  "Financials": "金融",
+  "Health Care": "ヘルスケア",
+  "Industrials": "資本財",
+  "Information Technology": "情報技術",
+  "Materials": "素材",
+  "Real Estate": "不動産",
+  "Utilities": "公益事業"
+};
+
+// Group by Sector
+const stocksBySector = stocks.reduce((acc, stock) => {
+  const sector = stock['GICS Sector'] || 'Unknown';
+  if (!acc[sector]) {
+    acc[sector] = [];
+  }
+  acc[sector].push(stock);
+  return acc;
+}, {});
+
+// Sort Sectors
+const sortedSectors = Object.keys(stocksBySector).sort();
+
+// Sort stocks within each sector
+sortedSectors.forEach(sector => {
+    stocksBySector[sector].sort((a, b) => a.Symbol_YF.localeCompare(b.Symbol_YF));
+});
+---
+
+<Layout>
+  <Header />
+  <main id="main-content">
+    <section id="hero" class="pt-8 pb-6">
+      <h1 class="my-4 text-3xl font-bold sm:my-8 sm:text-4xl text-center">
+        S&P 500 銘柄分析レポート一覧
+      </h1>
+      <p class="mb-6 mt-2 text-center opacity-80">
+        S&P 500構成銘柄の最新分析レポートをセクター別に掲載しています。
+      </p>
+    </section>
+
+    <section class="mb-12 max-w-6xl mx-auto px-4">
+      {sortedSectors.map((sector) => (
+        <div class="mb-12">
+          <h2 class="text-2xl font-bold mb-6 border-l-4 border-skin-accent pl-4 flex items-baseline flex-wrap">
+            <span class="mr-4">{sectorTranslations[sector] || '未分類'}</span>
+            <span class="text-base font-normal opacity-70">{sector}</span>
+          </h2>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {stocksBySector[sector].map((stock) => (
+              <a 
+                href={`/report/${stock.Symbol_YF}/`} 
+                class="group block p-4 border border-skin-line rounded-lg hover:border-skin-accent hover:shadow-lg transition-all bg-skin-card"
+              >
+                <div class="text-lg font-bold text-skin-accent mb-1 group-hover:underline decoration-dashed underline-offset-4">{stock.Symbol_YF}</div>
+                <div class="text-sm opacity-90 truncate" title={stock.Security}>{stock.Security}</div>
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
+    </section>
+  </main>
+  <Footer />
+</Layout>
