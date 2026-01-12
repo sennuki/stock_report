@@ -2,15 +2,12 @@ name: Update Stock Reports
 
 on:
   schedule:
-    - cron: '0 21 * * 1-5' # 月〜金のUTC 21:00 (日本時間 翌6:00)
-  workflow_dispatch: # 手動実行を許可
+    - cron: '0 21 * * 1-5'
+  workflow_dispatch:
 
 jobs:
   update-reports:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -33,12 +30,8 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          
-          # 生成されたHTMLレポートと銘柄リストJSONを追加
           git add stock-blog/public/output_reports_full/*.html
           git add stock-blog/src/data/stocks.json
-          
-          # 差分がある場合のみコミット
           if ! git diff --cached --quiet; then
             git commit -m "chore: update stock reports and data [skip ci]"
             git push
