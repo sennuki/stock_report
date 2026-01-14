@@ -24,5 +24,8 @@ mypy_extensions==1.1.0
 narwhals==2.15.0
 numpy
 pandas
+plotly
 polars
+requests
+tqdm
 yfinance

@@ -56,6 +56,10 @@ def export_stocks_json(df):
         print(f"JSON保存エラー: {e}")
 
 if __name__ == "__main__":
+    # スクリプトのディレクトリを基準にする
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    output_reports_dir = os.path.join(base_dir, "output_reports_full")
+
     # 1. データ準備
     df_sp500 = market_data.fetch_sp500_companies_optimized()
 
@@ -66,10 +70,8 @@ if __name__ == "__main__":
         # 2. リスク指標計算 (全銘柄)
         df_metrics = risk_return.calculate_market_metrics_parallel(df_sp500['Symbol_YF'].to_list())
 
-        # 3. レポート作成 (※テスト用に先頭5銘柄のみ実行)
-        # 全銘柄実行したい場合は .head(5) を削除してください
-        # print("【テスト実行】最初の5銘柄のみ生成します...")
-        report_generator.export_full_analysis_reports(df_sp500, df_metrics)
+        # 3. レポート作成
+        report_generator.export_full_analysis_reports(df_sp500, df_metrics, output_dir=output_reports_dir)
         
         # 4. Astroへ反映
         copy_reports_to_astro()
