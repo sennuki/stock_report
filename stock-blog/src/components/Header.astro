@@ -84,7 +84,7 @@ const isActive = (path: string) => {
             href={`${base}posts`}
             class:list={{ "active-nav": isActive("/posts") }}
           >
-            Posts
+            記事一覧
           </a>
         </li>
         <li class="col-span-2">
@@ -92,7 +92,7 @@ const isActive = (path: string) => {
             href={`${base}tags`}
             class:list={{ "active-nav": isActive("/tags") }}
           >
-            Tags
+            タグ
           </a>
         </li>
         <li class="col-span-2">
@@ -100,7 +100,7 @@ const isActive = (path: string) => {
             href={`${base}about`}
             class:list={{ "active-nav": isActive("/about") }}
           >
-            About
+            このサイトについて
           </a>
         </li>
         {
@@ -114,11 +114,11 @@ const isActive = (path: string) => {
                     "active-nav [&>svg]:stroke-accent": isActive("/archives"),
                   },
                 ]}
-                title="Archives"
+                title="アーカイブ"
                 aria-label="archives"
               >
                 <IconArchive class="hidden sm:inline-block" />
-                <span class="sm:sr-only">Archives</span>
+                <span class="sm:sr-only">アーカイブ</span>
               </LinkButton>
             </li>
           )
@@ -130,11 +130,11 @@ const isActive = (path: string) => {
               "focus-outline flex p-3 sm:p-1",
               { "[&>svg]:stroke-accent": isActive("/search") },
             ]}
-            title="Search"
+            title="検索"
             aria-label="search"
           >
             <IconSearch />
-            <span class="sr-only">Search</span>
+            <span class="sr-only">検索</span>
           </LinkButton>
         </li>
         {

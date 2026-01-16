@@ -69,7 +69,7 @@ sortedSectors.forEach(sector => {
           <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {stocksBySector[sector].map((stock) => (
               <a 
-                href={`/report/${stock.Symbol_YF}/`} 
+                href={`${import.meta.env.BASE_URL}report/${stock.Symbol_YF}/`} 
                 class="group block p-4 border border-skin-line rounded-lg hover:border-skin-accent hover:shadow-lg transition-all bg-skin-card"
               >
                 <div class="text-lg font-bold text-skin-accent mb-1 group-hover:underline decoration-dashed underline-offset-4">{stock.Symbol_YF}</div>
