@@ -17,14 +17,19 @@ type Props = {
   scrollSmooth?: boolean;
 };
 
+// Helper to ensure trailing slash
+const base = import.meta.env.BASE_URL.endsWith("/")
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+
 const {
   title = SITE.title,
   author = SITE.author,
   profile = SITE.profile,
   description = SITE.desc,
   ogImage = SITE.ogImage
-    ? `${import.meta.env.BASE_URL}${SITE.ogImage}`
-    : `${import.meta.env.BASE_URL}og.png`,
+    ? `${base}${SITE.ogImage}`
+    : `${base}og.png`,
   canonicalURL = new URL(Astro.url.pathname, Astro.url),
   pubDatetime,
   modDatetime,
@@ -62,7 +67,7 @@ const structuredData = {
     <link
       rel="icon"
       type="image/svg+xml"
-      href={`${import.meta.env.BASE_URL}favicon.svg`}
+      href={`${base}favicon.svg`}
     />
     <link rel="canonical" href={canonicalURL} />
     <meta name="generator" content={Astro.generator} />
@@ -80,7 +85,7 @@ const structuredData = {
     <meta name="author" content={author} />
     <link
       rel="sitemap"
-      href={`${import.meta.env.BASE_URL}sitemap-index.xml`}
+      href={`${base}sitemap-index.xml`}
     />
 
     <!-- Open Graph / Facebook -->

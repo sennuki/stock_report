@@ -10,3 +10,4 @@ code/output_reports_full/
 stock-blog/public/output_reports_full/
 stock-blog/dist/
 stock-blog/.astro/
+.venv/
