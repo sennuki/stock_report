@@ -11,3 +11,5 @@ stock-blog/public/output_reports_full/
 stock-blog/dist/
 stock-blog/.astro/
 .venv/
+test_reports/
+code/test_reports/
