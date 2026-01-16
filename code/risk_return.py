@@ -3,8 +3,26 @@ import yfinance as yf
 import polars as pl
 import numpy as np
 import plotly.graph_objects as go
+import plotly.io as pio
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm
+
+# Plotly 6.0.0+ deprecation fix: 
+# Default templates still contain 'scattermapbox', which triggers a warning.
+# We migrate them to 'scattermap' to follow the recommendation.
+def fix_plotly_templates():
+    for name in pio.templates:
+        template = pio.templates[name]
+        try:
+            if hasattr(template.layout.template.data, 'scattermapbox'):
+                smb = template.layout.template.data.scattermapbox
+                if smb:
+                    template.layout.template.data.scattermap = smb
+                template.layout.template.data.scattermapbox = None
+        except:
+            pass
+
+fix_plotly_templates()
 
 # ==========================================
 #  Part B: リスク・リターン分析 (並列計算)

@@ -5,6 +5,25 @@ import report_generator
 import os
 import shutil
 import json
+import plotly.io as pio
+
+# Plotly 6.0.0+ deprecation fix: 
+# Default templates still contain 'scattermapbox', which triggers a warning.
+# We migrate them to 'scattermap' to follow the recommendation.
+def fix_plotly_templates():
+    for name in pio.templates:
+        template = pio.templates[name]
+        try:
+            if hasattr(template.layout.template.data, 'scattermapbox'):
+                # Accessing it might trigger the warning, but we do it once to fix it
+                smb = template.layout.template.data.scattermapbox
+                if smb:
+                    template.layout.template.data.scattermap = smb
+                template.layout.template.data.scattermapbox = None
+        except:
+            pass
+
+fix_plotly_templates()
 
 # Google Drive check (optional, kept from original)
 if os.path.exists('/content/drive'):
