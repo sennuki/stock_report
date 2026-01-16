@@ -36,7 +36,7 @@ jobs:
           git add stock-blog/src/data/stocks.json
           git status
           if ! git diff --cached --quiet; then
-            git commit -m "chore: update stock reports and data [skip ci]"
+            git commit -m "chore: update stock reports and data"
             git push
           else
             echo "No changes to commit"
