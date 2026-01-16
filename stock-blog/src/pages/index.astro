@@ -2,9 +2,19 @@
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
-import stocks from "@/data/stocks.json";
+import stocksData from "@/data/stocks.json";
 
-const sectorTranslations = {
+interface Stock {
+  Symbol_YF: string;
+  Security: string;
+  "GICS Sector": string;
+  "GICS Sub-Industry": string;
+  [key: string]: any;
+}
+
+const stocks: Stock[] = stocksData as Stock[];
+
+const sectorTranslations: Record<string, string> = {
   "Communication Services": "通信サービス",
   "Consumer Discretionary": "一般消費財",
   "Consumer Staples": "生活必需品",
@@ -26,14 +36,14 @@ const stocksBySector = stocks.reduce((acc, stock) => {
   }
   acc[sector].push(stock);
   return acc;
-}, {});
+}, {} as Record<string, Stock[]>);
 
 // Sort Sectors
 const sortedSectors = Object.keys(stocksBySector).sort();
 
 // Sort stocks within each sector
 sortedSectors.forEach(sector => {
-    stocksBySector[sector].sort((a, b) => a.Symbol_YF.localeCompare(b.Symbol_YF));
+    stocksBySector[sector].sort((a: Stock, b: Stock) => a.Symbol_YF.localeCompare(b.Symbol_YF));
 });
 ---
 
@@ -49,7 +59,7 @@ sortedSectors.forEach(sector => {
       </p>
     </section>
 
-    <section class="mb-12 max-w-6xl mx-auto px-4">
+    <section class="mb-12 max-w-app mx-auto px-4">
       {sortedSectors.map((sector) => (
         <div class="mb-12">
           <h2 class="text-2xl font-bold mb-6 border-l-4 border-skin-accent pl-4 flex items-baseline flex-wrap">

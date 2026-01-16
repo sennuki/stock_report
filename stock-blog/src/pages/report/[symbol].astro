@@ -30,8 +30,8 @@ try {
          .replace(/<title>.*?<\/title>/i, "")
          .replace(/<meta charset.*?>/i, "")
          .replace(/<meta name="viewport".*?>/i, "")
-         // Remove body style to prevent breaking layout
-         .replace(/body\s*{[^}]*}/g, ""); 
+         // Remove body/html style to prevent breaking layout
+         .replace(/(body|html)[^\{]*\{[^\}]*\}/gi, ""); 
     }
     
     if (bodyMatch) {
@@ -58,7 +58,7 @@ const title = `銘柄分析: ${symbol} - ${stockInfo?.Security || ''}`;
       <Fragment set:html={headContent} />
   </div>
 
-  <main id="main-content" class="px-4 py-8 max-w-6xl mx-auto">
+  <main id="main-content" class="w-full px-4 py-8 max-w-app mx-auto">
     <div class="mb-6">
        <a href="/" class="text-skin-accent hover:underline inline-flex items-center">
          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -77,14 +77,14 @@ const title = `銘柄分析: ${symbol} - ${stockInfo?.Security || ''}`;
 
 <script>
   // Function to manually execute scripts inserted via innerHTML
-  function executeScripts(container) {
+  function executeScripts(container: Element | null) {
     if (!container) return;
     const scripts = container.querySelectorAll('script');
     scripts.forEach((oldScript) => {
       const newScript = document.createElement('script');
       
       // Copy attributes
-      Array.from(oldScript.attributes).forEach(attr => {
+      Array.from(oldScript.attributes).forEach((attr: Attr) => {
         newScript.setAttribute(attr.name, attr.value);
       });
       
@@ -92,7 +92,9 @@ const title = `銘柄分析: ${symbol} - ${stockInfo?.Security || ''}`;
       newScript.textContent = oldScript.textContent;
       
       // Replace old script with new one to trigger execution
-      oldScript.parentNode.replaceChild(newScript, oldScript);
+      if (oldScript.parentNode) {
+        oldScript.parentNode.replaceChild(newScript, oldScript);
+      }
     });
   }
 
@@ -123,12 +125,26 @@ const title = `銘柄分析: ${symbol} - ${stockInfo?.Security || ''}`;
     overflow-x: auto; /* Handle wide tables/content */
     width: 100%;
   }
-  /* Force all direct children and common block elements to fit */
+  
+  /* Allow text and containers to expand fully */
   .report-content > *,
   .report-content div,
+  .report-content p,
+  .report-content h1,
+  .report-content h2,
+  .report-content h3,
+  .report-content ul,
+  .report-content ol {
+    max-width: none !important;
+  }
+
+  /* Only constrain media and specific embeds to prevent overflow */
   .report-content iframe,
-  .report-content table {
-    max-width: 100%;
+  .report-content table,
+  .report-content img,
+  .report-content svg {
+    max-width: 100% !important;
+    height: auto;
   }
   
   .report-content h1 {
@@ -164,11 +180,5 @@ const title = `銘柄分析: ${symbol} - ${stockInfo?.Security || ''}`;
   .tradingview-widget-container__widget {
     width: 100% !important;
     max-width: 100% !important;
-  }
-  /* Force images and other elements to be responsive */
-  .report-content img,
-  .report-content svg {
-      max-width: 100%;
-      height: auto;
   }
 </style>
