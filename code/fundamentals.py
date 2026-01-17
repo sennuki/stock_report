@@ -205,10 +205,10 @@ def get_bs_plotly_html(data_dict):
         ]),
     )]
 
-    fig.update_layout(title='貸借対照表 (Annual)', barmode='group', height=450, margin=dict(t=60,b=20),
+    fig.update_layout(title='貸借対照表 (Annual)', barmode='group', height=450, margin=dict(t=60,b=50),
                       template='plotly_white', showlegend=True, updatemenus=updatemenus,
                       yaxis=dict(type='linear', rangemode='tozero'),
-                      legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5))
+                      legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5))
     return create_chart_html(fig)
 
 def get_is_plotly_html(data_dict):
@@ -293,11 +293,11 @@ def get_is_plotly_html(data_dict):
     )]
     
     fig.update_layout(
-        title='損益計算書 (Annual)', barmode='group', height=500, margin=dict(t=60,b=20), 
+        title='損益計算書 (Annual)', barmode='group', height=500, margin=dict(t=60,b=50), 
         template='plotly_white', showlegend=True, updatemenus=updatemenus,
         yaxis=dict(title='金額', showgrid=True, type='linear'),
         yaxis2=dict(title='利益率', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='linear'),
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5)
+        legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5)
     )
     
     return create_chart_html(fig)
@@ -330,10 +330,10 @@ def get_cf_plotly_html(data_dict):
             dict(label="Quarterly", method="update", args=[{"visible": [False]*n_traces_a + [True]*n_traces_q}, {"title": "キャッシュフロー (Quarterly)"}]),
         ]
     )]
-    fig.update_layout(title='キャッシュフロー (Annual)', barmode='group', height=450, margin=dict(t=60,b=20),
+    fig.update_layout(title='キャッシュフロー (Annual)', barmode='group', height=450, margin=dict(t=60,b=50),
                       template='plotly_white', showlegend=True, updatemenus=updatemenus,
                       yaxis=dict(type='linear'),
-                      legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5))
+                      legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5))
     return create_chart_html(fig)
 
 def get_tp_plotly_html(data_dict):
@@ -371,10 +371,10 @@ def get_tp_plotly_html(data_dict):
     )]
 
     fig.update_layout(
-        title='株主還元 (Annual)', barmode='stack', height=450, margin=dict(t=60,b=20), template='plotly_white',
+        title='株主還元 (Annual)', barmode='stack', height=450, margin=dict(t=60,b=50), template='plotly_white',
         yaxis=dict(title='', showgrid=True, type='linear', rangemode='tozero'),
         yaxis2=dict(title='', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='linear', rangemode='tozero'),
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5),
+        legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5),
         updatemenus=updatemenus
     )
     return create_chart_html(fig)
