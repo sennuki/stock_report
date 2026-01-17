@@ -111,6 +111,7 @@ def get_financial_data(ticker_obj):
                 # これにより、全日付×全項目のデータが揃う
                 cols_to_melt = [c for c in target_tp if c in df_pivot.columns]
                 df_amount_melt = df_pivot.unpivot(index='Date', on=cols_to_melt, variable_name='Item', value_name='Value')
+                df_amount_melt = df_amount_melt.select(['Item', 'Date', 'Value']) # 列順を統一
                 df_amount_melt = df_amount_melt.with_columns(pl.col('Value').cast(pl.Float64, strict=False))
 
                 df_ratios = df_ratio_calc.select(['Date', 'Dividends Ratio / Net Income', 'Total Payout Ratio / Net Income'])
