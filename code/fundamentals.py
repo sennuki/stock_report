@@ -369,8 +369,8 @@ def get_tp_plotly_html(data_dict):
 
     fig.update_layout(
         title='株主還元 (Annual)', barmode='stack', height=450, margin=dict(t=60,b=20), template='plotly_white',
-        yaxis=dict(title='', showgrid=True, type='linear'),
-        yaxis2=dict(title='', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='linear'),
+        yaxis=dict(title='', showgrid=True, type='linear', rangemode='tozero'),
+        yaxis2=dict(title='', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='linear', rangemode='tozero'),
         legend=dict(orientation="h", y=1.1, x=0.5, xanchor="center"),
         updatemenus=updatemenus
     )
