@@ -99,14 +99,25 @@ def get_financial_data(ticker_obj):
                     if col not in df_pivot.columns:
                         df_pivot = df_pivot.with_columns(pl.lit(0.0).alias(col))
 
+                # データ欠損(null)を0で埋める (ここが重要: 配当がない年などを0にする)
+                df_pivot = df_pivot.fill_null(0.0)
+
                 df_ratio_calc = df_pivot.with_columns([
                     (pl.col('Cash Dividends Paid').abs() / pl.col('Net Income From Continuing Operations')).alias('Dividends Ratio / Net Income'),
                     ((pl.col('Repurchase Of Capital Stock').abs() + pl.col('Cash Dividends Paid').abs()) / pl.col('Net Income From Continuing Operations')).alias('Total Payout Ratio / Net Income')
                 ])
+
+                # 実額データもpivot済み(0埋め済み)のものから再生成する
+                # これにより、全日付×全項目のデータが揃う
+                cols_to_melt = [c for c in target_tp if c in df_pivot.columns]
+                df_amount_melt = df_pivot.unpivot(index='Date', on=cols_to_melt, variable_name='Item', value_name='Value')
+                df_amount_melt = df_amount_melt.with_columns(pl.col('Value').cast(pl.Float64, strict=False))
+
                 df_ratios = df_ratio_calc.select(['Date', 'Dividends Ratio / Net Income', 'Total Payout Ratio / Net Income'])
                 df_ratios_melt = df_ratios.unpivot(index='Date', variable_name='Item', value_name='Value').select(['Item', 'Date', 'Value'])
                 df_ratios_melt = df_ratios_melt.with_columns(pl.col('Value').cast(pl.Float64, strict=False))
-                return pl.concat([df_tp_melt, df_ratios_melt])
+                
+                return pl.concat([df_amount_melt, df_ratios_melt])
             else:
                 return pl.DataFrame()
         except Exception as e:
