@@ -32,6 +32,10 @@ def get_melt(df):
     """Polars DataFrameをUnpivot（縦持ち変換）する共通関数"""
     date_cols = [col for col in df.columns if col != 'Item']
     df_melt = df.unpivot(index='Item', on=date_cols, variable_name='Date', value_name='Value')
+    
+    # Valueを数値にキャスト (失敗した場合はnullになる)
+    df_melt = df_melt.with_columns(pl.col('Value').cast(pl.Float64, strict=False))
+
     df_melt = df_melt.drop_nulls()
     # 日付文字列 (YYYY-MM-DD) に変換してソート
     df_melt = df_melt.with_columns(pl.col('Date').cast(pl.String).str.slice(0, 10)).sort(['Item', 'Date'])
@@ -101,6 +105,7 @@ def get_financial_data(ticker_obj):
                 ])
                 df_ratios = df_ratio_calc.select(['Date', 'Dividends Ratio / Net Income', 'Total Payout Ratio / Net Income'])
                 df_ratios_melt = df_ratios.unpivot(index='Date', variable_name='Item', value_name='Value').select(['Item', 'Date', 'Value'])
+                df_ratios_melt = df_ratios_melt.with_columns(pl.col('Value').cast(pl.Float64, strict=False))
                 return pl.concat([df_tp_melt, df_ratios_melt])
             else:
                 return pl.DataFrame()
@@ -189,7 +194,8 @@ def get_bs_plotly_html(data_dict):
     )]
 
     fig.update_layout(title='貸借対照表 (Annual)', barmode='group', height=450, margin=dict(t=60,b=20),
-                      template='plotly_white', showlegend=False, updatemenus=updatemenus)
+                      template='plotly_white', showlegend=False, updatemenus=updatemenus,
+                      yaxis=dict(type='linear'))
     return create_chart_html(fig)
 
 def get_is_plotly_html(data_dict):
@@ -276,8 +282,8 @@ def get_is_plotly_html(data_dict):
     fig.update_layout(
         title='損益計算書 (Annual)', barmode='group', height=500, margin=dict(t=60,b=20), 
         template='plotly_white', showlegend=False, updatemenus=updatemenus,
-        yaxis=dict(title='金額', showgrid=True),
-        yaxis2=dict(title='利益率', overlaying='y', side='right', tickformat='.0%', showgrid=False)
+        yaxis=dict(title='金額', showgrid=True, type='linear'),
+        yaxis2=dict(title='利益率', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='linear')
     )
     
     return create_chart_html(fig)
@@ -310,7 +316,9 @@ def get_cf_plotly_html(data_dict):
             dict(label="Quarterly", method="update", args=[{"visible": [False]*n_traces_a + [True]*n_traces_q}, {"title": "キャッシュフロー (Quarterly)"}]),
         ]
     )]
-    fig.update_layout(title='キャッシュフロー (Annual)', barmode='group', height=450, margin=dict(t=60,b=20), template='plotly_white', showlegend=False, updatemenus=updatemenus)
+    fig.update_layout(title='キャッシュフロー (Annual)', barmode='group', height=450, margin=dict(t=60,b=20),
+                      template='plotly_white', showlegend=False, updatemenus=updatemenus,
+                      yaxis=dict(type='linear'))
     return create_chart_html(fig)
 
 def get_tp_plotly_html(data_dict):
@@ -349,8 +357,8 @@ def get_tp_plotly_html(data_dict):
 
     fig.update_layout(
         title='株主還元 (Annual)', barmode='stack', height=450, margin=dict(t=60,b=20), template='plotly_white',
-        yaxis=dict(title='', showgrid=True),
-        yaxis2=dict(title='', overlaying='y', side='right', tickformat='.0%', showgrid=False),
+        yaxis=dict(title='', showgrid=True, type='linear'),
+        yaxis2=dict(title='', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='linear'),
         legend=dict(orientation="h", y=1.1, x=0.5, xanchor="center"),
         updatemenus=updatemenus
     )
