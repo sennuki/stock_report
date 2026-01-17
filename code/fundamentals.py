@@ -171,16 +171,16 @@ def get_bs_plotly_html(data_dict):
                             base=non_curr_assets['Value'] if not non_curr_assets.is_empty() else 0,
                             offsetgroup=0, visible=visible))
         fig.add_trace(go.Bar(name='固定資産', x=curr_assets['Date'], y=non_curr_assets['Value'], marker_color='#1f77b4',
-                             base=0, offsetgroup=0, visible=visible, showlegend=False)) # Legend重複回避は難しいのでそのまま
+                             base=0, offsetgroup=0, visible=visible)) # Legend重複回避は難しいのでそのまま
         
         # 負債・純資産
         fig.add_trace(go.Bar(name='流動負債', x=curr_liab['Date'], y=curr_liab['Value'], marker_color='#ffbb78',
                              base=base_liab, offsetgroup=1, visible=visible))
         fig.add_trace(go.Bar(name='固定負債', x=non_curr_liab['Date'], y=non_curr_liab['Value'], marker_color='#ff7f0e',
                              base=equity['Value'] if not equity.is_empty() else 0,
-                             offsetgroup=1, visible=visible, showlegend=False))
+                             offsetgroup=1, visible=visible))
         fig.add_trace(go.Bar(name='純資産', x=equity['Date'], y=equity['Value'], marker_color='#2ca02c',
-                             base=0, offsetgroup=1, visible=visible, showlegend=False))
+                             base=0, offsetgroup=1, visible=visible))
 
     _add_traces(fig, df_a, add_bs_traces, visible=True)
     _add_traces(fig, df_q, add_bs_traces, visible=False)
@@ -206,8 +206,9 @@ def get_bs_plotly_html(data_dict):
     )]
 
     fig.update_layout(title='貸借対照表 (Annual)', barmode='group', height=450, margin=dict(t=60,b=20),
-                      template='plotly_white', showlegend=False, updatemenus=updatemenus,
-                      yaxis=dict(type='linear'))
+                      template='plotly_white', showlegend=True, updatemenus=updatemenus,
+                      yaxis=dict(type='linear', rangemode='tozero'),
+                      legend=dict(orientation="v", yanchor="top", y=1, xanchor="right", x=1))
     return create_chart_html(fig)
 
 def get_is_plotly_html(data_dict):
@@ -253,7 +254,7 @@ def get_is_plotly_html(data_dict):
                     
                     fig.add_trace(go.Scatter(name=name, x=calc['Date'], y=calc['Ratio'], 
                                          line=dict(color=color, width=2), mode='lines+markers', 
-                                         yaxis='y2', visible=visible, showlegend=False,
+                                         yaxis='y2', visible=visible,
                                          hovertemplate='%{y:.1%}'))
         except Exception as e:
             print(f"Error calculating ratios: {e}")
@@ -293,9 +294,10 @@ def get_is_plotly_html(data_dict):
     
     fig.update_layout(
         title='損益計算書 (Annual)', barmode='group', height=500, margin=dict(t=60,b=20), 
-        template='plotly_white', showlegend=False, updatemenus=updatemenus,
+        template='plotly_white', showlegend=True, updatemenus=updatemenus,
         yaxis=dict(title='金額', showgrid=True, type='linear'),
-        yaxis2=dict(title='利益率', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='linear')
+        yaxis2=dict(title='利益率', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='linear'),
+        legend=dict(orientation="v", yanchor="top", y=1, xanchor="right", x=1)
     )
     
     return create_chart_html(fig)
@@ -329,8 +331,9 @@ def get_cf_plotly_html(data_dict):
         ]
     )]
     fig.update_layout(title='キャッシュフロー (Annual)', barmode='group', height=450, margin=dict(t=60,b=20),
-                      template='plotly_white', showlegend=False, updatemenus=updatemenus,
-                      yaxis=dict(type='linear'))
+                      template='plotly_white', showlegend=True, updatemenus=updatemenus,
+                      yaxis=dict(type='linear'),
+                      legend=dict(orientation="v", yanchor="top", y=1, xanchor="right", x=1))
     return create_chart_html(fig)
 
 def get_tp_plotly_html(data_dict):
@@ -371,7 +374,7 @@ def get_tp_plotly_html(data_dict):
         title='株主還元 (Annual)', barmode='stack', height=450, margin=dict(t=60,b=20), template='plotly_white',
         yaxis=dict(title='', showgrid=True, type='linear', rangemode='tozero'),
         yaxis2=dict(title='', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='linear', rangemode='tozero'),
-        legend=dict(orientation="h", y=1.1, x=0.5, xanchor="center"),
+        legend=dict(orientation="v", yanchor="top", y=1, xanchor="right", x=1),
         updatemenus=updatemenus
     )
     return create_chart_html(fig)
