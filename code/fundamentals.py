@@ -189,8 +189,7 @@ def get_bs_plotly_html(data_dict):
     )]
 
     fig.update_layout(title='貸借対照表 (Annual)', barmode='group', height=450, margin=dict(t=60,b=20),
-                      template='plotly_white', showlegend=False, updatemenus=updatemenus,
-                      yaxis=dict(type='category'))
+                      template='plotly_white', showlegend=False, updatemenus=updatemenus)
     return create_chart_html(fig)
 
 def get_is_plotly_html(data_dict):
@@ -277,8 +276,8 @@ def get_is_plotly_html(data_dict):
     fig.update_layout(
         title='損益計算書 (Annual)', barmode='group', height=500, margin=dict(t=60,b=20), 
         template='plotly_white', showlegend=False, updatemenus=updatemenus,
-        yaxis=dict(title='金額', showgrid=True, type='category'),
-        yaxis2=dict(title='利益率', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='category')
+        yaxis=dict(title='金額', showgrid=True),
+        yaxis2=dict(title='利益率', overlaying='y', side='right', tickformat='.0%', showgrid=False)
     )
     
     return create_chart_html(fig)
@@ -311,7 +310,7 @@ def get_cf_plotly_html(data_dict):
             dict(label="Quarterly", method="update", args=[{"visible": [False]*n_traces_a + [True]*n_traces_q}, {"title": "キャッシュフロー (Quarterly)"}]),
         ]
     )]
-    fig.update_layout(title='キャッシュフロー (Annual)', barmode='group', height=450, margin=dict(t=60,b=20), template='plotly_white', showlegend=False, updatemenus=updatemenus, yaxis=dict(type='category'))
+    fig.update_layout(title='キャッシュフロー (Annual)', barmode='group', height=450, margin=dict(t=60,b=20), template='plotly_white', showlegend=False, updatemenus=updatemenus)
     return create_chart_html(fig)
 
 def get_tp_plotly_html(data_dict):
@@ -350,8 +349,8 @@ def get_tp_plotly_html(data_dict):
 
     fig.update_layout(
         title='株主還元 (Annual)', barmode='stack', height=450, margin=dict(t=60,b=20), template='plotly_white',
-        yaxis=dict(title='', showgrid=False, type='category'),
-        yaxis2=dict(title='', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='category'),
+        yaxis=dict(title='', showgrid=True),
+        yaxis2=dict(title='', overlaying='y', side='right', tickformat='.0%', showgrid=False),
         legend=dict(orientation="h", y=1.1, x=0.5, xanchor="center"),
         updatemenus=updatemenus
     )
