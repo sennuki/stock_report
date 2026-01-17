@@ -118,7 +118,7 @@ def get_financial_data(ticker_obj):
                 df_ratios_melt = df_ratios.unpivot(index='Date', variable_name='Item', value_name='Value').select(['Item', 'Date', 'Value'])
                 df_ratios_melt = df_ratios_melt.with_columns(pl.col('Value').cast(pl.Float64, strict=False))
                 
-                return pl.concat([df_amount_melt, df_ratios_melt])
+                return pl.concat([df_amount_melt, df_ratios_melt]).sort(['Item', 'Date'])
             else:
                 return pl.DataFrame()
         except Exception as e:
