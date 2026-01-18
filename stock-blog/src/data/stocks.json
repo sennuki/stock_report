@@ -45,7 +45,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "ADBE",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "AMD",
@@ -53,7 +53,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "AMD",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "AES",
@@ -93,7 +93,7 @@
     "GICS Sector": "Consumer Discretionary",
     "GICS Sub-Industry": "Hotels, Resorts & Cruise Lines",
     "Symbol_YF": "ABNB",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "AKAM",
@@ -101,7 +101,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Internet Services & Infrastructure",
     "Symbol_YF": "AKAM",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "ALB",
@@ -125,7 +125,7 @@
     "GICS Sector": "Health Care",
     "GICS Sub-Industry": "Health Care Supplies",
     "Symbol_YF": "ALGN",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "ALLE",
@@ -141,7 +141,7 @@
     "GICS Sector": "Utilities",
     "GICS Sub-Industry": "Electric Utilities",
     "Symbol_YF": "LNT",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "ALL",
@@ -157,7 +157,7 @@
     "GICS Sector": "Communication Services",
     "GICS Sub-Industry": "Interactive Media & Services",
     "Symbol_YF": "GOOGL",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "GOOG",
@@ -165,7 +165,7 @@
     "GICS Sector": "Communication Services",
     "GICS Sub-Industry": "Interactive Media & Services",
     "Symbol_YF": "GOOG",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "MO",
@@ -181,7 +181,7 @@
     "GICS Sector": "Consumer Discretionary",
     "GICS Sub-Industry": "Broadline Retail",
     "Symbol_YF": "AMZN",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "AMCR",
@@ -205,7 +205,7 @@
     "GICS Sector": "Utilities",
     "GICS Sub-Industry": "Electric Utilities",
     "Symbol_YF": "AEP",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "AXP",
@@ -261,7 +261,7 @@
     "GICS Sector": "Health Care",
     "GICS Sub-Industry": "Biotechnology",
     "Symbol_YF": "AMGN",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "APH",
@@ -277,7 +277,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "ADI",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "AON",
@@ -293,7 +293,7 @@
     "GICS Sector": "Energy",
     "GICS Sub-Industry": "Oil & Gas Exploration & Production",
     "Symbol_YF": "APA",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "APO",
@@ -309,7 +309,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
     "Symbol_YF": "AAPL",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "AMAT",
@@ -317,7 +317,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Semiconductor Materials & Equipment",
     "Symbol_YF": "AMAT",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "APP",
@@ -325,7 +325,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "APP",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "APTV",
@@ -341,7 +341,7 @@
     "GICS Sector": "Financials",
     "GICS Sub-Industry": "Property & Casualty Insurance",
     "Symbol_YF": "ACGL",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "ADM",
@@ -405,7 +405,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "ADSK",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "ADP",
@@ -413,7 +413,7 @@
     "GICS Sector": "Industrials",
     "GICS Sub-Industry": "Human Resource & Employment Services",
     "Symbol_YF": "ADP",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "AZO",
@@ -445,7 +445,7 @@
     "GICS Sector": "Industrials",
     "GICS Sub-Industry": "Aerospace & Defense",
     "Symbol_YF": "AXON",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "BKR",
@@ -453,7 +453,7 @@
     "GICS Sector": "Energy",
     "GICS Sub-Industry": "Oil & Gas Equipment & Services",
     "Symbol_YF": "BKR",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "BALL",
@@ -509,7 +509,7 @@
     "GICS Sector": "Health Care",
     "GICS Sub-Industry": "Life Sciences Tools & Services",
     "Symbol_YF": "TECH",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "BIIB",
@@ -517,7 +517,7 @@
     "GICS Sector": "Health Care",
     "GICS Sub-Industry": "Biotechnology",
     "Symbol_YF": "BIIB",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "BLK",
@@ -565,7 +565,7 @@
     "GICS Sector": "Consumer Discretionary",
     "GICS Sub-Industry": "Hotels, Resorts & Cruise Lines",
     "Symbol_YF": "BKNG",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "BSX",
@@ -589,7 +589,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "AVGO",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "BR",
@@ -645,7 +645,7 @@
     "GICS Sector": "Industrials",
     "GICS Sub-Industry": "Air Freight & Logistics",
     "Symbol_YF": "CHRW",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "CDNS",
@@ -653,7 +653,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "CDNS",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "CPT",
@@ -669,7 +669,7 @@
     "GICS Sector": "Consumer Staples",
     "GICS Sub-Industry": "Packaged Foods & Meats",
     "Symbol_YF": "CPB",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "COF",
@@ -725,7 +725,7 @@
     "GICS Sector": "Financials",
     "GICS Sub-Industry": "Financial Exchanges & Data",
     "Symbol_YF": "CBOE",
-    "Exchange": "NYSE"
+    "Exchange": "BTS"
   },
   {
     "Symbol": "CBRE",
@@ -741,7 +741,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Technology Distributors",
     "Symbol_YF": "CDW",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "COR",
@@ -797,7 +797,7 @@
     "GICS Sector": "Communication Services",
     "GICS Sub-Industry": "Cable & Satellite",
     "Symbol_YF": "CHTR",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "CVX",
@@ -845,7 +845,7 @@
     "GICS Sector": "Financials",
     "GICS Sub-Industry": "Property & Casualty Insurance",
     "Symbol_YF": "CINF",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "CTAS",
@@ -853,7 +853,7 @@
     "GICS Sector": "Industrials",
     "GICS Sub-Industry": "Diversified Support Services",
     "Symbol_YF": "CTAS",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "CSCO",
@@ -861,7 +861,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Communications Equipment",
     "Symbol_YF": "CSCO",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "C",
@@ -893,7 +893,7 @@
     "GICS Sector": "Financials",
     "GICS Sub-Industry": "Financial Exchanges & Data",
     "Symbol_YF": "CME",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "CMS",
@@ -917,7 +917,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "IT Consulting & Other Services",
     "Symbol_YF": "CTSH",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "COIN",
@@ -925,7 +925,7 @@
     "GICS Sector": "Financials",
     "GICS Sub-Industry": "Financial Exchanges & Data",
     "Symbol_YF": "COIN",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "CL",
@@ -941,7 +941,7 @@
     "GICS Sector": "Communication Services",
     "GICS Sub-Industry": "Cable & Satellite",
     "Symbol_YF": "CMCSA",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "FIX",
@@ -989,7 +989,7 @@
     "GICS Sector": "Utilities",
     "GICS Sub-Industry": "Electric Utilities",
     "Symbol_YF": "CEG",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "COO",
@@ -997,7 +997,7 @@
     "GICS Sector": "Health Care",
     "GICS Sub-Industry": "Health Care Supplies",
     "Symbol_YF": "COO",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "CPRT",
@@ -1005,7 +1005,7 @@
     "GICS Sector": "Industrials",
     "GICS Sub-Industry": "Diversified Support Services",
     "Symbol_YF": "CPRT",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "GLW",
@@ -1037,7 +1037,7 @@
     "GICS Sector": "Real Estate",
     "GICS Sub-Industry": "Real Estate Services",
     "Symbol_YF": "CSGP",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "COST",
@@ -1045,7 +1045,7 @@
     "GICS Sector": "Consumer Staples",
     "GICS Sub-Industry": "Consumer Staples Merchandise Retail",
     "Symbol_YF": "COST",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "CTRA",
@@ -1069,7 +1069,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Systems Software",
     "Symbol_YF": "CRWD",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "CCI",
@@ -1085,7 +1085,7 @@
     "GICS Sector": "Industrials",
     "GICS Sub-Industry": "Rail Transportation",
     "Symbol_YF": "CSX",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "CMI",
@@ -1125,7 +1125,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "DDOG",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "DVA",
@@ -1189,7 +1189,7 @@
     "GICS Sector": "Health Care",
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "DXCM",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "FANG",
@@ -1197,7 +1197,7 @@
     "GICS Sector": "Energy",
     "GICS Sub-Industry": "Oil & Gas Exploration & Production",
     "Symbol_YF": "FANG",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "DLR",
@@ -1221,7 +1221,7 @@
     "GICS Sector": "Consumer Staples",
     "GICS Sub-Industry": "Consumer Staples Merchandise Retail",
     "Symbol_YF": "DLTR",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "D",
@@ -1237,7 +1237,7 @@
     "GICS Sector": "Consumer Discretionary",
     "GICS Sub-Industry": "Restaurants",
     "Symbol_YF": "DPZ",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "DASH",
@@ -1245,7 +1245,7 @@
     "GICS Sector": "Consumer Discretionary",
     "GICS Sub-Industry": "Specialized Consumer Services",
     "Symbol_YF": "DASH",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "DOV",
@@ -1309,7 +1309,7 @@
     "GICS Sector": "Consumer Discretionary",
     "GICS Sub-Industry": "Broadline Retail",
     "Symbol_YF": "EBAY",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "ECL",
@@ -1341,7 +1341,7 @@
     "GICS Sector": "Communication Services",
     "GICS Sub-Industry": "Interactive Home Entertainment",
     "Symbol_YF": "EA",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "ELV",
@@ -1413,7 +1413,7 @@
     "GICS Sector": "Real Estate",
     "GICS Sub-Industry": "Data Center REITs",
     "Symbol_YF": "EQIX",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "EQR",
@@ -1429,7 +1429,7 @@
     "GICS Sector": "Financials",
     "GICS Sub-Industry": "Insurance Brokers",
     "Symbol_YF": "ERIE",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "ESS",
@@ -1461,7 +1461,7 @@
     "GICS Sector": "Utilities",
     "GICS Sub-Industry": "Electric Utilities",
     "Symbol_YF": "EVRG",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "ES",
@@ -1477,7 +1477,7 @@
     "GICS Sector": "Utilities",
     "GICS Sub-Industry": "Electric Utilities",
     "Symbol_YF": "EXC",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "EXE",
@@ -1485,7 +1485,7 @@
     "GICS Sector": "Energy",
     "GICS Sub-Industry": "Oil & Gas Exploration & Production",
     "Symbol_YF": "EXE",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "EXPE",
@@ -1493,7 +1493,7 @@
     "GICS Sector": "Consumer Discretionary",
     "GICS Sub-Industry": "Hotels, Resorts & Cruise Lines",
     "Symbol_YF": "EXPE",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "EXPD",
@@ -1525,7 +1525,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Communications Equipment",
     "Symbol_YF": "FFIV",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "FDS",
@@ -1549,7 +1549,7 @@
     "GICS Sector": "Industrials",
     "GICS Sub-Industry": "Trading Companies & Distributors",
     "Symbol_YF": "FAST",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "FRT",
@@ -1581,7 +1581,7 @@
     "GICS Sector": "Financials",
     "GICS Sub-Industry": "Regional Banks",
     "Symbol_YF": "FITB",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "FSLR",
@@ -1589,7 +1589,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "FSLR",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "FE",
@@ -1605,7 +1605,7 @@
     "GICS Sector": "Financials",
     "GICS Sub-Industry": "Transaction & Payment Processing Services",
     "Symbol_YF": "FISV",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "F",
@@ -1621,7 +1621,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Systems Software",
     "Symbol_YF": "FTNT",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "FTV",
@@ -1637,7 +1637,7 @@
     "GICS Sector": "Communication Services",
     "GICS Sub-Industry": "Broadcasting",
     "Symbol_YF": "FOXA",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "FOX",
@@ -1645,7 +1645,7 @@
     "GICS Sector": "Communication Services",
     "GICS Sub-Industry": "Broadcasting",
     "Symbol_YF": "FOX",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "BEN",
@@ -1693,7 +1693,7 @@
     "GICS Sector": "Health Care",
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "GEHC",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "GEV",
@@ -1709,7 +1709,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Systems Software",
     "Symbol_YF": "GEN",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "GNRC",
@@ -1757,7 +1757,7 @@
     "GICS Sector": "Health Care",
     "GICS Sub-Industry": "Biotechnology",
     "Symbol_YF": "GILD",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "GPN",
@@ -1813,7 +1813,7 @@
     "GICS Sector": "Consumer Discretionary",
     "GICS Sub-Industry": "Leisure Products",
     "Symbol_YF": "HAS",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "HCA",
@@ -1837,7 +1837,7 @@
     "GICS Sector": "Health Care",
     "GICS Sub-Industry": "Health Care Distributors",
     "Symbol_YF": "HSIC",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "HSY",
@@ -1869,7 +1869,7 @@
     "GICS Sector": "Health Care",
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "HOLX",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "HD",
@@ -1885,7 +1885,7 @@
     "GICS Sector": "Industrials",
     "GICS Sub-Industry": "Industrial Conglomerates",
     "Symbol_YF": "HON",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "HRL",
@@ -1901,7 +1901,7 @@
     "GICS Sector": "Real Estate",
     "GICS Sub-Industry": "Hotel & Resort REITs",
     "Symbol_YF": "HST",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "HWM",
@@ -1941,7 +1941,7 @@
     "GICS Sector": "Financials",
     "GICS Sub-Industry": "Regional Banks",
     "Symbol_YF": "HBAN",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "HII",
@@ -1973,7 +1973,7 @@
     "GICS Sector": "Health Care",
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "IDXX",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "ITW",
@@ -1989,7 +1989,7 @@
     "GICS Sector": "Health Care",
     "GICS Sub-Industry": "Biotechnology",
     "Symbol_YF": "INCY",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "IR",
@@ -2005,7 +2005,7 @@
     "GICS Sector": "Health Care",
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "PODD",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "INTC",
@@ -2013,7 +2013,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "INTC",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "IBKR",
@@ -2021,7 +2021,7 @@
     "GICS Sector": "Financials",
     "GICS Sub-Industry": "Investment Banking & Brokerage",
     "Symbol_YF": "IBKR",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "ICE",
@@ -2053,7 +2053,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "INTU",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "ISRG",
@@ -2061,7 +2061,7 @@
     "GICS Sector": "Health Care",
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "ISRG",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "IVZ",
@@ -2101,7 +2101,7 @@
     "GICS Sector": "Industrials",
     "GICS Sub-Industry": "Cargo Ground Transportation",
     "Symbol_YF": "JBHT",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "JBL",
@@ -2117,7 +2117,7 @@
     "GICS Sector": "Financials",
     "GICS Sub-Industry": "Transaction & Payment Processing Services",
     "Symbol_YF": "JKHY",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "J",
@@ -2165,7 +2165,7 @@
     "GICS Sector": "Consumer Staples",
     "GICS Sub-Industry": "Soft Drinks & Non-alcoholic Beverages",
     "Symbol_YF": "KDP",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "KEY",
@@ -2189,7 +2189,7 @@
     "GICS Sector": "Consumer Staples",
     "GICS Sub-Industry": "Household Products",
     "Symbol_YF": "KMB",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "KIM",
@@ -2221,7 +2221,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Semiconductor Materials & Equipment",
     "Symbol_YF": "KLAC",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "KHC",
@@ -2229,7 +2229,7 @@
     "GICS Sector": "Consumer Staples",
     "GICS Sub-Industry": "Packaged Foods & Meats",
     "Symbol_YF": "KHC",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "KR",
@@ -2261,7 +2261,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Semiconductor Materials & Equipment",
     "Symbol_YF": "LRCX",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "LW",
@@ -2317,7 +2317,7 @@
     "GICS Sector": "Materials",
     "GICS Sub-Industry": "Industrial Gases",
     "Symbol_YF": "LIN",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "LYV",
@@ -2357,7 +2357,7 @@
     "GICS Sector": "Consumer Discretionary",
     "GICS Sub-Industry": "Apparel, Accessories & Luxury Goods",
     "Symbol_YF": "LULU",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "LYB",
@@ -2389,7 +2389,7 @@
     "GICS Sector": "Consumer Discretionary",
     "GICS Sub-Industry": "Hotels, Resorts & Cruise Lines",
     "Symbol_YF": "MAR",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "MRSH",
@@ -2429,7 +2429,7 @@
     "GICS Sector": "Communication Services",
     "GICS Sub-Industry": "Interactive Media & Services",
     "Symbol_YF": "MTCH",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "MKC",
@@ -2477,7 +2477,7 @@
     "GICS Sector": "Communication Services",
     "GICS Sub-Industry": "Interactive Media & Services",
     "Symbol_YF": "META",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "MET",
@@ -2509,7 +2509,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "MCHP",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "MU",
@@ -2517,7 +2517,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "MU",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "MSFT",
@@ -2525,7 +2525,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Systems Software",
     "Symbol_YF": "MSFT",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "MAA",
@@ -2541,7 +2541,7 @@
     "GICS Sector": "Health Care",
     "GICS Sub-Industry": "Biotechnology",
     "Symbol_YF": "MRNA",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "MOH",
@@ -2565,7 +2565,7 @@
     "GICS Sector": "Consumer Staples",
     "GICS Sub-Industry": "Packaged Foods & Meats",
     "Symbol_YF": "MDLZ",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "MPWR",
@@ -2573,7 +2573,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "MPWR",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "MNST",
@@ -2581,7 +2581,7 @@
     "GICS Sector": "Consumer Staples",
     "GICS Sub-Industry": "Soft Drinks & Non-alcoholic Beverages",
     "Symbol_YF": "MNST",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "MCO",
@@ -2629,7 +2629,7 @@
     "GICS Sector": "Financials",
     "GICS Sub-Industry": "Financial Exchanges & Data",
     "Symbol_YF": "NDAQ",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "NTAP",
@@ -2637,7 +2637,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
     "Symbol_YF": "NTAP",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "NFLX",
@@ -2645,7 +2645,7 @@
     "GICS Sector": "Communication Services",
     "GICS Sub-Industry": "Movies & Entertainment",
     "Symbol_YF": "NFLX",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "NEM",
@@ -2661,7 +2661,7 @@
     "GICS Sector": "Communication Services",
     "GICS Sub-Industry": "Publishing",
     "Symbol_YF": "NWSA",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "NWS",
@@ -2669,7 +2669,7 @@
     "GICS Sector": "Communication Services",
     "GICS Sub-Industry": "Publishing",
     "Symbol_YF": "NWS",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "NEE",
@@ -2701,7 +2701,7 @@
     "GICS Sector": "Industrials",
     "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
     "Symbol_YF": "NDSN",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "NSC",
@@ -2717,7 +2717,7 @@
     "GICS Sector": "Financials",
     "GICS Sub-Industry": "Asset Management & Custody Banks",
     "Symbol_YF": "NTRS",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "NOC",
@@ -2757,7 +2757,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "NVDA",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "NVR",
@@ -2773,7 +2773,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "NXPI",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "ORLY",
@@ -2781,7 +2781,7 @@
     "GICS Sector": "Consumer Discretionary",
     "GICS Sub-Industry": "Automotive Retail",
     "Symbol_YF": "ORLY",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "OXY",
@@ -2797,7 +2797,7 @@
     "GICS Sector": "Industrials",
     "GICS Sub-Industry": "Cargo Ground Transportation",
     "Symbol_YF": "ODFL",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "OMC",
@@ -2813,7 +2813,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "ON",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "OKE",
@@ -2845,7 +2845,7 @@
     "GICS Sector": "Industrials",
     "GICS Sub-Industry": "Construction Machinery & Heavy Transportation Equipment",
     "Symbol_YF": "PCAR",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "PKG",
@@ -2861,7 +2861,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "PLTR",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "PANW",
@@ -2869,7 +2869,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Systems Software",
     "Symbol_YF": "PANW",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "PSKY",
@@ -2877,7 +2877,7 @@
     "GICS Sector": "Communication Services",
     "GICS Sub-Industry": "Movies & Entertainment",
     "Symbol_YF": "PSKY",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "PH",
@@ -2893,7 +2893,7 @@
     "GICS Sector": "Industrials",
     "GICS Sub-Industry": "Human Resource & Employment Services",
     "Symbol_YF": "PAYX",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "PAYC",
@@ -2909,7 +2909,7 @@
     "GICS Sector": "Financials",
     "GICS Sub-Industry": "Transaction & Payment Processing Services",
     "Symbol_YF": "PYPL",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "PNR",
@@ -2925,7 +2925,7 @@
     "GICS Sector": "Consumer Staples",
     "GICS Sub-Industry": "Soft Drinks & Non-alcoholic Beverages",
     "Symbol_YF": "PEP",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "PFE",
@@ -2981,7 +2981,7 @@
     "GICS Sector": "Consumer Discretionary",
     "GICS Sub-Industry": "Distributors",
     "Symbol_YF": "POOL",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "PPG",
@@ -3005,7 +3005,7 @@
     "GICS Sector": "Financials",
     "GICS Sub-Industry": "Life & Health Insurance",
     "Symbol_YF": "PFG",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "PG",
@@ -3053,7 +3053,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "PTC",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "PSA",
@@ -3085,7 +3085,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "QCOM",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "DGX",
@@ -3141,7 +3141,7 @@
     "GICS Sector": "Real Estate",
     "GICS Sub-Industry": "Retail REITs",
     "Symbol_YF": "REG",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "REGN",
@@ -3149,7 +3149,7 @@
     "GICS Sector": "Health Care",
     "GICS Sub-Industry": "Biotechnology",
     "Symbol_YF": "REGN",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "RF",
@@ -3189,7 +3189,7 @@
     "GICS Sector": "Financials",
     "GICS Sub-Industry": "Investment Banking & Brokerage",
     "Symbol_YF": "HOOD",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "ROK",
@@ -3213,7 +3213,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Electronic Equipment & Instruments",
     "Symbol_YF": "ROP",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "ROST",
@@ -3221,7 +3221,7 @@
     "GICS Sector": "Consumer Discretionary",
     "GICS Sub-Industry": "Apparel Retail",
     "Symbol_YF": "ROST",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "RCL",
@@ -3253,7 +3253,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
     "Symbol_YF": "SNDK",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "SBAC",
@@ -3261,7 +3261,7 @@
     "GICS Sector": "Real Estate",
     "GICS Sub-Industry": "Telecom Tower REITs",
     "Symbol_YF": "SBAC",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "SLB",
@@ -3277,7 +3277,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
     "Symbol_YF": "STX",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "SRE",
@@ -3317,7 +3317,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "SWKS",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "SJM",
@@ -3381,7 +3381,7 @@
     "GICS Sector": "Consumer Discretionary",
     "GICS Sub-Industry": "Restaurants",
     "Symbol_YF": "SBUX",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "STT",
@@ -3397,7 +3397,7 @@
     "GICS Sector": "Materials",
     "GICS Sub-Industry": "Steel",
     "Symbol_YF": "STLD",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "STE",
@@ -3421,7 +3421,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
     "Symbol_YF": "SMCI",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "SYF",
@@ -3437,7 +3437,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "SNPS",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "SYY",
@@ -3453,7 +3453,7 @@
     "GICS Sector": "Communication Services",
     "GICS Sub-Industry": "Wireless Telecommunication Services",
     "Symbol_YF": "TMUS",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "TROW",
@@ -3461,7 +3461,7 @@
     "GICS Sector": "Financials",
     "GICS Sub-Industry": "Asset Management & Custody Banks",
     "Symbol_YF": "TROW",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "TTWO",
@@ -3469,7 +3469,7 @@
     "GICS Sector": "Communication Services",
     "GICS Sub-Industry": "Interactive Home Entertainment",
     "Symbol_YF": "TTWO",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "TPR",
@@ -3517,7 +3517,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Semiconductor Materials & Equipment",
     "Symbol_YF": "TER",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "TSLA",
@@ -3525,7 +3525,7 @@
     "GICS Sector": "Consumer Discretionary",
     "GICS Sub-Industry": "Automobile Manufacturers",
     "Symbol_YF": "TSLA",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "TXN",
@@ -3533,7 +3533,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "TXN",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "TPL",
@@ -3581,7 +3581,7 @@
     "GICS Sector": "Communication Services",
     "GICS Sub-Industry": "Advertising",
     "Symbol_YF": "TTD",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "TSCO",
@@ -3589,7 +3589,7 @@
     "GICS Sector": "Consumer Discretionary",
     "GICS Sub-Industry": "Other Specialty Retail",
     "Symbol_YF": "TSCO",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "TT",
@@ -3621,7 +3621,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Electronic Equipment & Instruments",
     "Symbol_YF": "TRMB",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "TFC",
@@ -3677,7 +3677,7 @@
     "GICS Sector": "Consumer Discretionary",
     "GICS Sub-Industry": "Other Specialty Retail",
     "Symbol_YF": "ULTA",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "UNP",
@@ -3693,7 +3693,7 @@
     "GICS Sector": "Industrials",
     "GICS Sub-Industry": "Passenger Airlines",
     "Symbol_YF": "UAL",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "UPS",
@@ -3757,7 +3757,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Internet Services & Infrastructure",
     "Symbol_YF": "VRSN",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "VRSK",
@@ -3765,7 +3765,7 @@
     "GICS Sector": "Industrials",
     "GICS Sub-Industry": "Research & Consulting Services",
     "Symbol_YF": "VRSK",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "VZ",
@@ -3781,7 +3781,7 @@
     "GICS Sector": "Health Care",
     "GICS Sub-Industry": "Biotechnology",
     "Symbol_YF": "VRTX",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "VTRS",
@@ -3789,7 +3789,7 @@
     "GICS Sector": "Health Care",
     "GICS Sub-Industry": "Pharmaceuticals",
     "Symbol_YF": "VTRS",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "VICI",
@@ -3853,7 +3853,7 @@
     "GICS Sector": "Consumer Staples",
     "GICS Sub-Industry": "Consumer Staples Merchandise Retail",
     "Symbol_YF": "WMT",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "DIS",
@@ -3869,7 +3869,7 @@
     "GICS Sector": "Communication Services",
     "GICS Sub-Industry": "Broadcasting",
     "Symbol_YF": "WBD",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "WM",
@@ -3925,7 +3925,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
     "Symbol_YF": "WDC",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "WY",
@@ -3957,7 +3957,7 @@
     "GICS Sector": "Financials",
     "GICS Sub-Industry": "Insurance Brokers",
     "Symbol_YF": "WTW",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "WDAY",
@@ -3965,7 +3965,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "WDAY",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "WYNN",
@@ -3973,7 +3973,7 @@
     "GICS Sector": "Consumer Discretionary",
     "GICS Sub-Industry": "Casinos & Gaming",
     "Symbol_YF": "WYNN",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "XEL",
@@ -3981,7 +3981,7 @@
     "GICS Sector": "Utilities",
     "GICS Sub-Industry": "Multi-Utilities",
     "Symbol_YF": "XEL",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "XYL",
@@ -4005,7 +4005,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Electronic Equipment & Instruments",
     "Symbol_YF": "ZBRA",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "ZBH",
