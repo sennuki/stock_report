@@ -13,8 +13,8 @@ def get_session():
     
     # リトライ設定 (Rate Limit対策)
     retry = Retry(
-        total=5,
-        backoff_factor=2, # 2秒, 4秒, 8秒... と待機時間を増やす
+        total=10,
+        backoff_factor=3, # さらに待機時間を増やす (3, 6, 12, 24...)
         status_forcelist=[429, 500, 502, 503, 504],
         allowed_methods=["HEAD", "GET", "OPTIONS"]
     )

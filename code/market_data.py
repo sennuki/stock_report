@@ -30,7 +30,8 @@ def fetch_sp500_companies_optimized():
         symbols = df['Symbol_YF'].to_list()
         ex_map = {}
         print(f"{len(symbols)} 銘柄の市場情報を取得中... (並列処理)")
-        with ThreadPoolExecutor(max_workers=10) as ex:
+        # Rate limit回避のため並列数を抑える
+        with ThreadPoolExecutor(max_workers=2) as ex:
             f_map = {ex.submit(get_market_info, s): s for s in symbols}
             for f in tqdm(as_completed(f_map), total=len(symbols)):
                 s, e = f.result()
