@@ -6,6 +6,7 @@ import os
 import shutil
 import json
 import plotly.io as pio
+import polars as pl
 
 # Plotly 6.0.0+ deprecation fix: 
 # Default templates still contain 'scattermapbox', which triggers a warning.
@@ -82,7 +83,33 @@ if __name__ == "__main__":
     # 1. データ準備
     df_sp500 = market_data.fetch_sp500_companies_optimized()
 
+    # 必須銘柄の確認と追加 (GOOGL, METAなど)
+    required_tickers = {
+        "GOOGL": {"Security": "Alphabet Inc (Class A)", "Sector": "Communication Services", "Sub": "Interactive Media & Services"},
+        "META": {"Security": "Meta Platforms Inc", "Sector": "Communication Services", "Sub": "Interactive Media & Services"}
+    }
+
     if not df_sp500.is_empty():
+        current_symbols = set(df_sp500['Symbol_YF'].to_list())
+        missing_rows = []
+        
+        for ticker, info in required_tickers.items():
+            if ticker not in current_symbols:
+                print(f"Adding missing ticker: {ticker}")
+                missing_rows.append({
+                    "Symbol": ticker,
+                    "Security": info["Security"],
+                    "GICS Sector": info["Sector"],
+                    "GICS Sub-Industry": info["Sub"],
+                    "Symbol_YF": ticker,
+                    "Exchange": "NASDAQ"
+                })
+        
+        if missing_rows:
+            df_missing = pl.DataFrame(missing_rows)
+            # カラムの型合わせや並び順を調整
+            df_missing = df_missing.select(df_sp500.columns)
+            df_sp500 = pl.concat([df_sp500, df_missing])
         # JSONリストのエクスポート (レポート生成前でもOK)
         export_stocks_json(df_sp500)
 
