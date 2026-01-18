@@ -108,6 +108,11 @@ def generate_report_for_ticker(row, df_info, df_metrics, output_dir):
     # 1. 財務チャート生成
     try:
         fin_data = fundamentals.get_financial_data(yf.Ticker(chart_target_symbol))
+        
+        if fin_data.get('bs', {}).get('annual', pl.DataFrame()).is_empty() and \
+           fin_data.get('bs', {}).get('quarterly', pl.DataFrame()).is_empty():
+             print(f"WARNING: No BS data for {ticker_display} ({chart_target_symbol})")
+
         chart_bs = fundamentals.get_bs_plotly_html(fin_data['bs'])
         chart_is = fundamentals.get_is_plotly_html(fin_data['is'])
         chart_cf = fundamentals.get_cf_plotly_html(fin_data['cf'])

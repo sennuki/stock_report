@@ -44,6 +44,7 @@ def get_melt(df):
 def get_financial_data(ticker_obj):
     """1つのTickerオブジェクトから4種類の財務データ（Annual + Quarterly）を取得・整形"""
     data = {}
+    symbol = getattr(ticker_obj, 'ticker', 'Unknown')
 
     def extract_and_melt(pandas_df, targets):
         if pandas_df.empty:
@@ -56,7 +57,7 @@ def get_financial_data(ticker_obj):
             # Filter and Melt
             return get_melt(df.filter(pl.col('Item').is_in(targets)))
         except Exception as e:
-            print(f"Error processing data: {e}")
+            print(f"Error processing data for {symbol}: {e}")
             return pl.DataFrame()
 
     # 共通ヘルパー: AnnualとQuarterlyの両方を取得
@@ -122,7 +123,7 @@ def get_financial_data(ticker_obj):
             else:
                 return pl.DataFrame()
         except Exception as e:
-            print(f"Error in tp: {e}")
+            print(f"Error in tp for {symbol}: {e}")
             return pl.DataFrame()
 
     data['tp'] = {
@@ -164,14 +165,13 @@ def get_bs_plotly_html(data_dict):
         else: base_liab = non_curr_liab['Value'] + equity['Value']
 
         # OffsetgroupをAnnualとQuarterlyで使い分けないと重なる可能性があるが、visible切り替えなら問題ない
-        # ただし、データ構造依存のエラーを防ぐためEmptyチェックは重要
         
         # 資産
         fig.add_trace(go.Bar(name='流動資産', x=curr_assets['Date'], y=curr_assets['Value'], marker_color='#aec7e8',
                             base=non_curr_assets['Value'] if not non_curr_assets.is_empty() else 0,
                             offsetgroup=0, visible=visible))
         fig.add_trace(go.Bar(name='固定資産', x=curr_assets['Date'], y=non_curr_assets['Value'], marker_color='#1f77b4',
-                             base=0, offsetgroup=0, visible=visible)) # Legend重複回避は難しいのでそのまま
+                             base=0, offsetgroup=0, visible=visible)) 
         
         # 負債・純資産
         fig.add_trace(go.Bar(name='流動負債', x=curr_liab['Date'], y=curr_liab['Value'], marker_color='#ffbb78',
@@ -185,7 +185,6 @@ def get_bs_plotly_html(data_dict):
     _add_traces(fig, df_a, add_bs_traces, visible=True)
     _add_traces(fig, df_q, add_bs_traces, visible=False)
 
-    # 1つの期間あたり5つのトレースを作成している
     n_traces_a = 5 if not df_a.is_empty() else 0
     n_traces_q = 5 if not df_q.is_empty() else 0
 
@@ -207,6 +206,7 @@ def get_bs_plotly_html(data_dict):
 
     fig.update_layout(title='貸借対照表 (Annual)', barmode='group', height=450, margin=dict(t=60,b=50),
                       template='plotly_white', showlegend=True, updatemenus=updatemenus,
+                      xaxis=dict(type='date'),
                       yaxis=dict(type='linear', rangemode='tozero'),
                       legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5))
     return create_chart_html(fig)
@@ -217,15 +217,13 @@ def get_is_plotly_html(data_dict):
     
     if df_a.is_empty() and df_q.is_empty(): return "<p>データなし</p>"
 
-    # 1つのグラフに統合 (2軸グラフ)
     fig = go.Figure()
 
     # 実額の項目
     items = [('Total Revenue', '売上高', '#aec7e8'), ('Gross Profit', '売上総利益', '#1f77b4'),
              ('Operating Income', '営業利益', '#ffbb78'), ('Net Income', '純利益', '#ff7f0e')]
 
-    # 利益率の項目と計算ロジック
-    # (分子のItem名, 分母のItem名, 表示名, 色)
+    # 利益率の項目
     ratio_items = [
         ('Gross Profit', 'Total Revenue', '売上総利益率', '#1f77b4'),
         ('Operating Income', 'Total Revenue', '営業利益率', '#ffbb78'),
@@ -240,14 +238,11 @@ def get_is_plotly_html(data_dict):
                 fig.add_trace(go.Bar(name=name, x=sub['Date'], y=sub['Value'], marker_color=color, visible=visible))
 
         # 2. 利益率 (Line: 右軸)
-        # Pivotして計算しやすくする
         try:
             df_pivot = df.pivot(on='Item', index='Date', values='Value')
             
             for num_key, den_key, name, color in ratio_items:
                 if num_key in df_pivot.columns and den_key in df_pivot.columns:
-                    # 分母が0の場合は除外あるいはNone
-                    # Polarsの計算
                     calc = df_pivot.with_columns(
                         (pl.col(num_key) / pl.col(den_key)).alias('Ratio')
                     ).select(['Date', 'Ratio']).filter(pl.col('Ratio').is_not_nan() & pl.col('Ratio').is_infinite().not_())
@@ -262,17 +257,11 @@ def get_is_plotly_html(data_dict):
     _add_traces(fig, df_a, add_is_traces, visible=True)
     _add_traces(fig, df_q, add_is_traces, visible=False)
     
-    # トレース数の計算
-    # 実額: 最大4つ, 利益率: 最大3つ -> 計7つ
-    
-    # helper to count traces added by one call
     def count_traces(df):
         if df.is_empty(): return 0
         c = 0
-        # Amount
         for item_key, _, _ in items:
             if not df.filter(pl.col('Item') == item_key).is_empty(): c += 1
-        # Ratio
         try:
             df_pivot = df.pivot(on='Item', index='Date', values='Value')
             for num_key, den_key, _, _ in ratio_items:
@@ -295,6 +284,7 @@ def get_is_plotly_html(data_dict):
     fig.update_layout(
         title='損益計算書 (Annual)', barmode='group', height=500, margin=dict(t=60,b=50), 
         template='plotly_white', showlegend=True, updatemenus=updatemenus,
+        xaxis=dict(type='date'),
         yaxis=dict(title='金額', showgrid=True, type='linear'),
         yaxis2=dict(title='利益率', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='linear'),
         legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5)
@@ -332,6 +322,7 @@ def get_cf_plotly_html(data_dict):
     )]
     fig.update_layout(title='キャッシュフロー (Annual)', barmode='group', height=450, margin=dict(t=60,b=50),
                       template='plotly_white', showlegend=True, updatemenus=updatemenus,
+                      xaxis=dict(type='date'),
                       yaxis=dict(type='linear'),
                       legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5))
     return create_chart_html(fig)
@@ -358,7 +349,6 @@ def get_tp_plotly_html(data_dict):
     _add_traces(fig, df_a, add_tp_traces, visible=True)
     _add_traces(fig, df_q, add_tp_traces, visible=False)
 
-    # TPは4つのトレース
     n_traces_a = 4 if not df_a.is_empty() else 0
     n_traces_q = 4 if not df_q.is_empty() else 0
 
@@ -372,6 +362,7 @@ def get_tp_plotly_html(data_dict):
 
     fig.update_layout(
         title='株主還元 (Annual)', barmode='stack', height=450, margin=dict(t=60,b=50), template='plotly_white',
+        xaxis=dict(type='date'),
         yaxis=dict(title='', showgrid=True, type='linear', rangemode='tozero'),
         yaxis2=dict(title='', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='linear', rangemode='tozero'),
         legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5),
