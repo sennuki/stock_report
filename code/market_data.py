@@ -3,6 +3,7 @@ import yfinance as yf
 import polars as pl
 import pandas as pd
 import requests
+import utils
 from io import StringIO
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm
@@ -13,7 +14,7 @@ from tqdm import tqdm
 
 def get_market_info(symbol):
     try:
-        t = yf.Ticker(symbol)
+        t = utils.get_ticker(symbol)
         ex = t.info.get('exchange', 'Unknown')
         m_map = {'NMS':'NASDAQ', 'NGM':'NASDAQ', 'NCM':'NASDAQ', 'NYQ':'NYSE', 'ASE':'AMEX', 'PCX':'NYSE', 'PNK':'OTC'}
         return symbol, m_map.get(ex, ex)

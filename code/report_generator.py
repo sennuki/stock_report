@@ -9,6 +9,7 @@ from tqdm import tqdm
 import fundamentals
 import market_data  # For type checking or if we want to run full generation here
 import risk_return
+import utils
 
 # ==========================================
 #  Part C (後半): レポート生成
@@ -107,7 +108,7 @@ def generate_report_for_ticker(row, df_info, df_metrics, output_dir):
 
     # 1. 財務チャート生成
     try:
-        fin_data = fundamentals.get_financial_data(yf.Ticker(chart_target_symbol))
+        fin_data = fundamentals.get_financial_data(utils.get_ticker(chart_target_symbol))
         
         if fin_data.get('bs', {}).get('annual', pl.DataFrame()).is_empty() and \
            fin_data.get('bs', {}).get('quarterly', pl.DataFrame()).is_empty():
