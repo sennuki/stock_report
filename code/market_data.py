@@ -18,7 +18,9 @@ def get_market_info(symbol):
         ex = t.info.get('exchange', 'Unknown')
         m_map = {'NMS':'NASDAQ', 'NGM':'NASDAQ', 'NCM':'NASDAQ', 'NYQ':'NYSE', 'ASE':'AMEX', 'PCX':'NYSE', 'PNK':'OTC'}
         return symbol, m_map.get(ex, ex)
-    except: return symbol, "NYSE"
+    except Exception as e:
+        # print(f"Error fetching info for {symbol}: {e}") # Debug output
+        return symbol, "NYSE"
 
 def fetch_sp500_companies_optimized():
     print("S&P 500リストを取得中...")

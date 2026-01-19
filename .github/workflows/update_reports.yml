@@ -18,15 +18,28 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-          cache: 'pip'
+
+      - name: Install uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcurl4
+
+      - name: Restore yfinance cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/py-yfinance
+          key: ${{ runner.os }}-yfinance-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-yfinance-
 
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        run: uv pip install --system -r requirements.txt
 
       - name: Run main script
-        run: python code/main.py
+        run: PYTHONPATH=code python code/main.py
 
       - name: Commit and push changes
         run: |
@@ -37,8 +50,8 @@ jobs:
           git status
           if ! git diff --cached --quiet; then
             git commit -m "chore: update stock reports and data"
-            git pull --rebase
-            git push
+            git pull origin master --rebase
+            git push origin master
           else
             echo "No changes to commit"
           fi
