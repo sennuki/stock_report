@@ -53,7 +53,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "AMD",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "AES",
@@ -1941,7 +1941,7 @@
     "GICS Sector": "Financials",
     "GICS Sub-Industry": "Regional Banks",
     "Symbol_YF": "HBAN",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "HII",
@@ -2053,7 +2053,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "INTU",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "ISRG",
@@ -2781,7 +2781,7 @@
     "GICS Sector": "Consumer Discretionary",
     "GICS Sub-Industry": "Automotive Retail",
     "Symbol_YF": "ORLY",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "OXY",
@@ -3381,7 +3381,7 @@
     "GICS Sector": "Consumer Discretionary",
     "GICS Sub-Industry": "Restaurants",
     "Symbol_YF": "SBUX",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "STT",
@@ -3397,7 +3397,7 @@
     "GICS Sector": "Materials",
     "GICS Sub-Industry": "Steel",
     "Symbol_YF": "STLD",
-    "Exchange": "NYSE"
+    "Exchange": "NASDAQ"
   },
   {
     "Symbol": "STE",
