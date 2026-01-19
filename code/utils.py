@@ -2,7 +2,9 @@
 import yfinance as yf
 try:
     from curl_cffi import requests as curl_requests
-    HAS_CURL_CFFI = True
+    # HAS_CURL_CFFI = True
+    # Temporary disable curl_cffi to test if standard requests works better with current yfinance
+    HAS_CURL_CFFI = False
 except ImportError:
     HAS_CURL_CFFI = False
     
@@ -37,5 +39,6 @@ def get_session():
         return session
 
 def get_ticker(symbol):
-    session = get_session()
-    return yf.Ticker(symbol, session=session)
+    # session = get_session()
+    # Let yfinance handle session management automatically
+    return yf.Ticker(symbol)
