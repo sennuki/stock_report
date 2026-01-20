@@ -193,18 +193,18 @@ def get_bs_plotly_html(data_dict):
         direction="right",
         x=0.5, y=1.15, xanchor='center',
         buttons=list([
-            dict(label="Annual",
+            dict(label="年間",
                  method="update",
                  args=[{"visible": [True]*n_traces_a + [False]*n_traces_q},
-                       {"title": "貸借対照表 (Annual)"}]),
-            dict(label="Quarterly",
+                       {"title.text": "【年間】貸借対照表"}]),
+            dict(label="四半期",
                  method="update",
                  args=[{"visible": [False]*n_traces_a + [True]*n_traces_q},
-                       {"title": "貸借対照表 (Quarterly)"}]),
+                       {"title.text": "【四半期】貸借対照表"}]),
         ]),
     )]
 
-    fig.update_layout(title='貸借対照表 (Annual)', barmode='group', height=450, margin=dict(t=60,b=50),
+    fig.update_layout(title='【年間】貸借対照表', barmode='group', height=450, margin=dict(t=60,b=50),
                       template='plotly_white', showlegend=True, updatemenus=updatemenus,
                       xaxis=dict(type='date'),
                       yaxis=dict(type='linear', rangemode='tozero'),
@@ -276,13 +276,13 @@ def get_is_plotly_html(data_dict):
     updatemenus = [dict(
         type="buttons", direction="right", x=0.5, y=1.2, xanchor='center',
         buttons=[
-            dict(label="Annual", method="update", args=[{"visible": [True]*n_traces_a + [False]*n_traces_q}, {"title": "損益計算書 (Annual)"}]),
-            dict(label="Quarterly", method="update", args=[{"visible": [False]*n_traces_a + [True]*n_traces_q}, {"title": "損益計算書 (Quarterly)"}]),
+            dict(label="年間", method="update", args=[{"visible": [True]*n_traces_a + [False]*n_traces_q}, {"title.text": "【年間】損益計算書"}]),
+            dict(label="四半期", method="update", args=[{"visible": [False]*n_traces_a + [True]*n_traces_q}, {"title.text": "【四半期】損益計算書"}]),
         ]
     )]
     
     fig.update_layout(
-        title='損益計算書 (Annual)', barmode='group', height=500, margin=dict(t=60,b=50), 
+        title='【年間】損益計算書', barmode='group', height=500, margin=dict(t=60,b=50), 
         template='plotly_white', showlegend=True, updatemenus=updatemenus,
         xaxis=dict(type='date'),
         yaxis=dict(title='金額', showgrid=True, type='linear'),
@@ -316,11 +316,11 @@ def get_cf_plotly_html(data_dict):
     updatemenus = [dict(
         type="buttons", direction="right", x=0.5, y=1.15, xanchor='center',
         buttons=[
-            dict(label="Annual", method="update", args=[{"visible": [True]*n_traces_a + [False]*n_traces_q}, {"title": "キャッシュフロー (Annual)"}]),
-            dict(label="Quarterly", method="update", args=[{"visible": [False]*n_traces_a + [True]*n_traces_q}, {"title": "キャッシュフロー (Quarterly)"}]),
+            dict(label="年間", method="update", args=[{"visible": [True]*n_traces_a + [False]*n_traces_q}, {"title.text": "【年間】キャッシュフロー"}]),
+            dict(label="四半期", method="update", args=[{"visible": [False]*n_traces_a + [True]*n_traces_q}, {"title.text": "【四半期】キャッシュフロー"}]),
         ]
     )]
-    fig.update_layout(title='キャッシュフロー (Annual)', barmode='group', height=450, margin=dict(t=60,b=50),
+    fig.update_layout(title='【年間】キャッシュフロー', barmode='group', height=450, margin=dict(t=60,b=50),
                       template='plotly_white', showlegend=True, updatemenus=updatemenus,
                       xaxis=dict(type='date'),
                       yaxis=dict(type='linear'),
@@ -355,13 +355,13 @@ def get_tp_plotly_html(data_dict):
     updatemenus = [dict(
         type="buttons", direction="right", x=0.5, y=1.2, xanchor='center',
         buttons=[
-            dict(label="Annual", method="update", args=[{"visible": [True]*n_traces_a + [False]*n_traces_q}, {"title": "株主還元 (Annual)"}]),
-            dict(label="Quarterly", method="update", args=[{"visible": [False]*n_traces_a + [True]*n_traces_q}, {"title": "株主還元 (Quarterly)"}]),
+            dict(label="年間", method="update", args=[{"visible": [True]*n_traces_a + [False]*n_traces_q}, {"title.text": "【年間】株主還元"}]),
+            dict(label="四半期", method="update", args=[{"visible": [False]*n_traces_a + [True]*n_traces_q}, {"title.text": "【四半期】株主還元"}]),
         ]
     )]
 
     fig.update_layout(
-        title='株主還元 (Annual)', barmode='stack', height=450, margin=dict(t=60,b=50), template='plotly_white',
+        title='【年間】株主還元', barmode='stack', height=450, margin=dict(t=60,b=50), template='plotly_white',
         xaxis=dict(type='date'),
         yaxis=dict(title='', showgrid=True, type='linear', rangemode='tozero'),
         yaxis2=dict(title='', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='linear', rangemode='tozero'),
