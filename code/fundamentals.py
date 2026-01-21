@@ -69,7 +69,8 @@ def get_financial_data(ticker_obj):
 
     # 1. 貸借対照表
     target_bs = ['Total Non Current Assets', 'Current Liabilities', 'Total Equity Gross Minority Interest',
-                 'Current Assets', 'Total Non Current Liabilities Net Minority Interest']
+                 'Current Assets', 'Total Non Current Liabilities Net Minority Interest',
+                 'Total Assets', 'Total Liabilities Net Minority Interest']
     data['bs'] = process_category('balancesheet', 'quarterly_balancesheet', target_bs)
 
     # 2. 損益計算書
@@ -160,33 +161,66 @@ def get_bs_plotly_html(data_dict):
         curr_liab = get_val('Current Liabilities')
         non_curr_liab = get_val('Total Non Current Liabilities Net Minority Interest')
         equity = get_val('Total Equity Gross Minority Interest')
-
-        if non_curr_liab.is_empty() or equity.is_empty(): base_liab = 0
-        else: base_liab = non_curr_liab['Value'] + equity['Value']
-
-        # OffsetgroupをAnnualとQuarterlyで使い分けないと重なる可能性があるが、visible切り替えなら問題ない
         
-        # 資産
-        fig.add_trace(go.Bar(name='流動資産', x=curr_assets['Date'], y=curr_assets['Value'], marker_color='#aec7e8',
-                            base=non_curr_assets['Value'] if not non_curr_assets.is_empty() else 0,
-                            offsetgroup=0, visible=visible))
-        fig.add_trace(go.Bar(name='固定資産', x=curr_assets['Date'], y=non_curr_assets['Value'], marker_color='#1f77b4',
-                             base=0, offsetgroup=0, visible=visible)) 
-        
-        # 負債・純資産
-        fig.add_trace(go.Bar(name='流動負債', x=curr_liab['Date'], y=curr_liab['Value'], marker_color='#ffbb78',
-                             base=base_liab, offsetgroup=1, visible=visible))
-        fig.add_trace(go.Bar(name='固定負債', x=non_curr_liab['Date'], y=non_curr_liab['Value'], marker_color='#ff7f0e',
-                             base=equity['Value'] if not equity.is_empty() else 0,
-                             offsetgroup=1, visible=visible))
-        fig.add_trace(go.Bar(name='純資産', x=equity['Date'], y=equity['Value'], marker_color='#2ca02c',
-                             base=0, offsetgroup=1, visible=visible))
+        # Fallback items
+        total_assets = get_val('Total Assets')
+        total_liab = get_val('Total Liabilities Net Minority Interest')
 
+        # Check if we have detailed breakdown data
+        has_breakdown = not curr_assets.is_empty()
+
+        if has_breakdown:
+            if non_curr_liab.is_empty() or equity.is_empty(): base_liab = 0
+            else: base_liab = non_curr_liab['Value'] + equity['Value']
+
+            # 資産
+            fig.add_trace(go.Bar(name='流動資産', x=curr_assets['Date'], y=curr_assets['Value'], marker_color='#aec7e8',
+                                base=non_curr_assets['Value'] if not non_curr_assets.is_empty() else 0,
+                                offsetgroup=0, visible=visible))
+            fig.add_trace(go.Bar(name='固定資産', x=curr_assets['Date'], y=non_curr_assets['Value'], marker_color='#1f77b4',
+                                 base=0, offsetgroup=0, visible=visible)) 
+            
+            # 負債・純資産
+            fig.add_trace(go.Bar(name='流動負債', x=curr_liab['Date'], y=curr_liab['Value'], marker_color='#ffbb78',
+                                 base=base_liab, offsetgroup=1, visible=visible))
+            fig.add_trace(go.Bar(name='固定負債', x=non_curr_liab['Date'], y=non_curr_liab['Value'], marker_color='#ff7f0e',
+                                 base=equity['Value'] if not equity.is_empty() else 0,
+                                 offsetgroup=1, visible=visible))
+            fig.add_trace(go.Bar(name='純資産', x=equity['Date'], y=equity['Value'], marker_color='#2ca02c',
+                                 base=0, offsetgroup=1, visible=visible))
+        
+        elif not total_assets.is_empty():
+            # Fallback for financial institutions (no current/non-current distinction)
+            # Use Total Assets date as x-axis
+            
+            # 資産 (Total Assets only)
+            fig.add_trace(go.Bar(name='総資産', x=total_assets['Date'], y=total_assets['Value'], marker_color='#1f77b4',
+                                 offsetgroup=0, visible=visible))
+            
+            # 負債・純資産
+            # Stack: Equity on top (or bottom), Liabilities on top of Equity
+            # Standard presentation: Equity at bottom (base=0), Liabilities on top (base=Equity)
+            # OR similar to breakdown: Liabilities on top (base=Equity) -> Wait, in breakdown code above:
+            # Fixed Liabilities base = Equity. Current Liabilities base = Fixed + Equity.
+            # So Liabilities are on top.
+            
+            base_liab = equity['Value'] if not equity.is_empty() else 0
+            
+            if not total_liab.is_empty():
+                fig.add_trace(go.Bar(name='総負債', x=total_liab['Date'], y=total_liab['Value'], marker_color='#ff7f0e',
+                                     base=base_liab, offsetgroup=1, visible=visible))
+            
+            if not equity.is_empty():
+                fig.add_trace(go.Bar(name='純資産', x=equity['Date'], y=equity['Value'], marker_color='#2ca02c',
+                                     base=0, offsetgroup=1, visible=visible))
+
+    start_traces = len(fig.data)
     _add_traces(fig, df_a, add_bs_traces, visible=True)
-    _add_traces(fig, df_q, add_bs_traces, visible=False)
+    n_traces_a = len(fig.data) - start_traces
 
-    n_traces_a = 5 if not df_a.is_empty() else 0
-    n_traces_q = 5 if not df_q.is_empty() else 0
+    start_traces = len(fig.data)
+    _add_traces(fig, df_q, add_bs_traces, visible=False)
+    n_traces_q = len(fig.data) - start_traces
 
     updatemenus = [dict(
         type="buttons",
@@ -254,24 +288,15 @@ def get_is_plotly_html(data_dict):
         except Exception as e:
             print(f"Error calculating ratios: {e}")
 
+    start_traces = len(fig.data)
     _add_traces(fig, df_a, add_is_traces, visible=True)
-    _add_traces(fig, df_q, add_is_traces, visible=False)
-    
-    def count_traces(df):
-        if df.is_empty(): return 0
-        c = 0
-        for item_key, _, _ in items:
-            if not df.filter(pl.col('Item') == item_key).is_empty(): c += 1
-        try:
-            df_pivot = df.pivot(on='Item', index='Date', values='Value')
-            for num_key, den_key, _, _ in ratio_items:
-                if num_key in df_pivot.columns and den_key in df_pivot.columns:
-                    c += 1
-        except: pass
-        return c
+    n_traces_a = len(fig.data) - start_traces
 
-    n_traces_a = count_traces(df_a)
-    n_traces_q = count_traces(df_q)
+    start_traces = len(fig.data)
+    _add_traces(fig, df_q, add_is_traces, visible=False)
+    n_traces_q = len(fig.data) - start_traces
+    
+    # def count_traces(df): ... (Removed or Ignored)
 
     updatemenus = [dict(
         type="buttons", direction="right", x=0.5, y=1.2, xanchor='center',
@@ -307,11 +332,13 @@ def get_cf_plotly_html(data_dict):
             sub = df.filter(pl.col('Item') == item_key)
             fig.add_trace(go.Bar(name=name, x=sub['Date'], y=sub['Value'], marker_color=color, visible=visible))
 
+    start_traces = len(fig.data)
     _add_traces(fig, df_a, add_cf_traces, visible=True)
+    n_traces_a = len(fig.data) - start_traces
+
+    start_traces = len(fig.data)
     _add_traces(fig, df_q, add_cf_traces, visible=False)
-    
-    n_traces_a = len(items) if not df_a.is_empty() else 0
-    n_traces_q = len(items) if not df_q.is_empty() else 0
+    n_traces_q = len(fig.data) - start_traces
 
     updatemenus = [dict(
         type="buttons", direction="right", x=0.5, y=1.15, xanchor='center',
@@ -346,11 +373,13 @@ def get_tp_plotly_html(data_dict):
         fig.add_trace(go.Scatter(name='配当性向', x=div_r['Date'], y=div_r['Value'], marker_color='#ffbb78', mode='lines+markers', yaxis='y2', hovertemplate='%{y:.1%}', visible=visible))
         fig.add_trace(go.Scatter(name='総還元性向', x=total_r['Date'], y=total_r['Value'], marker_color='#ff7f0e', mode='lines+markers', yaxis='y2', hovertemplate='%{y:.1%}', visible=visible))
 
+    start_traces = len(fig.data)
     _add_traces(fig, df_a, add_tp_traces, visible=True)
-    _add_traces(fig, df_q, add_tp_traces, visible=False)
+    n_traces_a = len(fig.data) - start_traces
 
-    n_traces_a = 4 if not df_a.is_empty() else 0
-    n_traces_q = 4 if not df_q.is_empty() else 0
+    start_traces = len(fig.data)
+    _add_traces(fig, df_q, add_tp_traces, visible=False)
+    n_traces_q = len(fig.data) - start_traces
 
     updatemenus = [dict(
         type="buttons", direction="right", x=0.5, y=1.2, xanchor='center',
