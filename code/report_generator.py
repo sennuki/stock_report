@@ -35,12 +35,24 @@ TEMPLATE = """<!DOCTYPE html>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>銘柄分析レポート: {ticker} ({security})</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&family=Noto+Emoji:wght@300..700&display=swap" rel="stylesheet">
     <script type="module" src="https://widgets.tradingview-widget.com/w/ja/tv-ticker-tag.js"></script>
     <style>
-        body {{ font-family: sans-serif; margin: 20px; }}
+        body {{ 
+            font-family: sans-serif, "Noto Emoji", "Noto Color Emoji"; 
+            margin: 20px; 
+        }}
         h1 {{ font-size: 24px; }}
         h2 {{ font-size: 20px; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-top: 30px; }}
         hr {{ border: none; border-top: 1px solid #eee; margin: 20px 0; }}
+        .toc {{ background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #eee; }}
+        .toc h3 {{ margin-top: 0; font-size: 18px; }}
+        .toc ul {{ list-style-type: disc; padding-left: 20px; margin-bottom: 0; }}
+        .toc li {{ margin-bottom: 5px; }}
+        .toc a {{ text-decoration: none; color: #007bff; }}
+        .toc a:hover {{ text-decoration: underline; }}
     </style>
 </head>
 <body>
@@ -50,23 +62,42 @@ TEMPLATE = """<!DOCTYPE html>
 <div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-symbol-info.js" async>{{ "symbol": "{full_symbol}", "colorTheme": "light", "isTransparent": false, "locale": "ja", "width": "100%" }}</script></div>
 
 <hr>
-<h2>🎯 リスク・リターン分析</h2>
+
+<nav class="toc">
+    <h3>目次</h3>
+    <ul>
+        <li><a href="#risk-return">リスク・リターン分析</a></li>
+        <li><a href="#peers">同業種・競合</a></li>
+        <li><a href="#sector-peers">同セクター他社</a></li>
+        <li><a href="#performance">パフォーマンス比較</a></li>
+        <li><a href="#fundamentals">ファンダメンタルズ分析</a>
+            <ul>
+                <li><a href="#balance-sheet">貸借対照表</a></li>
+                <li><a href="#income-statement">損益計算書</a></li>
+                <li><a href="#cash-flow">キャッシュフロー</a></li>
+                <li><a href="#shareholder-return">株主還元</a></li>
+            </ul>
+        </li>
+    </ul>
+</nav>
+
+<h2 id="risk-return">🎯 リスク・リターン分析</h2>
 <p>🔴 <strong>{ticker}</strong> (対象) vs 🔷 <strong>{sector_etf_ticker}</strong> (セクター) vs ★ <strong>S&P 500</strong></p>
 {volatility_chart_html}
 
 <hr>
-<h2>🏢 同業種・競合 ({sub_industry})</h2>
+<h2 id="peers">🏢 同業種・競合 ({sub_industry})</h2>
 <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px;">{sub_industry_peers_html}</div>
 
-<h2>🏭 同セクター他社 ({sector_name})</h2>
+<h2 id="sector-peers">🏭 同セクター他社 ({sector_name})</h2>
 <details><summary>クリックして展開</summary><div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; margin-bottom: 20px;">{sector_other_peers_html}</div></details>
 
 <hr>
-<h2>📈 パフォーマンス比較</h2>
+<h2 id="performance">📈 パフォーマンス比較</h2>
 <div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>{{ "allow_symbol_change": false, "interval": "D", "width": "100%", "height": 500, "symbol": "{full_symbol}", "theme": "light", "style": "2", "locale": "ja", "withdateranges": true, "hide_volume": true, "compareSymbols": [ {{ "symbol": "{sector_etf_tv}", "position": "SameScale" }}, {{ "symbol": "FRED:SP500", "position": "SameScale" }} ] }}</script></div>
 
 <hr>
-<h2>📊 ファンダメンタルズ分析</h2>
+<h2 id="fundamentals">📊 ファンダメンタルズ分析</h2>
 
 <div class="tradingview-widget-container">
   <div class="tradingview-widget-container__widget"></div>

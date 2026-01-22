@@ -104,9 +104,17 @@ def get_financial_data(ticker_obj):
                 # データ欠損(null)を0で埋める (ここが重要: 配当がない年などを0にする)
                 df_pivot = df_pivot.fill_null(0.0)
 
+                # 純利益が0以下の場合は、還元性向を0にする
                 df_ratio_calc = df_pivot.with_columns([
-                    (pl.col('Cash Dividends Paid').abs() / pl.col('Net Income From Continuing Operations')).alias('Dividends Ratio / Net Income'),
-                    ((pl.col('Repurchase Of Capital Stock').abs() + pl.col('Cash Dividends Paid').abs()) / pl.col('Net Income From Continuing Operations')).alias('Total Payout Ratio / Net Income')
+                    pl.when(pl.col('Net Income From Continuing Operations') > 0)
+                    .then(pl.col('Cash Dividends Paid').abs() / pl.col('Net Income From Continuing Operations'))
+                    .otherwise(0.0)
+                    .alias('Dividends Ratio / Net Income'),
+
+                    pl.when(pl.col('Net Income From Continuing Operations') > 0)
+                    .then((pl.col('Repurchase Of Capital Stock').abs() + pl.col('Cash Dividends Paid').abs()) / pl.col('Net Income From Continuing Operations'))
+                    .otherwise(0.0)
+                    .alias('Total Payout Ratio / Net Income')
                 ])
 
                 # 実額データもpivot済み(0埋め済み)のものから再生成する
@@ -243,21 +251,19 @@ def get_bs_plotly_html(data_dict):
         buttons=list([
             dict(label="年間",
                  method="update",
-                 args=[{"visible": [True]*n_traces_a + [False]*n_traces_q},
-                       {"title.text": "【年間】貸借対照表"}]),
+                 args=[{"visible": [True]*n_traces_a + [False]*n_traces_q}]),
             dict(label="四半期",
                  method="update",
-                 args=[{"visible": [False]*n_traces_a + [True]*n_traces_q},
-                       {"title.text": "【四半期】貸借対照表"}]),
+                 args=[{"visible": [False]*n_traces_a + [True]*n_traces_q}]),
         ]),
     )]
 
-    fig.update_layout(title='【年間】貸借対照表', barmode='group', height=450, margin=dict(t=60,b=50),
+    fig.update_layout(barmode='group', height=450, margin=dict(t=60,b=50),
                       template='plotly_white', showlegend=True, updatemenus=updatemenus,
-                      xaxis=dict(type='date'),
+                      xaxis=dict(type='category'),
                       yaxis=dict(type='linear', rangemode='tozero'),
                       legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5))
-    return create_chart_html(fig)
+    return '<h3 id="balance-sheet">貸借対照表</h3>' + create_chart_html(fig)
 
 def get_is_plotly_html(data_dict):
     df_a = data_dict.get('annual', pl.DataFrame())
@@ -315,21 +321,21 @@ def get_is_plotly_html(data_dict):
     updatemenus = [dict(
         type="buttons", direction="right", x=0.5, y=1.2, xanchor='center',
         buttons=[
-            dict(label="年間", method="update", args=[{"visible": [True]*n_traces_a + [False]*n_traces_q}, {"title.text": "【年間】損益計算書"}]),
-            dict(label="四半期", method="update", args=[{"visible": [False]*n_traces_a + [True]*n_traces_q}, {"title.text": "【四半期】損益計算書"}]),
+            dict(label="年間", method="update", args=[{"visible": [True]*n_traces_a + [False]*n_traces_q}]),
+            dict(label="四半期", method="update", args=[{"visible": [False]*n_traces_a + [True]*n_traces_q}]),
         ]
     )]
     
     fig.update_layout(
-        title='【年間】損益計算書', barmode='group', height=500, margin=dict(t=60,b=50), 
+        barmode='group', height=500, margin=dict(t=60,b=50), 
         template='plotly_white', showlegend=True, updatemenus=updatemenus,
-        xaxis=dict(type='date'),
+        xaxis=dict(type='category'),
         yaxis=dict(title='金額', showgrid=True, type='linear'),
         yaxis2=dict(title='利益率', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='linear'),
         legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5)
     )
     
-    return create_chart_html(fig)
+    return '<h3 id="income-statement">損益計算書</h3>' + create_chart_html(fig)
 
 def get_cf_plotly_html(data_dict):
     df_a = data_dict.get('annual', pl.DataFrame())
@@ -357,16 +363,16 @@ def get_cf_plotly_html(data_dict):
     updatemenus = [dict(
         type="buttons", direction="right", x=0.5, y=1.15, xanchor='center',
         buttons=[
-            dict(label="年間", method="update", args=[{"visible": [True]*n_traces_a + [False]*n_traces_q}, {"title.text": "【年間】キャッシュフロー"}]),
-            dict(label="四半期", method="update", args=[{"visible": [False]*n_traces_a + [True]*n_traces_q}, {"title.text": "【四半期】キャッシュフロー"}]),
+            dict(label="年間", method="update", args=[{"visible": [True]*n_traces_a + [False]*n_traces_q}]),
+            dict(label="四半期", method="update", args=[{"visible": [False]*n_traces_a + [True]*n_traces_q}]),
         ]
     )]
-    fig.update_layout(title='【年間】キャッシュフロー', barmode='group', height=450, margin=dict(t=60,b=50),
+    fig.update_layout(barmode='group', height=450, margin=dict(t=60,b=50),
                       template='plotly_white', showlegend=True, updatemenus=updatemenus,
-                      xaxis=dict(type='date'),
+                      xaxis=dict(type='category'),
                       yaxis=dict(type='linear'),
                       legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5))
-    return create_chart_html(fig)
+    return '<h3 id="cash-flow">キャッシュフロー</h3>' + create_chart_html(fig)
 
 def get_tp_plotly_html(data_dict):
     df_a = data_dict.get('annual', pl.DataFrame())
@@ -398,20 +404,20 @@ def get_tp_plotly_html(data_dict):
     updatemenus = [dict(
         type="buttons", direction="right", x=0.5, y=1.2, xanchor='center',
         buttons=[
-            dict(label="年間", method="update", args=[{"visible": [True]*n_traces_a + [False]*n_traces_q}, {"title.text": "【年間】株主還元"}]),
-            dict(label="四半期", method="update", args=[{"visible": [False]*n_traces_a + [True]*n_traces_q}, {"title.text": "【四半期】株主還元"}]),
+            dict(label="年間", method="update", args=[{"visible": [True]*n_traces_a + [False]*n_traces_q}]),
+            dict(label="四半期", method="update", args=[{"visible": [False]*n_traces_a + [True]*n_traces_q}]),
         ]
     )]
 
     fig.update_layout(
-        title='【年間】株主還元', barmode='stack', height=450, margin=dict(t=60,b=50), template='plotly_white',
-        xaxis=dict(type='date'),
+        barmode='stack', height=450, margin=dict(t=60,b=50), template='plotly_white',
+        xaxis=dict(type='category'),
         yaxis=dict(title='', showgrid=True, type='linear', rangemode='tozero'),
         yaxis2=dict(title='', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='linear', rangemode='tozero'),
         legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5),
         updatemenus=updatemenus
     )
-    return create_chart_html(fig)
+    return '<h3 id="shareholder-return">株主還元</h3>' + create_chart_html(fig)
 
 if __name__ == "__main__":
     print("MSFTのファンダメンタルズデータを取得中 (Annual & Quarterly)...")
