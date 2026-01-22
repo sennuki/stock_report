@@ -70,7 +70,7 @@ def get_financial_data(ticker_obj):
     # 1. 貸借対照表
     target_bs = ['Total Non Current Assets', 'Current Liabilities', 'Total Equity Gross Minority Interest',
                  'Current Assets', 'Total Non Current Liabilities Net Minority Interest',
-                 'Total Assets', 'Total Liabilities Net Minority Interest']
+                 'Total Assets', 'Total Liabilities Net Minority Interest', 'Total Liabilities']
     data['bs'] = process_category('balancesheet', 'quarterly_balancesheet', target_bs)
 
     # 2. 損益計算書
@@ -193,25 +193,39 @@ def get_bs_plotly_html(data_dict):
             # Fallback for financial institutions (no current/non-current distinction)
             # Use Total Assets date as x-axis
             
+            # Check for fallback liability item
+            if total_liab.is_empty():
+                total_liab = get_val('Total Liabilities')
+
+            # Merge data on Date to ensure alignment
+            dates = set()
+            if not total_assets.is_empty(): dates.update(total_assets['Date'].to_list())
+            if not total_liab.is_empty(): dates.update(total_liab['Date'].to_list())
+            if not equity.is_empty(): dates.update(equity['Date'].to_list())
+            
+            df_plot = pl.DataFrame({'Date': sorted(list(dates))})
+            
+            def join_val(df_main, df_sub, col_name):
+                if df_sub.is_empty():
+                     return df_main.with_columns(pl.lit(0.0).alias(col_name))
+                temp = df_sub.select(['Date', 'Value']).rename({'Value': col_name})
+                return df_main.join(temp, on='Date', how='left').fill_null(0.0)
+
+            df_plot = join_val(df_plot, total_assets, 'Total Assets')
+            df_plot = join_val(df_plot, total_liab, 'Total Liabilities')
+            df_plot = join_val(df_plot, equity, 'Total Equity')
+            
             # 資産 (Total Assets only)
-            fig.add_trace(go.Bar(name='総資産', x=total_assets['Date'], y=total_assets['Value'], marker_color='#1f77b4',
+            fig.add_trace(go.Bar(name='総資産', x=df_plot['Date'], y=df_plot['Total Assets'], marker_color='#1f77b4',
                                  offsetgroup=0, visible=visible))
             
             # 負債・純資産
-            # Stack: Equity on top (or bottom), Liabilities on top of Equity
-            # Standard presentation: Equity at bottom (base=0), Liabilities on top (base=Equity)
-            # OR similar to breakdown: Liabilities on top (base=Equity) -> Wait, in breakdown code above:
-            # Fixed Liabilities base = Equity. Current Liabilities base = Fixed + Equity.
-            # So Liabilities are on top.
+            # Stack: Equity on bottom, Liabilities on top
             
-            base_liab = equity['Value'] if not equity.is_empty() else 0
+            fig.add_trace(go.Bar(name='総負債', x=df_plot['Date'], y=df_plot['Total Liabilities'], marker_color='#ff7f0e',
+                                     base=df_plot['Total Equity'], offsetgroup=1, visible=visible))
             
-            if not total_liab.is_empty():
-                fig.add_trace(go.Bar(name='総負債', x=total_liab['Date'], y=total_liab['Value'], marker_color='#ff7f0e',
-                                     base=base_liab, offsetgroup=1, visible=visible))
-            
-            if not equity.is_empty():
-                fig.add_trace(go.Bar(name='純資産', x=equity['Date'], y=equity['Value'], marker_color='#2ca02c',
+            fig.add_trace(go.Bar(name='純資産', x=df_plot['Date'], y=df_plot['Total Equity'], marker_color='#2ca02c',
                                      base=0, offsetgroup=1, visible=visible))
 
     start_traces = len(fig.data)
