@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+import warnings
+# Suppress Pandas4Warning: Timestamp.utcnow is deprecated (mostly from yfinance)
+warnings.filterwarnings("ignore", message=".*Timestamp.utcnow is deprecated.*")
+
 import market_data
 import risk_return
 import report_generator
