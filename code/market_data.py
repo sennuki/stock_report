@@ -26,8 +26,16 @@ def fetch_sp500_companies_optimized():
     print("S&P 500リストを取得中...")
     url = "https://en.wikipedia.org/wiki/List_of_S&P_500_companies"
     try:
-        df = pl.from_pandas(pd.read_html(StringIO(requests.get(url, headers={"User-Agent": "Mozilla/5.0"}).text))[0]).select(['Symbol', 'Security', 'GICS Sector', 'GICS Sub-Industry'])
-        df = df.with_columns(pl.col('Symbol').str.replace(r"\.", "-").alias('Symbol_YF'))
+        # Wikipediaのテーブルを取得
+        wiki_df = pd.read_html(StringIO(requests.get(url, headers={"User-Agent": "Mozilla/5.0"}).text))[0]
+        df = pl.from_pandas(wiki_df).select(['Symbol', 'Security', 'GICS Sector', 'GICS Sub-Industry'])
+        
+        # Symbol_YF: Yahoo Finance用 (ドットをハイフンに変換: BRK.B -> BRK-B)
+        # Symbol: 表示用 (ドットに統一: BRK-B -> BRK.B)
+        df = df.with_columns([
+            pl.col('Symbol').str.replace(r"\.", "-", literal=False).alias('Symbol_YF'),
+            pl.col('Symbol').str.replace(r"-", ".", literal=False).alias('Symbol')
+        ])
 
         symbols = df['Symbol_YF'].to_list()
         ex_map = {}

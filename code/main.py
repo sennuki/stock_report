@@ -100,12 +100,15 @@ if __name__ == "__main__":
         for ticker, info in required_tickers.items():
             if ticker not in current_symbols:
                 print(f"Adding missing ticker: {ticker}")
+                # Symbol_YFはハイフン形式、Symbolはドット形式に統一
+                sym_yf = ticker.replace(".", "-")
+                sym_display = ticker.replace("-", ".")
                 missing_rows.append({
-                    "Symbol": ticker,
+                    "Symbol": sym_display,
                     "Security": info["Security"],
                     "GICS Sector": info["Sector"],
                     "GICS Sub-Industry": info["Sub"],
-                    "Symbol_YF": ticker,
+                    "Symbol_YF": sym_yf,
                     "Exchange": "NASDAQ"
                 })
         

@@ -127,13 +127,18 @@ TEMPLATE = """<!DOCTYPE html>
 """
 
 def generate_report_for_ticker(row, df_info, df_metrics, output_dir):
-    current_ticker_raw = row['Symbol']
-    ticker_display = current_ticker_raw.replace("-", ".")
+    # Symbolは表示用 (BRK.B), Symbol_YFはシステム/ファイル用 (BRK-B)
+    ticker_display = row['Symbol']
     chart_target_symbol = row['Symbol_YF']
+    
     current_sector = row['GICS Sector']
     current_sub_industry = row['GICS Sub-Industry']
     exchange = row['Exchange']
-    full_symbol = f"{exchange}:{ticker_display}"
+    
+    # TradingView用はドット形式を使用
+    tv_ticker = ticker_display.replace("-", ".")
+    full_symbol = f"{exchange}:{tv_ticker}"
+    
     sector_etf_ticker = sector_map.get(current_sector, "VOO")
     sector_etf_tv = f"AMEX:{sector_etf_ticker}"
 
@@ -158,11 +163,12 @@ def generate_report_for_ticker(row, df_info, df_metrics, output_dir):
 
     # 3. タグ生成
     def create_tags(target_df):
+        # Symbol_YFをファイル名の参照に使用し、Symbolを表示に使用する
         tags = [f'<tv-ticker-tag symbol="{item["Exchange"]}:{item["Symbol"].replace("-", ".")}"></tv-ticker-tag>' for item in target_df.to_dicts()]
         return "\n".join(tags) if tags else "なし"
 
-    sub_peers = df_info.filter((pl.col("GICS Sub-Industry")==current_sub_industry) & (pl.col("Symbol")!=current_ticker_raw))
-    other_peers = df_info.filter((pl.col("GICS Sector")==current_sector) & (pl.col("GICS Sub-Industry")!=current_sub_industry) & (pl.col("Symbol")!=current_ticker_raw))
+    sub_peers = df_info.filter((pl.col("GICS Sub-Industry")==current_sub_industry) & (pl.col("Symbol_YF")!=chart_target_symbol))
+    other_peers = df_info.filter((pl.col("GICS Sector")==current_sector) & (pl.col("GICS Sub-Industry")!=current_sub_industry) & (pl.col("Symbol_YF")!=chart_target_symbol))
 
     # 4. 書き出し
     content = TEMPLATE.format(
