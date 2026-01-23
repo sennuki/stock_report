@@ -174,7 +174,8 @@ def generate_report_for_ticker(row, df_info, df_metrics, output_dir):
         chart_bs=chart_bs, chart_is=chart_is, chart_cf=chart_cf, chart_tp=chart_tp
     )
     
-    output_path = os.path.join(output_dir, f"{ticker_display}.html")
+    # Use Symbol_YF for filename to match Astro's expected path (e.g., BRK-B.html)
+    output_path = os.path.join(output_dir, f"{chart_target_symbol}.html")
     with open(output_path, "w", encoding="utf-8") as f:
         f.write(content)
 
