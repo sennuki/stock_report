@@ -23,10 +23,10 @@ const { noMarginTop = false, class: className, ...attrs } = Astro.props;
     ]}
   >
     <Socials />
-    <div class="my-2 flex flex-col items-center whitespace-nowrap sm:flex-row">
-      <span>Copyright &#169; {currentYear}</span>
+    <div class="my-2 flex flex-col items-center sm:flex-row">
+      <span class="whitespace-nowrap">Copyright &#169; {currentYear}</span>
       <span class="hidden sm:inline">&nbsp;|&nbsp;</span>
-      <span>All rights reserved.</span>
+      <span class="text-center">本サイトは投資に関する一般的な情報を提供するものであり、特定の投資判断や推奨を行うものではありません。</span>
     </div>
   </div>
 </footer>
