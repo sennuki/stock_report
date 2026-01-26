@@ -1,6 +1,6 @@
 ---
 import type { HTMLAttributes } from "astro/types";
-import Socials from "./Socials.astro";
+import stocksData from "@/data/stocks.json";
 
 const currentYear = new Date().getFullYear();
 
@@ -9,24 +9,55 @@ type Props = {
 } & HTMLAttributes<"footer">;
 
 const { noMarginTop = false, class: className, ...attrs } = Astro.props;
+
+// セクター一覧を抽出してユニークなリストを作成
+const sectors = [...new Set(stocksData.map((stock: any) => stock["GICS Sector"]))].sort();
+
+const sectorTranslations: Record<string, string> = {
+  "Communication Services": "通信サービス",
+  "Consumer Discretionary": "一般消費財",
+  "Consumer Staples": "生活必需品",
+  "Energy": "エネルギー",
+  "Financials": "金融",
+  "Health Care": "ヘルスケア",
+  "Industrials": "資本財",
+  "Information Technology": "情報技術",
+  "Materials": "素材",
+  "Real Estate": "不動産",
+  "Utilities": "公益事業"
+};
+
+const base = import.meta.env.BASE_URL.endsWith("/")
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
 ---
 
 <footer
   class:list={["app-layout", { "mt-auto": !noMarginTop }, className]}
   {...attrs}
 >
-  <div
-    class:list={[
-      "py-6 sm:py-4",
-      "border-t border-border",
-      "flex flex-col items-center justify-between sm:flex-row-reverse",
-    ]}
-  >
-    <Socials />
-    <div class="my-2 flex flex-col items-center sm:flex-row">
-      <span class="whitespace-nowrap">Copyright &#169; {currentYear}</span>
-      <span class="hidden sm:inline">&nbsp;|&nbsp;</span>
-      <span class="text-center">本サイトは投資に関する一般的な情報を提供するものであり、特定の投資判断や推奨を行うものではありません。</span>
+  <div class="border-t border-border py-8 sm:py-10">
+    <div class="mb-8">
+      <h2 class="text-sm font-bold mb-4 tracking-wider opacity-80 uppercase">Sector Tags</h2>
+      <div class="flex flex-wrap gap-2">
+        {sectors.map(sector => (
+          <a
+            href={`${base}#${sector}`} 
+            class="px-3 py-1 text-xs border border-skin-line rounded-full hover:border-skin-accent hover:text-skin-accent transition-all bg-skin-card hover:shadow-sm"
+          >
+            {sectorTranslations[sector] || sector}
+          </a>
+        ))}
+      </div>
+    </div>
+    
+    <div class="flex flex-col items-center justify-between gap-6 sm:flex-row border-t border-border pt-8">
+      <div class="text-sm opacity-70">
+        © {currentYear} S&P 500 Stock Analysis Report.
+      </div>
+      <div class="text-xs opacity-60 text-center sm:text-right max-w-md leading-relaxed">
+        本サイトは投資に関する一般的な情報を提供するものであり、特定の投資判断や推奨を行うものではありません。
+      </div>
     </div>
   </div>
 </footer>

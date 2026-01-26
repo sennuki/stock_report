@@ -65,7 +65,7 @@ const base = import.meta.env.BASE_URL.endsWith("/")
 
     <section class="mb-12 max-w-app mx-auto px-4">
       {sortedSectors.map((sector) => (
-        <div class="mb-12">
+        <div class="mb-12" id={sector}>
           <h2 class="text-2xl font-bold mb-6 border-l-4 border-skin-accent pl-4 flex items-baseline flex-wrap">
             <span class="mr-4">{sectorTranslations[sector] || '未分類'}</span>
             <span class="text-base font-normal opacity-70">{sector}</span>

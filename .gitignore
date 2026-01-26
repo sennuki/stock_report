@@ -10,3 +10,4 @@ dist/
 *.html
 **/output_reports_full/
 **/test_reports/
+.venv/
