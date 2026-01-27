@@ -82,10 +82,10 @@ const isActive = (path: string) => {
       >
         <li class="col-span-2">
           <a
-            href={`${base}posts`}
-            class:list={{ "active-nav": isActive("/posts") }}
+            href={`${base}tags`}
+            class:list={{ "active-nav": isActive("/tags") }}
           >
-            記事一覧
+            タグ一覧
           </a>
         </li>
         <li class="col-span-2">
@@ -96,26 +96,6 @@ const isActive = (path: string) => {
             このサイトについて
           </a>
         </li>
-        {
-          SITE.showArchives && (
-            <li class="col-span-2">
-              <LinkButton
-                href={`${base}archives`}
-                class:list={[
-                  "focus-outline flex justify-center p-3 sm:p-1",
-                  {
-                    "active-nav [&>svg]:stroke-accent": isActive("/archives"),
-                  },
-                ]}
-                title="アーカイブ"
-                aria-label="archives"
-              >
-                <IconArchive class="hidden sm:inline-block" />
-                <span class="sm:sr-only">アーカイブ</span>
-              </LinkButton>
-            </li>
-          )
-        }
         <li class="col-span-1 flex items-center justify-center">
           <LinkButton
             href={`${base}search`}
