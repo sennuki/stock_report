@@ -70,7 +70,8 @@ def get_financial_data(ticker_obj):
     # 1. 貸借対照表
     target_bs = ['Total Non Current Assets', 'Current Liabilities', 'Total Equity Gross Minority Interest',
                  'Current Assets', 'Total Non Current Liabilities Net Minority Interest',
-                 'Total Assets', 'Total Liabilities Net Minority Interest', 'Total Liabilities']
+                 'Total Assets', 'Total Liabilities Net Minority Interest', 'Total Liabilities',
+                 'Long Term Debt And Capital Lease Obligation', 'Non Current Deferred Liabilities', 'Other Non Current Liabilities']
     data['bs'] = process_category('balancesheet', 'quarterly_balancesheet', target_bs)
 
     # 2. 損益計算書
@@ -162,79 +163,78 @@ def get_bs_plotly_html(data_dict):
     fig = go.Figure()
 
     def add_bs_traces(fig, df, visible):
-        def get_val(item): return df.filter(pl.col('Item') == item)
-
-        curr_assets = get_val('Current Assets')
-        non_curr_assets = get_val('Total Non Current Assets')
-        curr_liab = get_val('Current Liabilities')
-        non_curr_liab = get_val('Total Non Current Liabilities Net Minority Interest')
-        equity = get_val('Total Equity Gross Minority Interest')
+        # 全ての日付を網羅したベースのDataFrameを作成
+        all_dates = sorted(df['Date'].unique().to_list())
+        df_plot = pl.DataFrame({'Date': all_dates})
         
-        # Fallback items
-        total_assets = get_val('Total Assets')
-        total_liab = get_val('Total Liabilities Net Minority Interest')
+        def join_item(target_df, item_name, col_name):
+            item_data = df.filter(pl.col('Item') == item_name).select(['Date', 'Value']).rename({'Value': col_name})
+            return target_df.join(item_data, on='Date', how='left').fill_null(0.0)
 
-        # Check if we have detailed breakdown data
-        has_breakdown = not curr_assets.is_empty()
+        # 必要項目の結合
+        df_plot = join_item(df_plot, 'Current Assets', 'CurrAssets')
+        df_plot = join_item(df_plot, 'Total Non Current Assets', 'NonCurrAssets')
+        df_plot = join_item(df_plot, 'Current Liabilities', 'CurrLiab')
+        df_plot = join_item(df_plot, 'Total Equity Gross Minority Interest', 'Equity')
+        df_plot = join_item(df_plot, 'Total Assets', 'TotalAssets')
+        df_plot = join_item(df_plot, 'Total Liabilities Net Minority Interest', 'TotalLiab')
+        if 'TotalLiab' not in df_plot.columns or df_plot['TotalLiab'].sum() == 0:
+             df_plot = join_item(df_plot, 'Total Liabilities', 'TotalLiab')
+
+        # 固定負債の計算
+        fixed_liab_items = ['Long Term Debt And Capital Lease Obligation', 'Non Current Deferred Liabilities', 'Other Non Current Liabilities']
+        liab_parts = df.filter(pl.col('Item').is_in(fixed_liab_items))
+        if not liab_parts.is_empty():
+            non_curr_liab_pivoted = liab_parts.pivot(on='Item', index='Date', values='Value').fill_null(0.0)
+            sum_cols = [c for c in non_curr_liab_pivoted.columns if c != 'Date']
+            fixed_liab_data = non_curr_liab_pivoted.with_columns(
+                pl.sum_horizontal(sum_cols).alias('FixedLiab')
+            ).select(['Date', 'FixedLiab'])
+            df_plot = df_plot.join(fixed_liab_data, on='Date', how='left').fill_null(0.0)
+        else:
+            # 項目がない場合は既存の合計値を使用
+            fixed_data = df.filter(pl.col('Item') == 'Total Non Current Liabilities Net Minority Interest').select(['Date', 'Value']).rename({'Value': 'FixedLiab'})
+            df_plot = df_plot.join(fixed_data, on='Date', how='left').fill_null(0.0)
+
+        # 内訳データがあるか判定
+        has_breakdown = (df_plot['CurrAssets'].sum() != 0)
 
         if has_breakdown:
-            if non_curr_liab.is_empty() or equity.is_empty(): base_liab = 0
-            else: base_liab = non_curr_liab['Value'] + equity['Value']
+            # 負債の積み上げベース計算
+            # 純資産がプラスならその上に、マイナスなら0から積み上げる
+            df_plot = df_plot.with_columns([
+                pl.when(pl.col('Equity') > 0).then(pl.col('Equity')).otherwise(0.0).alias('BaseFixed'),
+            ])
+            df_plot = df_plot.with_columns([
+                (pl.col('BaseFixed') + pl.col('FixedLiab')).alias('BaseCurr')
+            ])
 
-            # 資産
-            fig.add_trace(go.Bar(name='流動資産', x=curr_assets['Date'], y=curr_assets['Value'], marker_color='#aec7e8',
-                                base=non_curr_assets['Value'] if not non_curr_assets.is_empty() else 0,
-                                offsetgroup=0, visible=visible))
-            fig.add_trace(go.Bar(name='固定資産', x=curr_assets['Date'], y=non_curr_assets['Value'], marker_color='#1f77b4',
+            # 資産 (右側)
+            fig.add_trace(go.Bar(name='流動資産', x=df_plot['Date'], y=df_plot['CurrAssets'], marker_color='#aec7e8',
+                                base=df_plot['NonCurrAssets'], offsetgroup=0, visible=visible))
+            fig.add_trace(go.Bar(name='固定資産', x=df_plot['Date'], y=df_plot['NonCurrAssets'], marker_color='#1f77b4',
                                  base=0, offsetgroup=0, visible=visible)) 
             
-            # 負債・純資産
-            fig.add_trace(go.Bar(name='流動負債', x=curr_liab['Date'], y=curr_liab['Value'], marker_color='#ffbb78',
-                                 base=base_liab, offsetgroup=1, visible=visible))
-            fig.add_trace(go.Bar(name='固定負債', x=non_curr_liab['Date'], y=non_curr_liab['Value'], marker_color='#ff7f0e',
-                                 base=equity['Value'] if not equity.is_empty() else 0,
-                                 offsetgroup=1, visible=visible))
-            fig.add_trace(go.Bar(name='純資産', x=equity['Date'], y=equity['Value'], marker_color='#2ca02c',
+            # 負債・純資産 (左側)
+            fig.add_trace(go.Bar(name='流動負債', x=df_plot['Date'], y=df_plot['CurrLiab'], marker_color='#ffbb78',
+                                 base=df_plot['BaseCurr'], offsetgroup=1, visible=visible))
+            fig.add_trace(go.Bar(name='固定負債', x=df_plot['Date'], y=df_plot['FixedLiab'], marker_color='#ff7f0e',
+                                 base=df_plot['BaseFixed'], offsetgroup=1, visible=visible))
+            fig.add_trace(go.Bar(name='純資産', x=df_plot['Date'], y=df_plot['Equity'], marker_color='#2ca02c',
                                  base=0, offsetgroup=1, visible=visible))
         
-        elif not total_assets.is_empty():
-            # Fallback for financial institutions (no current/non-current distinction)
-            # Use Total Assets date as x-axis
+        elif df_plot['TotalAssets'].sum() != 0:
+            # 金融機関向け等のフォールバック
+            df_plot = df_plot.with_columns([
+                pl.when(pl.col('Equity') > 0).then(pl.col('Equity')).otherwise(0.0).alias('BaseLiab'),
+            ])
             
-            # Check for fallback liability item
-            if total_liab.is_empty():
-                total_liab = get_val('Total Liabilities')
-
-            # Merge data on Date to ensure alignment
-            dates = set()
-            if not total_assets.is_empty(): dates.update(total_assets['Date'].to_list())
-            if not total_liab.is_empty(): dates.update(total_liab['Date'].to_list())
-            if not equity.is_empty(): dates.update(equity['Date'].to_list())
-            
-            df_plot = pl.DataFrame({'Date': sorted(list(dates))})
-            
-            def join_val(df_main, df_sub, col_name):
-                if df_sub.is_empty():
-                     return df_main.with_columns(pl.lit(0.0).alias(col_name))
-                temp = df_sub.select(['Date', 'Value']).rename({'Value': col_name})
-                return df_main.join(temp, on='Date', how='left').fill_null(0.0)
-
-            df_plot = join_val(df_plot, total_assets, 'Total Assets')
-            df_plot = join_val(df_plot, total_liab, 'Total Liabilities')
-            df_plot = join_val(df_plot, equity, 'Total Equity')
-            
-            # 資産 (Total Assets only)
-            fig.add_trace(go.Bar(name='総資産', x=df_plot['Date'], y=df_plot['Total Assets'], marker_color='#1f77b4',
+            fig.add_trace(go.Bar(name='総資産', x=df_plot['Date'], y=df_plot['TotalAssets'], marker_color='#1f77b4',
                                  offsetgroup=0, visible=visible))
-            
-            # 負債・純資産
-            # Stack: Equity on bottom, Liabilities on top
-            
-            fig.add_trace(go.Bar(name='総負債', x=df_plot['Date'], y=df_plot['Total Liabilities'], marker_color='#ff7f0e',
-                                     base=df_plot['Total Equity'], offsetgroup=1, visible=visible))
-            
-            fig.add_trace(go.Bar(name='純資産', x=df_plot['Date'], y=df_plot['Total Equity'], marker_color='#2ca02c',
-                                     base=0, offsetgroup=1, visible=visible))
+            fig.add_trace(go.Bar(name='総負債', x=df_plot['Date'], y=df_plot['TotalLiab'], marker_color='#ff7f0e',
+                                 base=df_plot['BaseLiab'], offsetgroup=1, visible=visible))
+            fig.add_trace(go.Bar(name='純資産', x=df_plot['Date'], y=df_plot['Equity'], marker_color='#2ca02c',
+                                 base=0, offsetgroup=1, visible=visible))
 
     start_traces = len(fig.data)
     _add_traces(fig, df_a, add_bs_traces, visible=True)
