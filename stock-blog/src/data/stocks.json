@@ -1136,14 +1136,6 @@
     "Exchange": "NYSE"
   },
   {
-    "Symbol": "DAY",
-    "Security": "Dayforce",
-    "GICS Sector": "Industrials",
-    "GICS Sub-Industry": "Human Resource & Employment Services",
-    "Symbol_YF": "DAY",
-    "Exchange": "NYSE"
-  },
-  {
     "Symbol": "DECK",
     "Security": "Deckers Brands",
     "GICS Sector": "Consumer Discretionary",
@@ -3925,7 +3917,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
     "Symbol_YF": "WDC",
-    "Exchange": "NASDAQ"
+    "Exchange": "NYSE"
   },
   {
     "Symbol": "WY",
