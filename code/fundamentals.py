@@ -71,7 +71,8 @@ def get_financial_data(ticker_obj):
     target_bs = ['Total Non Current Assets', 'Current Liabilities', 'Total Equity Gross Minority Interest',
                  'Current Assets', 'Total Non Current Liabilities Net Minority Interest',
                  'Total Assets', 'Total Liabilities Net Minority Interest', 'Total Liabilities',
-                 'Long Term Debt And Capital Lease Obligation', 'Non Current Deferred Liabilities', 'Other Non Current Liabilities']
+                 'Long Term Debt And Capital Lease Obligation','Employee Benefits', 'Non Current Deferred Liabilities',
+                 'Other Non Current Liabilities']
     data['bs'] = process_category('balancesheet', 'quarterly_balancesheet', target_bs)
 
     # 2. 損益計算書
@@ -182,7 +183,7 @@ def get_bs_plotly_html(data_dict):
              df_plot = join_item(df_plot, 'Total Liabilities', 'TotalLiab')
 
         # 固定負債の計算
-        fixed_liab_items = ['Long Term Debt And Capital Lease Obligation', 'Non Current Deferred Liabilities', 'Other Non Current Liabilities']
+        fixed_liab_items = ['Long Term Debt And Capital Lease Obligation', 'Employee Benefits', 'Non Current Deferred Liabilities', 'Other Non Current Liabilities']
         liab_parts = df.filter(pl.col('Item').is_in(fixed_liab_items))
         if not liab_parts.is_empty():
             non_curr_liab_pivoted = liab_parts.pivot(on='Item', index='Date', values='Value').fill_null(0.0)
