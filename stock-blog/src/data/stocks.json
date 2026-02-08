@@ -832,6 +832,14 @@
     "Exchange": "NYSE"
   },
   {
+    "Symbol": "CIEN",
+    "Security": "Ciena",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Communications Equipment",
+    "Symbol_YF": "CIEN",
+    "Exchange": "NYSE"
+  },
+  {
     "Symbol": "CI",
     "Security": "Cigna",
     "GICS Sector": "Health Care",
