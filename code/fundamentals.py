@@ -182,20 +182,28 @@ def get_bs_plotly_html(data_dict):
         if 'TotalLiab' not in df_plot.columns or df_plot['TotalLiab'].sum() == 0:
              df_plot = join_item(df_plot, 'Total Liabilities', 'TotalLiab')
 
+        # 総資産が0のデータ（実質的な欠損データ）を除外
+        df_plot = df_plot.filter(pl.col('TotalAssets') > 0)
+
         # 固定負債の計算
-        fixed_liab_items = ['Long Term Debt And Capital Lease Obligation', 'Employee Benefits', 'Non Current Deferred Liabilities', 'Other Non Current Liabilities']
-        liab_parts = df.filter(pl.col('Item').is_in(fixed_liab_items))
-        if not liab_parts.is_empty():
-            non_curr_liab_pivoted = liab_parts.pivot(on='Item', index='Date', values='Value').fill_null(0.0)
-            sum_cols = [c for c in non_curr_liab_pivoted.columns if c != 'Date']
-            fixed_liab_data = non_curr_liab_pivoted.with_columns(
-                pl.sum_horizontal(sum_cols).alias('FixedLiab')
-            ).select(['Date', 'FixedLiab'])
-            df_plot = df_plot.join(fixed_liab_data, on='Date', how='left').fill_null(0.0)
+        # まず合計値を試行
+        total_non_curr_liab = df.filter(pl.col('Item') == 'Total Non Current Liabilities Net Minority Interest').select(['Date', 'Value']).rename({'Value': 'FixedLiab'})
+        
+        if not total_non_curr_liab.is_empty() and total_non_curr_liab['FixedLiab'].sum() != 0:
+            df_plot = df_plot.join(total_non_curr_liab, on='Date', how='left').fill_null(0.0)
         else:
-            # 項目がない場合は既存の合計値を使用
-            fixed_data = df.filter(pl.col('Item') == 'Total Non Current Liabilities Net Minority Interest').select(['Date', 'Value']).rename({'Value': 'FixedLiab'})
-            df_plot = df_plot.join(fixed_data, on='Date', how='left').fill_null(0.0)
+            # 合計値がない場合のみ内訳から計算
+            fixed_liab_items = ['Long Term Debt And Capital Lease Obligation', 'Employee Benefits', 'Non Current Deferred Liabilities', 'Other Non Current Liabilities']
+            liab_parts = df.filter(pl.col('Item').is_in(fixed_liab_items))
+            if not liab_parts.is_empty():
+                non_curr_liab_pivoted = liab_parts.pivot(on='Item', index='Date', values='Value').fill_null(0.0)
+                sum_cols = [c for c in non_curr_liab_pivoted.columns if c != 'Date']
+                fixed_liab_data = non_curr_liab_pivoted.with_columns(
+                    pl.sum_horizontal(sum_cols).alias('FixedLiab')
+                ).select(['Date', 'FixedLiab'])
+                df_plot = df_plot.join(fixed_liab_data, on='Date', how='left').fill_null(0.0)
+            else:
+                df_plot = df_plot.with_columns(pl.lit(0.0).alias('FixedLiab'))
 
         # 内訳データがあるか判定
         has_breakdown = (df_plot['CurrAssets'].sum() != 0)
@@ -286,6 +294,10 @@ def get_is_plotly_html(data_dict):
     ]
 
     def add_is_traces(fig, df, visible):
+        # 売上高がある日付のみを有効な日付とする
+        valid_dates = df.filter((pl.col('Item') == 'Total Revenue') & (pl.col('Value') > 0)).select('Date').unique()['Date'].to_list()
+        df = df.filter(pl.col('Date').is_in(valid_dates))
+
         # 1. 実額 (Bar: 左軸)
         for item_key, name, color in items:
             sub = df.filter(pl.col('Item') == item_key)
@@ -349,6 +361,10 @@ def get_cf_plotly_html(data_dict):
              ('Financing Cash Flow', '財務CF', '#ffbb78'), ('Free Cash Flow', 'フリーCF', '#ff7f0e')]
 
     def add_cf_traces(fig, df, visible):
+        # 営業CFがある日付のみを有効な日付とする
+        valid_dates = df.filter((pl.col('Item') == 'Operating Cash Flow')).select('Date').unique()['Date'].to_list()
+        df = df.filter(pl.col('Date').is_in(valid_dates))
+
         for item_key, name, color in items:
             sub = df.filter(pl.col('Item') == item_key)
             fig.add_trace(go.Bar(name=name, x=sub['Date'], y=sub['Value'], marker_color=color, visible=visible))
@@ -384,6 +400,10 @@ def get_tp_plotly_html(data_dict):
     fig = go.Figure()
 
     def add_tp_traces(fig, df, visible):
+        # 純利益データがある日付のみを有効な日付とする
+        valid_dates = df.filter(pl.col('Item') == 'Net Income From Continuing Operations').select('Date').unique()['Date'].to_list()
+        df = df.filter(pl.col('Date').is_in(valid_dates))
+
         div = df.filter(pl.col('Item') == 'Cash Dividends Paid')
         repo = df.filter(pl.col('Item') == 'Repurchase Of Capital Stock')
         div_r = df.filter(pl.col('Item') == 'Dividends Ratio / Net Income')
