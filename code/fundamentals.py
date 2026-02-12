@@ -46,12 +46,12 @@ def get_melt(df):
     return df_melt
 
 def get_financial_data(ticker_obj):
-    """1つのTickerオブジェクトから4種類の財務データ（Annualのみ）を取得・整形"""
+    """1つのTickerオブジェクトから4種類の財務データ（Annual & Quarterly）を取得・整形"""
     data = {}
     symbol = getattr(ticker_obj, 'ticker', 'Unknown')
 
     def extract_and_melt(pandas_df, targets):
-        if pandas_df.empty:
+        if pandas_df is None or pandas_df.empty:
             return pl.DataFrame()
         try:
             # Convert to Polars, keeping index
@@ -70,20 +70,29 @@ def get_financial_data(ticker_obj):
                  'Total Assets', 'Total Liabilities Net Minority Interest', 'Total Liabilities',
                  'Long Term Debt And Capital Lease Obligation','Employee Benefits', 'Non Current Deferred Liabilities',
                  'Other Non Current Liabilities']
-    data['bs'] = {'annual': extract_and_melt(ticker_obj.balancesheet, target_bs)}
+    data['bs'] = {
+        'annual': extract_and_melt(ticker_obj.balancesheet, target_bs),
+        'quarterly': extract_and_melt(ticker_obj.quarterly_balancesheet, target_bs)
+    }
 
     # 2. 損益計算書
     target_is = ['Total Revenue', 'Gross Profit', 'Operating Income', 'Net Income']
-    data['is'] = {'annual': extract_and_melt(ticker_obj.income_stmt, target_is)}
+    data['is'] = {
+        'annual': extract_and_melt(ticker_obj.income_stmt, target_is),
+        'quarterly': extract_and_melt(ticker_obj.quarterly_income_stmt, target_is)
+    }
 
     # 3. キャッシュフロー
-    target_cf = ['Operating Cash Flow', 'Investing Cash Flow', 'Financing Cash Flow', 'Free Cash Flow']
-    data['cf'] = {'annual': extract_and_melt(ticker_obj.cashflow, target_cf)}
+    target_cf = ['Operating Cash Flow', 'Investing Cash Flow', 'Financing Cash Flow', 'Free Cash Flow', 'Net Income']
+    data['cf'] = {
+        'annual': extract_and_melt(ticker_obj.cashflow, target_cf),
+        'quarterly': extract_and_melt(ticker_obj.quarterly_cashflow, target_cf)
+    }
 
     # 4. 総還元性向
     def process_tp(df_source):
         try:
-            if df_source.empty:
+            if df_source is None or df_source.empty:
                 return pl.DataFrame()
             
             df_tp = pl.from_pandas(df_source, include_index=True)
@@ -132,7 +141,10 @@ def get_financial_data(ticker_obj):
             print(f"Error in tp for {symbol}: {e}")
             return pl.DataFrame()
 
-    data['tp'] = {'annual': process_tp(ticker_obj.cashflow)}
+    data['tp'] = {
+        'annual': process_tp(ticker_obj.cashflow),
+        'quarterly': process_tp(ticker_obj.quarterly_cashflow)
+    }
 
     return data
 
@@ -149,8 +161,9 @@ def _add_traces(fig, df, func, visible=True):
 
 def get_bs_plotly_html(data_dict):
     df_a = data_dict.get('annual', pl.DataFrame())
+    df_q = data_dict.get('quarterly', pl.DataFrame())
     
-    if df_a.is_empty(): return "<p>データなし</p>"
+    if df_a.is_empty() and df_q.is_empty(): return "<p>データなし</p>"
     
     fig = go.Figure()
 
@@ -215,6 +228,7 @@ def get_bs_plotly_html(data_dict):
                                  base=df_plot['BaseFixed'], offsetgroup=1, visible=visible))
             fig.add_trace(go.Bar(name='純資産', x=df_plot['Date'], y=df_plot['Equity'], marker_color='#2ca02c',
                                  base=0, offsetgroup=1, visible=visible))
+            return 5
         
         elif df_plot['TotalAssets'].sum() != 0:
             df_plot = df_plot.with_columns([
@@ -227,110 +241,174 @@ def get_bs_plotly_html(data_dict):
                                  base=df_plot['BaseLiab'], offsetgroup=1, visible=visible))
             fig.add_trace(go.Bar(name='純資産', x=df_plot['Date'], y=df_plot['Equity'], marker_color='#2ca02c',
                                  base=0, offsetgroup=1, visible=visible))
+            return 3
+        return 0
 
-    _add_traces(fig, df_a, add_bs_traces, visible=True)
+    num_a = add_bs_traces(fig, df_a, visible=True) if not df_a.is_empty() else 0
+    num_q = add_bs_traces(fig, df_q, visible=False) if not df_q.is_empty() else 0
 
-    fig.update_layout(barmode='group', height=450, margin=dict(t=60,b=50),
+    buttons = []
+    if num_a > 0:
+        buttons.append(dict(label="通期", method="update", args=[{"visible": [True]*num_a + [False]*num_q}]))
+    if num_q > 0:
+        buttons.append(dict(label="四半期", method="update", args=[{"visible": [False]*num_a + [True]*num_q}]))
+
+    updatemenus = [dict(type="buttons", direction="right", x=0.0, y=1.15, showactive=True, buttons=buttons)] if len(buttons) > 1 else None
+
+    fig.update_layout(barmode='group', height=450, margin=dict(t=80,b=50),
                       template='plotly_white', showlegend=True,
                       xaxis=dict(type='category'),
                       yaxis=dict(type='linear', rangemode='tozero'),
-                      legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5))
+                      legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5),
+                      updatemenus=updatemenus)
     return '<h3 id="balance-sheet">貸借対照表</h3>' + create_chart_html(fig)
 
 def get_is_plotly_html(data_dict):
     df_a = data_dict.get('annual', pl.DataFrame())
+    df_q = data_dict.get('quarterly', pl.DataFrame())
     
-    if df_a.is_empty(): return "<p>データなし</p>"
+    if df_a.is_empty() and df_q.is_empty(): return "<p>データなし</p>"
 
     fig = go.Figure()
     items = [('Total Revenue', '売上高', '#aec7e8'), ('Gross Profit', '売上総利益', '#1f77b4'),
-             ('Operating Income', '営業利益', '#ffbb78'), ('Net Income', '純利益', '#ff7f0e')]
+             ('Operating Income', '営業利益', '#ffbb78'), ('Net Income', '純利益', '#2ca02c')]
     ratio_items = [
         ('Gross Profit', 'Total Revenue', '売上総利益率', '#1f77b4'),
         ('Operating Income', 'Total Revenue', '営業利益率', '#ffbb78'),
-        ('Net Income', 'Total Revenue', '純利益率', '#ff7f0e')
+        ('Net Income', 'Total Revenue', '純利益率', '#2ca02c')
     ]
 
     def add_is_traces(fig, df, visible):
         valid_dates = df.filter((pl.col('Item') == 'Total Revenue') & (pl.col('Value') > 0)).select('Date').unique()['Date'].to_list()
         df = df.filter(pl.col('Date').is_in(valid_dates))
+        count = 0
         for item_key, name, color in items:
             sub = df.filter(pl.col('Item') == item_key)
             if not sub.is_empty():
                 fig.add_trace(go.Bar(name=name, x=sub['Date'], y=sub['Value'], marker_color=color, visible=visible))
+                count += 1
         try:
             df_pivot = df.pivot(on='Item', index='Date', values='Value')
             for num_key, den_key, name, color in ratio_items:
                 if num_key in df_pivot.columns and den_key in df_pivot.columns:
                     calc = df_pivot.with_columns((pl.col(num_key) / pl.col(den_key)).alias('Ratio')).select(['Date', 'Ratio']).filter(pl.col('Ratio').is_not_nan() & pl.col('Ratio').is_infinite().not_())
                     fig.add_trace(go.Scatter(name=name, x=calc['Date'], y=calc['Ratio'], line=dict(color=color, width=2), mode='lines+markers', yaxis='y2', visible=visible, hovertemplate='%{y:.1%}'))
+                    count += 1
         except Exception as e:
             print(f"Error calculating ratios: {e}")
+        return count
 
-    _add_traces(fig, df_a, add_is_traces, visible=True)
-    
+    num_a = add_is_traces(fig, df_a, visible=True) if not df_a.is_empty() else 0
+    num_q = add_is_traces(fig, df_q, visible=False) if not df_q.is_empty() else 0
+
+    buttons = []
+    if num_a > 0:
+        buttons.append(dict(label="通期", method="update", args=[{"visible": [True]*num_a + [False]*num_q}]))
+    if num_q > 0:
+        buttons.append(dict(label="四半期", method="update", args=[{"visible": [False]*num_a + [True]*num_q}]))
+
+    updatemenus = [dict(type="buttons", direction="right", x=0.0, y=1.15, showactive=True, buttons=buttons)] if len(buttons) > 1 else None
+
     fig.update_layout(
-        barmode='group', height=500, margin=dict(t=60,b=50), 
+        barmode='group', height=500, margin=dict(t=80,b=50), 
         template='plotly_white', showlegend=True,
         xaxis=dict(type='category'),
         yaxis=dict(title='金額', showgrid=True, type='linear'),
         yaxis2=dict(title='利益率', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='linear'),
-        legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5)
+        legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5),
+        updatemenus=updatemenus
     )
     return '<h3 id="income-statement">損益計算書</h3>' + create_chart_html(fig)
 
 def get_cf_plotly_html(data_dict):
     df_a = data_dict.get('annual', pl.DataFrame())
+    df_q = data_dict.get('quarterly', pl.DataFrame())
     
-    if df_a.is_empty(): return "<p>データなし</p>"
+    if df_a.is_empty() and df_q.is_empty(): return "<p>データなし</p>"
 
     fig = go.Figure()
-    items = [('Operating Cash Flow', '営業CF', '#aec7e8'), ('Investing Cash Flow', '投資CF', '#1f77b4'),
-             ('Financing Cash Flow', '財務CF', '#ffbb78'), ('Free Cash Flow', 'フリーCF', '#ff7f0e')]
+    items = [('Net Income', '純利益', '#2ca02c'),
+             ('Operating Cash Flow', '営業CF', '#aec7e8'), ('Investing Cash Flow', '投資CF', '#1f77b4'),
+             ('Financing Cash Flow', '財務CF', '#ffbb78'), ('Free Cash Flow', 'フリーCF', '#9467bd')]
 
     def add_cf_traces(fig, df, visible):
         valid_dates = df.filter((pl.col('Item') == 'Operating Cash Flow')).select('Date').unique()['Date'].to_list()
         df = df.filter(pl.col('Date').is_in(valid_dates))
         for item_key, name, color in items:
             sub = df.filter(pl.col('Item') == item_key)
-            fig.add_trace(go.Bar(name=name, x=sub['Date'], y=sub['Value'], marker_color=color, visible=visible))
+            if not sub.is_empty():
+                fig.add_trace(go.Bar(name=name, x=sub['Date'], y=sub['Value'], marker_color=color, visible=visible))
+        return len(items)
 
-    _add_traces(fig, df_a, add_cf_traces, visible=True)
+    num_a = add_cf_traces(fig, df_a, visible=True) if not df_a.is_empty() else 0
+    num_q = add_cf_traces(fig, df_q, visible=False) if not df_q.is_empty() else 0
 
-    fig.update_layout(barmode='group', height=450, margin=dict(t=60,b=50),
+    buttons = []
+    if num_a > 0:
+        buttons.append(dict(label="通期", method="update", args=[{"visible": [True]*num_a + [False]*num_q}]))
+    if num_q > 0:
+        buttons.append(dict(label="四半期", method="update", args=[{"visible": [False]*num_a + [True]*num_q}]))
+
+    updatemenus = [dict(type="buttons", direction="right", x=0.0, y=1.15, showactive=True, buttons=buttons)] if len(buttons) > 1 else None
+
+    fig.update_layout(barmode='group', height=450, margin=dict(t=80,b=50),
                       template='plotly_white', showlegend=True,
                       xaxis=dict(type='category'),
-                      yaxis=dict(type='linear'),
-                      legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5))
+                      yaxis=dict(title='金額', type='linear'),
+                      legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5),
+                      updatemenus=updatemenus)
     return '<h3 id="cash-flow">キャッシュフロー</h3>' + create_chart_html(fig)
 
 def get_tp_plotly_html(data_dict):
     df_a = data_dict.get('annual', pl.DataFrame())
+    df_q = data_dict.get('quarterly', pl.DataFrame())
     
-    if df_a.is_empty(): return "<p>データなし</p>"
+    if df_a.is_empty() and df_q.is_empty(): return "<p>データなし</p>"
 
     fig = go.Figure()
 
     def add_tp_traces(fig, df, visible):
         valid_dates = df.filter(pl.col('Item') == 'Net Income From Continuing Operations').select('Date').unique()['Date'].to_list()
         df = df.filter(pl.col('Date').is_in(valid_dates))
+        ni = df.filter(pl.col('Item') == 'Net Income From Continuing Operations')
         div = df.filter(pl.col('Item') == 'Cash Dividends Paid')
         repo = df.filter(pl.col('Item') == 'Repurchase Of Capital Stock')
         div_r = df.filter(pl.col('Item') == 'Dividends Ratio / Net Income')
         total_r = df.filter(pl.col('Item') == 'Total Payout Ratio / Net Income')
-        fig.add_trace(go.Bar(name='配当金', x=div['Date'], y=div['Value'].abs(), marker_color='#aec7e8', yaxis='y', visible=visible))
-        fig.add_trace(go.Bar(name='自社株買い', x=repo['Date'], y=repo['Value'].abs(), marker_color='#1f77b4', base=div['Value'].abs(), yaxis='y', visible=visible))
+
+        # 純利益 (左側)
+        fig.add_trace(go.Bar(name='純利益', x=ni['Date'], y=ni['Value'], marker_color='#2ca02c', offsetgroup=0, visible=visible))
+        # 配当金 (右側の下)
+        fig.add_trace(go.Bar(name='配当金', x=div['Date'], y=div['Value'].abs(), marker_color='#aec7e8', offsetgroup=1, visible=visible))
+        # 自社株買い (右側の配当の上)
+        fig.add_trace(go.Bar(name='自社株買い', x=repo['Date'], y=repo['Value'].abs(), marker_color='#1f77b4', base=div['Value'].abs(), offsetgroup=1, visible=visible))
+        
+        # 性向 (折れ線)
         fig.add_trace(go.Scatter(name='配当性向', x=div_r['Date'], y=div_r['Value'], marker_color='#ffbb78', mode='lines+markers', yaxis='y2', hovertemplate='%{y:.1%}', visible=visible))
         fig.add_trace(go.Scatter(name='総還元性向', x=total_r['Date'], y=total_r['Value'], marker_color='#ff7f0e', mode='lines+markers', yaxis='y2', hovertemplate='%{y:.1%}', visible=visible))
 
     _add_traces(fig, df_a, add_tp_traces, visible=True)
+    _add_traces(fig, df_q, add_tp_traces, visible=False)
+
+    # タブ切り替えボタンの作成
+    num_a = 5 if not df_a.is_empty() else 0
+    num_q = 5 if not df_q.is_empty() else 0
+    
+    buttons = []
+    if num_a > 0:
+        buttons.append(dict(label="通期", method="update", args=[{"visible": [True]*num_a + [False]*num_q}]))
+    if num_q > 0:
+        buttons.append(dict(label="四半期", method="update", args=[{"visible": [False]*num_a + [True]*num_q}]))
+
+    updatemenus = [dict(type="buttons", direction="right", x=0.0, y=1.15, showactive=True, buttons=buttons)] if len(buttons) > 1 else None
 
     fig.update_layout(
-        barmode='stack', height=450, margin=dict(t=60,b=50), template='plotly_white',
+        barmode='group', height=450, margin=dict(t=80,b=50), template='plotly_white',
         xaxis=dict(type='category'),
-        yaxis=dict(title='', showgrid=True, type='linear', rangemode='tozero'),
-        yaxis2=dict(title='', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='linear', rangemode='tozero'),
-        legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5)
+        yaxis=dict(title='金額', showgrid=True, type='linear', rangemode='tozero'),
+        yaxis2=dict(title='還元性向', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='linear', rangemode='tozero'),
+        legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5),
+        updatemenus=updatemenus
     )
     return '<h3 id="shareholder-return">株主還元</h3>' + create_chart_html(fig)
 
