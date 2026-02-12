@@ -194,7 +194,7 @@ def export_full_analysis_reports(df_info, df_metrics, output_dir="output_reports
     # ThreadPoolExecutorによる並列処理
     # ユーザー要望により4コアに合わせて4に設定 (もしKilledされる場合は 2~3 に下げてください)
     # Rate Limit回避のため一時的に1にする
-    max_workers = 1
+    max_workers = 3
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
         # 各タスクの引数に df_info, df_metrics, output_dir を渡す
         futures = {executor.submit(generate_report_for_ticker, row, df_info, df_metrics, output_dir): row['Symbol'] for row in rows}
