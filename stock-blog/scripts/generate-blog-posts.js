@@ -4,6 +4,7 @@ import path from 'path';
 const INPUT_DIR = 'public/output_reports_full';
 const OUTPUT_DIR = 'src/data/blog';
 const AUTHOR = 'Gemini Stock Bot';
+const BASE_PATH = '/stock_report'; // astro.config.ts の base 設定に合わせる
 
 if (!fs.existsSync(OUTPUT_DIR)) {
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
@@ -12,7 +13,7 @@ if (!fs.existsSync(OUTPUT_DIR)) {
 const files = fs.readdirSync(INPUT_DIR).filter(f => f.endsWith('.html'));
 const now = new Date().toISOString();
 
-console.log(`Found ${files.length} HTML reports. Generating blog posts...`);
+console.log(`Found ${files.length} HTML reports. Regenerating blog posts with correct base path...`);
 
 files.forEach(file => {
   const ticker = path.basename(file, '.html');
@@ -22,10 +23,10 @@ files.forEach(file => {
   // タイトルの抽出
   const titleMatch = htmlContent.match(/<title>(.*?)<\/title>/);
   let title = titleMatch ? titleMatch[1] : `銘柄分析レポート: ${ticker}`;
-  // ダブルクォートをエスケープ
-  title = title.replace(/"/g, '"');
+  title = title.replace(/"/g, '\\"');
 
   // ブログ記事（Markdown）の作成
+  // iframe src に BASE_PATH を追加
   const mdContent = `---
 author: ${AUTHOR}
 pubDatetime: ${now}
@@ -39,12 +40,12 @@ tags:
 description: "${title}。最新の株価パフォーマンス、ファンダメンタルズ、テクニカル分析を網羅した詳細レポートです。"
 ---
 
-<iframe src="/output_reports_full/${file}" style="width: 100%; height: 1000px; border: none;"></iframe>
+<iframe src="${BASE_PATH}/output_reports_full/${file}" style="width: 100%; height: 1000px; border: none;"></iframe>
 
-[レポートを全画面で見る](/output_reports_full/${file})
+[レポートを全画面で見る](${BASE_PATH}/output_reports_full/${file})
 `;
 
   fs.writeFileSync(path.join(OUTPUT_DIR, `${ticker}.md`), mdContent);
 });
 
-console.log('Successfully generated all blog posts.');
+console.log('Successfully regenerated all blog posts with correct paths.');
