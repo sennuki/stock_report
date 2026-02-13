@@ -55,7 +55,7 @@ TEMPLATE = """<!DOCTYPE html>
         .toc a:hover {{ text-decoration: underline; }}
     </style>
 </head>
-<body>
+<body data-pagefind-body>
 
 <h1>銘柄分析レポート: {ticker} ({security})</h1>
 

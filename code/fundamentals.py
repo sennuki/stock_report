@@ -77,16 +77,29 @@ def get_financial_data(ticker_obj):
 
     # 2. 損益計算書
     target_is = ['Total Revenue', 'Gross Profit', 'Operating Income', 'Net Income']
+    df_is_annual = extract_and_melt(ticker_obj.income_stmt, target_is)
+    df_is_quarterly = extract_and_melt(ticker_obj.quarterly_income_stmt, target_is)
     data['is'] = {
-        'annual': extract_and_melt(ticker_obj.income_stmt, target_is),
-        'quarterly': extract_and_melt(ticker_obj.quarterly_income_stmt, target_is)
+        'annual': df_is_annual,
+        'quarterly': df_is_quarterly
     }
 
     # 3. キャッシュフロー
-    target_cf = ['Operating Cash Flow', 'Investing Cash Flow', 'Financing Cash Flow', 'Free Cash Flow', 'Net Income']
+    target_cf = ['Operating Cash Flow', 'Investing Cash Flow', 'Financing Cash Flow', 'Free Cash Flow']
+    df_cf_annual = extract_and_melt(ticker_obj.cashflow, target_cf)
+    df_cf_quarterly = extract_and_melt(ticker_obj.quarterly_cashflow, target_cf)
+
+    # Net IncomeをISから取得してCFに結合 (CF側にNet Incomeがない場合が多いため)
+    def merge_ni_to_cf(df_cf, df_is):
+        if df_is.is_empty(): return df_cf
+        ni_data = df_is.filter(pl.col('Item') == 'Net Income')
+        if ni_data.is_empty(): return df_cf
+        if df_cf.is_empty(): return ni_data
+        return pl.concat([df_cf, ni_data]).sort(['Item', 'Date'])
+
     data['cf'] = {
-        'annual': extract_and_melt(ticker_obj.cashflow, target_cf),
-        'quarterly': extract_and_melt(ticker_obj.quarterly_cashflow, target_cf)
+        'annual': merge_ni_to_cf(df_cf_annual, df_is_annual),
+        'quarterly': merge_ni_to_cf(df_cf_quarterly, df_is_quarterly)
     }
 
     # 4. 総還元性向
@@ -332,7 +345,9 @@ def get_cf_plotly_html(data_dict):
              ('Financing Cash Flow', '財務CF', '#ffbb78'), ('Free Cash Flow', 'フリーCF', '#9467bd')]
 
     def add_cf_traces(fig, df, visible):
-        valid_dates = df.filter((pl.col('Item') == 'Operating Cash Flow')).select('Date').unique()['Date'].to_list()
+        # 純利益か営業CFがある日付を表示対象とする
+        valid_items = ['Net Income', 'Operating Cash Flow']
+        valid_dates = df.filter(pl.col('Item').is_in(valid_items)).select('Date').unique()['Date'].to_list()
         df = df.filter(pl.col('Date').is_in(valid_dates))
         for item_key, name, color in items:
             sub = df.filter(pl.col('Item') == item_key)
