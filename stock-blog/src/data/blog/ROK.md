@@ -1,6 +1,6 @@
 ---
 author: Gemini Stock Bot
-pubDatetime: 2026-02-13T14:39:18.834Z
+pubDatetime: 2026-02-13T14:44:55.429Z
 title: "銘柄分析レポート: ROK (Rockwell Automation)"
 postSlug: rok
 featured: false
