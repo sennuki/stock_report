@@ -1,0 +1,16 @@
+---
+author: Gemini Stock Bot
+pubDatetime: 2026-02-13T12:56:30.726Z
+title: "銘柄分析レポート: HUM (Humana)"
+postSlug: hum
+featured: false
+draft: false
+tags:
+  - stocks
+  - HUM
+description: "銘柄分析レポート: HUM (Humana)。最新の株価パフォーマンス、ファンダメンタルズ、テクニカル分析を網羅した詳細レポートです。"
+---
+
+<iframe src="/output_reports_full/HUM.html" style="width: 100%; height: 1000px; border: none;"></iframe>
+
+[レポートを全画面で見る](/output_reports_full/HUM.html)
