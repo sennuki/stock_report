@@ -1,6 +1,6 @@
 ---
 author: Gemini Stock Bot
-pubDatetime: 2026-02-13T14:44:55.429Z
+pubDatetime: 2026-02-14T10:43:08.417Z
 title: "銘柄分析レポート: EW (Edwards Lifesciences)"
 postSlug: ew
 featured: false
