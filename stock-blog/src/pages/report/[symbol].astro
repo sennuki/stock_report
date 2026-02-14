@@ -7,7 +7,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 export async function getStaticPaths() {
-  return stocks.map(stock => ({
+  return (stocks as any[]).map((stock: any) => ({
     params: { symbol: stock.Symbol_YF },
   }));
 }
@@ -45,7 +45,7 @@ try {
   bodyContent = `<div class="text-center py-10">Error loading report for ${symbol}</div>`;
 }
 
-const stockInfo = stocks.find(s => s.Symbol_YF === symbol);
+const stockInfo = (stocks as any[]).find((s: any) => s.Symbol_YF === symbol);
 const title = `銘柄分析: ${symbol} - ${stockInfo?.Security || ''}`;
 
 const base = import.meta.env.BASE_URL.endsWith("/")
