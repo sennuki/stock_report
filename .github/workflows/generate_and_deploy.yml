@@ -35,8 +35,26 @@ jobs:
       - name: Install Python dependencies
         run: uv pip install --system -r requirements.txt
 
+      - name: Restore yfinance cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/py-yfinance
+          key: ${{ runner.os }}-yfinance-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-yfinance-
+
+      - name: Create output directories
+        run: |
+          mkdir -p stock-blog/public/output_reports_full
+          mkdir -p stock-blog/src/data/blog
+
       - name: Run Python report generator
         run: PYTHONPATH=code python code/main.py
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.0.0
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -48,8 +66,7 @@ jobs:
       - name: Install Node dependencies
         run: |
           cd stock-blog
-          npm install -g pnpm
-          pnpm install
+          pnpm install --frozen-lockfile
 
       - name: Regenerate blog posts (Markdown)
         run: |
