@@ -40,36 +40,36 @@ TEMPLATE = """<!DOCTYPE html>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&family=Noto+Emoji:wght@300..700&display=swap" rel="stylesheet">
     <script type="module" src="https://widgets.tradingview-widget.com/w/ja/tv-ticker-tag.js"></script>
     <style>
-        body { 
+        body {{ 
             font-family: sans-serif, "Noto Emoji", "Noto Color Emoji"; 
             margin: 20px; 
             line-height: 1.5;
             color: inherit;
             background-color: transparent;
-        }
-        h1 { font-size: 24px; color: inherit; }
-        h2 { font-size: 20px; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-top: 30px; color: inherit; }
-        hr { border: none; border-top: 1px solid #eee; margin: 20px 0; }
-        .toc { background-color: rgba(0, 0, 0, 0.05); padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #eee; }
-        .toc h3 { margin-top: 0; font-size: 18px; color: inherit; }
-        .toc ul { list-style-type: disc; padding-left: 20px; margin-bottom: 0; }
-        .toc li { margin-bottom: 5px; }
-        .toc a { text-decoration: none; color: #007bff; }
-        .toc a:hover { text-decoration: underline; }
-        .tradingview-widget-container { margin-bottom: 20px; width: 100%; overflow: hidden; }
+        }}
+        h1 {{ font-size: 24px; color: inherit; }}
+        h2 {{ font-size: 20px; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-top: 30px; color: inherit; }}
+        hr {{ border: none; border-top: 1px solid #eee; margin: 20px 0; }}
+        .toc {{ background-color: rgba(0, 0, 0, 0.05); padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #eee; }}
+        .toc h3 {{ margin-top: 0; font-size: 18px; color: inherit; }}
+        .toc ul {{ list-style-type: disc; padding-left: 20px; margin-bottom: 0; }}
+        .toc li {{ margin-bottom: 5px; }}
+        .toc a {{ text-decoration: none; color: #007bff; }}
+        .toc a:hover {{ text-decoration: underline; }}
+        .tradingview-widget-container {{ margin-bottom: 20px; width: 100%; overflow: hidden; }}
         
         /* Dark mode overrides for injected content */
-        @media (prefers-color-scheme: dark) {
-            h2 { border-bottom-color: #444; }
-            hr { border-top-color: #333; }
-            .toc { background-color: rgba(255, 255, 255, 0.05); border-color: #444; }
-        }
+        @media (prefers-color-scheme: dark) {{
+            h2 {{ border-bottom-color: #444; }}
+            hr {{ border-top-color: #333; }}
+            .toc {{ background-color: rgba(255, 255, 255, 0.05); border-color: #444; }}
+        }}
         
-        @media (max-width: 600px) {
-            body { margin: 10px; }
-            h1 { font-size: 20px; }
-            h2 { font-size: 18px; }
-        }
+        @media (max-width: 600px) {{
+            body {{ margin: 10px; }}
+            h1 {{ font-size: 20px; }}
+            h2 {{ font-size: 18px; }}
+        }}
     </style>
 </head>
 <body data-pagefind-body>
