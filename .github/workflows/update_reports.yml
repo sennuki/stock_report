@@ -41,16 +41,27 @@ jobs:
       - name: Run main script
         run: PYTHONPATH=code python code/main.py
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Regenerate blog posts
+        run: |
+          cd stock-blog
+          node scripts/generate-blog-posts.js
+
       - name: Commit and push changes
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add -f stock-blog/public/output_reports_full/
           git add stock-blog/src/data/stocks.json
+          git add stock-blog/src/data/blog/
           git status
           if ! git diff --cached --quiet; then
-            git commit -m "chore: update stock reports and data"
-            git pull origin master --rebase
+            git commit -m "chore: update stock reports, data and blog posts"
+            git pull origin master --rebase -X theirs
             git push origin master
           else
             echo "No changes to commit"
