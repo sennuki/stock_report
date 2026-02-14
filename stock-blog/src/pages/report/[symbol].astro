@@ -80,10 +80,13 @@ const base = import.meta.env.BASE_URL.endsWith("/")
 </Layout>
 
 <script>
+<script>
   // Function to manually execute scripts inserted via innerHTML
   function executeScripts(container: Element | null) {
     if (!container) return;
+    const isDark = document.documentElement.classList.contains('dark');
     const scripts = container.querySelectorAll('script');
+    
     scripts.forEach((oldScript) => {
       const newScript = document.createElement('script');
       
@@ -94,10 +97,18 @@ const base = import.meta.env.BASE_URL.endsWith("/")
       
       // Copy content or handle external scripts
       if (oldScript.src) {
-        // If it's an external script, just set the src to trigger loading
         newScript.src = oldScript.src;
       } else {
-        newScript.textContent = oldScript.textContent;
+        let content = oldScript.textContent || '';
+        // Dynamically switch TradingView theme based on current Astro theme
+        if (isDark) {
+          content = content.replace(/"colorTheme":\s*"light"/g, '"colorTheme": "dark"');
+          content = content.replace(/"theme":\s*"light"/g, '"theme": "dark"');
+        } else {
+          content = content.replace(/"colorTheme":\s*"dark"/g, '"colorTheme": "light"');
+          content = content.replace(/"theme":\s*"dark"/g, '"theme": "light"');
+        }
+        newScript.textContent = content;
       }
       
       // Replace old script with new one to trigger execution
@@ -107,8 +118,31 @@ const base = import.meta.env.BASE_URL.endsWith("/")
     });
   }
 
+  // Function to update Plotly themes dynamically
+  function updatePlotlyTheme() {
+    const isDark = document.documentElement.classList.contains('dark');
+    const theme = isDark ? 'plotly_dark' : 'plotly_white';
+    const paper_bgcolor = isDark ? 'rgba(0,0,0,0)' : '#fff';
+    const plot_bgcolor = isDark ? 'rgba(0,0,0,0)' : '#fff';
+    const font_color = isDark ? '#d1d5db' : '#374151';
+
+    const plots = document.querySelectorAll('.js-plotly-plot');
+    plots.forEach(plot => {
+      // @ts-ignore
+      if (window.Plotly) {
+        // @ts-ignore
+        window.Plotly.relayout(plot, { 
+          template: theme,
+          paper_bgcolor: paper_bgcolor,
+          plot_bgcolor: plot_bgcolor,
+          'font.color': font_color
+        });
+      }
+    });
+  }
+
   // Run on initial load and after View Transitions navigation
-  document.addEventListener('astro:page-load', () => {
+  function initPage() {
     // Execute scripts in the head injection area
     const headInjection = document.getElementById('report-head-injection');
     if (headInjection) {
@@ -121,10 +155,39 @@ const base = import.meta.env.BASE_URL.endsWith("/")
         executeScripts(reportContent);
     }
     
-    // Force Plotly resize if present
-    setTimeout(() => {
-        window.dispatchEvent(new Event('resize'));
-    }, 500);
+    // Initial Plotly theme setup
+    setTimeout(updatePlotlyTheme, 1000);
+  }
+
+  document.addEventListener('astro:page-load', initPage);
+
+  // Watch for theme changes (AstroPaper specific)
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+        // When theme changes, we might need to re-execute TradingView (heavy) 
+        // or just update Plotly (lighter)
+        updatePlotlyTheme();
+        
+        // For TradingView, since they don't support dynamic theme switching easily,
+        // we re-run the script execution if the theme class changed significantly
+        const reportContent = document.querySelector('.report-content');
+        if (reportContent) {
+            // Option: Only re-run if needed, but for now just update Plotly
+        }
+      }
+    });
+  });
+
+  observer.observe(document.documentElement, { attributes: true });
+
+  // Force Plotly resize if present
+  window.addEventListener('resize', () => {
+    const plots = document.querySelectorAll('.js-plotly-plot');
+    plots.forEach(plot => {
+      // @ts-ignore
+      if (window.Plotly) window.Plotly.Plots.resize(plot);
+    });
   });
 </script>
 
@@ -147,6 +210,30 @@ const base = import.meta.env.BASE_URL.endsWith("/")
   .report-content ol {
     max-width: 100% !important;
     box-sizing: border-box;
+  }
+
+  .report-content h1, 
+  .report-content h2, 
+  .report-content h3, 
+  .report-content p, 
+  .report-content li,
+  .report-content span {
+    color: currentColor;
+  }
+
+  .report-content h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+  }
+  
+  .report-content h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid rgb(var(--color-border));
+    padding-bottom: 0.5rem;
   }
 
   /* Only constrain media and specific embeds to prevent overflow */
