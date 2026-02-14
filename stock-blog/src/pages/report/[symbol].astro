@@ -56,8 +56,10 @@ const base = import.meta.env.BASE_URL.endsWith("/")
 <Layout title={title}>
   <Header />
   
-  {/* Inject extracted scripts and styles. 
-      Note: Scripts will run, styles will be applied globally. */}
+  {/* Load Plotly.js from CDN */}
+  <script is:inline src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+
+  {/* Inject extracted scripts and styles. */}
   <div id="report-head-injection">
       <Fragment set:html={headContent} />
   </div>
@@ -120,6 +122,13 @@ const base = import.meta.env.BASE_URL.endsWith("/")
 
   // Function to update Plotly themes dynamically
   function updatePlotlyTheme() {
+    // @ts-ignore
+    if (!window.Plotly) {
+      console.log('Waiting for Plotly...');
+      setTimeout(updatePlotlyTheme, 200);
+      return;
+    }
+
     const isDark = document.documentElement.classList.contains('dark');
     const theme = isDark ? 'plotly_dark' : 'plotly_white';
     const paper_bgcolor = isDark ? 'rgba(0,0,0,0)' : '#fff';
@@ -128,8 +137,7 @@ const base = import.meta.env.BASE_URL.endsWith("/")
 
     const plots = document.querySelectorAll('.js-plotly-plot');
     plots.forEach(plot => {
-      // @ts-ignore
-      if (window.Plotly) {
+      try {
         // @ts-ignore
         window.Plotly.relayout(plot, { 
           template: theme,
@@ -137,6 +145,8 @@ const base = import.meta.env.BASE_URL.endsWith("/")
           plot_bgcolor: plot_bgcolor,
           'font.color': font_color
         });
+      } catch (e) {
+        console.error('Error updating plotly theme:', e);
       }
     });
   }
@@ -155,8 +165,8 @@ const base = import.meta.env.BASE_URL.endsWith("/")
         executeScripts(reportContent);
     }
     
-    // Initial Plotly theme setup
-    setTimeout(updatePlotlyTheme, 1000);
+    // Initial Plotly setup and theme setup
+    updatePlotlyTheme();
   }
 
   document.addEventListener('astro:page-load', initPage);

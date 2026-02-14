@@ -89,8 +89,8 @@ def generate_scatter_html(df_metrics, target_symbol, sector_etf_symbol):
         autosize=True,
         legend=dict(orientation="h", y=1.02, x=1, xanchor="right")
     )
-    # ここだけはCDNを含める（最初のグラフとしてロードさせるため）
-    return fig.to_html(full_html=False, include_plotlyjs='cdn', config={'displayModeBar': False, 'scrollZoom': False, 'responsive': True})
+    # Astro側でPlotlyを読み込むため、ここではライブラリを含めない
+    return fig.to_html(full_html=False, include_plotlyjs=False, config={'displayModeBar': False, 'scrollZoom': False, 'responsive': True})
 
 if __name__ == "__main__":
     print("MSFTと関連指数のリスク・リターンを計算中...")
