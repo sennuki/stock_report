@@ -165,7 +165,7 @@ def create_chart_html(fig):
     """HTML化ヘルパー (ファイルサイズ削減のためライブラリ重複ロード回避)"""
     fig.update_xaxes(fixedrange=True)
     fig.update_yaxes(fixedrange=True)
-    return fig.to_html(full_html=False, include_plotlyjs=False, config={'displayModeBar': False, 'scrollZoom': False})
+    return fig.to_html(full_html=False, include_plotlyjs=False, config={'displayModeBar': False, 'scrollZoom': False, 'responsive': True})
 
 def _add_traces(fig, df, func, visible=True):
     """トレース追加の共通ヘルパー"""

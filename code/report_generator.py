@@ -40,26 +40,38 @@ TEMPLATE = """<!DOCTYPE html>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&family=Noto+Emoji:wght@300..700&display=swap" rel="stylesheet">
     <script type="module" src="https://widgets.tradingview-widget.com/w/ja/tv-ticker-tag.js"></script>
     <style>
-        body {{ 
+        body { 
             font-family: sans-serif, "Noto Emoji", "Noto Color Emoji"; 
             margin: 20px; 
-        }}
-        h1 {{ font-size: 24px; }}
-        h2 {{ font-size: 20px; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-top: 30px; }}
-        hr {{ border: none; border-top: 1px solid #eee; margin: 20px 0; }}
-        .toc {{ background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #eee; }}
-        .toc h3 {{ margin-top: 0; font-size: 18px; }}
-        .toc ul {{ list-style-type: disc; padding-left: 20px; margin-bottom: 0; }}
-        .toc li {{ margin-bottom: 5px; }}
-        .toc a {{ text-decoration: none; color: #007bff; }}
-        .toc a:hover {{ text-decoration: underline; }}
+            line-height: 1.5;
+        }
+        h1 { font-size: 24px; }
+        h2 { font-size: 20px; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-top: 30px; }
+        hr { border: none; border-top: 1px solid #eee; margin: 20px 0; }
+        .toc { background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #eee; }
+        .toc h3 { margin-top: 0; font-size: 18px; }
+        .toc ul { list-style-type: disc; padding-left: 20px; margin-bottom: 0; }
+        .toc li { margin-bottom: 5px; }
+        .toc a { text-decoration: none; color: #007bff; }
+        .toc a:hover { text-decoration: underline; }
+        .tradingview-widget-container { margin-bottom: 20px; width: 100%; overflow: hidden; }
+        @media (max-width: 600px) {
+            body { margin: 10px; }
+            h1 { font-size: 20px; }
+            h2 { font-size: 18px; }
+        }
     </style>
 </head>
 <body data-pagefind-body>
 
 <h1>銘柄分析レポート: {ticker} ({security})</h1>
 
-<div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-symbol-info.js" async>{{ "symbol": "{full_symbol}", "colorTheme": "light", "isTransparent": false, "locale": "ja", "width": "100%" }}</script></div>
+<div class="tradingview-widget-container">
+    <div class="tradingview-widget-container__widget"></div>
+    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-symbol-info.js" async>
+    {{ "symbol": "{full_symbol}", "colorTheme": "light", "isTransparent": false, "locale": "ja", "width": "100%" }}
+    </script>
+</div>
 
 <hr>
 

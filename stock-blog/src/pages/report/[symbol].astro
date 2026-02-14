@@ -92,8 +92,13 @@ const base = import.meta.env.BASE_URL.endsWith("/")
         newScript.setAttribute(attr.name, attr.value);
       });
       
-      // Copy content
-      newScript.textContent = oldScript.textContent;
+      // Copy content or handle external scripts
+      if (oldScript.src) {
+        // If it's an external script, just set the src to trigger loading
+        newScript.src = oldScript.src;
+      } else {
+        newScript.textContent = oldScript.textContent;
+      }
       
       // Replace old script with new one to trigger execution
       if (oldScript.parentNode) {
@@ -126,11 +131,12 @@ const base = import.meta.env.BASE_URL.endsWith("/")
 <style is:global>
   /* Style overrides for the injected report content */
   .report-content {
-    overflow-x: auto; /* Handle wide tables/content */
+    overflow-x: hidden; /* Prevent horizontal scroll on body */
     width: 100%;
+    word-break: break-word;
   }
   
-  /* Allow text and containers to expand fully */
+  /* Allow text and containers to expand fully but respect parent width */
   .report-content > *,
   .report-content div,
   .report-content p,
@@ -139,7 +145,8 @@ const base = import.meta.env.BASE_URL.endsWith("/")
   .report-content h3,
   .report-content ul,
   .report-content ol {
-    max-width: none !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
   }
 
   /* Only constrain media and specific embeds to prevent overflow */
@@ -150,39 +157,24 @@ const base = import.meta.env.BASE_URL.endsWith("/")
     max-width: 100% !important;
     height: auto;
   }
-  
-  .report-content h1 {
-    font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 1.5rem;
-    color: rgb(var(--color-text-base));
+
+  /* Specific handling for TradingView widgets on mobile */
+  .tradingview-widget-container {
+    width: 100% !important;
+    margin-bottom: 20px;
+    overflow: hidden;
   }
-  .report-content h2 {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-top: 2rem;
-    margin-bottom: 1rem;
-    border-bottom: 1px solid rgb(var(--color-border));
-    padding-bottom: 0.5rem;
-    color: rgb(var(--color-text-base));
-  }
-  .report-content p {
-    margin-bottom: 1rem;
-    color: rgb(var(--color-text-base));
-  }
-  /* Ensure plotly graphs fit */
+
+  /* Ensure plotly graphs fit and are responsive */
   .plotly-graph-div {
     width: 100% !important;
     max-width: 100% !important;
     box-sizing: border-box;
   }
-  /* Ensure TradingView widgets fit */
-  .tradingview-widget-container {
+  
+  .js-plotly-plot .plotly,
+  .js-plotly-plot .plotly div {
+    direction: ltr !important;
     width: 100% !important;
-    max-width: 100% !important;
-  }
-  .tradingview-widget-container__widget {
-    width: 100% !important;
-    max-width: 100% !important;
   }
 </style>
