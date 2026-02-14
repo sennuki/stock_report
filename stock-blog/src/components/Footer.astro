@@ -40,7 +40,7 @@ const base = import.meta.env.BASE_URL.endsWith("/")
     <div class="mb-8">
       <h2 class="text-sm font-bold mb-4 tracking-wider opacity-80 uppercase">Sector Tags</h2>
       <div class="flex flex-wrap gap-2">
-        {sectors.map(sector => (
+        {sectors.map((sector: string) => (
           <a
             href={`${base}#${sector}`} 
             class="px-3 py-1 text-xs border border-skin-line rounded-full hover:border-skin-accent hover:text-skin-accent transition-all bg-skin-card hover:shadow-sm"

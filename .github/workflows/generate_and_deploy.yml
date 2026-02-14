@@ -47,6 +47,7 @@ jobs:
         run: |
           mkdir -p stock-blog/public/output_reports_full
           mkdir -p stock-blog/src/data/blog
+          echo "[]" > stock-blog/src/data/stocks.json
 
       - name: Run Python report generator
         run: PYTHONPATH=code python code/main.py
@@ -76,7 +77,7 @@ jobs:
       - name: Build Astro site
         run: |
           cd stock-blog
-          pnpm run build
+          pnpm exec astro build && pnpm exec pagefind --site dist && cp -r dist/pagefind public/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
