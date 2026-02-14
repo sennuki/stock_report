@@ -11,3 +11,6 @@ dist/
 **/output_reports_full/
 **/test_reports/
 .venv/
+stock-blog/public/output_reports_full/
+stock-blog/src/data/blog/
+stock-blog/src/data/stocks.json

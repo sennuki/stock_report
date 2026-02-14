@@ -1,0 +1,78 @@
+name: Generate and Deploy Stock Reports
+
+on:
+  schedule:
+    - cron: '0 21 * * 1-5' # 平日毎日実行
+  push:
+    branches: [ master ] # コードが更新された時も実行
+  workflow_dispatch: # 手動実行用
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcurl4
+
+      - name: Install Python dependencies
+        run: uv pip install --system -r requirements.txt
+
+      - name: Run Python report generator
+        run: PYTHONPATH=code python code/main.py
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: stock-blog/pnpm-lock.yaml
+
+      - name: Install Node dependencies
+        run: |
+          cd stock-blog
+          npm install -g pnpm
+          pnpm install
+
+      - name: Regenerate blog posts (Markdown)
+        run: |
+          cd stock-blog
+          node scripts/generate-blog-posts.js
+
+      - name: Build Astro site
+        run: |
+          cd stock-blog
+          pnpm run build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./stock-blog/dist
+
+  deploy:
+    needs: build-and-deploy
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
