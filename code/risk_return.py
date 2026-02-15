@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 import yfinance as yf
 import polars as pl
 import numpy as np
@@ -76,7 +77,11 @@ def calculate_market_metrics_parallel(symbols):
 
     print(f"\n{len(target_symbols)} 銘柄のリスク・リターン(多期間)を計算中...")
     results = []
-    with ThreadPoolExecutor(max_workers=10) as executor:
+    # GitHub Actions では 10、ローカルでは 1 をデフォルトにする
+    default_max_workers = 10 if os.getenv("GITHUB_ACTIONS") == "true" else 1
+    current_max_workers = int(os.getenv("MAX_WORKERS", default_max_workers))
+
+    with ThreadPoolExecutor(max_workers=current_max_workers) as executor:
         future_to_symbol = {executor.submit(process_single_stock, sym): sym for sym in target_symbols}
         for future in tqdm(as_completed(future_to_symbol), total=len(target_symbols)):
             res = future.result()

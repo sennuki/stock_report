@@ -216,8 +216,10 @@ def export_full_analysis_reports(df_info, df_metrics, output_dir="output_reports
     rows = df_info.to_dicts()
 
     # GitHub Actions の 2 vCPU 環境に合わせて 4 に設定。
-    # APIのレート制限やメモリ使用量に応じて 2-8 の間で調整してください。
-    max_workers = 4
+    # ローカルPC (GITHUB_ACTIONS未設定) では負荷低減のため 1 をデフォルトにする。
+    default_max_workers = 4 if os.getenv("GITHUB_ACTIONS") == "true" else 1
+    max_workers = int(os.getenv("MAX_WORKERS", default_max_workers))
+    
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
         # 各タスクの引数に df_info, df_metrics, output_dir を渡す
         futures = {executor.submit(generate_report_for_ticker, row, df_info, df_metrics, output_dir): row['Symbol'] for row in rows}
