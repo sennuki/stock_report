@@ -12,6 +12,20 @@ import requests as std_requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
+import os
+from datetime import datetime
+
+LOG_FILE = "run_log.txt"
+
+def log_event(category, symbol, message):
+    """
+    category: "INFO", "SUCCESS", "WARN", "ERROR"
+    """
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    log_line = f"[{timestamp}] [{category:7}] [{symbol:6}] {message}\n"
+    with open(LOG_FILE, "a", encoding="utf-8") as f:
+        f.write(log_line)
+
 def get_session():
     if HAS_CURL_CFFI:
         # curl_cffiが使える場合はそれを使う (yfinanceの推奨)

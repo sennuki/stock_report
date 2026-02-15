@@ -7,6 +7,7 @@ warnings.filterwarnings("ignore", message=".*scattermapbox.*")
 import market_data
 import risk_return
 import report_generator
+import utils
 import os
 import shutil
 import json
@@ -81,12 +82,23 @@ def export_stocks_json(df):
         print(f"JSON保存エラー: {e}")
 
 if __name__ == "__main__":
+    # ログのリセット
+    if os.path.exists(utils.LOG_FILE):
+        os.remove(utils.LOG_FILE)
+    utils.log_event("INFO", "SYSTEM", "Execution started")
+
     # スクリプトのディレクトリを基準にする
     base_dir = os.path.dirname(os.path.abspath(__file__))
     output_reports_dir = os.path.join(base_dir, "output_reports_full")
 
     # 1. データ準備
-    df_sp500 = market_data.fetch_sp500_companies_optimized()
+    try:
+        df_sp500 = market_data.fetch_sp500_companies_optimized()
+        if not df_sp500.is_empty():
+            utils.log_event("SUCCESS", "SYSTEM", f"Fetched {len(df_sp500)} companies")
+    except Exception as e:
+        utils.log_event("ERROR", "SYSTEM", f"Failed to fetch S&P 500 list: {e}")
+        df_sp500 = pl.DataFrame()
 
     # 必須銘柄の確認と追加 (GOOGL, METAなど)
     required_tickers = {
@@ -122,12 +134,37 @@ if __name__ == "__main__":
         export_stocks_json(df_sp500)
 
         # 2. リスク指標計算 (全銘柄)
-        df_metrics = risk_return.calculate_market_metrics_parallel(df_sp500['Symbol_YF'].to_list())
+        try:
+            df_metrics = risk_return.calculate_market_metrics_parallel(df_sp500['Symbol_YF'].to_list())
+            utils.log_event("SUCCESS", "SYSTEM", "Calculated risk metrics")
+        except Exception as e:
+            utils.log_event("ERROR", "SYSTEM", f"Failed to calculate risk metrics: {e}")
+            df_metrics = pl.DataFrame()
 
         # 3. レポート作成
-        report_generator.export_full_analysis_reports(df_sp500, df_metrics, output_dir=output_reports_dir)
+        try:
+            report_generator.export_full_analysis_reports(df_sp500, df_metrics, output_dir=output_reports_dir)
+            utils.log_event("SUCCESS", "SYSTEM", "Generated all reports")
+        except Exception as e:
+            utils.log_event("ERROR", "SYSTEM", f"Report generation failed: {e}")
         
         # 4. Astroへ反映
         copy_reports_to_astro()
+
+        # 最後にエラー要約を表示
+        if os.path.exists(utils.LOG_FILE):
+            print("\n" + "="*50)
+            print(" 実行ログ要約 (エラー・警告) ")
+            print("="*50)
+            with open(utils.LOG_FILE, "r", encoding="utf-8") as f:
+                logs = f.readlines()
+                # 重複を避けてエラー・警告を抽出
+                errors = sorted(list(set([line.strip() for line in logs if "ERROR" in line or "WARN" in line])))
+                if errors:
+                    for err in errors:
+                        print(err)
+                else:
+                    print("重大なエラーは見つかりませんでした。")
+            print("="*50)
     else:
         print("S&P 500リストの取得に失敗したため、処理を中断します。")

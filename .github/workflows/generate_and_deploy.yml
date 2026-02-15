@@ -52,6 +52,14 @@ jobs:
       - name: Run Python report generator
         run: PYTHONPATH=code python code/main.py
 
+      - name: Upload run log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: execution-log
+          path: run_log.txt
+          retention-days: 7
+
       - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:

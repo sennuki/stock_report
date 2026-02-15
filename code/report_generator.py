@@ -229,6 +229,7 @@ def export_full_analysis_reports(df_info, df_metrics, output_dir="output_reports
                 future.result()
             except Exception as e:
                 ticker = futures[future]
+                utils.log_event("ERROR", ticker, str(e))
                 print(f"Error processing {ticker}: {e}")
 
     print("完了しました。")
