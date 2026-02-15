@@ -147,13 +147,11 @@ def generate_scatter_html(df_metrics, target_symbol, sector_etf_symbol):
         buttons.append(dict(
             label=p['label'],
             method="update",
-            args=[{"visible": visibility},
-                  {"title": f"リスク・リターン分析 ({p['label']}): {target_symbol} vs {sector_etf_symbol}"}]
+            args=[{"visible": visibility}]
         ))
 
     fig.update_layout(
-        title=dict(text=f"リスク・リターン分析 (2年): {target_symbol} vs {sector_etf_symbol}", font=dict(size=14)),
-        xaxis=dict(title='リスク (ボラティリティ 年率)', tickformat='.0%', fixedrange=True, gridcolor='#E5E7EB'),
+            xaxis=dict(title='リスク (ボラティリティ 年率)', tickformat='.0%', fixedrange=True, gridcolor='#E5E7EB'),
         yaxis=dict(title='リターン (年率換算)', tickformat='.0%', fixedrange=True, automargin=True, gridcolor='#E5E7EB'),
         margin=dict(l=60, r=30, t=120, b=40), height=600, template='plotly_white',
         autosize=True,
