@@ -156,18 +156,24 @@ def generate_scatter_html(df_metrics, target_symbol, sector_etf_symbol):
         ))
 
     fig.update_layout(
-            xaxis=dict(title='リスク (ボラティリティ 年率)', tickformat='.0%', fixedrange=True, gridcolor='#E5E7EB'),
+        xaxis=dict(title='リスク (ボラティリティ 年率)', tickformat='.0%', fixedrange=True, gridcolor='#E5E7EB'),
         yaxis=dict(title='リターン (年率換算)', tickformat='.0%', fixedrange=True, automargin=True, gridcolor='#E5E7EB'),
-        margin=dict(l=60, r=30, t=120, b=40), height=600, template='plotly_white',
+        margin=dict(l=60, r=30, t=130, b=40), height=600, template='plotly_white',
         autosize=True,
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5),
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1.0
+        ),
         updatemenus=[dict(
             type="buttons",
             direction="right",
             active=4, # 2年 (インデックス4) をアクティブに
-            x=0.5,
-            y=1.15,
-            xanchor="center",
+            x=0.0,
+            y=1.2,
+            xanchor="left",
             yanchor="top",
             showactive=True,
             buttons=buttons,
