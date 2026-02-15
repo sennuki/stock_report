@@ -43,10 +43,10 @@ def fetch_sp500_companies_optimized():
         print(f"{len(symbols)} 銘柄の市場情報を取得中... (並列処理)")
         # Rate limit回避のため並列数を抑える
         # GitHub Actions では 2、ローカルでは 1 をデフォルトにする
-    default_max_workers = 2 if os.getenv("GITHUB_ACTIONS") == "true" else 1
-    current_max_workers = int(os.getenv("MAX_WORKERS", default_max_workers))
+        default_max_workers = 2 if os.getenv("GITHUB_ACTIONS") == "true" else 1
+        current_max_workers = int(os.getenv("MAX_WORKERS", default_max_workers))
 
-    with ThreadPoolExecutor(max_workers=current_max_workers) as ex:
+        with ThreadPoolExecutor(max_workers=current_max_workers) as ex:
             f_map = {ex.submit(get_market_info, s): s for s in symbols}
             for f in tqdm(as_completed(f_map), total=len(symbols)):
                 s, e = f.result()
