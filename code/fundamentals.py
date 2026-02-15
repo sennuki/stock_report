@@ -50,44 +50,76 @@ def get_financial_data(ticker_obj):
     data = {}
     symbol = getattr(ticker_obj, 'ticker', 'Unknown')
 
+    def get_attr(obj, names):
+        for name in names:
+            val = getattr(obj, name, None)
+            if val is not None and not (isinstance(val, pd.DataFrame) and val.empty):
+                return val
+        return None
+
     def extract_and_melt(pandas_df, targets):
-        if pandas_df is None or pandas_df.empty:
+        if pandas_df is None or (isinstance(pandas_df, pd.DataFrame) and pandas_df.empty):
             return pl.DataFrame()
         try:
             # Convert to Polars, keeping index
             df = pl.from_pandas(pandas_df, include_index=True)
             # Rename first column to 'Item'
             df = df.rename({df.columns[0]: 'Item'})
-            # Filter and Melt
-            return get_melt(df.filter(pl.col('Item').is_in(targets)))
+            # Filter
+            df_filtered = df.filter(pl.col('Item').is_in(targets))
+            if df_filtered.is_empty():
+                return pl.DataFrame()
+            return get_melt(df_filtered)
         except Exception as e:
             print(f"Error processing data for {symbol}: {e}")
             return pl.DataFrame()
 
     # 1. 貸借対照表
+    bs_annual = get_attr(ticker_obj, ['balancesheet', 'balance_sheet'])
+    bs_quarterly = get_attr(ticker_obj, ['quarterly_balancesheet', 'quarterly_balance_sheet'])
+    
+    # 2. 損益計算書
+    is_annual = get_attr(ticker_obj, ['income_stmt', 'incomestmt', 'financials'])
+    is_quarterly = get_attr(ticker_obj, ['quarterly_income_stmt', 'quarterly_incomestmt', 'quarterly_financials'])
+
+    # 3. キャッシュフロー
+    cf_annual = get_attr(ticker_obj, ['cashflow', 'cash_flow'])
+    cf_quarterly = get_attr(ticker_obj, ['quarterly_cashflow', 'quarterly_cash_flow'])
+
+    # Total Liabilities がない場合の補完
+    def ensure_total_liabilities(df_pd):
+        if df_pd is None or df_pd.empty: return df_pd
+        if 'Total Liabilities' not in df_pd.index:
+            for alt in ['Total Liabilities Net Minority Interest', 'Total Liabilities And Equity']:
+                if alt in df_pd.index:
+                    df_pd.loc['Total Liabilities'] = df_pd.loc[alt]
+                    break
+        return df_pd
+
     target_bs = ['Total Non Current Assets', 'Current Liabilities', 'Total Equity Gross Minority Interest',
                  'Current Assets', 'Total Non Current Liabilities Net Minority Interest',
                  'Total Assets', 'Total Liabilities Net Minority Interest', 'Total Liabilities',
                  'Long Term Debt And Capital Lease Obligation','Employee Benefits', 'Non Current Deferred Liabilities',
                  'Other Non Current Liabilities']
+
     data['bs'] = {
-        'annual': extract_and_melt(ticker_obj.balancesheet, target_bs),
-        'quarterly': extract_and_melt(ticker_obj.quarterly_balancesheet, target_bs)
+        'annual': extract_and_melt(ensure_total_liabilities(bs_annual), target_bs),
+        'quarterly': extract_and_melt(ensure_total_liabilities(bs_quarterly), target_bs)
     }
 
-    # 2. 損益計算書
+    # 損益計算書
     target_is = ['Total Revenue', 'Gross Profit', 'Operating Income', 'Net Income']
-    df_is_annual = extract_and_melt(ticker_obj.income_stmt, target_is)
-    df_is_quarterly = extract_and_melt(ticker_obj.quarterly_income_stmt, target_is)
+    df_is_annual = extract_and_melt(is_annual, target_is)
+    df_is_quarterly = extract_and_melt(is_quarterly, target_is)
     data['is'] = {
         'annual': df_is_annual,
         'quarterly': df_is_quarterly
     }
 
-    # 3. キャッシュフロー
+    # キャッシュフロー
     target_cf = ['Operating Cash Flow', 'Investing Cash Flow', 'Financing Cash Flow', 'Free Cash Flow']
-    df_cf_annual = extract_and_melt(ticker_obj.cashflow, target_cf)
-    df_cf_quarterly = extract_and_melt(ticker_obj.quarterly_cashflow, target_cf)
+    df_cf_annual = extract_and_melt(cf_annual, target_cf)
+    df_cf_quarterly = extract_and_melt(cf_quarterly, target_cf)
 
     # Net IncomeをISから取得してCFに結合 (CF側にNet Incomeがない場合が多いため)
     def merge_ni_to_cf(df_cf, df_is):
@@ -111,6 +143,13 @@ def get_financial_data(ticker_obj):
             df_tp = pl.from_pandas(df_source, include_index=True)
             df_tp = df_tp.rename({df_tp.columns[0]: 'Item'})
             
+            # 項目名の補完: Net Income From Continuing Operations がない場合は Net Income を使う
+            if 'Net Income From Continuing Operations' not in df_tp['Item'].to_list():
+                if 'Net Income' in df_tp['Item'].to_list():
+                    # Net Income の行をコピーして Item 名を変更
+                    ni_row = df_tp.filter(pl.col('Item') == 'Net Income').with_columns(pl.lit('Net Income From Continuing Operations').alias('Item'))
+                    df_tp = pl.concat([df_tp, ni_row])
+
             target_tp = ['Net Income From Continuing Operations', 'Repurchase Of Capital Stock', 'Cash Dividends Paid']
             df_tp = df_tp.filter(pl.col('Item').is_in(target_tp))
             if not df_tp.is_empty():
