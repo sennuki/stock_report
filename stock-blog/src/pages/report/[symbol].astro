@@ -57,7 +57,7 @@ const base = import.meta.env.BASE_URL.endsWith("/")
   <Header />
   
   {/* Load Plotly.js from CDN */}
-  <script is:inline src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+  <script is:inline src="https://cdn.plot.ly/plotly-3.0.0.min.js" charset="utf-8"></script>
 
   {/* Inject extracted scripts and styles. */}
   <div id="report-head-injection">
@@ -82,14 +82,13 @@ const base = import.meta.env.BASE_URL.endsWith("/")
 </Layout>
 
 <script>
-<script>
   // Function to manually execute scripts inserted via innerHTML
-  function executeScripts(container: Element | null) {
+  async function executeScripts(container: Element | null) {
     if (!container) return;
     const isDark = document.documentElement.classList.contains('dark');
     const scripts = container.querySelectorAll('script');
     
-    scripts.forEach((oldScript) => {
+    for (const oldScript of Array.from(scripts)) {
       const newScript = document.createElement('script');
       
       // Copy attributes
@@ -97,9 +96,16 @@ const base = import.meta.env.BASE_URL.endsWith("/")
         newScript.setAttribute(attr.name, attr.value);
       });
       
-      // Copy content or handle external scripts
       if (oldScript.src) {
         newScript.src = oldScript.src;
+        const promise = new Promise((resolve, reject) => {
+          newScript.onload = resolve;
+          newScript.onerror = reject;
+        });
+        if (oldScript.parentNode) {
+          oldScript.parentNode.replaceChild(newScript, oldScript);
+        }
+        await promise;
       } else {
         let content = oldScript.textContent || '';
         // Dynamically switch TradingView theme based on current Astro theme
@@ -111,23 +117,17 @@ const base = import.meta.env.BASE_URL.endsWith("/")
           content = content.replace(/"theme":\s*"dark"/g, '"theme": "light"');
         }
         newScript.textContent = content;
+        if (oldScript.parentNode) {
+          oldScript.parentNode.replaceChild(newScript, oldScript);
+        }
       }
-      
-      // Replace old script with new one to trigger execution
-      if (oldScript.parentNode) {
-        oldScript.parentNode.replaceChild(newScript, oldScript);
-      }
-    });
+    }
   }
 
   // Function to update Plotly themes dynamically
   function updatePlotlyTheme() {
     // @ts-ignore
-    if (!window.Plotly) {
-      console.log('Waiting for Plotly...');
-      setTimeout(updatePlotlyTheme, 200);
-      return;
-    }
+    if (!window.Plotly) return;
 
     const isDark = document.documentElement.classList.contains('dark');
     const theme = isDark ? 'plotly_dark' : 'plotly_white';
@@ -145,28 +145,37 @@ const base = import.meta.env.BASE_URL.endsWith("/")
           plot_bgcolor: plot_bgcolor,
           'font.color': font_color
         });
-      } catch (e) {
-        console.error('Error updating plotly theme:', e);
-      }
+      } catch (e) {}
     });
   }
 
-  // Run on initial load and after View Transitions navigation
-  function initPage() {
-    // Execute scripts in the head injection area
+  // Main initialization
+  async function initPage() {
+    // 1. Ensure Plotly is available
+    // @ts-ignore
+    if (!window.Plotly) {
+      await new Promise(resolve => {
+        const check = () => {
+          // @ts-ignore
+          if (window.Plotly) resolve();
+          else setTimeout(check, 100);
+        };
+        check();
+      });
+    }
+
+    // 2. Execute scripts in order
     const headInjection = document.getElementById('report-head-injection');
-    if (headInjection) {
-        executeScripts(headInjection);
-    }
+    await executeScripts(headInjection);
     
-    // Execute scripts in the body content area
     const reportContent = document.querySelector('.report-content');
-    if (reportContent) {
-        executeScripts(reportContent);
-    }
+    await executeScripts(reportContent);
     
-    // Initial Plotly setup and theme setup
-    updatePlotlyTheme();
+    // 3. Final layout fix
+    requestAnimationFrame(() => {
+      updatePlotlyTheme();
+      window.dispatchEvent(new Event('resize'));
+    });
   }
 
   document.addEventListener('astro:page-load', initPage);
