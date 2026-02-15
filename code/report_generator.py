@@ -38,6 +38,7 @@ TEMPLATE = """<!DOCTYPE html>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&family=Noto+Emoji:wght@300..700&display=swap" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
     <script type="module" src="https://widgets.tradingview-widget.com/w/ja/tv-ticker-tag.js"></script>
     <style>
         body {{ 
@@ -104,7 +105,8 @@ TEMPLATE = """<!DOCTYPE html>
 </nav>
 
 <h2 id="risk-return">🎯 リスク・リターン分析</h2>
-<p>🔴 <strong>{ticker}</strong> (対象) vs 🔷 <strong>{sector_etf_ticker}</strong> (セクター) vs ★ <strong>S&P 500</strong></p>
+<p>各期間のボタンをクリックして、リスク（ボラティリティ）とリターンの位置関係を切り替えることができます。<br>
+🔴 <strong>{ticker}</strong> (対象) vs 🔷 <strong>{sector_etf_ticker}</strong> (セクター) vs ★ <strong>S&P 500</strong></p>
 {volatility_chart_html}
 
 <hr>

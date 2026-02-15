@@ -266,13 +266,13 @@ def get_bs_plotly_html(data_dict):
     if num_q > 0:
         buttons.append(dict(label="四半期", method="update", args=[{"visible": [False]*num_a + [True]*num_q}]))
 
-    updatemenus = [dict(type="buttons", direction="right", x=0.0, y=1.15, showactive=True, buttons=buttons)] if len(buttons) > 1 else None
+    updatemenus = [dict(type="buttons", direction="right", x=0.0, y=1.2, showactive=True, buttons=buttons)] if len(buttons) > 1 else None
 
-    fig.update_layout(barmode='group', height=450, margin=dict(t=80,b=50),
+    fig.update_layout(barmode='group', height=500, margin=dict(t=100,b=80, l=60, r=40),
                       template='plotly_white', showlegend=True,
-                      xaxis=dict(type='category'),
-                      yaxis=dict(type='linear', rangemode='tozero'),
-                      legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5),
+                      xaxis=dict(type='category', tickangle=0),
+                      yaxis=dict(type='linear', rangemode='tozero', automargin=True, gridcolor='#F3F4F6'),
+                      legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5),
                       updatemenus=updatemenus)
     return '<h3 id="balance-sheet">貸借対照表</h3>' + create_chart_html(fig)
 
@@ -320,15 +320,15 @@ def get_is_plotly_html(data_dict):
     if num_q > 0:
         buttons.append(dict(label="四半期", method="update", args=[{"visible": [False]*num_a + [True]*num_q}]))
 
-    updatemenus = [dict(type="buttons", direction="right", x=0.0, y=1.15, showactive=True, buttons=buttons)] if len(buttons) > 1 else None
+    updatemenus = [dict(type="buttons", direction="right", x=0.0, y=1.2, showactive=True, buttons=buttons)] if len(buttons) > 1 else None
 
     fig.update_layout(
-        barmode='group', height=500, margin=dict(t=80,b=50), 
+        barmode='group', height=500, margin=dict(t=100,b=80, l=60, r=60), 
         template='plotly_white', showlegend=True,
-        xaxis=dict(type='category'),
-        yaxis=dict(title='金額', showgrid=True, type='linear'),
-        yaxis2=dict(title='利益率', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='linear'),
-        legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5),
+        xaxis=dict(type='category', tickangle=0),
+        yaxis=dict(title='金額', showgrid=True, type='linear', automargin=True, gridcolor='#F3F4F6'),
+        yaxis2=dict(title='利益率', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='linear', automargin=True),
+        legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5),
         updatemenus=updatemenus
     )
     return '<h3 id="income-statement">損益計算書</h3>' + create_chart_html(fig)
@@ -364,13 +364,13 @@ def get_cf_plotly_html(data_dict):
     if num_q > 0:
         buttons.append(dict(label="四半期", method="update", args=[{"visible": [False]*num_a + [True]*num_q}]))
 
-    updatemenus = [dict(type="buttons", direction="right", x=0.0, y=1.15, showactive=True, buttons=buttons)] if len(buttons) > 1 else None
+    updatemenus = [dict(type="buttons", direction="right", x=0.0, y=1.2, showactive=True, buttons=buttons)] if len(buttons) > 1 else None
 
-    fig.update_layout(barmode='group', height=450, margin=dict(t=80,b=50),
+    fig.update_layout(barmode='group', height=500, margin=dict(t=100,b=80, l=60, r=40),
                       template='plotly_white', showlegend=True,
-                      xaxis=dict(type='category'),
-                      yaxis=dict(title='金額', type='linear'),
-                      legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5),
+                      xaxis=dict(type='category', tickangle=0),
+                      yaxis=dict(title='金額', type='linear', automargin=True, gridcolor='#F3F4F6'),
+                      legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5),
                       updatemenus=updatemenus)
     return '<h3 id="cash-flow">キャッシュフロー</h3>' + create_chart_html(fig)
 
@@ -415,14 +415,14 @@ def get_tp_plotly_html(data_dict):
     if num_q > 0:
         buttons.append(dict(label="四半期", method="update", args=[{"visible": [False]*num_a + [True]*num_q}]))
 
-    updatemenus = [dict(type="buttons", direction="right", x=0.0, y=1.15, showactive=True, buttons=buttons)] if len(buttons) > 1 else None
+    updatemenus = [dict(type="buttons", direction="right", x=0.0, y=1.2, showactive=True, buttons=buttons)] if len(buttons) > 1 else None
 
     fig.update_layout(
-        barmode='group', height=450, margin=dict(t=80,b=50), template='plotly_white',
-        xaxis=dict(type='category'),
-        yaxis=dict(title='金額', showgrid=True, type='linear', rangemode='tozero'),
-        yaxis2=dict(title='還元性向', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='linear', rangemode='tozero'),
-        legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5),
+        barmode='group', height=500, margin=dict(t=100,b=80, l=60, r=60), template='plotly_white',
+        xaxis=dict(type='category', tickangle=0),
+        yaxis=dict(title='金額', showgrid=True, type='linear', rangemode='tozero', automargin=True, gridcolor='#F3F4F6'),
+        yaxis2=dict(title='還元性向', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='linear', rangemode='tozero', automargin=True),
+        legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5),
         updatemenus=updatemenus
     )
     return '<h3 id="shareholder-return">株主還元</h3>' + create_chart_html(fig)
