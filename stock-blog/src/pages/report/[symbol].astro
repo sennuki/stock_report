@@ -1,4 +1,5 @@
 ---
+import { getCollection } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
@@ -7,9 +8,16 @@ import fs from "node:fs";
 import path from "node:path";
 
 export async function getStaticPaths() {
-  return (stocks as any[]).map((stock: any) => ({
-    params: { symbol: stock.Symbol_YF },
-  }));
+  const blogDir = path.join(process.cwd(), "src", "data", "blog");
+  if (fs.existsSync(blogDir)) {
+    const files = fs.readdirSync(blogDir);
+    return files
+      .filter(file => file.endsWith(".md"))
+      .map(file => ({
+        params: { symbol: file.replace(".md", "") },
+      }));
+  }
+  return [];
 }
 
 const { symbol } = Astro.params;

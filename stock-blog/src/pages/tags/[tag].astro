@@ -1,0 +1,81 @@
+---
+import { getCollection } from "astro:content";
+import Main from "@/layouts/Main.astro";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import getUniqueTags from "@/utils/getUniqueTags";
+import getPostsByTag from "@/utils/getPostsByTag";
+import { SITE } from "@/config";
+import stocksData from "@/data/stocks.json";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog");
+  const tags = getUniqueTags(posts);
+
+  return tags.map(({ tag, tagName }) => {
+    return {
+      params: { tag },
+      props: { tagName },
+    };
+  });
+}
+
+const { tag } = Astro.params;
+const { tagName } = Astro.props;
+
+const posts = await getCollection("blog");
+const tagPosts = getPostsByTag(posts, tag);
+
+// Symbol_YFをキーにした銘柄情報のマップを作成
+const stockMap = Object.fromEntries(
+  (stocksData as any[]).map(s => [s.Symbol_YF, s])
+);
+
+const base = import.meta.env.BASE_URL.endsWith("/")
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+
+// タイトルからティッカーと社名を抽出する関数
+const parseTitle = (title: string) => {
+  // "銘柄分析レポート: TICKER (Company Name)" の形式を想定
+  const match = title.match(/銘柄分析レポート:\s+([A-Z\.]+)\s+\((.*?)\)/);
+  if (match) {
+    return { ticker: match[1], security: match[2] };
+  }
+  return { ticker: title, security: "" };
+};
+---
+
+<Layout title={`セクター: ${tagName} | ${SITE.title}`}>
+  <Header />
+  <Main
+    pageTitle={[`セクター:`, `${tagName}`]}
+    titleTransition={tag}
+    pageDesc={`"${tagName}" セクターの銘柄レポート一覧です。`}
+  >
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mt-8">
+      {tagPosts.map((post) => {
+        const { data, id } = post;
+        const tickerId = id.split("/").pop(); // 拡張子なしのファイル名（AAPLなど）
+        const stock = stockMap[tickerId || ""];
+        
+        const { ticker, security } = parseTitle(data.title);
+        const displayTicker = stock?.Symbol_YF || ticker;
+        const displaySecurity = stock?.Security || security;
+
+        return (
+          <a 
+            href={`${base}report/${displayTicker}/`} 
+            class="group block p-4 border border-skin-line rounded-lg hover:border-skin-accent hover:shadow-lg transition-all bg-skin-card"
+          >
+            <div class="text-lg font-bold text-skin-accent mb-1 group-hover:underline decoration-dashed underline-offset-4">{displayTicker}</div>
+            <div class="text-sm opacity-90 truncate" title={displaySecurity}>{displaySecurity}</div>
+          </a>
+        );
+      })}
+    </div>
+  </Main>
+
+  <Footer />
+</Layout>

@@ -3,12 +3,22 @@ import path from 'path';
 
 const INPUT_DIR = 'public/output_reports_full';
 const OUTPUT_DIR = 'src/data/blog';
+const STOCKS_JSON = 'src/data/stocks.json';
 const AUTHOR = 'Gemini Stock Bot';
 const BASE_PATH = '/stock_report'; // astro.config.ts の base 設定に合わせる
 
 if (!fs.existsSync(OUTPUT_DIR)) {
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
 }
+
+// 銘柄データの読み込み
+let stocksData = [];
+if (fs.existsSync(STOCKS_JSON)) {
+  stocksData = JSON.parse(fs.readFileSync(STOCKS_JSON, 'utf-8'));
+}
+const symbolToSector = Object.fromEntries(
+  stocksData.map(s => [s.Symbol_YF, s['GICS Sector']])
+);
 
 const files = fs.readdirSync(INPUT_DIR).filter(f => f.endsWith('.html'));
 const now = new Date().toISOString();
@@ -19,6 +29,8 @@ files.forEach(file => {
   const ticker = path.basename(file, '.html');
   const filePath = path.join(INPUT_DIR, file);
   const htmlContent = fs.readFileSync(filePath, 'utf-8');
+
+  const sector = symbolToSector[ticker] || 'Others';
 
   // タイトルの抽出
   const titleMatch = htmlContent.match(/<title>(.*?)<\/title>/);
@@ -35,8 +47,7 @@ postSlug: ${ticker.toLowerCase()}
 featured: false
 draft: false
 tags:
-  - stocks
-  - ${ticker}
+  - "${sector}"
 description: "${title}。最新の株価パフォーマンス、ファンダメンタルズ、テクニカル分析を網羅した詳細レポートです。"
 ---
 
