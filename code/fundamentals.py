@@ -108,18 +108,60 @@ def get_financial_data(ticker_obj):
     }
 
     # 損益計算書
-    target_is = ['Total Revenue', 'Gross Profit', 'Operating Income', 'Net Income']
-    df_is_annual = extract_and_melt(is_annual, target_is)
-    df_is_quarterly = extract_and_melt(is_quarterly, target_is)
+    is_aliases = {
+        'Total Revenue': ['Total Revenue', 'Revenue', 'Operating Revenue'],
+        'Gross Profit': ['Gross Profit', 'GrossProfit'],
+        'Operating Income': ['Operating Income', 'OperatingIncome', 'Operating Profit'],
+        'Net Income': ['Net Income', 'NetIncome', 'Net Income Common Stockholders']
+    }
+
+    def extract_with_aliases(pandas_df, alias_dict):
+        if pandas_df is None or (isinstance(pandas_df, pd.DataFrame) and pandas_df.empty):
+            return pl.DataFrame()
+        try:
+            df = pl.from_pandas(pandas_df, include_index=True)
+            df = df.rename({df.columns[0]: 'Item'})
+            
+            # 各標準名に対して、最初に見つかったエイリアスの名前を標準名に書き換える
+            for standard_name, aliases in alias_dict.items():
+                for alias in aliases:
+                    if alias in df['Item'].to_list() and alias != standard_name:
+                        # 標準名が既に存在する場合は、それを優先する（何もしない）
+                        if standard_name not in df['Item'].to_list():
+                             df = df.with_columns(
+                                 pl.when(pl.col('Item') == alias)
+                                 .then(pl.lit(standard_name))
+                                 .otherwise(pl.col('Item'))
+                                 .alias('Item')
+                             )
+                        break
+            
+            target_list = list(alias_dict.keys())
+            df_filtered = df.filter(pl.col('Item').is_in(target_list))
+            if df_filtered.is_empty():
+                return pl.DataFrame()
+            return get_melt(df_filtered)
+        except Exception as e:
+            print(f"Error processing aliases for {symbol}: {e}")
+            return pl.DataFrame()
+
+    df_is_annual = extract_with_aliases(is_annual, is_aliases)
+    df_is_quarterly = extract_with_aliases(is_quarterly, is_aliases)
     data['is'] = {
         'annual': df_is_annual,
         'quarterly': df_is_quarterly
     }
 
     # キャッシュフロー
-    target_cf = ['Operating Cash Flow', 'Investing Cash Flow', 'Financing Cash Flow', 'Free Cash Flow']
-    df_cf_annual = extract_and_melt(cf_annual, target_cf)
-    df_cf_quarterly = extract_and_melt(cf_quarterly, target_cf)
+    cf_aliases = {
+        'Operating Cash Flow': ['Operating Cash Flow', 'Cash Flow From Operating Activities', 'Net Cash From Operating Activities'],
+        'Investing Cash Flow': ['Investing Cash Flow', 'Cash Flow From Investing Activities', 'Net Cash From Investing Activities'],
+        'Financing Cash Flow': ['Financing Cash Flow', 'Cash Flow From Financing Activities', 'Net Cash From Financing Activities'],
+        'Free Cash Flow': ['Free Cash Flow', 'FreeCashFlow']
+    }
+    df_cf_annual = extract_with_aliases(cf_annual, cf_aliases)
+    df_cf_quarterly = extract_with_aliases(cf_quarterly, cf_aliases)
+
 
     # Net IncomeをISから取得してCFに結合 (CF側にNet Incomeがない場合が多いため)
     def merge_ni_to_cf(df_cf, df_is):
@@ -361,12 +403,49 @@ def get_is_plotly_html(data_dict):
 
     updatemenus = [dict(type="buttons", direction="right", x=0.0, y=1.2, showactive=True, buttons=buttons)] if len(buttons) > 1 else None
 
+    # 左右の軸の0位置を合わせるための計算
+    def get_range(df, cols, is_ratio=False):
+        if df.is_empty(): return 0, 1
+        vals = []
+        for c in cols:
+            if c in df.columns: vals.extend(df[c].to_list())
+        if not vals: return 0, 1
+        vmin, vmax = min(vals), max(vals)
+        if is_ratio: # 利益率などは極端な値を除外
+            vmin, vmax = max(vmin, -1.0), min(vmax, 2.0)
+        return vmin, vmax
+
+    def align_yaxis(fig, df):
+        if df.is_empty(): return
+        # 金額軸 (左)
+        is_items = ['Total Revenue', 'Gross Profit', 'Operating Income', 'Net Income']
+        y1_min, y1_max = get_range(df.pivot(on='Item', index='Date', values='Value'), is_items)
+        # 利益率軸 (右)
+        # 簡易的に、データ全体の最小・最大から比率を計算
+        y2_min, y2_max = -0.2, 1.0 # デフォルト範囲
+        
+        # 0の位置を合わせる： y1_min / y1_max == y2_min / y2_max となるように調整
+        if y1_min < 0:
+            # 負の値がある場合、正負の比率を維持する
+            ratio = abs(y1_min) / y1_max if y1_max > 0 else 1.0
+            y2_min = - (y2_max * ratio)
+        else:
+            # 負の値がない場合は0から開始
+            y1_min = 0
+            y2_min = 0
+        
+        return [y1_min * 1.1, y1_max * 1.1], [y2_min, y2_max * 1.1]
+
+    # 注: 動的な切り替え（ボタン）があるため、完全な一致は難しいが、
+    # 通期データを基準に設定するか、rangemodeを工夫する。
+    # ここではシンプルに両方の軸に zeroline を強調し、rangemode='tozero' を基本とする。
+
     fig.update_layout(
         barmode='group', height=500, margin=dict(t=100,b=80, l=60, r=60), 
         template='plotly_white', showlegend=True,
         xaxis=dict(type='category', tickangle=0),
-        yaxis=dict(title='金額', showgrid=True, type='linear', automargin=True, gridcolor='#F3F4F6'),
-        yaxis2=dict(title='利益率', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='linear', automargin=True),
+        yaxis=dict(title='金額', showgrid=True, type='linear', automargin=True, gridcolor='#F3F4F6', zeroline=True, zerolinecolor='#444', zerolinewidth=2, rangemode='nonnegative' if df_a.filter(pl.col('Value')<0).is_empty() else 'normal'),
+        yaxis2=dict(title='利益率', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='linear', automargin=True, zeroline=True, zerolinecolor='#444', zerolinewidth=2, rangemode='nonnegative' if df_a.filter(pl.col('Value')<0).is_empty() else 'normal'),
         legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5),
         updatemenus=updatemenus
     )
@@ -459,8 +538,8 @@ def get_tp_plotly_html(data_dict):
     fig.update_layout(
         barmode='group', height=500, margin=dict(t=100,b=80, l=60, r=60), template='plotly_white',
         xaxis=dict(type='category', tickangle=0),
-        yaxis=dict(title='金額', showgrid=True, type='linear', rangemode='tozero', automargin=True, gridcolor='#F3F4F6'),
-        yaxis2=dict(title='還元性向', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='linear', rangemode='tozero', automargin=True),
+        yaxis=dict(title='金額', showgrid=True, type='linear', automargin=True, gridcolor='#F3F4F6', zeroline=True, zerolinecolor='#444', zerolinewidth=2, rangemode='tozero'),
+        yaxis2=dict(title='還元性向', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='linear', automargin=True, zeroline=True, zerolinecolor='#444', zerolinewidth=2, rangemode='tozero'),
         legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5),
         updatemenus=updatemenus
     )

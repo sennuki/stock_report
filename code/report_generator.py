@@ -93,7 +93,8 @@ TEMPLATE = """<!DOCTYPE html>
         <li><a href="#peers">同業種・競合</a></li>
         <li><a href="#sector-peers">同セクター他社</a></li>
         <li><a href="#performance">パフォーマンス比較</a></li>
-        <li><a href="#fundamentals">ファンダメンタルズ分析</a>
+        <li><a href="#fundamentals">ファンダメンタルズ分析 (概要)</a></li>
+        <li><a href="#fundamentals-detail">財務データ推移 (詳細)</a>
             <ul>
                 <li><a href="#balance-sheet">貸借対照表</a></li>
                 <li><a href="#income-statement">損益計算書</a></li>
@@ -121,11 +122,12 @@ TEMPLATE = """<!DOCTYPE html>
 <div class="tradingview-widget-container" style="min-height: 500px;"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>{{ "allow_symbol_change": false, "interval": "D", "width": "100%", "height": 500, "symbol": "{full_symbol}", "theme": "light", "style": "2", "locale": "ja", "withdateranges": true, "hide_volume": true, "compareSymbols": [ {{ "symbol": "{sector_etf_tv}", "position": "SameScale" }}, {{ "symbol": "FRED:SP500", "position": "SameScale" }} ] }}</script></div>
 
 <hr>
-<h2 id="fundamentals">📊 ファンダメンタルズ分析</h2>
+<h2 id="fundamentals">📊 ファンダメンタルズ分析 (概要: TradingView提供)</h2>
+<p>※TradingView側の仕様により、特定の銘柄で「データなし」と表示される場合があります。その場合は下の詳細分析グラフをご参照ください。</p>
 
 <div class="tradingview-widget-container">
   <div class="tradingview-widget-container__widget"></div>
-  <div class="tradingview-widget-copyright"><a href="https://jp.tradingview.com/symbols/NASDAQ-AAPL/financials-overview/" rel="noopener nofollow" target="_blank"><span class="blue-text">Track all markets on TradingView</span></a></div>
+  <div class="tradingview-widget-copyright"><a href="https://jp.tradingview.com/symbols/{full_symbol}/financials-overview/" rel="noopener nofollow" target="_blank"><span class="blue-text">Track all markets on TradingView</span></a></div>
   <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-financials.js" async>
   {{
   "symbol": "{full_symbol}",
@@ -138,6 +140,9 @@ TEMPLATE = """<!DOCTYPE html>
 }}
   </script>
 </div>
+
+<h2 id="fundamentals-detail">📈 財務データ推移 (詳細分析)</h2>
+<p>独自に集計した財務データの推移グラフです。ボタンで「通期」と「四半期」を切り替えられます。</p>
 
 <div style="display: flex; flex-direction: column; gap: 40px;">
   <div>{chart_bs}</div>
@@ -194,11 +199,16 @@ def generate_report_for_ticker(row, df_info, df_metrics, output_dir):
     sub_peers = df_info.filter((pl.col("GICS Sub-Industry")==current_sub_industry) & (pl.col("Symbol_YF")!=chart_target_symbol))
     other_peers = df_info.filter((pl.col("GICS Sector")==current_sector) & (pl.col("GICS Sub-Industry")!=current_sub_industry) & (pl.col("Symbol_YF")!=chart_target_symbol))
 
+    # 特殊文字のエスケープ (簡単のため)
+    safe_sub_industry = current_sub_industry.replace("&", "&amp;")
+    safe_sector_name = current_sector.replace("&", "&amp;")
+    safe_security = row['Security'].replace("&", "&amp;")
+
     # 4. 書き出し
     content = TEMPLATE.format(
-        ticker=ticker_display, security=row['Security'], full_symbol=full_symbol,
+        ticker=ticker_display, security=safe_security, full_symbol=full_symbol,
         sector_etf_tv=sector_etf_tv, sector_etf_ticker=sector_etf_ticker,
-        sector_name=current_sector, sub_industry=current_sub_industry,
+        sector_name=safe_sector_name, sub_industry=safe_sub_industry,
         sub_industry_peers_html=create_tags(sub_peers), sector_other_peers_html=create_tags(other_peers),
         volatility_chart_html=volatility_chart_html,
         chart_bs=chart_bs, chart_is=chart_is, chart_cf=chart_cf, chart_tp=chart_tp

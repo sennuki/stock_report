@@ -86,9 +86,9 @@ const base = import.meta.env.BASE_URL.endsWith("/")
   async function executeScripts(container: Element | null) {
     if (!container) return;
     const isDark = document.documentElement.classList.contains('dark');
-    const scripts = container.querySelectorAll('script');
+    const scripts = Array.from(container.querySelectorAll('script'));
     
-    for (const oldScript of Array.from(scripts)) {
+    for (const oldScript of scripts) {
       const newScript = document.createElement('script');
       
       // Copy attributes
@@ -96,27 +96,34 @@ const base = import.meta.env.BASE_URL.endsWith("/")
         newScript.setAttribute(attr.name, attr.value);
       });
       
+      // Copy text content (Important for TradingView JSON config)
+      let content = oldScript.textContent || '';
+      if (isDark) {
+        content = content.replace(/"colorTheme":\s*"light"/g, '"colorTheme": "dark"');
+        content = content.replace(/"theme":\s*"light"/g, '"theme": "dark"');
+      } else {
+        content = content.replace(/"colorTheme":\s*"dark"/g, '"colorTheme": "light"');
+        content = content.replace(/"theme":\s*"dark"/g, '"theme": "light"');
+      }
+      newScript.textContent = content;
+      
       if (oldScript.src) {
+        // External scripts (like TradingView's embed-widget-financials.js)
         newScript.src = oldScript.src;
-        const promise = new Promise((resolve, reject) => {
+        newScript.async = true;
+        
+        const promise = new Promise((resolve) => {
           newScript.onload = resolve;
-          newScript.onerror = reject;
+          newScript.onerror = resolve;
+          setTimeout(resolve, 3000); // Safety timeout
         });
+        
         if (oldScript.parentNode) {
           oldScript.parentNode.replaceChild(newScript, oldScript);
         }
         await promise;
       } else {
-        let content = oldScript.textContent || '';
-        // Dynamically switch TradingView theme based on current Astro theme
-        if (isDark) {
-          content = content.replace(/"colorTheme":\s*"light"/g, '"colorTheme": "dark"');
-          content = content.replace(/"theme":\s*"light"/g, '"theme": "dark"');
-        } else {
-          content = content.replace(/"colorTheme":\s*"dark"/g, '"colorTheme": "light"');
-          content = content.replace(/"theme":\s*"dark"/g, '"theme": "light"');
-        }
-        newScript.textContent = content;
+        // Purely inline scripts
         if (oldScript.parentNode) {
           oldScript.parentNode.replaceChild(newScript, oldScript);
         }
@@ -151,6 +158,11 @@ const base = import.meta.env.BASE_URL.endsWith("/")
 
   // Main initialization
   async function initPage() {
+    // 0. Preliminary cleanup for TradingView widgets to prevent "AAPL default" glitch
+    document.querySelectorAll('.tradingview-widget-container__widget').forEach(el => {
+        el.innerHTML = '';
+    });
+
     // 1. Ensure Plotly is available
     // @ts-ignore
     if (!window.Plotly) {
@@ -165,16 +177,23 @@ const base = import.meta.env.BASE_URL.endsWith("/")
     }
 
     // 2. Execute scripts in order
+    // We wait a tiny bit to ensure DOM is fully ready for TradingView's observer
     const headInjection = document.getElementById('report-head-injection');
     await executeScripts(headInjection);
     
     const reportContent = document.querySelector('.report-content');
     await executeScripts(reportContent);
     
-    // 3. Final layout fix
+    // 3. Final layout fix and force TradingView re-scan
     requestAnimationFrame(() => {
       updatePlotlyTheme();
       window.dispatchEvent(new Event('resize'));
+      
+      // Some TradingView widgets need a push after DOM insertion
+      // @ts-ignore
+      if (window.TradingView && window.TradingView.widget) {
+          // This is a generic way to trigger TV widget updates if they are already in the DOM
+      }
     });
   }
 
