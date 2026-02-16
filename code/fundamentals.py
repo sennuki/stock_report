@@ -7,6 +7,7 @@ import plotly.io as pio
 from plotly.subplots import make_subplots
 import numpy as np
 import warnings
+import utils
 
 # Suppress plotly deprecation warnings
 warnings.filterwarnings("ignore", message=".*scattermapbox.*")
@@ -77,6 +78,9 @@ def get_financial_data(ticker_obj):
     # 1. 貸借対照表
     bs_annual = get_attr(ticker_obj, ['balancesheet', 'balance_sheet'])
     bs_quarterly = get_attr(ticker_obj, ['quarterly_balancesheet', 'quarterly_balance_sheet'])
+    
+    if (bs_annual is None or bs_annual.empty) and (bs_quarterly is None or bs_quarterly.empty):
+        utils.log_event("WARN", symbol, "Financial data (BS) is empty. GitHub Actions IP might be blocked or data is unavailable.")
     
     # 2. 損益計算書
     is_annual = get_attr(ticker_obj, ['income_stmt', 'incomestmt', 'financials'])

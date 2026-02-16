@@ -2,9 +2,7 @@
 import yfinance as yf
 try:
     from curl_cffi import requests as curl_requests
-    # HAS_CURL_CFFI = True
-    # Temporary disable curl_cffi to test if standard requests works better with current yfinance
-    HAS_CURL_CFFI = False
+    HAS_CURL_CFFI = True
 except ImportError:
     HAS_CURL_CFFI = False
     
@@ -30,14 +28,17 @@ def get_session():
     if HAS_CURL_CFFI:
         # curl_cffiが使える場合はそれを使う (yfinanceの推奨)
         # impersonate="chrome" でブラウザ偽装
-        # curl_cffiのSessionは標準requestsと完全互換ではないためmountなどは避ける
         session = curl_requests.Session(impersonate="chrome")
         return session
     else:
         # フォールバック (従来のrequests)
         session = std_requests.Session()
         session.headers.update({
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Accept": "*/*",
+            "Accept-Language": "en-US,en;q=0.9",
+            "Origin": "https://finance.yahoo.com",
+            "Referer": "https://finance.yahoo.com"
         })
         
         # リトライ設定
@@ -52,7 +53,10 @@ def get_session():
         session.mount("http://", adapter)
         return session
 
+_shared_session = None
+
 def get_ticker(symbol):
-    # session = get_session()
-    # Let yfinance handle session management automatically
-    return yf.Ticker(symbol)
+    global _shared_session
+    if _shared_session is None:
+        _shared_session = get_session()
+    return yf.Ticker(symbol, session=_shared_session)
