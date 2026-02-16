@@ -122,7 +122,7 @@ TEMPLATE = """<!DOCTYPE html>
 
 <hr>
 <h2 id="fundamentals">📊 ファンダメンタルズ分析</h2>
-<div class="tradingview-widget-container" style="min-height: 1100px;">
+<div class="tradingview-widget-container">
   <div class="tradingview-widget-container__widget"></div>
   <div class="tradingview-widget-copyright"><a href="https://jp.tradingview.com/symbols/{full_symbol}/financials-overview/" rel="noopener nofollow" target="_blank"><span class="blue-text">Track all markets on TradingView</span></a></div>
   <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-financials.js" async>
@@ -133,7 +133,7 @@ TEMPLATE = """<!DOCTYPE html>
   "isTransparent": false,
   "locale": "ja",
   "width": "100%",
-  "height": 1100
+  "height": 950
 }}
   </script>
 </div>
