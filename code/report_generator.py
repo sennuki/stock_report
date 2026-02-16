@@ -101,6 +101,7 @@ TEMPLATE = """<!DOCTYPE html>
                 <li><a href="#income-statement">損益計算書</a></li>
                 <li><a href="#cash-flow">キャッシュフロー</a></li>
                 <li><a href="#shareholder-return">株主還元</a></li>
+                <li><a href="#dividend-history">1株あたり配当金</a></li>
             </ul>
         </li>
     </ul>
@@ -132,6 +133,7 @@ TEMPLATE = """<!DOCTYPE html>
   <div>{chart_is}</div>
   <div>{chart_cf}</div>
   <div>{chart_tp}</div>
+  <div>{chart_dps}</div>
 </div>
 
 </body>
@@ -156,19 +158,26 @@ def generate_report_for_ticker(row, df_info, df_metrics, output_dir):
 
     # 1. 財務チャート生成
     try:
-        fin_data = fundamentals.get_financial_data(utils.get_ticker(chart_target_symbol))
+        ticker_obj = utils.get_ticker(chart_target_symbol)
+        fin_data = fundamentals.get_financial_data(ticker_obj)
         
-        if fin_data.get('bs', {}).get('annual', pl.DataFrame()).is_empty() and \
-           fin_data.get('bs', {}).get('quarterly', pl.DataFrame()).is_empty():
-             print(f"WARNING: No BS data for {ticker_display} ({chart_target_symbol})")
+        # 個別にエラーハンドリングして、一部のグラフが失敗しても他を表示できるようにする
+        def safe_gen(func, *args):
+            try:
+                return func(*args)
+            except Exception as e:
+                return f"<p>グラフ生成エラー ({func.__name__}): {str(e)}</p>"
 
-        chart_bs = fundamentals.get_bs_plotly_html(fin_data['bs'])
-        chart_is = fundamentals.get_is_plotly_html(fin_data['is'])
-        chart_cf = fundamentals.get_cf_plotly_html(fin_data['cf'])
-        chart_tp = fundamentals.get_tp_plotly_html(fin_data['tp'])
+        chart_bs = safe_gen(fundamentals.get_bs_plotly_html, fin_data.get('bs', {}))
+        chart_is = safe_gen(fundamentals.get_is_plotly_html, fin_data.get('is', {}))
+        chart_cf = safe_gen(fundamentals.get_cf_plotly_html, fin_data.get('cf', {}))
+        chart_tp = safe_gen(fundamentals.get_tp_plotly_html, fin_data.get('tp', {}))
+        chart_dps = safe_gen(fundamentals.get_dps_eps_plotly_html, fin_data.get('dps', {}), fin_data.get('is', {}))
+        
     except Exception as e:
-        # print(f"Error generating charts for {ticker_display}: {e}")
-        chart_bs = chart_is = chart_cf = chart_tp = "<p>データ取得エラー</p>"
+        error_msg = f"<p>データ取得エラー: {str(e)}</p>"
+        chart_bs = chart_is = chart_cf = chart_tp = chart_dps = error_msg
+        print(f"CRITICAL ERROR for {ticker_display}: {e}")
 
     # 2. リスクリターンチャート生成
     volatility_chart_html = risk_return.generate_scatter_html(df_metrics, chart_target_symbol, sector_etf_ticker)
@@ -194,7 +203,7 @@ def generate_report_for_ticker(row, df_info, df_metrics, output_dir):
         sector_name=safe_sector_name, sub_industry=safe_sub_industry,
         sub_industry_peers_html=create_tags(sub_peers), sector_other_peers_html=create_tags(other_peers),
         volatility_chart_html=volatility_chart_html,
-        chart_bs=chart_bs, chart_is=chart_is, chart_cf=chart_cf, chart_tp=chart_tp
+        chart_bs=chart_bs, chart_is=chart_is, chart_cf=chart_cf, chart_tp=chart_tp, chart_dps=chart_dps
     )
     
     # Use Symbol_YF for filename to match Astro's expected path (e.g., BRK-B.html)
@@ -230,21 +239,21 @@ def export_full_analysis_reports(df_info, df_metrics, output_dir="output_reports
 if __name__ == "__main__":
     print("MSFTのレポート生成テストを実行します...")
     
-    # ダミーデータ作成 (MSFT)
+    # テスト対象銘柄
+    test_symbol = "MSFT"
+    
+    # 銘柄基本情報
     df_info = pl.DataFrame({
-        "Symbol": ["MSFT"],
-        "Symbol_YF": ["MSFT"],
+        "Symbol": [test_symbol],
+        "Symbol_YF": [test_symbol],
         "Security": ["Microsoft Corp"],
         "GICS Sector": ["Information Technology"],
         "GICS Sub-Industry": ["Systems Software"],
         "Exchange": ["NASDAQ"]
     })
     
-    # ダミーのリスク指標
-    df_metrics = pl.DataFrame([
-        {"Symbol": "MSFT", "HV_250": 0.25, "Log_Return": 0.30},
-        {"Symbol": "^GSPC", "HV_250": 0.15, "Log_Return": 0.10},
-        {"Symbol": "VGT", "HV_250": 0.20, "Log_Return": 0.25}
-    ])
+    # 実際の指標を計算 (risk_returnのロジックを使用)
+    df_metrics = risk_return.calculate_market_metrics_parallel([test_symbol])
     
     export_full_analysis_reports(df_info, df_metrics, output_dir="test_reports")
+    print(f"\nテスト完了: test_reports/{test_symbol}.html を確認してください。")

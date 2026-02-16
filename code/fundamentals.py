@@ -116,7 +116,8 @@ def get_financial_data(ticker_obj):
         'Total Revenue': ['Total Revenue', 'Revenue', 'Operating Revenue'],
         'Gross Profit': ['Gross Profit', 'GrossProfit'],
         'Operating Income': ['Operating Income', 'OperatingIncome', 'Operating Profit'],
-        'Net Income': ['Net Income', 'NetIncome', 'Net Income Common Stockholders']
+        'Net Income': ['Net Income', 'NetIncome', 'Net Income Common Stockholders'],
+        'Basic EPS': ['Basic EPS', 'BasicEPS', 'Earnings Per Share Basic']
     }
 
     def extract_with_aliases(pandas_df, alias_dict):
@@ -244,7 +245,107 @@ def get_financial_data(ticker_obj):
         'quarterly': process_tp(ticker_obj.quarterly_cashflow)
     }
 
+    # 5. 1株あたり配当金 (DPS)
+    try:
+        divs = ticker_obj.dividends
+        if not divs.empty:
+            df_divs = divs.to_frame().reset_index()
+            df_divs['Date'] = df_divs['Date'].dt.strftime('%Y-%m-%d')
+            
+            # 年次集計
+            df_divs['Year'] = df_divs['Date'].str.slice(0, 4)
+            df_annual = df_divs.groupby('Year')['Dividends'].sum().reset_index()
+            df_annual = df_annual.rename(columns={'Year': 'Date', 'Dividends': 'Value'})
+            df_annual['Item'] = 'DPS'
+            
+            # 四半期データ (yfinanceのdividendsは支払い日ごとなので、そのまま四半期として扱うか、
+            # あるいは直近の四半期決算日付近で集計する。ここではシンプルに支払い日をベースにする)
+            df_q = df_divs.copy().rename(columns={'Dividends': 'Value'})
+            df_q['Item'] = 'DPS'
+
+            data['dps'] = {
+                'annual': pl.from_pandas(df_annual),
+                'quarterly': pl.from_pandas(df_q[['Date', 'Value', 'Item']])
+            }
+        else:
+            data['dps'] = {'annual': pl.DataFrame(), 'quarterly': pl.DataFrame()}
+    except Exception as e:
+        print(f"Error fetching dividends for {symbol}: {e}")
+        data['dps'] = {'annual': pl.DataFrame(), 'quarterly': pl.DataFrame()}
+
     return data
+
+def get_dps_eps_plotly_html(data_dict, is_data_dict):
+    df_dps_a = data_dict.get('annual', pl.DataFrame())
+    df_dps_q = data_dict.get('quarterly', pl.DataFrame())
+    df_is_a = is_data_dict.get('annual', pl.DataFrame())
+    df_is_q = is_data_dict.get('quarterly', pl.DataFrame())
+    
+    if df_dps_a.is_empty() and df_is_a.is_empty(): return "<p>配当・利益実績なし</p>"
+    
+    fig = go.Figure()
+
+    def add_dps_eps_traces(fig, df_dps, df_is, is_annual, visible):
+        if df_is.is_empty(): return 0
+        
+        # EPSデータの抽出
+        df_eps = df_is.filter(pl.col('Item') == 'Basic EPS').select(['Date', 'Value']).rename({'Value': 'EPS'})
+        
+        if is_annual:
+            # Dateを年だけに変換
+            df_eps = df_eps.with_columns(pl.col('Date').str.slice(0, 4).alias('Key'))
+            df_dps_plot = df_dps.select(['Date', 'Value']).rename({'Value': 'DPS', 'Date': 'Key'})
+        else:
+            # 四半期の場合は、月レベルで合わせるか、単純に直近N件を表示
+            # ここでは日付文字列をそのままキーにする
+            df_eps = df_eps.with_columns(pl.col('Date').alias('Key'))
+            df_dps_plot = df_dps.select(['Date', 'Value']).rename({'Value': 'DPS', 'Date': 'Key'})
+
+        # データの結合
+        df_plot = df_eps.join(df_dps_plot, on='Key', how='outer').sort('Key')
+        df_plot = df_plot.fill_null(0.0)
+
+        # 表示件数制限 (通期10年、四半期12件)
+        limit = 10 if is_annual else 12
+        df_plot = df_plot.tail(limit)
+
+        # EPSの棒
+        fig.add_trace(go.Bar(
+            name='EPS (1株利益)', x=df_plot['Key'], y=df_plot['EPS'],
+            marker_color='#aec7e8', visible=visible,
+            text=df_plot['EPS'].map_elements(lambda x: f"${x:.2f}", return_dtype=pl.Utf8),
+            textposition='auto'
+        ))
+        # DPSの棒
+        fig.add_trace(go.Bar(
+            name='DPS (1株配当)', x=df_plot['Key'], y=df_plot['DPS'],
+            marker_color='#1f77b4', visible=visible,
+            text=df_plot['DPS'].map_elements(lambda x: f"${x:.2f}", return_dtype=pl.Utf8),
+            textposition='auto'
+        ))
+        return 2
+
+    num_a = add_dps_eps_traces(fig, df_dps_a, df_is_a, True, True)
+    num_q = add_dps_eps_traces(fig, df_dps_q, df_is_q, False, False)
+
+    buttons = []
+    if num_a > 0:
+        buttons.append(dict(label="通期", method="update", args=[{"visible": [True, True] + [False]*num_q}]))
+    if num_q > 0:
+        buttons.append(dict(label="四半期", method="update", args=[{"visible": [False]*num_a + [True, True]}]))
+
+    updatemenus = [dict(type="buttons", direction="right", x=0.0, y=1.2, showactive=True, buttons=buttons)] if len(buttons) > 1 else None
+
+    fig.update_layout(
+        height=450, margin=dict(t=100, b=80, l=60, r=40),
+        template='plotly_white',
+        xaxis=dict(title='期間', type='category'),
+        yaxis=dict(title='金額 ($)', type='linear', gridcolor='#F3F4F6'),
+        barmode='group',
+        legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5),
+        updatemenus=updatemenus
+    )
+    return '<h3 id="dividend-history">EPS vs DPS 推移</h3>' + create_chart_html(fig)
 
 def create_chart_html(fig):
     """HTML化ヘルパー (ファイルサイズ削減のためライブラリ重複ロード回避)"""
@@ -316,16 +417,26 @@ def get_bs_plotly_html(data_dict):
             ])
 
             fig.add_trace(go.Bar(name='流動資産', x=df_plot['Date'], y=df_plot['CurrAssets'], marker_color='#aec7e8',
-                                base=df_plot['NonCurrAssets'], offsetgroup=0, visible=visible))
+                                base=df_plot['NonCurrAssets'], offsetgroup=0, visible=visible,
+                                text=df_plot['CurrAssets'].map_elements(lambda x: f"${x/1e9:.1f}B" if abs(x) >= 1e8 else f"${x/1e6:.1f}M", return_dtype=pl.Utf8),
+                                textposition='auto'))
             fig.add_trace(go.Bar(name='固定資産', x=df_plot['Date'], y=df_plot['NonCurrAssets'], marker_color='#1f77b4',
-                                 base=0, offsetgroup=0, visible=visible)) 
+                                 base=0, offsetgroup=0, visible=visible,
+                                 text=df_plot['NonCurrAssets'].map_elements(lambda x: f"${x/1e9:.1f}B" if abs(x) >= 1e8 else f"${x/1e6:.1f}M", return_dtype=pl.Utf8),
+                                 textposition='auto')) 
             
             fig.add_trace(go.Bar(name='流動負債', x=df_plot['Date'], y=df_plot['CurrLiab'], marker_color='#ffbb78',
-                                 base=df_plot['BaseCurr'], offsetgroup=1, visible=visible))
+                                 base=df_plot['BaseCurr'], offsetgroup=1, visible=visible,
+                                 text=df_plot['CurrLiab'].map_elements(lambda x: f"${x/1e9:.1f}B" if abs(x) >= 1e8 else f"${x/1e6:.1f}M", return_dtype=pl.Utf8),
+                                 textposition='auto'))
             fig.add_trace(go.Bar(name='固定負債', x=df_plot['Date'], y=df_plot['FixedLiab'], marker_color='#ff7f0e',
-                                 base=df_plot['BaseFixed'], offsetgroup=1, visible=visible))
+                                 base=df_plot['BaseFixed'], offsetgroup=1, visible=visible,
+                                 text=df_plot['FixedLiab'].map_elements(lambda x: f"${x/1e9:.1f}B" if abs(x) >= 1e8 else f"${x/1e6:.1f}M", return_dtype=pl.Utf8),
+                                 textposition='auto'))
             fig.add_trace(go.Bar(name='純資産', x=df_plot['Date'], y=df_plot['Equity'], marker_color='#2ca02c',
-                                 base=0, offsetgroup=1, visible=visible))
+                                 base=0, offsetgroup=1, visible=visible,
+                                 text=df_plot['Equity'].map_elements(lambda x: f"${x/1e9:.1f}B" if abs(x) >= 1e8 else f"${x/1e6:.1f}M", return_dtype=pl.Utf8),
+                                 textposition='auto'))
             return 5
         
         elif df_plot['TotalAssets'].sum() != 0:
@@ -334,11 +445,17 @@ def get_bs_plotly_html(data_dict):
             ])
             
             fig.add_trace(go.Bar(name='総資産', x=df_plot['Date'], y=df_plot['TotalAssets'], marker_color='#1f77b4',
-                                 offsetgroup=0, visible=visible))
+                                 offsetgroup=0, visible=visible,
+                                 text=df_plot['TotalAssets'].map_elements(lambda x: f"${x/1e9:.1f}B" if abs(x) >= 1e8 else f"${x/1e6:.1f}M", return_dtype=pl.Utf8),
+                                 textposition='auto'))
             fig.add_trace(go.Bar(name='総負債', x=df_plot['Date'], y=df_plot['TotalLiab'], marker_color='#ff7f0e',
-                                 base=df_plot['BaseLiab'], offsetgroup=1, visible=visible))
+                                 base=df_plot['BaseLiab'], offsetgroup=1, visible=visible,
+                                 text=df_plot['TotalLiab'].map_elements(lambda x: f"${x/1e9:.1f}B" if abs(x) >= 1e8 else f"${x/1e6:.1f}M", return_dtype=pl.Utf8),
+                                 textposition='auto'))
             fig.add_trace(go.Bar(name='純資産', x=df_plot['Date'], y=df_plot['Equity'], marker_color='#2ca02c',
-                                 base=0, offsetgroup=1, visible=visible))
+                                 base=0, offsetgroup=1, visible=visible,
+                                 text=df_plot['Equity'].map_elements(lambda x: f"${x/1e9:.1f}B" if abs(x) >= 1e8 else f"${x/1e6:.1f}M", return_dtype=pl.Utf8),
+                                 textposition='auto'))
             return 3
         return 0
 
@@ -383,7 +500,9 @@ def get_is_plotly_html(data_dict):
         for item_key, name, color in items:
             sub = df.filter(pl.col('Item') == item_key)
             if not sub.is_empty():
-                fig.add_trace(go.Bar(name=name, x=sub['Date'], y=sub['Value'], marker_color=color, visible=visible))
+                fig.add_trace(go.Bar(name=name, x=sub['Date'], y=sub['Value'], marker_color=color, visible=visible,
+                                     text=sub['Value'].map_elements(lambda x: f"${x/1e9:.1f}B" if abs(x) >= 1e8 else f"${x/1e6:.1f}M", return_dtype=pl.Utf8),
+                                     textposition='auto'))
                 count += 1
         try:
             df_pivot = df.pivot(on='Item', index='Date', values='Value')
@@ -474,7 +593,9 @@ def get_cf_plotly_html(data_dict):
         for item_key, name, color in items:
             sub = df.filter(pl.col('Item') == item_key)
             if not sub.is_empty():
-                fig.add_trace(go.Bar(name=name, x=sub['Date'], y=sub['Value'], marker_color=color, visible=visible))
+                fig.add_trace(go.Bar(name=name, x=sub['Date'], y=sub['Value'], marker_color=color, visible=visible,
+                                     text=sub['Value'].map_elements(lambda x: f"${x/1e9:.1f}B" if abs(x) >= 1e8 else f"${x/1e6:.1f}M", return_dtype=pl.Utf8),
+                                     textposition='auto'))
         return len(items)
 
     num_a = add_cf_traces(fig, df_a, visible=True) if not df_a.is_empty() else 0
@@ -514,11 +635,17 @@ def get_tp_plotly_html(data_dict):
         total_r = df.filter(pl.col('Item') == 'Total Payout Ratio / Net Income')
 
         # 純利益 (左側)
-        fig.add_trace(go.Bar(name='純利益', x=ni['Date'], y=ni['Value'], marker_color='#2ca02c', offsetgroup=0, visible=visible))
+        fig.add_trace(go.Bar(name='純利益', x=ni['Date'], y=ni['Value'], marker_color='#2ca02c', offsetgroup=0, visible=visible,
+                             text=ni['Value'].map_elements(lambda x: f"${x/1e9:.1f}B" if abs(x) >= 1e8 else f"${x/1e6:.1f}M", return_dtype=pl.Utf8),
+                             textposition='auto'))
         # 配当金 (右側の下)
-        fig.add_trace(go.Bar(name='配当金', x=div['Date'], y=div['Value'].abs(), marker_color='#aec7e8', offsetgroup=1, visible=visible))
+        fig.add_trace(go.Bar(name='配当金', x=div['Date'], y=div['Value'].abs(), marker_color='#aec7e8', offsetgroup=1, visible=visible,
+                             text=div['Value'].map_elements(lambda x: f"${abs(x)/1e9:.1f}B" if abs(x) >= 1e8 else f"${abs(x)/1e6:.1f}M", return_dtype=pl.Utf8),
+                             textposition='auto'))
         # 自社株買い (右側の配当の上)
-        fig.add_trace(go.Bar(name='自社株買い', x=repo['Date'], y=repo['Value'].abs(), marker_color='#1f77b4', base=div['Value'].abs(), offsetgroup=1, visible=visible))
+        fig.add_trace(go.Bar(name='自社株買い', x=repo['Date'], y=repo['Value'].abs(), marker_color='#1f77b4', base=div['Value'].abs(), offsetgroup=1, visible=visible,
+                             text=repo['Value'].map_elements(lambda x: f"${abs(x)/1e9:.1f}B" if abs(x) >= 1e8 else f"${abs(x)/1e6:.1f}M", return_dtype=pl.Utf8),
+                             textposition='auto'))
         
         # 性向 (折れ線)
         fig.add_trace(go.Scatter(name='配当性向', x=div_r['Date'], y=div_r['Value'], marker_color='#ffbb78', mode='lines+markers', yaxis='y2', hovertemplate='%{y:.1%}', visible=visible))
@@ -548,6 +675,113 @@ def get_tp_plotly_html(data_dict):
         updatemenus=updatemenus
     )
     return '<h3 id="shareholder-return">株主還元</h3>' + create_chart_html(fig)
+
+def get_dps_eps_plotly_html(data_dict, is_data_dict):
+    df_dps_a = data_dict.get('annual', pl.DataFrame())
+    df_dps_q = data_dict.get('quarterly', pl.DataFrame())
+    df_is_a = is_data_dict.get('annual', pl.DataFrame())
+    df_is_q = is_data_dict.get('quarterly', pl.DataFrame())
+    
+    if df_dps_a.is_empty() and df_is_a.is_empty(): return "<p>配当・利益実績なし</p>"
+    
+    fig = go.Figure()
+
+    def get_quarter_key(date_str):
+        if not date_str or not isinstance(date_str, str) or len(date_str) < 7: return "Unknown"
+        try:
+            y = date_str[:4]
+            m = int(date_str[5:7])
+            q = (m - 1) // 3 + 1
+            return f"{y}-Q{q}"
+        except:
+            return "Unknown"
+
+    def add_dps_eps_traces(fig, df_dps, df_is, is_annual, visible):
+        if df_is.is_empty() and df_dps.is_empty(): return 0
+        
+        # EPSデータの抽出
+        if not df_is.is_empty() and 'Item' in df_is.columns:
+            df_eps = df_is.filter(pl.col('Item') == 'Basic EPS').select(['Date', 'Value']).rename({'Value': 'EPS'})
+        else:
+            df_eps = pl.DataFrame({'Date': [], 'EPS': []})
+        
+        if is_annual:
+            # 年次: 年をキーにする
+            if not df_eps.is_empty():
+                df_eps = df_eps.with_columns(pl.col('Date').str.slice(0, 4).alias('Key'))
+            else:
+                df_eps = pl.DataFrame({'Key': [], 'EPS': []})
+            
+            if not df_dps.is_empty():
+                df_dps_plot = df_dps.select(['Date', 'Value']).rename({'Value': 'DPS', 'Date': 'Key'})
+                df_dps_plot = df_dps_plot.group_by('Key').agg(pl.col('DPS').sum())
+            else:
+                df_dps_plot = pl.DataFrame({'Key': [], 'DPS': []})
+        else:
+            # 四半期: Year-Quarter をキーにする
+            if not df_eps.is_empty():
+                df_eps = df_eps.with_columns(pl.col('Date').map_elements(get_quarter_key, return_dtype=pl.Utf8).alias('Key'))
+            else:
+                df_eps = pl.DataFrame({'Key': [], 'EPS': []})
+                
+            if not df_dps.is_empty():
+                df_dps_plot = df_dps.with_columns(pl.col('Date').map_elements(get_quarter_key, return_dtype=pl.Utf8).alias('Key'))
+                df_dps_plot = df_dps_plot.select(['Key', 'Value']).rename({'Value': 'DPS'})
+                df_dps_plot = df_dps_plot.group_by('Key').agg(pl.col('DPS').sum())
+            else:
+                df_dps_plot = pl.DataFrame({'Key': [], 'DPS': []})
+
+        # データの結合
+        if df_eps.is_empty() and df_dps_plot.is_empty():
+            return 0
+
+        df_plot = df_eps.join(df_dps_plot, on='Key', how='outer').sort('Key')
+        df_plot = df_plot.filter(pl.col('Key') != "Unknown").fill_null(0.0)
+
+        if df_plot.is_empty():
+            return 0
+
+        # 表示件数制限
+        limit = 10 if is_annual else 16
+        df_plot = df_plot.tail(limit)
+
+        # EPSの棒
+        fig.add_trace(go.Bar(
+            name='EPS (1株利益)', x=df_plot['Key'], y=df_plot['EPS'],
+            marker_color='#aec7e8', visible=visible,
+            text=df_plot['EPS'].map_elements(lambda x: f"${x:.2f}", return_dtype=pl.Utf8),
+            textposition='auto'
+        ))
+        # DPSの棒
+        fig.add_trace(go.Bar(
+            name='DPS (1株配当)', x=df_plot['Key'], y=df_plot['DPS'],
+            marker_color='#1f77b4', visible=visible,
+            text=df_plot['DPS'].map_elements(lambda x: f"${x:.2f}", return_dtype=pl.Utf8),
+            textposition='auto'
+        ))
+        return 2
+
+    num_a = add_dps_eps_traces(fig, df_dps_a, df_is_a, True, True)
+    num_q = add_dps_eps_traces(fig, df_dps_q, df_is_q, False, False)
+
+    buttons = []
+    if num_a > 0:
+        buttons.append(dict(label="通期", method="update", args=[{"visible": [True, True] + [False]*num_q}]))
+    if num_q > 0:
+        buttons.append(dict(label="四半期", method="update", args=[{"visible": [False]*num_a + [True, True]}]))
+
+    updatemenus = [dict(type="buttons", direction="right", x=0.0, y=1.2, showactive=True, buttons=buttons)] if len(buttons) > 1 else None
+
+    fig.update_layout(
+        height=450, margin=dict(t=100, b=80, l=60, r=40),
+        template='plotly_white',
+        xaxis=dict(title='期間', type='category'),
+        yaxis=dict(title='金額 ($)', type='linear', gridcolor='#F3F4F6'),
+        barmode='group',
+        legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5),
+        updatemenus=updatemenus
+    )
+    return '<h3 id="dividend-history">EPS vs DPS 推移</h3>' + create_chart_html(fig)
 
 if __name__ == "__main__":
     print("Updated upstream")
