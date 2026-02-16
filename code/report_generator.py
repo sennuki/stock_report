@@ -89,6 +89,7 @@ TEMPLATE = """<!DOCTYPE html>
 <nav class="toc">
     <h3>目次</h3>
     <ul>
+        <li><a href="#stock-chart">株価推移・概要</a></li>
         <li><a href="#risk-return">リスク・リターン分析</a></li>
         <li><a href="#peers">同業種・競合</a></li>
         <li><a href="#sector-peers">同セクター他社</a></li>
