@@ -1,5 +1,5 @@
 export const SITE = {
-  website: "https://sennuki.github.io/stock_report/", // replace this with your deployed domain
+  website: "https://amerikabu.com/", // replace this with your deployed domain
   author: "Sat Naing",
   profile: "https://satnaing.dev/",
   desc: "株式銘柄の分析レポートを公開するブログです。",
