@@ -225,9 +225,9 @@ def export_full_analysis_reports(df_info, df_metrics, output_dir="output_reports
     print(f"\nレポート生成開始: {output_dir}")
     rows = df_info.to_dicts()
 
-    # GitHub Actions の 2 vCPU 環境に合わせて 4 に設定。
-    # ローカルPC (GITHUB_ACTIONS未設定) では負荷低減のため 1 をデフォルトにする。
-    default_max_workers = 4 if os.getenv("GITHUB_ACTIONS") == "true" else 1
+    # GitHub Actions の共有IPからのアクセスは Yahoo Finance にブロックされやすいため、
+    # GitHub Actions 環境では負荷を最小限にするため並列数を 1 (直列) に制限する。
+    default_max_workers = 1 if os.getenv("GITHUB_ACTIONS") == "true" else 1
     max_workers = int(os.getenv("MAX_WORKERS", default_max_workers))
     
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:

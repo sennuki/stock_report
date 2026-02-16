@@ -25,33 +25,45 @@ def log_event(category, symbol, message):
         f.write(log_line)
 
 def get_session():
+    # 常に新しいセッションを作成するのではなく、可能な限り同じセッションを維持しつつ
+    # 最初に Yahoo Finance を訪れてクッキーを確立する
     if HAS_CURL_CFFI:
-        # curl_cffiが使える場合はそれを使う (yfinanceの推奨)
-        # impersonate="chrome" でブラウザ偽装
         session = curl_requests.Session(impersonate="chrome")
-        return session
     else:
-        # フォールバック (従来のrequests)
         session = std_requests.Session()
-        session.headers.update({
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-            "Accept": "*/*",
-            "Accept-Language": "en-US,en;q=0.9",
-            "Origin": "https://finance.yahoo.com",
-            "Referer": "https://finance.yahoo.com"
-        })
-        
+    
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+        "Accept-Language": "en-US,en;q=0.9",
+        "DNT": "1",
+        "Upgrade-Insecure-Requests": "1",
+        "Sec-Fetch-Dest": "document",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-Site": "none",
+        "Sec-Fetch-User": "?1",
+    }
+    
+    if not HAS_CURL_CFFI:
+        session.headers.update(headers)
         # リトライ設定
         retry = Retry(
-            total=10,
-            backoff_factor=3,
-            status_forcelist=[429, 500, 502, 503, 504],
-            allowed_methods=["HEAD", "GET", "OPTIONS"]
+            total=5,
+            backoff_factor=2,
+            status_forcelist=[403, 429, 500, 502, 503, 504],
         )
         adapter = HTTPAdapter(max_retries=retry)
         session.mount("https://", adapter)
         session.mount("http://", adapter)
-        return session
+    
+    # プライミング: クッキーとCrumb取得のために一度 Yahoo のトップを訪れる
+    try:
+        session.get("https://fc.yahoo.com", timeout=10)
+        session.get("https://finance.yahoo.com", timeout=10)
+    except:
+        pass
+        
+    return session
 
 _shared_session = None
 
