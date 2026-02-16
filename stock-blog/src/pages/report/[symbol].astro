@@ -54,7 +54,7 @@ try {
         const tvName = stockInfo?.Security || symbol;
         
         const widgetHtml = `
-        <div class="tradingview-widget-container mb-8" style="height: 700px;">
+        <div class="tradingview-widget-container mb-8" style="height: 900px;">
           <div class="tradingview-widget-container__widget"></div>
           <div class="tradingview-widget-copyright"><a href="https://jp.tradingview.com/" rel="noopener nofollow" target="_blank"><span class="blue-text">TradingViewで全市場を追跡</span></a></div>
           <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js" async>
@@ -368,7 +368,6 @@ const base = import.meta.env.BASE_URL.endsWith("/")
   .tradingview-widget-container {
     width: 100% !important;
     margin-bottom: 20px;
-    overflow: hidden;
   }
 
   /* Ensure plotly graphs fit and are responsive */
