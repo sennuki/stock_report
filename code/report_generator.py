@@ -106,8 +106,7 @@ TEMPLATE = """<!DOCTYPE html>
 </nav>
 
 <h2 id="risk-return">🎯 リスク・リターン分析</h2>
-<p>各期間のボタンをクリックして、リスク（ボラティリティ）とリターンの位置関係を切り替えることができます。<br>
-🔴 <strong>{ticker}</strong> (対象) vs 🔷 <strong>{sector_etf_ticker}</strong> (セクター) vs ★ <strong>S&P 500</strong></p>
+<p>🔴 <strong>{ticker}</strong> (対象) vs 🔷 <strong>{sector_etf_ticker}</strong> (セクター) vs ★ <strong>S&P 500</strong></p>
 {volatility_chart_html}
 
 <hr>
@@ -119,13 +118,11 @@ TEMPLATE = """<!DOCTYPE html>
 
 <hr>
 <h2 id="performance">📈 パフォーマンス比較</h2>
-<div class="tradingview-widget-container" style="min-height: 500px;"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>{{ "allow_symbol_change": false, "interval": "D", "width": "100%", "height": 500, "symbol": "{full_symbol}", "theme": "light", "style": "2", "locale": "ja", "withdateranges": true, "hide_volume": true, "compareSymbols": [ {{ "symbol": "{sector_etf_tv}", "position": "SameScale" }}, {{ "symbol": "FRED:SP500", "position": "SameScale" }} ] }}</script></div>
+<div class="tradingview-widget-container" style="min-height: 600px;"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>{{ "allow_symbol_change": false, "interval": "D", "width": "100%", "height": 600, "symbol": "{full_symbol}", "theme": "light", "style": "2", "locale": "ja", "withdateranges": true, "hide_volume": true, "compareSymbols": [ {{ "symbol": "{sector_etf_tv}", "position": "SameScale" }}, {{ "symbol": "FRED:SP500", "position": "SameScale" }} ] }}</script></div>
 
 <hr>
-<h2 id="fundamentals">📊 ファンダメンタルズ分析 (概要: TradingView提供)</h2>
-<p>※TradingView側の仕様により、特定の銘柄で「データなし」と表示される場合があります。その場合は下の詳細分析グラフをご参照ください。</p>
-
-<div class="tradingview-widget-container">
+<h2 id="fundamentals">📊 ファンダメンタルズ分析</h2>
+<div class="tradingview-widget-container" style="min-height: 1100px;">
   <div class="tradingview-widget-container__widget"></div>
   <div class="tradingview-widget-copyright"><a href="https://jp.tradingview.com/symbols/{full_symbol}/financials-overview/" rel="noopener nofollow" target="_blank"><span class="blue-text">Track all markets on TradingView</span></a></div>
   <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-financials.js" async>
@@ -136,13 +133,12 @@ TEMPLATE = """<!DOCTYPE html>
   "isTransparent": false,
   "locale": "ja",
   "width": "100%",
-  "height": 950
+  "height": 1100
 }}
   </script>
 </div>
 
 <h2 id="fundamentals-detail">📈 財務データ推移 (詳細分析)</h2>
-<p>独自に集計した財務データの推移グラフです。ボタンで「通期」と「四半期」を切り替えられます。</p>
 
 <div style="display: flex; flex-direction: column; gap: 40px;">
   <div>{chart_bs}</div>
