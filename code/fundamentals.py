@@ -480,7 +480,7 @@ def get_bs_plotly_html(data_dict):
     if num_q > 0:
         buttons.append(dict(label="四半期", method="update", args=[{"visible": [False]*num_a + [True]*num_q}]))
 
-    updatemenus = [dict(type="buttons", direction="right", x=0.0, y=1.2, showactive=True, buttons=buttons)] if len(buttons) > 1 else None
+    updatemenus = [dict(type="buttons", direction="right", x=0.5, xanchor="center", y=1.2, showactive=True, buttons=buttons)] if len(buttons) > 1 else None
 
     fig.update_layout(barmode='group', height=500, margin=dict(t=100,b=80, l=60, r=40),
                       template='plotly_white', showlegend=True,
@@ -536,7 +536,7 @@ def get_is_plotly_html(data_dict):
     if num_q > 0:
         buttons.append(dict(label="四半期", method="update", args=[{"visible": [False]*num_a + [True]*num_q}]))
 
-    updatemenus = [dict(type="buttons", direction="right", x=0.0, y=1.2, showactive=True, buttons=buttons)] if len(buttons) > 1 else None
+    updatemenus = [dict(type="buttons", direction="right", x=0.5, xanchor="center", y=1.2, showactive=True, buttons=buttons)] if len(buttons) > 1 else None
 
     # 左右の軸の0位置を合わせるための計算
     def get_range(df, cols, is_ratio=False):
@@ -619,7 +619,7 @@ def get_cf_plotly_html(data_dict):
     if num_q > 0:
         buttons.append(dict(label="四半期", method="update", args=[{"visible": [False]*num_a + [True]*num_q}]))
 
-    updatemenus = [dict(type="buttons", direction="right", x=0.0, y=1.2, showactive=True, buttons=buttons)] if len(buttons) > 1 else None
+    updatemenus = [dict(type="buttons", direction="right", x=0.5, xanchor="center", y=1.2, showactive=True, buttons=buttons)] if len(buttons) > 1 else None
 
     fig.update_layout(barmode='group', height=500, margin=dict(t=100,b=80, l=60, r=40),
                       template='plotly_white', showlegend=True,
@@ -676,7 +676,7 @@ def get_tp_plotly_html(data_dict):
     if num_q > 0:
         buttons.append(dict(label="四半期", method="update", args=[{"visible": [False]*num_a + [True]*num_q}]))
 
-    updatemenus = [dict(type="buttons", direction="right", x=0.0, y=1.2, showactive=True, buttons=buttons)] if len(buttons) > 1 else None
+    updatemenus = [dict(type="buttons", direction="right", x=0.5, xanchor="center", y=1.2, showactive=True, buttons=buttons)] if len(buttons) > 1 else None
 
     fig.update_layout(
         barmode='group', height=500, margin=dict(t=100,b=80, l=60, r=60), template='plotly_white',

@@ -171,9 +171,9 @@ def generate_scatter_html(df_metrics, target_symbol, sector_etf_symbol):
             type="buttons",
             direction="right",
             active=4, # 2年 (インデックス4) をアクティブに
-            x=0.0,
+            x=0.5,
             y=1.2,
-            xanchor="left",
+            xanchor="center",
             yanchor="top",
             showactive=True,
             buttons=buttons,
