@@ -168,11 +168,11 @@ def generate_scatter_html(df_metrics, target_symbol, sector_etf_symbol):
             x=1.0
         ),
         updatemenus=[dict(
-            type="buttons",
-            direction="right",
+            type="dropdown",
+            direction="down",
             active=4, # 2年 (インデックス4) をアクティブに
             x=0.5,
-            y=1.2,
+            y=1.25,
             xanchor="center",
             yanchor="top",
             showactive=True,

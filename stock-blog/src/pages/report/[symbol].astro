@@ -157,7 +157,7 @@ const base = import.meta.env.BASE_URL.endsWith("/")
        </a>
     </div>
 
-    <div class="report-content bg-skin-card p-6 rounded-lg border border-skin-line shadow-sm">
+    <div class="report-content bg-skin-card p-4 sm:p-6 rounded-lg border border-skin-line shadow-sm">
       <Fragment set:html={bodyContent} />
     </div>
   </main>
@@ -207,6 +207,7 @@ const base = import.meta.env.BASE_URL.endsWith("/")
         newContent = newContent.replace(/"backgroundColor":\s*"#131722"/g, '"backgroundColor": "#ffffff"');
         newContent = newContent.replace(/"widgetFontColor":\s*"#d1d5db"/g, '"widgetFontColor": "#0F0F0F"');
       }
+      
       newScript.textContent = newContent;
       
       if (oldScript.src) {
@@ -319,6 +320,7 @@ const base = import.meta.env.BASE_URL.endsWith("/")
     if (!window.Plotly) return;
 
     const isDark = document.documentElement.classList.contains('dark');
+    const isMobile = window.innerWidth < 768;
     const theme = isDark ? 'plotly_dark' : 'plotly_white';
     const paper_bgcolor = isDark ? 'rgba(0,0,0,0)' : '#fff';
     const plot_bgcolor = isDark ? 'rgba(0,0,0,0)' : '#fff';
@@ -327,13 +329,27 @@ const base = import.meta.env.BASE_URL.endsWith("/")
     const plots = document.querySelectorAll('.js-plotly-plot, .plotly-graph-div');
     plots.forEach(plot => {
       try {
-        // @ts-ignore
-        window.Plotly.relayout(plot, { 
+        const layoutUpdate = { 
           template: theme,
           paper_bgcolor: paper_bgcolor,
           plot_bgcolor: plot_bgcolor,
-          'font.color': font_color
-        });
+          'font.color': font_color,
+          'font.size': isMobile ? 10 : 12,
+        };
+
+        if (isMobile) {
+          // @ts-ignore
+          layoutUpdate['margin.l'] = 40;
+          // @ts-ignore
+          layoutUpdate['margin.r'] = 20;
+          // @ts-ignore
+          layoutUpdate['margin.t'] = 100;
+          // @ts-ignore
+          layoutUpdate['margin.b'] = 60;
+        }
+
+        // @ts-ignore
+        window.Plotly.relayout(plot, layoutUpdate);
       } catch (e) {}
     });
   }
