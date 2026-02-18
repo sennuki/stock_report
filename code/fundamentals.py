@@ -251,6 +251,23 @@ def get_financial_data(ticker_obj):
         divs = ticker_obj.dividends
         if not divs.empty:
             df_divs = divs.to_frame().reset_index()
+            # 配当利回り計算のために、当時の株価を取得
+            history = ticker_obj.history(start=df_divs['Date'].min(), end=df_divs['Date'].max() + datetime.timedelta(days=5))
+            
+            def get_price(date):
+                try:
+                    # 配当落ち日前後の終値を取得 (権利落ち日は株価が下がるため、前日の価格が理想的だが、
+                    # ここではシンプルに当日のCloseを取得)
+                    target_date = date.replace(hour=0, minute=0, second=0)
+                    if target_date in history.index:
+                        return history.loc[target_date]['Close']
+                    else:
+                        # 休日などの場合は直近の営業日を探す
+                        return history.asof(target_date)['Close']
+                except:
+                    return None
+
+            df_divs['Price'] = df_divs['Date'].apply(get_price)
             df_divs['Date'] = df_divs['Date'].dt.strftime('%Y-%m-%d')
             
             # 年次集計
@@ -259,14 +276,13 @@ def get_financial_data(ticker_obj):
             df_annual = df_annual.rename(columns={'Year': 'Date', 'Dividends': 'Value'})
             df_annual['Item'] = 'DPS'
             
-            # 四半期データ (yfinanceのdividendsは支払い日ごとなので、そのまま四半期として扱うか、
-            # あるいは直近の四半期決算日付近で集計する。ここではシンプルに支払い日をベースにする)
+            # 四半期データ
             df_q = df_divs.copy().rename(columns={'Dividends': 'Value'})
             df_q['Item'] = 'DPS'
 
             data['dps'] = {
                 'annual': pl.from_pandas(df_annual),
-                'quarterly': pl.from_pandas(df_q[['Date', 'Value', 'Item']])
+                'quarterly': pl.from_pandas(df_q[['Date', 'Value', 'Item', 'Price']])
             }
         else:
             data['dps'] = {'annual': pl.DataFrame(), 'quarterly': pl.DataFrame()}
@@ -281,35 +297,67 @@ def get_dps_eps_plotly_html(data_dict, is_data_dict):
     
     if df_dps_q.is_empty(): return "<p>配当実績なし</p>"
     
-    fig = go.Figure()
-
-    # 個別配当履歴 (5年分)
-    df_q_sorted = df_dps_q.sort('Date')
+    # 頻度判定ヘルパー
+    def estimate_frequency(df):
+        if df.is_empty() or len(df) < 2: return 4 # デフォルト
+        # 直近1年間の配当回数を数える
+        last_date = datetime.datetime.strptime(df['Date'][-1], '%Y-%m-%d')
+        one_year_ago = (last_date - datetime.timedelta(days=366)).strftime('%Y-%m-%d')
+        recent_divs = df.filter(pl.col('Date') >= one_year_ago)
+        count = len(recent_divs)
+        
+        if 10 <= count <= 13: return 12
+        if 3 <= count <= 5: return 4
+        if count == 2: return 2
+        if count == 1: return 1
+        return 4 # 判定不能なら一般的四半期
     
-    if not df_q_sorted.is_empty():
-        # 直近の日付から5年前を計算
-        latest_date_str = df_q_sorted['Date'][-1]
-        latest_date = datetime.datetime.strptime(latest_date_str, '%Y-%m-%d')
-        cutoff_date = (latest_date - datetime.timedelta(days=5*365)).strftime('%Y-%m-%d')
-        df_q_plot = df_q_sorted.filter(pl.col('Date') >= cutoff_date)
-    else:
-        df_q_plot = df_q_sorted
+    freq = estimate_frequency(df_dps_q)
+    
+    # 5年分のデータを抽出
+    df_q_sorted = df_dps_q.sort('Date')
+    latest_date_str = df_q_sorted['Date'][-1]
+    latest_date = datetime.datetime.strptime(latest_date_str, '%Y-%m-%d')
+    cutoff_date = (latest_date - datetime.timedelta(days=5*365)).strftime('%Y-%m-%d')
+    df_q_plot = df_q_sorted.filter(pl.col('Date') >= cutoff_date)
 
+    # 利回り計算: (配当額 * 頻度) / 当時の株価
+    df_q_plot = df_q_plot.with_columns([
+        (pl.col('Value') * freq / pl.col('Price')).alias('Yield')
+    ])
+
+    fig = make_subplots(specs=[[{"secondary_y": True}]])
+
+    # 配当額 (左軸)
     fig.add_trace(go.Bar(
-        name='配当額', x=df_q_plot['Date'], y=df_q_plot['Value'],
+        name='1株配当', x=df_q_plot['Date'], y=df_q_plot['Value'],
         marker_color='#1f77b4',
         text=df_q_plot['Value'].map_elements(lambda x: f"${x:.2f}", return_dtype=pl.Utf8),
-        textposition='auto'
-    ))
+        textposition='auto',
+        hovertemplate='配当確定日: %{x}<br>配当額: $%{y:.2f}<extra></extra>'
+    ), secondary_y=False)
+
+    # 利回り (右軸)
+    fig.add_trace(go.Scatter(
+        name='配当利回り (年換算)', x=df_q_plot['Date'], y=df_q_plot['Yield'],
+        mode='lines+markers',
+        line=dict(color='#ff7f0e', width=3),
+        marker=dict(size=8),
+        hovertemplate='配当確定日: %{x}<br>推定利回り: %{y:.2%}<extra></extra>'
+    ), secondary_y=True)
 
     fig.update_layout(
-        height=450, margin=dict(t=50, b=80, l=60, r=40),
+        height=450, margin=dict(t=50, b=80, l=60, r=60),
         template='plotly_white',
         xaxis=dict(title='配当確定日', type='category'),
-        yaxis=dict(title='配当額 ($)', type='linear', gridcolor='#F3F4F6'),
-        legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5)
+        yaxis=dict(title='配当額 ($)', side='left', gridcolor='#F3F4F6', range=[0, df_q_plot['Value'].max() * 1.2]),
+        yaxis2=dict(title='推定利回り', side='right', tickformat='.1%', overlaying='y', showgrid=False, range=[0, max(df_q_plot['Yield'].max() * 1.2, 0.05)]),
+        legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5),
+        hovermode='x unified'
     )
-    return '<h3 id="dividend-history">一株当たり配当額推移 (配当履歴 5年分)</h3>' + create_chart_html(fig)
+    
+    info_text = f"<p style='font-size: 0.8em; color: #666;'>※配当回数を年{freq}回と推定して年換算利回りを算出しています。</p>"
+    return '<h3 id="dividend-history">一株当たり配当額と推定利回りの推移 (5年分)</h3>' + create_chart_html(fig) + info_text
 
 def create_chart_html(fig):
     """HTML化ヘルパー (ファイルサイズ削減のためライブラリ重複ロード回避)"""
