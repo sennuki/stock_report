@@ -6,7 +6,7 @@ import risk_return
 import report_generator
 import shutil
 
-def run_quick_test(target_symbols=["MSFT", "AAPL", "NVDA"]):
+def run_quick_test(target_symbols=["MSFT"]):
     print(f"🚀 テスト実行開始 (対象: {', '.join(target_symbols)})")
     
     base_dir = os.path.dirname(os.path.abspath(__file__))

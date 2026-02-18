@@ -139,8 +139,8 @@ const base = import.meta.env.BASE_URL.endsWith("/")
 <Layout title={title}>
   <Header />
   
-  {/* Load Plotly.js from CDN */}
-  <script is:inline src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+  {/* Load Plotly.js lazily via IntersectionObserver in client script */}
+  {/* <script is:inline src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script> - Removed for client:visible behavior */}
 
   {/* Inject extracted scripts and styles. */}
   <div id="report-head-injection">
@@ -165,6 +165,11 @@ const base = import.meta.env.BASE_URL.endsWith("/")
 </Layout>
 
 <script>
+  // Store Plotly scripts found during executeScripts to run them later
+  const deferredPlotlyScripts: { oldScript: HTMLScriptElement, content: string }[] = [];
+  let plotlyLoading = false;
+  let plotlyLoaded = false;
+
   // Function to manually execute scripts inserted via innerHTML
   async function executeScripts(container: Element | null) {
     if (!container) return;
@@ -172,6 +177,16 @@ const base = import.meta.env.BASE_URL.endsWith("/")
     const scripts = Array.from(container.querySelectorAll('script'));
     
     for (const oldScript of scripts) {
+      // Check if this is a Plotly script
+      const content = oldScript.textContent || '';
+      const src = oldScript.src || '';
+      
+      if (content.includes('Plotly') || src.includes('plotly')) {
+        // Defer execution
+        deferredPlotlyScripts.push({ oldScript, content });
+        continue;
+      }
+
       const newScript = document.createElement('script');
       
       // Copy attributes
@@ -180,19 +195,19 @@ const base = import.meta.env.BASE_URL.endsWith("/")
       });
       
       // Copy text content (Important for TradingView JSON config)
-      let content = oldScript.textContent || '';
+      let newContent = content;
       if (isDark) {
-        content = content.replace(/"colorTheme":\s*"light"/g, '"colorTheme": "dark"');
-        content = content.replace(/"theme":\s*"light"/g, '"theme": "dark"');
-        content = content.replace(/"backgroundColor":\s*"#ffffff"/g, '"backgroundColor": "#131722"');
-        content = content.replace(/"widgetFontColor":\s*"#0F0F0F"/g, '"widgetFontColor": "#d1d5db"');
+        newContent = newContent.replace(/"colorTheme":\s*"light"/g, '"colorTheme": "dark"');
+        newContent = newContent.replace(/"theme":\s*"light"/g, '"theme": "dark"');
+        newContent = newContent.replace(/"backgroundColor":\s*"#ffffff"/g, '"backgroundColor": "#131722"');
+        newContent = newContent.replace(/"widgetFontColor":\s*"#0F0F0F"/g, '"widgetFontColor": "#d1d5db"');
       } else {
-        content = content.replace(/"colorTheme":\s*"dark"/g, '"colorTheme": "light"');
-        content = content.replace(/"theme":\s*"dark"/g, '"theme": "light"');
-        content = content.replace(/"backgroundColor":\s*"#131722"/g, '"backgroundColor": "#ffffff"');
-        content = content.replace(/"widgetFontColor":\s*"#d1d5db"/g, '"widgetFontColor": "#0F0F0F"');
+        newContent = newContent.replace(/"colorTheme":\s*"dark"/g, '"colorTheme": "light"');
+        newContent = newContent.replace(/"theme":\s*"dark"/g, '"theme": "light"');
+        newContent = newContent.replace(/"backgroundColor":\s*"#131722"/g, '"backgroundColor": "#ffffff"');
+        newContent = newContent.replace(/"widgetFontColor":\s*"#d1d5db"/g, '"widgetFontColor": "#0F0F0F"');
       }
-      newScript.textContent = content;
+      newScript.textContent = newContent;
       
       if (oldScript.src) {
         // External scripts (like TradingView's embed-widget-financials.js)
@@ -218,6 +233,86 @@ const base = import.meta.env.BASE_URL.endsWith("/")
     }
   }
 
+  // Dynamically load Plotly library
+  async function loadPlotlyLibrary() {
+    if (plotlyLoaded) return;
+    if (plotlyLoading) {
+      // Wait until loaded
+      await new Promise<void>(resolve => {
+        const check = () => {
+           if (plotlyLoaded) resolve();
+           else setTimeout(check, 100);
+        };
+        check();
+      });
+      return;
+    }
+
+    plotlyLoading = true;
+    const script = document.createElement('script');
+    script.src = "https://cdn.plot.ly/plotly-2.35.2.min.js";
+    script.charset = "utf-8";
+    
+    await new Promise<void>((resolve, reject) => {
+      script.onload = () => {
+        plotlyLoaded = true;
+        plotlyLoading = false;
+        resolve();
+      };
+      script.onerror = () => {
+        console.error("Failed to load Plotly");
+        plotlyLoading = false;
+        reject();
+      };
+      document.head.appendChild(script);
+    });
+  }
+
+  // Execute deferred Plotly scripts
+  async function runDeferredPlotlyScripts() {
+    if (!plotlyLoaded) await loadPlotlyLibrary();
+
+    for (const item of deferredPlotlyScripts) {
+      const { oldScript, content } = item;
+      const newScript = document.createElement('script');
+      // Copy attributes
+      Array.from(oldScript.attributes).forEach((attr: Attr) => {
+        newScript.setAttribute(attr.name, attr.value);
+      });
+      newScript.textContent = content;
+
+      if (oldScript.parentNode) {
+        oldScript.parentNode.replaceChild(newScript, oldScript);
+      }
+    }
+    // Clear queue
+    deferredPlotlyScripts.length = 0;
+    
+    // Apply theme and resize
+    updatePlotlyTheme();
+    // Force resize event to ensure charts fit
+    window.dispatchEvent(new Event('resize'));
+  }
+
+  // Setup IntersectionObserver for Plotly charts
+  function initPlotlyObserver() {
+    // Standard Plotly container class or the one used in these reports
+    const candidates = document.querySelectorAll('.plotly-graph-div, .js-plotly-plot');
+    if (candidates.length === 0) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // If any chart is visible, load Plotly and run all scripts
+          observer.disconnect();
+          runDeferredPlotlyScripts();
+        }
+      });
+    }, { rootMargin: '200px' }); // Start loading slightly before it comes into view
+
+    candidates.forEach(el => observer.observe(el));
+  }
+
   // Function to update Plotly themes dynamically
   function updatePlotlyTheme() {
     // @ts-ignore
@@ -229,7 +324,7 @@ const base = import.meta.env.BASE_URL.endsWith("/")
     const plot_bgcolor = isDark ? 'rgba(0,0,0,0)' : '#fff';
     const font_color = isDark ? '#d1d5db' : '#374151';
 
-    const plots = document.querySelectorAll('.js-plotly-plot');
+    const plots = document.querySelectorAll('.js-plotly-plot, .plotly-graph-div');
     plots.forEach(plot => {
       try {
         // @ts-ignore
@@ -250,18 +345,7 @@ const base = import.meta.env.BASE_URL.endsWith("/")
         el.innerHTML = '';
     });
 
-    // 1. Ensure Plotly is available
-    // @ts-ignore
-    if (!window.Plotly) {
-      await new Promise(resolve => {
-        const check = () => {
-          // @ts-ignore
-          if (window.Plotly) resolve();
-          else setTimeout(check, 100);
-        };
-        check();
-      });
-    }
+    // 1. (Removed) We no longer wait for Plotly here. It's loaded lazily.
 
     // 2. Execute scripts in order
     // We wait a tiny bit to ensure DOM is fully ready for TradingView's observer
@@ -271,9 +355,14 @@ const base = import.meta.env.BASE_URL.endsWith("/")
     const reportContent = document.querySelector('.report-content');
     await executeScripts(reportContent);
     
-    // 3. Final layout fix and force TradingView re-scan
+    // 3. Initialize Lazy Loading for Plotly
+    initPlotlyObserver();
+
+    // 4. Final layout fix and force TradingView re-scan
     requestAnimationFrame(() => {
-      updatePlotlyTheme();
+      // If Plotly happens to be loaded (e.g. from previous navigation in SPA mode if retained?), update theme
+      if (window.Plotly) updatePlotlyTheme();
+      
       window.dispatchEvent(new Event('resize'));
       
       // Some TradingView widgets need a push after DOM insertion

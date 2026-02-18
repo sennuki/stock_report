@@ -1,4 +1,0 @@
-[2026-02-16 13:25:06] [INFO   ] [SYSTEM] Execution started
-[2026-02-16 13:28:24] [SUCCESS] [SYSTEM] Fetched 1 companies
-[2026-02-16 13:28:31] [SUCCESS] [SYSTEM] Calculated risk metrics
-[2026-02-16 13:28:38] [SUCCESS] [SYSTEM] Generated all reports

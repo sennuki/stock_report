@@ -8,6 +8,7 @@ from plotly.subplots import make_subplots
 import numpy as np
 import warnings
 import utils
+import datetime
 
 # Suppress plotly deprecation warnings
 warnings.filterwarnings("ignore", message=".*scattermapbox.*")
@@ -276,76 +277,39 @@ def get_financial_data(ticker_obj):
     return data
 
 def get_dps_eps_plotly_html(data_dict, is_data_dict):
-    df_dps_a = data_dict.get('annual', pl.DataFrame())
     df_dps_q = data_dict.get('quarterly', pl.DataFrame())
-    df_is_a = is_data_dict.get('annual', pl.DataFrame())
-    df_is_q = is_data_dict.get('quarterly', pl.DataFrame())
     
-    if df_dps_a.is_empty() and df_is_a.is_empty(): return "<p>配当・利益実績なし</p>"
+    if df_dps_q.is_empty(): return "<p>配当実績なし</p>"
     
     fig = go.Figure()
 
-    def add_dps_eps_traces(fig, df_dps, df_is, is_annual, visible):
-        if df_is.is_empty(): return 0
-        
-        # EPSデータの抽出
-        df_eps = df_is.filter(pl.col('Item') == 'Basic EPS').select(['Date', 'Value']).rename({'Value': 'EPS'})
-        
-        if is_annual:
-            # Dateを年だけに変換
-            df_eps = df_eps.with_columns(pl.col('Date').str.slice(0, 4).alias('Key'))
-            df_dps_plot = df_dps.select(['Date', 'Value']).rename({'Value': 'DPS', 'Date': 'Key'})
-        else:
-            # 四半期の場合は、月レベルで合わせるか、単純に直近N件を表示
-            # ここでは日付文字列をそのままキーにする
-            df_eps = df_eps.with_columns(pl.col('Date').alias('Key'))
-            df_dps_plot = df_dps.select(['Date', 'Value']).rename({'Value': 'DPS', 'Date': 'Key'})
+    # 個別配当履歴 (5年分)
+    df_q_sorted = df_dps_q.sort('Date')
+    
+    if not df_q_sorted.is_empty():
+        # 直近の日付から5年前を計算
+        latest_date_str = df_q_sorted['Date'][-1]
+        latest_date = datetime.datetime.strptime(latest_date_str, '%Y-%m-%d')
+        cutoff_date = (latest_date - datetime.timedelta(days=5*365)).strftime('%Y-%m-%d')
+        df_q_plot = df_q_sorted.filter(pl.col('Date') >= cutoff_date)
+    else:
+        df_q_plot = df_q_sorted
 
-        # データの結合
-        df_plot = df_eps.join(df_dps_plot, on='Key', how='outer').sort('Key')
-        df_plot = df_plot.fill_null(0.0)
-
-        # 表示件数制限 (通期10年、四半期12件)
-        limit = 10 if is_annual else 12
-        df_plot = df_plot.tail(limit)
-
-        # EPSの棒
-        fig.add_trace(go.Bar(
-            name='EPS (1株利益)', x=df_plot['Key'], y=df_plot['EPS'],
-            marker_color='#aec7e8', visible=visible,
-            text=df_plot['EPS'].map_elements(lambda x: f"${x:.2f}", return_dtype=pl.Utf8),
-            textposition='auto'
-        ))
-        # DPSの棒
-        fig.add_trace(go.Bar(
-            name='DPS (1株配当)', x=df_plot['Key'], y=df_plot['DPS'],
-            marker_color='#1f77b4', visible=visible,
-            text=df_plot['DPS'].map_elements(lambda x: f"${x:.2f}", return_dtype=pl.Utf8),
-            textposition='auto'
-        ))
-        return 2
-
-    num_a = add_dps_eps_traces(fig, df_dps_a, df_is_a, True, True)
-    num_q = add_dps_eps_traces(fig, df_dps_q, df_is_q, False, False)
-
-    buttons = []
-    if num_a > 0:
-        buttons.append(dict(label="通期", method="update", args=[{"visible": [True, True] + [False]*num_q}]))
-    if num_q > 0:
-        buttons.append(dict(label="四半期", method="update", args=[{"visible": [False]*num_a + [True, True]}]))
-
-    updatemenus = [dict(type="buttons", direction="right", x=0.0, y=1.2, showactive=True, buttons=buttons)] if len(buttons) > 1 else None
+    fig.add_trace(go.Bar(
+        name='配当額', x=df_q_plot['Date'], y=df_q_plot['Value'],
+        marker_color='#1f77b4',
+        text=df_q_plot['Value'].map_elements(lambda x: f"${x:.2f}", return_dtype=pl.Utf8),
+        textposition='auto'
+    ))
 
     fig.update_layout(
-        height=450, margin=dict(t=100, b=80, l=60, r=40),
+        height=450, margin=dict(t=50, b=80, l=60, r=40),
         template='plotly_white',
-        xaxis=dict(title='期間', type='category'),
-        yaxis=dict(title='金額 ($)', type='linear', gridcolor='#F3F4F6'),
-        barmode='group',
-        legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5),
-        updatemenus=updatemenus
+        xaxis=dict(title='配当確定日', type='category'),
+        yaxis=dict(title='配当額 ($)', type='linear', gridcolor='#F3F4F6'),
+        legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5)
     )
-    return '<h3 id="dividend-history">EPS vs DPS 推移</h3>' + create_chart_html(fig)
+    return '<h3 id="dividend-history">一株当たり配当額推移 (配当履歴 5年分)</h3>' + create_chart_html(fig)
 
 def create_chart_html(fig):
     """HTML化ヘルパー (ファイルサイズ削減のためライブラリ重複ロード回避)"""
@@ -676,112 +640,3 @@ def get_tp_plotly_html(data_dict):
     )
     return '<h3 id="shareholder-return">株主還元</h3>' + create_chart_html(fig)
 
-def get_dps_eps_plotly_html(data_dict, is_data_dict):
-    df_dps_a = data_dict.get('annual', pl.DataFrame())
-    df_dps_q = data_dict.get('quarterly', pl.DataFrame())
-    df_is_a = is_data_dict.get('annual', pl.DataFrame())
-    df_is_q = is_data_dict.get('quarterly', pl.DataFrame())
-    
-    if df_dps_a.is_empty() and df_is_a.is_empty(): return "<p>配当・利益実績なし</p>"
-    
-    fig = go.Figure()
-
-    def get_quarter_key(date_str):
-        if not date_str or not isinstance(date_str, str) or len(date_str) < 7: return "Unknown"
-        try:
-            y = date_str[:4]
-            m = int(date_str[5:7])
-            q = (m - 1) // 3 + 1
-            return f"{y}-Q{q}"
-        except:
-            return "Unknown"
-
-    def add_dps_eps_traces(fig, df_dps, df_is, is_annual, visible):
-        if df_is.is_empty() and df_dps.is_empty(): return 0
-        
-        # EPSデータの抽出
-        if not df_is.is_empty() and 'Item' in df_is.columns:
-            df_eps = df_is.filter(pl.col('Item') == 'Basic EPS').select(['Date', 'Value']).rename({'Value': 'EPS'})
-        else:
-            df_eps = pl.DataFrame({'Date': [], 'EPS': []})
-        
-        if is_annual:
-            # 年次: 年をキーにする
-            if not df_eps.is_empty():
-                df_eps = df_eps.with_columns(pl.col('Date').str.slice(0, 4).alias('Key'))
-            else:
-                df_eps = pl.DataFrame({'Key': [], 'EPS': []})
-            
-            if not df_dps.is_empty():
-                df_dps_plot = df_dps.select(['Date', 'Value']).rename({'Value': 'DPS', 'Date': 'Key'})
-                df_dps_plot = df_dps_plot.group_by('Key').agg(pl.col('DPS').sum())
-            else:
-                df_dps_plot = pl.DataFrame({'Key': [], 'DPS': []})
-        else:
-            # 四半期: Year-Quarter をキーにする
-            if not df_eps.is_empty():
-                df_eps = df_eps.with_columns(pl.col('Date').map_elements(get_quarter_key, return_dtype=pl.Utf8).alias('Key'))
-            else:
-                df_eps = pl.DataFrame({'Key': [], 'EPS': []})
-                
-            if not df_dps.is_empty():
-                df_dps_plot = df_dps.with_columns(pl.col('Date').map_elements(get_quarter_key, return_dtype=pl.Utf8).alias('Key'))
-                df_dps_plot = df_dps_plot.select(['Key', 'Value']).rename({'Value': 'DPS'})
-                df_dps_plot = df_dps_plot.group_by('Key').agg(pl.col('DPS').sum())
-            else:
-                df_dps_plot = pl.DataFrame({'Key': [], 'DPS': []})
-
-        # データの結合
-        if df_eps.is_empty() and df_dps_plot.is_empty():
-            return 0
-
-        df_plot = df_eps.join(df_dps_plot, on='Key', how='outer').sort('Key')
-        df_plot = df_plot.filter(pl.col('Key') != "Unknown").fill_null(0.0)
-
-        if df_plot.is_empty():
-            return 0
-
-        # 表示件数制限
-        limit = 10 if is_annual else 16
-        df_plot = df_plot.tail(limit)
-
-        # EPSの棒
-        fig.add_trace(go.Bar(
-            name='EPS (1株利益)', x=df_plot['Key'], y=df_plot['EPS'],
-            marker_color='#aec7e8', visible=visible,
-            text=df_plot['EPS'].map_elements(lambda x: f"${x:.2f}", return_dtype=pl.Utf8),
-            textposition='auto'
-        ))
-        # DPSの棒
-        fig.add_trace(go.Bar(
-            name='DPS (1株配当)', x=df_plot['Key'], y=df_plot['DPS'],
-            marker_color='#1f77b4', visible=visible,
-            text=df_plot['DPS'].map_elements(lambda x: f"${x:.2f}", return_dtype=pl.Utf8),
-            textposition='auto'
-        ))
-        return 2
-
-    num_a = add_dps_eps_traces(fig, df_dps_a, df_is_a, True, True)
-    num_q = add_dps_eps_traces(fig, df_dps_q, df_is_q, False, False)
-
-    buttons = []
-    if num_a > 0:
-        buttons.append(dict(label="通期", method="update", args=[{"visible": [True, True] + [False]*num_q}]))
-    if num_q > 0:
-        buttons.append(dict(label="四半期", method="update", args=[{"visible": [False]*num_a + [True, True]}]))
-
-    updatemenus = [dict(type="buttons", direction="right", x=0.0, y=1.2, showactive=True, buttons=buttons)] if len(buttons) > 1 else None
-
-    fig.update_layout(
-        height=450, margin=dict(t=100, b=80, l=60, r=40),
-        template='plotly_white',
-        xaxis=dict(title='期間', type='category'),
-        yaxis=dict(title='金額 ($)', type='linear', gridcolor='#F3F4F6'),
-        barmode='group',
-        legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5),
-        updatemenus=updatemenus
-    )
-    return '<h3 id="dividend-history">EPS vs DPS 推移</h3>' + create_chart_html(fig)
-
-if __name__ == "__main__":
-    print("Updated upstream")
