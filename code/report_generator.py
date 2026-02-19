@@ -59,11 +59,37 @@ TEMPLATE = """<!DOCTYPE html>
         .toc a:hover {{ text-decoration: underline; }}
         .tradingview-widget-container {{ margin-bottom: 20px; width: 100%; overflow: hidden; }}
         
+        /* Peer link styles */
+        .peer-link {{
+            display: inline-block;
+            padding: 4px 10px;
+            background-color: rgba(0, 123, 255, 0.1);
+            color: #007bff;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.9em;
+            font-weight: bold;
+            transition: background-color 0.2s;
+            border: 1px solid rgba(0, 123, 255, 0.2);
+        }}
+        .peer-link:hover {{
+            background-color: rgba(0, 123, 255, 0.2);
+            text-decoration: none;
+        }}
+
         /* Dark mode overrides for injected content */
         @media (prefers-color-scheme: dark) {{
             h2 {{ border-bottom-color: #444; }}
             hr {{ border-top-color: #333; }}
             .toc {{ background-color: rgba(255, 255, 255, 0.05); border-color: #444; }}
+            .peer-link {{
+                background-color: rgba(59, 130, 246, 0.2);
+                color: #60a5fa;
+                border-color: rgba(59, 130, 246, 0.3);
+            }}
+            .peer-link:hover {{
+                background-color: rgba(59, 130, 246, 0.3);
+            }}
         }}
         
         @media (max-width: 600px) {{
@@ -184,8 +210,9 @@ def generate_report_for_ticker(row, df_info, df_metrics, output_dir):
 
     # 3. タグ生成
     def create_tags(target_df):
-        # Symbol_YFをファイル名の参照に使用し、Symbolを表示に使用する
-        tags = [f'<tv-ticker-tag symbol="{item["Exchange"]}:{item["Symbol"].replace("-", ".")}"></tv-ticker-tag>' for item in target_df.to_dicts()]
+        # 内部リンクを生成 (Astroのベースパスを考慮せず、相対または絶対パスで記述)
+        # ここでは /report/{Symbol_YF} へのリンクを作成する
+        tags = [f'<a href="/report/{item["Symbol_YF"]}" class="peer-link">{item["Symbol"]}</a>' for item in target_df.to_dicts()]
         return "\n".join(tags) if tags else "なし"
 
     sub_peers = df_info.filter((pl.col("GICS Sub-Industry")==current_sub_industry) & (pl.col("Symbol_YF")!=chart_target_symbol))
