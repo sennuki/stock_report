@@ -506,8 +506,8 @@ def get_is_plotly_html(data_dict):
     ]
 
     def add_is_traces(fig, df, visible):
-        valid_dates = df.filter((pl.col('Item') == 'Total Revenue') & (pl.col('Value') > 0)).select('Date').unique()['Date'].to_list()
-        df = df.filter(pl.col('Date').is_in(valid_dates))
+        valid_dates = df.filter((pl.col('Item') == 'Total Revenue') & (pl.col('Value') > 0)).select('Date').unique().sort('Date')['Date'].to_list()
+        df = df.filter(pl.col('Date').is_in(valid_dates)).sort('Date')
         count = 0
         for item_key, name, color in items:
             sub = df.filter(pl.col('Item') == item_key)
@@ -517,7 +517,7 @@ def get_is_plotly_html(data_dict):
                                      textposition='auto'))
                 count += 1
         try:
-            df_pivot = df.pivot(on='Item', index='Date', values='Value')
+            df_pivot = df.pivot(on='Item', index='Date', values='Value').sort('Date')
             for num_key, den_key, name, color in ratio_items:
                 if num_key in df_pivot.columns and den_key in df_pivot.columns:
                     calc = df_pivot.with_columns((pl.col(num_key) / pl.col(den_key)).alias('Ratio')).select(['Date', 'Ratio']).filter(pl.col('Ratio').is_not_nan() & pl.col('Ratio').is_infinite().not_())
@@ -600,8 +600,8 @@ def get_cf_plotly_html(data_dict):
     def add_cf_traces(fig, df, visible):
         # 純利益か営業CFがある日付を表示対象とする
         valid_items = ['Net Income', 'Operating Cash Flow']
-        valid_dates = df.filter(pl.col('Item').is_in(valid_items)).select('Date').unique()['Date'].to_list()
-        df = df.filter(pl.col('Date').is_in(valid_dates))
+        valid_dates = df.filter(pl.col('Item').is_in(valid_items)).select('Date').unique().sort('Date')['Date'].to_list()
+        df = df.filter(pl.col('Date').is_in(valid_dates)).sort('Date')
         for item_key, name, color in items:
             sub = df.filter(pl.col('Item') == item_key)
             if not sub.is_empty():
@@ -638,8 +638,8 @@ def get_tp_plotly_html(data_dict):
     fig = go.Figure()
 
     def add_tp_traces(fig, df, visible):
-        valid_dates = df.filter(pl.col('Item') == 'Net Income From Continuing Operations').select('Date').unique()['Date'].to_list()
-        df = df.filter(pl.col('Date').is_in(valid_dates))
+        valid_dates = df.filter(pl.col('Item') == 'Net Income From Continuing Operations').select('Date').unique().sort('Date')['Date'].to_list()
+        df = df.filter(pl.col('Date').is_in(valid_dates)).sort('Date')
         ni = df.filter(pl.col('Item') == 'Net Income From Continuing Operations')
         div = df.filter(pl.col('Item') == 'Cash Dividends Paid')
         repo = df.filter(pl.col('Item') == 'Repurchase Of Capital Stock')
