@@ -63,17 +63,18 @@ TEMPLATE = """<!DOCTYPE html>
         .peer-link {{
             display: inline-block;
             padding: 4px 10px;
-            background-color: rgba(0, 123, 255, 0.1);
-            color: #007bff;
+            background-color: #ffffff;
+            color: #000000;
             border-radius: 4px;
             text-decoration: none;
             font-size: 0.9em;
             font-weight: bold;
-            transition: background-color 0.2s;
-            border: 1px solid rgba(0, 123, 255, 0.2);
+            transition: all 0.2s;
+            border: 1px solid #000000;
         }}
         .peer-link:hover {{
-            background-color: rgba(0, 123, 255, 0.2);
+            background-color: #000000;
+            color: #ffffff;
             text-decoration: none;
         }}
 
@@ -83,12 +84,13 @@ TEMPLATE = """<!DOCTYPE html>
             hr {{ border-top-color: #333; }}
             .toc {{ background-color: rgba(255, 255, 255, 0.05); border-color: #444; }}
             .peer-link {{
-                background-color: rgba(59, 130, 246, 0.2);
-                color: #60a5fa;
-                border-color: rgba(59, 130, 246, 0.3);
+                background-color: #000000;
+                color: #ffffff;
+                border-color: #ffffff;
             }}
             .peer-link:hover {{
-                background-color: rgba(59, 130, 246, 0.3);
+                background-color: #ffffff;
+                color: #000000;
             }}
         }}
         
