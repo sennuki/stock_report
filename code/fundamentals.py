@@ -295,7 +295,7 @@ def get_financial_data(ticker_obj):
 def get_dps_eps_plotly_html(data_dict, is_data_dict):
     df_dps_q = data_dict.get('quarterly', pl.DataFrame())
     
-    if df_dps_q.is_empty(): return "<p>配当実績なし</p>"
+    if df_dps_q.is_empty(): return '<h3 id="dividend-history">一株当たり配当額と推定利回りの推移 (5年分)</h3><p>配当実績なし</p>'
     
     # 頻度判定ヘルパー
     def estimate_frequency(df):
@@ -374,7 +374,7 @@ def get_bs_plotly_html(data_dict):
     df_a = data_dict.get('annual', pl.DataFrame())
     df_q = data_dict.get('quarterly', pl.DataFrame())
     
-    if df_a.is_empty() and df_q.is_empty(): return "<p>データなし</p>"
+    if df_a.is_empty() and df_q.is_empty(): return '<h3 id="balance-sheet">貸借対照表</h3><p>データなし</p>'
     
     fig = go.Figure()
 
@@ -494,7 +494,7 @@ def get_is_plotly_html(data_dict):
     df_a = data_dict.get('annual', pl.DataFrame())
     df_q = data_dict.get('quarterly', pl.DataFrame())
     
-    if df_a.is_empty() and df_q.is_empty(): return "<p>データなし</p>"
+    if df_a.is_empty() and df_q.is_empty(): return '<h3 id="income-statement">損益計算書</h3><p>データなし</p>'
 
     fig = go.Figure()
     items = [('Total Revenue', '売上高', '#aec7e8'), ('Gross Profit', '売上総利益', '#1f77b4'),
@@ -590,7 +590,7 @@ def get_cf_plotly_html(data_dict):
     df_a = data_dict.get('annual', pl.DataFrame())
     df_q = data_dict.get('quarterly', pl.DataFrame())
     
-    if df_a.is_empty() and df_q.is_empty(): return "<p>データなし</p>"
+    if df_a.is_empty() and df_q.is_empty(): return '<h3 id="cash-flow">キャッシュフロー</h3><p>データなし</p>'
 
     fig = go.Figure()
     items = [('Net Income', '純利益', '#2ca02c'),
@@ -633,7 +633,7 @@ def get_tp_plotly_html(data_dict):
     df_a = data_dict.get('annual', pl.DataFrame())
     df_q = data_dict.get('quarterly', pl.DataFrame())
     
-    if df_a.is_empty() and df_q.is_empty(): return "<p>データなし</p>"
+    if df_a.is_empty() and df_q.is_empty(): return '<h3 id="shareholder-return">株主還元</h3><p>データなし</p>'
 
     fig = go.Figure()
 
