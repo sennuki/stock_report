@@ -63,6 +63,20 @@ const base = import.meta.env.BASE_URL.endsWith("/")
       </p>
     </section>
 
+    <!-- Sector Tags -->
+    <section class="mb-10 max-w-app mx-auto px-4">
+      <div class="flex flex-wrap justify-center gap-2">
+        {sortedSectors.map((sector) => (
+          <a 
+            href={`#${sector}`}
+            class="px-3 py-1 bg-skin-card border border-skin-line rounded-full text-sm hover:text-skin-accent hover:border-skin-accent transition-colors"
+          >
+            {sectorTranslations[sector] || sector}
+          </a>
+        ))}
+      </div>
+    </section>
+
     <section class="mb-12 max-w-app mx-auto px-4">
       {sortedSectors.map((sector) => (
         <div class="mb-12" id={sector}>
