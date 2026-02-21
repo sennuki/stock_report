@@ -1,131 +1,29 @@
 ---
-import { getCollection } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import stocks from "@/data/stocks.json";
 import fs from "node:fs";
 import path from "node:path";
+import PlotlyChart from "@/components/report/PlotlyChart.astro";
+import TradingViewWidget from "@/components/report/TradingViewWidget.astro";
+import PeerLinks from "@/components/report/PeerLinks.astro";
 
 export async function getStaticPaths() {
-  const blogDir = path.join(process.cwd(), "src", "data", "blog");
-  if (fs.existsSync(blogDir)) {
-    const files = fs.readdirSync(blogDir);
-    return files
-      .filter(file => file.endsWith(".md"))
-      .map(file => ({
-        params: { symbol: file.replace(".md", "") },
-      }));
-  }
-  return [];
+  // Use stocks.json as the source of truth for symbols
+  return (stocks as any[]).map((stock: any) => ({
+    params: { symbol: stock.Symbol_YF },
+  }));
 }
 
 const { symbol } = Astro.params;
-const filePath = path.join(process.cwd(), "public", "output_reports_full", `${symbol}.html`);
+const jsonPath = path.join(process.cwd(), "public", "reports", `${symbol}.json`);
 
-let headContent = "";
-let bodyContent = "";
+let reportData: any = null;
 
-try {
-  const stockInfo = (stocks as any[]).find((s: any) => s.Symbol_YF === symbol);
-  
-  if (fs.existsSync(filePath)) {
-    const htmlContent = fs.readFileSync(filePath, "utf-8");
-    
-    const headMatch = htmlContent.match(/<head[^>]*>([\s\S]*?)<\/head>/i);
-    const bodyMatch = htmlContent.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
-    
-    if (headMatch) {
-       headContent = headMatch[1]
-         .replace(/<title>.*?<\/title>/i, "")
-         .replace(/<meta charset.*?>/i, "")
-         .replace(/<meta name="viewport".*?>/i, "")
-         // Remove body/html style to prevent breaking layout
-         .replace(/(body|html)[^\{]*\{[^\}]*\}/gi, ""); 
-    }
-    
-    if (bodyMatch) {
-      bodyContent = bodyMatch[1];
-      
-      const tvSymbol = `${stockInfo?.Exchange || 'NASDAQ'}:${stockInfo?.Symbol || symbol}`;
-      const tvName = stockInfo?.Security || symbol;
-      
-      // Get sector ETF for comparison (fallback to SPY if not found)
-      const sectorEtfMap: Record<string, string> = {
-        "Communication Services": "VOX",
-        "Consumer Discretionary": "VCR",
-        "Consumer Staples": "VDC",
-        "Energy": "VDE",
-        "Financials": "VFH",
-        "Health Care": "VHT",
-        "Industrials": "VIS",
-        "Information Technology": "VGT",
-        "Materials": "VAW",
-        "Real Estate": "VNQ",
-        "Utilities": "VPU"
-      };
-      const sectorEtf = sectorEtfMap[stockInfo?.["GICS Sector"]] || "SPY";
-
-      // 1. Symbol Overview Widget (Above Risk/Return)
-      const riskReturnHeader = '<h2 id="risk-return">🎯 リスク・リターン分析</h2>';
-      const symbolOverviewHtml = `
-      <h2 id="stock-chart">📈 株価推移・概要</h2>
-      <div class="tradingview-widget-container mb-8" style="height: 450px;">
-        <div class="tradingview-widget-container__widget"></div>
-        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js" async>
-        {
-          "symbols": [["${tvName}", "${tvSymbol}|1D"]],
-          "chartOnly": false, "width": "100%", "height": 450, "locale": "ja", "colorTheme": "light", "autosize": false,
-          "showVolume": false, "showMA": false, "hideDateRanges": false, "hideMarketStatus": false, "hideSymbolLogo": false,
-          "scalePosition": "right", "scaleMode": "Normal", "fontFamily": "-apple-system, BlinkMacSystemFont, Trebuchet MS, Roboto, Ubuntu, sans-serif",
-          "fontSize": "10", "noTimeScale": false, "valuesTracking": "1", "changeMode": "price-and-percent", "chartType": "area",
-          "lineWidth": 2, "lineType": 0,
-          "dateRanges": ["1d|1", "1m|30", "3m|60", "12m|1D", "60m|1W", "all|1M"]
-        }
-        </script>
-      </div>
-      `;
-      bodyContent = bodyContent.replace(riskReturnHeader, symbolOverviewHtml + riskReturnHeader);
-
-      // 2. Advanced Chart Widget
-      const advancedChartHtml = `
-      <div class="tradingview-widget-container mb-8" style="height: 600px;">
-        <div class="tradingview-widget-container__widget"></div>
-        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
-        {
-          "symbol": "${tvSymbol}", "width": "100%", "height": 600, "interval": "D", "timezone": "Etc/UTC", "theme": "light",
-          "style": "2", "locale": "ja", "withdateranges": true, "hide_side_toolbar": true, "allow_symbol_change": false,
-          "calendar": false, "hide_volume": true, "support_host": "https://www.tradingview.com",
-          "compareSymbols": [
-            { "symbol": "AMEX:${sectorEtf}", "position": "SameScale" },
-            { "symbol": "FRED:SP500", "position": "SameScale" }
-          ]
-        }
-        </script>
-      </div>
-      `;
-      bodyContent = bodyContent.replace('<div id="tv-advanced-chart-placeholder"></div>', advancedChartHtml);
-
-      // 3. Financials Widget
-      const financialsHtml = `
-      <div class="tradingview-widget-container mb-8" style="height: 950px;">
-        <div class="tradingview-widget-container__widget"></div>
-        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-financials.js" async>
-        {
-          "symbol": "${tvSymbol}", "colorTheme": "light", "isTransparent": false, "displayMode": "regular",
-          "locale": "ja", "width": "100%", "height": 950
-        }
-        </script>
-      </div>
-      `;
-      bodyContent = bodyContent.replace('<div id="tv-financials-placeholder"></div>', financialsHtml);
-    }
-  } else {
-    bodyContent = `<div class="text-center py-10">Report not found for ${symbol}</div>`;
-  }
-} catch (e) {
-  console.error(e);
-  bodyContent = `<div class="text-center py-10">Error loading report for ${symbol}</div>`;
+if (fs.existsSync(jsonPath)) {
+  const content = fs.readFileSync(jsonPath, "utf-8");
+  reportData = JSON.parse(content);
 }
 
 const stockInfo = (stocks as any[]).find((s: any) => s.Symbol_YF === symbol);
@@ -139,14 +37,6 @@ const base = import.meta.env.BASE_URL.endsWith("/")
 <Layout title={title}>
   <Header />
   
-  {/* Load Plotly.js lazily via IntersectionObserver in client script */}
-  {/* <script is:inline src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script> - Removed for client:visible behavior */}
-
-  {/* Inject extracted scripts and styles. */}
-  <div id="report-head-injection">
-      <Fragment set:html={headContent} />
-  </div>
-
   <main id="main-content" class="w-full px-4 py-8 max-w-app mx-auto">
     <div class="mb-6">
        <a href={base} class="text-skin-accent hover:underline inline-flex items-center">
@@ -157,341 +47,125 @@ const base = import.meta.env.BASE_URL.endsWith("/")
        </a>
     </div>
 
-    <div class="report-content bg-skin-card p-4 sm:p-6 rounded-lg border border-skin-line shadow-sm">
-      <Fragment set:html={bodyContent} />
-    </div>
+    {!reportData ? (
+      <div class="report-content bg-skin-card p-10 rounded-lg border border-skin-line shadow-sm text-center">
+        <p class="text-xl">レポートが見つかりません: {symbol}</p>
+        <p class="mt-4 text-gray-500">データ生成プロセスを実行してください。</p>
+      </div>
+    ) : (
+      <div class="report-content bg-skin-card p-4 sm:p-8 rounded-lg border border-skin-line shadow-sm">
+        <h1 class="text-3xl font-bold mb-6">銘柄分析レポート: {reportData.symbol} ({reportData.security})</h1>
+
+            <TradingViewWidget symbol={reportData.full_symbol} type="symbol-info" />
+
+        <hr class="my-8 border-skin-line" />
+
+        <nav class="toc bg-skin-fill/50 p-6 rounded-lg border border-skin-line mb-10">
+            <h3 class="text-lg font-bold mb-4">目次</h3>
+            <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 list-disc pl-5">
+                <li><a href="#stock-chart" class="text-skin-accent hover:underline">株価推移・概要</a></li>
+                <li><a href="#risk-return" class="text-skin-accent hover:underline">リスク・リターン分析</a></li>
+                <li><a href="#peers" class="text-skin-accent hover:underline">同業種・競合</a></li>
+                <li><a href="#sector-peers" class="text-skin-accent hover:underline">同セクター他社</a></li>
+                <li><a href="#performance" class="text-skin-accent hover:underline">パフォーマンス比較</a></li>
+                <li><a href="#fundamentals" class="text-skin-accent hover:underline">ファンダメンタルズ分析 (概要)</a></li>
+                <li><a href="#fundamentals-detail" class="text-skin-accent hover:underline">財務データ推移 (詳細)</a>
+                    <ul class="pl-5 mt-1 text-sm list-circle">
+                        <li><a href="#balance-sheet" class="text-skin-accent hover:underline">貸借対照表</a></li>
+                        <li><a href="#income-statement" class="text-skin-accent hover:underline">損益計算書</a></li>
+                        <li><a href="#cash-flow" class="text-skin-accent hover:underline">キャッシュフロー</a></li>
+                        <li><a href="#shareholder-return" class="text-skin-accent hover:underline">株主還元</a></li>
+                        <li><a href="#dividend-history" class="text-skin-accent hover:underline">1株あたり配当金</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+
+        <section id="stock-chart">
+          <h2 class="text-2xl font-bold mb-4 border-b pb-2">📈 株価推移・概要</h2>
+                <TradingViewWidget symbol={reportData.full_symbol} type="symbol-overview" height={500} />
+        </section>
+
+        <section id="risk-return" class="mt-12">
+          <h2 class="text-2xl font-bold mb-4 border-b pb-2">🎯 リスク・リターン分析</h2>
+          <p class="mb-4">
+            <span class="inline-block w-3 h-3 bg-red-500 rounded-full mr-1"></span> <strong>{reportData.symbol}</strong> (対象) vs 
+            <span class="inline-block w-3 h-3 bg-blue-500 transform rotate-45 mr-1"></span> <strong>{reportData.sector_etf}</strong> (セクター) vs 
+            <span class="inline-block w-3 h-3 bg-black rounded-sm mr-1"></span> ★ <strong>S&P 500</strong>
+          </p>
+          <PlotlyChart chartData={reportData.charts.risk_return} id="chart-risk-return" />
+        </section>
+
+        <section id="peers" class="mt-12">
+          <PeerLinks title={`🏢 同業種・競合 (${reportData.sub_industry})`} peers={reportData.peers.sub_industry} />
+        </section>
+
+        <section id="sector-peers">
+          <PeerLinks title={`🏭 同セクター他社 (${reportData.sector})`} peers={reportData.peers.sector} collapsible={true} />
+        </section>
+
+        <hr class="my-12 border-skin-line" />
+
+        <section id="performance">
+          <h2 class="text-2xl font-bold mb-4 border-b pb-2">📈 パフォーマンス比較</h2>
+          <TradingViewWidget 
+            symbol={reportData.full_symbol} 
+            type="advanced-chart" 
+            height={600} 
+            compareSymbols={[
+              { symbol: `AMEX:${reportData.sector_etf}`, position: "SameScale" },
+              { symbol: "FRED:SP500", position: "SameScale" }
+            ]}
+          />
+        </section>
+
+        <section id="fundamentals" class="mt-12">
+          <h2 class="text-2xl font-bold mb-4 border-b pb-2">📊 ファンダメンタルズ分析</h2>
+          <TradingViewWidget symbol={reportData.full_symbol} type="financials" height={950} />
+        </section>
+
+        <section id="fundamentals-detail" class="mt-12">
+          <h2 class="text-2xl font-bold mb-4 border-b pb-2">📈 財務データ推移 (詳細分析)</h2>
+          
+          <div id="balance-sheet" class="scroll-mt-20">
+            <PlotlyChart chartData={reportData.charts.bs} id="chart-bs" title="貸借対照表" />
+          </div>
+          
+          <div id="income-statement" class="scroll-mt-20">
+            <PlotlyChart chartData={reportData.charts.is} id="chart-is" title="損益計算書" />
+          </div>
+          
+          <div id="cash-flow" class="scroll-mt-20">
+            <PlotlyChart chartData={reportData.charts.cf} id="chart-cf" title="キャッシュフロー" />
+          </div>
+          
+          <div id="shareholder-return" class="scroll-mt-20">
+            <PlotlyChart chartData={reportData.charts.tp} id="chart-tp" title="株主還元" />
+          </div>
+          
+          <div id="dividend-history" class="scroll-mt-20">
+            <PlotlyChart chartData={reportData.charts.dps} id="chart-dps" title="1株あたり配当金" />
+            <p class="text-sm text-gray-500 mt-2">※配当回数を推定して年換算利回りを算出しています。</p>
+          </div>
+        </section>
+      </div>
+    )}
   </main>
   <Footer />
 </Layout>
 
-<script>
-  // Store Plotly scripts found during executeScripts to run them later
-  const deferredPlotlyScripts: { oldScript: HTMLScriptElement, content: string }[] = [];
-  let plotlyLoading = false;
-  let plotlyLoaded = false;
-
-  // Function to manually execute scripts inserted via innerHTML
-  async function executeScripts(container: Element | null) {
-    if (!container) return;
-    const isDark = document.documentElement.classList.contains('dark');
-    const scripts = Array.from(container.querySelectorAll('script'));
-    
-    for (const oldScript of scripts) {
-      // Check if this is a Plotly script
-      const content = oldScript.textContent || '';
-      const src = oldScript.src || '';
-      
-      if (content.includes('Plotly') || src.includes('plotly')) {
-        // Defer execution
-        deferredPlotlyScripts.push({ oldScript, content });
-        continue;
-      }
-
-      const newScript = document.createElement('script');
-      
-      // Copy attributes
-      Array.from(oldScript.attributes).forEach((attr: Attr) => {
-        newScript.setAttribute(attr.name, attr.value);
-      });
-      
-      // Copy text content (Important for TradingView JSON config)
-      let newContent = content;
-      if (isDark) {
-        newContent = newContent.replace(/"colorTheme":\s*"light"/g, '"colorTheme": "dark"');
-        newContent = newContent.replace(/"theme":\s*"light"/g, '"theme": "dark"');
-        newContent = newContent.replace(/"backgroundColor":\s*"#ffffff"/g, '"backgroundColor": "#131722"');
-        newContent = newContent.replace(/"widgetFontColor":\s*"#0F0F0F"/g, '"widgetFontColor": "#d1d5db"');
-      } else {
-        newContent = newContent.replace(/"colorTheme":\s*"dark"/g, '"colorTheme": "light"');
-        newContent = newContent.replace(/"theme":\s*"dark"/g, '"theme": "light"');
-        newContent = newContent.replace(/"backgroundColor":\s*"#131722"/g, '"backgroundColor": "#ffffff"');
-        newContent = newContent.replace(/"widgetFontColor":\s*"#d1d5db"/g, '"widgetFontColor": "#0F0F0F"');
-      }
-      
-      newScript.textContent = newContent;
-      
-      if (oldScript.src) {
-        // External scripts (like TradingView's embed-widget-financials.js)
-        newScript.src = oldScript.src;
-        newScript.async = true;
-        
-        const promise = new Promise((resolve) => {
-          newScript.onload = resolve;
-          newScript.onerror = resolve;
-          setTimeout(resolve, 3000); // Safety timeout
-        });
-        
-        if (oldScript.parentNode) {
-          oldScript.parentNode.replaceChild(newScript, oldScript);
-        }
-        await promise;
-      } else {
-        // Purely inline scripts
-        if (oldScript.parentNode) {
-          oldScript.parentNode.replaceChild(newScript, oldScript);
-        }
-      }
-    }
-  }
-
-  // Dynamically load Plotly library
-  async function loadPlotlyLibrary() {
-    if (plotlyLoaded) return;
-    if (plotlyLoading) {
-      // Wait until loaded
-      await new Promise<void>(resolve => {
-        const check = () => {
-           if (plotlyLoaded) resolve();
-           else setTimeout(check, 100);
-        };
-        check();
-      });
-      return;
-    }
-
-    plotlyLoading = true;
-    const script = document.createElement('script');
-    script.src = "https://cdn.plot.ly/plotly-2.35.2.min.js";
-    script.charset = "utf-8";
-    
-    await new Promise<void>((resolve, reject) => {
-      script.onload = () => {
-        plotlyLoaded = true;
-        plotlyLoading = false;
-        resolve();
-      };
-      script.onerror = () => {
-        console.error("Failed to load Plotly");
-        plotlyLoading = false;
-        reject();
-      };
-      document.head.appendChild(script);
-    });
-  }
-
-  // Execute deferred Plotly scripts
-  async function runDeferredPlotlyScripts() {
-    if (!plotlyLoaded) await loadPlotlyLibrary();
-
-    for (const item of deferredPlotlyScripts) {
-      const { oldScript, content } = item;
-      const newScript = document.createElement('script');
-      // Copy attributes
-      Array.from(oldScript.attributes).forEach((attr: Attr) => {
-        newScript.setAttribute(attr.name, attr.value);
-      });
-      newScript.textContent = content;
-
-      if (oldScript.parentNode) {
-        oldScript.parentNode.replaceChild(newScript, oldScript);
-      }
-    }
-    // Clear queue
-    deferredPlotlyScripts.length = 0;
-    
-    // Apply theme and resize
-    updatePlotlyTheme();
-    // Force resize event to ensure charts fit
-    window.dispatchEvent(new Event('resize'));
-  }
-
-  // Setup IntersectionObserver for Plotly charts
-  function initPlotlyObserver() {
-    // Standard Plotly container class or the one used in these reports
-    const candidates = document.querySelectorAll('.plotly-graph-div, .js-plotly-plot');
-    if (candidates.length === 0) return;
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          // If any chart is visible, load Plotly and run all scripts
-          observer.disconnect();
-          runDeferredPlotlyScripts();
-        }
-      });
-    }, { rootMargin: '200px' }); // Start loading slightly before it comes into view
-
-    candidates.forEach(el => observer.observe(el));
-  }
-
-  // Function to update Plotly themes dynamically
-  function updatePlotlyTheme() {
-    // @ts-ignore
-    if (!window.Plotly) return;
-
-    const isDark = document.documentElement.classList.contains('dark');
-    const isMobile = window.innerWidth < 768;
-    const theme = isDark ? 'plotly_dark' : 'plotly_white';
-    const paper_bgcolor = isDark ? 'rgba(0,0,0,0)' : '#fff';
-    const plot_bgcolor = isDark ? 'rgba(0,0,0,0)' : '#fff';
-    const font_color = isDark ? '#d1d5db' : '#374151';
-
-    const plots = document.querySelectorAll('.js-plotly-plot, .plotly-graph-div');
-    plots.forEach(plot => {
-      try {
-        const layoutUpdate = { 
-          template: theme,
-          paper_bgcolor: paper_bgcolor,
-          plot_bgcolor: plot_bgcolor,
-          'font.color': font_color,
-          'font.size': isMobile ? 10 : 12,
-        };
-
-        if (isMobile) {
-          // @ts-ignore
-          layoutUpdate['margin.l'] = 40;
-          // @ts-ignore
-          layoutUpdate['margin.r'] = 20;
-          // @ts-ignore
-          layoutUpdate['margin.t'] = 100;
-          // @ts-ignore
-          layoutUpdate['margin.b'] = 60;
-        }
-
-        // @ts-ignore
-        window.Plotly.relayout(plot, layoutUpdate);
-      } catch (e) {}
-    });
-  }
-
-  // Main initialization
-  async function initPage() {
-    // 0. Preliminary cleanup for TradingView widgets to prevent "AAPL default" glitch
-    document.querySelectorAll('.tradingview-widget-container__widget').forEach(el => {
-        el.innerHTML = '';
-    });
-
-    // 1. (Removed) We no longer wait for Plotly here. It's loaded lazily.
-
-    // 2. Execute scripts in order
-    // We wait a tiny bit to ensure DOM is fully ready for TradingView's observer
-    const headInjection = document.getElementById('report-head-injection');
-    await executeScripts(headInjection);
-    
-    const reportContent = document.querySelector('.report-content');
-    await executeScripts(reportContent);
-    
-    // 3. Initialize Lazy Loading for Plotly
-    initPlotlyObserver();
-
-    // 4. Final layout fix and force TradingView re-scan
-    requestAnimationFrame(() => {
-      // If Plotly happens to be loaded (e.g. from previous navigation in SPA mode if retained?), update theme
-      if (window.Plotly) updatePlotlyTheme();
-      
-      window.dispatchEvent(new Event('resize'));
-      
-      // Some TradingView widgets need a push after DOM insertion
-      // @ts-ignore
-      if (window.TradingView && window.TradingView.widget) {
-          // This is a generic way to trigger TV widget updates if they are already in the DOM
-      }
-    });
-  }
-
-  document.addEventListener('astro:page-load', initPage);
-
-  // Watch for theme changes (AstroPaper specific)
-  const observer = new MutationObserver((mutations) => {
-    mutations.forEach(async (mutation) => {
-      if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-        updatePlotlyTheme();
-        
-        // When theme changes, re-execute TradingView scripts with new theme
-        const reportContent = document.querySelector('.report-content');
-        if (reportContent) {
-           await executeScripts(reportContent);
-        }
-      }
-    });
-  });
-
-  observer.observe(document.documentElement, { attributes: true });
-
-  // Force Plotly resize if present
-  window.addEventListener('resize', () => {
-    const plots = document.querySelectorAll('.js-plotly-plot');
-    plots.forEach(plot => {
-      // @ts-ignore
-      if (window.Plotly) window.Plotly.Plots.resize(plot);
-    });
-  });
-</script>
-
-<style is:global>
-  /* Style overrides for the injected report content */
+<style>
   .report-content {
-    overflow-x: hidden; /* Prevent horizontal scroll on body */
-    width: 100%;
-    word-break: break-word;
+    color: var(--color-text-base);
   }
-  
-  /* Allow text and containers to expand fully but respect parent width */
-  .report-content > *,
-  .report-content div,
-  .report-content p,
-  .report-content h1,
-  .report-content h2,
-  .report-content h3,
-  .report-content ul,
-  .report-content ol {
-    max-width: 100% !important;
-    box-sizing: border-box;
-  }
-
-  .report-content h1, 
-  .report-content h2, 
-  .report-content h3, 
-  .report-content p, 
-  .report-content li,
-  .report-content span {
-    color: currentColor;
-  }
-
-  .report-content h1 {
-    font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 1.5rem;
-  }
-  
   .report-content h2 {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-top: 2rem;
-    margin-bottom: 1rem;
-    border-bottom: 1px solid rgb(var(--color-border));
-    padding-bottom: 0.5rem;
+    margin-top: 2.5rem;
+    color: var(--color-text-base);
   }
-
-  /* Only constrain media and specific embeds to prevent overflow */
-  .report-content iframe,
-  .report-content table,
-  .report-content img,
-  .report-content svg {
-    max-width: 100% !important;
-    height: auto;
+  .scroll-mt-20 {
+    scroll-margin-top: 5rem;
   }
-
-  /* Specific handling for TradingView widgets on mobile */
-  .tradingview-widget-container {
-    width: 100% !important;
-    margin-bottom: 20px;
-  }
-
-  .tradingview-widget-container iframe {
-    width: 100% !important;
-  }
-
-  /* Ensure plotly graphs fit and are responsive */
-  .plotly-graph-div {
-    width: 100% !important;
-    max-width: 100% !important;
-    box-sizing: border-box;
-  }
-  
-  .js-plotly-plot .plotly,
-  .js-plotly-plot .plotly div {
-    direction: ltr !important;
-    width: 100% !important;
+  .list-circle {
+    list-style-type: circle;
   }
 </style>

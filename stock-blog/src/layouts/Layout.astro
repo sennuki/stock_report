@@ -169,6 +169,9 @@ const structuredData = {
 
         // Set theme immediately to prevent flash
         document.firstElementChild?.setAttribute("data-theme", themeValue);
+        if (themeValue === "dark") {
+          document.firstElementChild?.classList.add("dark");
+        }
 
         // Export minimal API for external script
         window.theme = {

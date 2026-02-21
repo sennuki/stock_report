@@ -7,26 +7,36 @@ import plotly.io as pio
 from plotly.subplots import make_subplots
 import numpy as np
 import warnings
+# Plotly 6.0.0+ deprecation warnings (scattermapbox -> scattermap)
+warnings.filterwarnings("ignore", category=FutureWarning, message=".*scattermapbox.*")
+
+import yfinance as yf
+import polars as pl
+import pandas as pd
+import plotly.graph_objects as go
+import plotly.io as pio
+from plotly.subplots import make_subplots
+import numpy as np
 import utils
 import datetime
 
-# Suppress plotly deprecation warnings
-warnings.filterwarnings("ignore", message=".*scattermapbox.*")
-
-# Plotly 6.0.0+ deprecation fix: 
-# Default templates still contain 'scattermapbox', which triggers a warning.
-# We migrate them to 'scattermap' to follow the recommendation.
+# Plotly 6.0.0+ template migration:
+# Default templates still contain 'scattermapbox' references.
+# We migrate them to 'scattermap' to align with Plotly 6.0 recommendations.
 def fix_plotly_templates():
-    for name in pio.templates:
-        template = pio.templates[name]
-        try:
-            if hasattr(template.layout.template.data, 'scattermapbox'):
-                smb = template.layout.template.data.scattermapbox
-                if smb:
-                    template.layout.template.data.scattermap = smb
-                template.layout.template.data.scattermapbox = None
-        except:
-            pass
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        for name in pio.templates:
+            template = pio.templates[name]
+            try:
+                data = template.layout.template.data
+                if hasattr(data, 'scattermapbox'):
+                    smb = data.scattermapbox
+                    if smb:
+                        data.scattermap = smb
+                    data.scattermapbox = None
+            except:
+                pass
 
 fix_plotly_templates()
 
@@ -293,9 +303,14 @@ def get_financial_data(ticker_obj):
     return data
 
 def get_dps_eps_plotly_html(data_dict, is_data_dict):
+    fig = get_dps_eps_plotly_fig(data_dict, is_data_dict)
+    if isinstance(fig, str): return f'<h3 id="dividend-history">1株あたり配当金</h3><p>{fig}</p>'
+    return '<h3 id="dividend-history">1株あたり配当金</h3>' + create_chart_html(fig)
+
+def get_dps_eps_plotly_fig(data_dict, is_data_dict):
     df_dps_q = data_dict.get('quarterly', pl.DataFrame())
     
-    if df_dps_q.is_empty(): return '<h3 id="dividend-history">一株当たり配当額と推定利回りの推移 (5年分)</h3><p>配当実績なし</p>'
+    if df_dps_q.is_empty(): return '配当実績なし'
     
     # 頻度判定ヘルパー
     def estimate_frequency(df):
@@ -356,8 +371,7 @@ def get_dps_eps_plotly_html(data_dict, is_data_dict):
         hovermode='x unified'
     )
     
-    info_text = f"<p style='font-size: 0.8em; color: #666;'>※配当回数を年{freq}回と推定して年換算利回りを算出しています。</p>"
-    return '<h3 id="dividend-history">一株当たり配当額と推定利回りの推移 (5年分)</h3>' + create_chart_html(fig) + info_text
+    return fig
 
 def create_chart_html(fig):
     """HTML化ヘルパー (ファイルサイズ削減のためライブラリ重複ロード回避)"""
@@ -371,10 +385,15 @@ def _add_traces(fig, df, func, visible=True):
     func(fig, df, visible)
 
 def get_bs_plotly_html(data_dict):
+    fig = get_bs_plotly_fig(data_dict)
+    if isinstance(fig, str): return f'<h3 id="balance-sheet">貸借対照表</h3><p>{fig}</p>'
+    return '<h3 id="balance-sheet">貸借対照表</h3>' + create_chart_html(fig)
+
+def get_bs_plotly_fig(data_dict):
     df_a = data_dict.get('annual', pl.DataFrame())
     df_q = data_dict.get('quarterly', pl.DataFrame())
     
-    if df_a.is_empty() and df_q.is_empty(): return '<h3 id="balance-sheet">貸借対照表</h3><p>データなし</p>'
+    if df_a.is_empty() and df_q.is_empty(): return 'データなし'
     
     fig = go.Figure()
 
@@ -488,13 +507,18 @@ def get_bs_plotly_html(data_dict):
                       yaxis=dict(type='linear', rangemode='tozero', automargin=True, gridcolor='#F3F4F6'),
                       legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5),
                       updatemenus=updatemenus)
-    return '<h3 id="balance-sheet">貸借対照表</h3>' + create_chart_html(fig)
+    return fig
 
 def get_is_plotly_html(data_dict):
+    fig = get_is_plotly_fig(data_dict)
+    if isinstance(fig, str): return f'<h3 id="income-statement">損益計算書</h3><p>{fig}</p>'
+    return '<h3 id="income-statement">損益計算書</h3>' + create_chart_html(fig)
+
+def get_is_plotly_fig(data_dict):
     df_a = data_dict.get('annual', pl.DataFrame())
     df_q = data_dict.get('quarterly', pl.DataFrame())
     
-    if df_a.is_empty() and df_q.is_empty(): return '<h3 id="income-statement">損益計算書</h3><p>データなし</p>'
+    if df_a.is_empty() and df_q.is_empty(): return 'データなし'
 
     fig = go.Figure()
     items = [('Total Revenue', '売上高', '#aec7e8'), ('Gross Profit', '売上総利益', '#1f77b4'),
@@ -581,18 +605,23 @@ def get_is_plotly_html(data_dict):
         xaxis=dict(type='category', tickangle=0),
         yaxis=dict(title='金額', showgrid=True, type='linear', automargin=True, gridcolor='#F3F4F6', zeroline=True, zerolinecolor='#444', zerolinewidth=2, rangemode='nonnegative' if df_a.filter(pl.col('Value')<0).is_empty() else 'normal'),
         yaxis2=dict(title='利益率', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='linear', automargin=True, zeroline=True, zerolinecolor='#444', zerolinewidth=2, rangemode='nonnegative' if df_a.filter(pl.col('Value')<0).is_empty() else 'normal'),
-        legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5),
-        updatemenus=updatemenus
-    )
-    return '<h3 id="income-statement">損益計算書</h3>' + create_chart_html(fig)
+                      legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5),
+                      updatemenus=updatemenus)
+    return fig
 
 def get_cf_plotly_html(data_dict):
+    fig = get_cf_plotly_fig(data_dict)
+    if isinstance(fig, str): return f'<h3 id="cash-flow">キャッシュフロー</h3><p>{fig}</p>'
+    return '<h3 id="cash-flow">キャッシュフロー</h3>' + create_chart_html(fig)
+
+def get_cf_plotly_fig(data_dict):
     df_a = data_dict.get('annual', pl.DataFrame())
     df_q = data_dict.get('quarterly', pl.DataFrame())
     
-    if df_a.is_empty() and df_q.is_empty(): return '<h3 id="cash-flow">キャッシュフロー</h3><p>データなし</p>'
+    if df_a.is_empty() and df_q.is_empty(): return 'データなし'
 
     fig = go.Figure()
+        
     items = [('Net Income', '純利益', '#2ca02c'),
              ('Operating Cash Flow', '営業CF', '#aec7e8'), ('Investing Cash Flow', '投資CF', '#1f77b4'),
              ('Financing Cash Flow', '財務CF', '#ffbb78'), ('Free Cash Flow', 'フリーCF', '#9467bd')]
@@ -627,13 +656,18 @@ def get_cf_plotly_html(data_dict):
                       yaxis=dict(title='金額', type='linear', automargin=True, gridcolor='#F3F4F6'),
                       legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5),
                       updatemenus=updatemenus)
-    return '<h3 id="cash-flow">キャッシュフロー</h3>' + create_chart_html(fig)
+    return fig
 
 def get_tp_plotly_html(data_dict):
+    fig = get_tp_plotly_fig(data_dict)
+    if isinstance(fig, str): return f'<h3 id="shareholder-return">株主還元</h3><p>{fig}</p>'
+    return '<h3 id="shareholder-return">株主還元</h3>' + create_chart_html(fig)
+
+def get_tp_plotly_fig(data_dict):
     df_a = data_dict.get('annual', pl.DataFrame())
     df_q = data_dict.get('quarterly', pl.DataFrame())
     
-    if df_a.is_empty() and df_q.is_empty(): return '<h3 id="shareholder-return">株主還元</h3><p>データなし</p>'
+    if df_a.is_empty() and df_q.is_empty(): return 'データなし'
 
     fig = go.Figure()
 
@@ -686,5 +720,5 @@ def get_tp_plotly_html(data_dict):
         legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5),
         updatemenus=updatemenus
     )
-    return '<h3 id="shareholder-return">株主還元</h3>' + create_chart_html(fig)
+    return fig
 

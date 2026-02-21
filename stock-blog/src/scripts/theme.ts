@@ -32,6 +32,13 @@ function setPreference(): void {
 function reflectPreference(): void {
   document.firstElementChild?.setAttribute("data-theme", themeValue);
 
+  // Add/remove .dark class for compatibility with widgets and some styles
+  if (themeValue === DARK) {
+    document.firstElementChild?.classList.add(DARK);
+  } else {
+    document.firstElementChild?.classList.remove(DARK);
+  }
+
   document.querySelector("#theme-btn")?.setAttribute("aria-label", themeValue);
 
   // Get a reference to the body element
@@ -56,6 +63,10 @@ function reflectPreference(): void {
 if (window.theme) {
   window.theme.setPreference = setPreference;
   window.theme.reflectPreference = reflectPreference;
+  window.theme.setTheme = (val: string) => {
+    themeValue = val;
+    reflectPreference();
+  };
 } else {
   window.theme = {
     themeValue,
@@ -64,6 +75,7 @@ if (window.theme) {
     getTheme: () => themeValue,
     setTheme: (val: string) => {
       themeValue = val;
+      reflectPreference();
     },
   };
 }

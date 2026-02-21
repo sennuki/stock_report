@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+import warnings
+# Plotly 6.0.0+ deprecation warnings (scattermapbox -> scattermap)
+warnings.filterwarnings("ignore", category=FutureWarning, message=".*scattermapbox.*")
+
 import os
 import yfinance as yf
 import polars as pl
@@ -9,18 +13,23 @@ from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm
 
-# Plotly 6.0.0+ deprecation fix
+# Plotly 6.0.0+ template migration:
+# Default templates still contain 'scattermapbox' references.
+# We migrate them to 'scattermap' to align with Plotly 6.0 recommendations.
 def fix_plotly_templates():
-    for name in pio.templates:
-        template = pio.templates[name]
-        try:
-            if hasattr(template.layout.template.data, 'scattermapbox'):
-                smb = template.layout.template.data.scattermapbox
-                if smb:
-                    template.layout.template.data.scattermap = smb
-                template.layout.template.data.scattermapbox = None
-        except:
-            pass
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        for name in pio.templates:
+            template = pio.templates[name]
+            try:
+                data = template.layout.template.data
+                if hasattr(data, 'scattermapbox'):
+                    smb = data.scattermapbox
+                    if smb:
+                        data.scattermap = smb
+                    data.scattermapbox = None
+            except:
+                pass
 
 fix_plotly_templates()
 
@@ -49,6 +58,14 @@ def process_single_stock(symbol):
         
         last_date = hist['Date'].max()
         results = {'Symbol': symbol}
+
+        # 前日比の計算
+        if len(hist) >= 2:
+            last_close = hist['Close'][-1]
+            prev_close = hist['Close'][-2]
+            results['Daily_Change'] = (last_close - prev_close) / prev_close
+        else:
+            results['Daily_Change'] = None
 
         for p in PERIODS:
             label = p['label']
@@ -89,6 +106,10 @@ def calculate_market_metrics_parallel(symbols):
     return pl.DataFrame(results) if results else pl.DataFrame({'Symbol': []})
 
 def generate_scatter_html(df_metrics, target_symbol, sector_etf_symbol):
+    fig = generate_scatter_fig(df_metrics, target_symbol, sector_etf_symbol)
+    return fig.to_html(full_html=False, include_plotlyjs=False, config={'displayModeBar': False, 'scrollZoom': False, 'responsive': True})
+
+def generate_scatter_fig(df_metrics, target_symbol, sector_etf_symbol):
     """リスク・リターン散布図生成 (期間切り替えタブ付き)"""
     fig = go.Figure()
     
@@ -182,7 +203,7 @@ def generate_scatter_html(df_metrics, target_symbol, sector_etf_symbol):
         )]
     )
     
-    return fig.to_html(full_html=False, include_plotlyjs=False, config={'displayModeBar': False, 'scrollZoom': False, 'responsive': True})
+    return fig
 
 if __name__ == "__main__":
     df_metrics = calculate_market_metrics_parallel(["MSFT", "AAPL"])

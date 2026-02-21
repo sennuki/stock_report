@@ -1,0 +1,177 @@
+---
+interface Props {
+  symbol: string;
+  type: 'symbol-info' | 'symbol-overview' | 'advanced-chart' | 'financials';
+  height?: number;
+  containerId?: string;
+  compareSymbols?: { symbol: string, position: string }[];
+}
+
+const { symbol, type, height = 450, containerId, compareSymbols } = Astro.props;
+
+// 共通の基本設定
+const baseConfig = {
+  "isTransparent": false,
+  "locale": "ja",
+  "width": "100%",
+  "height": height,
+};
+
+let scriptSrc = "";
+let config: any = {};
+
+if (type === 'symbol-info') {
+  scriptSrc = "https://s3.tradingview.com/external-embedding/embed-widget-symbol-info.js";
+  config = { ...baseConfig, symbol, height: "auto" };
+} else if (type === 'symbol-overview') {
+  scriptSrc = "https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js";
+  config = {
+    ...baseConfig,
+    "symbols": [[symbol, `${symbol}|1D`]],
+    "chartOnly": false,
+    "showVolume": false,
+    "showMA": false,
+    "hideDateRanges": false,
+    "hideMarketStatus": false,
+    "hideSymbolLogo": false,
+    "scalePosition": "right",
+    "scaleMode": "Normal",
+    "fontFamily": "-apple-system, BlinkMacSystemFont, Trebuchet MS, Roboto, Ubuntu, sans-serif",
+    "fontSize": "10",
+    "noTimeScale": false,
+    "valuesTracking": "1",
+    "changeMode": "price-and-percent",
+    "chartType": "area",
+    "lineWidth": 2,
+    "lineType": 0,
+    "dateRanges": ["1d|1", "1m|30", "3m|60", "12m|1D", "60m|1W", "all|1M"]
+  };
+} else if (type === 'advanced-chart') {
+  scriptSrc = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
+  config = {
+    ...baseConfig,
+    symbol,
+    "interval": "D",
+    "timezone": "Etc/UTC",
+    "theme": "light",
+    "style": "2",
+    "withdateranges": true,
+    "hide_side_toolbar": true,
+    "allow_symbol_change": false,
+    "calendar": false,
+    "hide_volume": true,
+    "support_host": "https://www.tradingview.com",
+    "compareSymbols": compareSymbols || []
+  };
+} else if (type === 'financials') {
+  scriptSrc = "https://s3.tradingview.com/external-embedding/embed-widget-financials.js";
+  config = {
+    ...baseConfig,
+    symbol,
+    "displayMode": "regular"
+  };
+}
+
+const widgetId = containerId || `tv-widget-${Math.random().toString(36).substring(2, 11)}`;
+---
+
+<div 
+  class="tv-widget-wrapper mb-8" 
+  id={widgetId} 
+  data-config={JSON.stringify(config)}
+  data-src={scriptSrc}
+  data-symbol={symbol}
+>
+  <div class="tradingview-widget-container">
+    <div class="tradingview-widget-container__widget"></div>
+    <div class="tradingview-widget-copyright">
+      <a href={`https://jp.tradingview.com/symbols/${symbol.replace(':', '-')}/`} rel="noopener nofollow" target="_blank">
+        <span class="blue-text">TradingViewですべてのマーケットを追跡</span>
+      </a>
+    </div>
+    <!-- Script will be injected here -->
+  </div>
+</div>
+
+<script is:inline>
+  function renderTradingViewWidget(wrapper) {
+    if (!wrapper) return;
+    
+    const container = wrapper.querySelector('.tradingview-widget-container');
+    if (!container) return;
+
+    // 現在のテーマを確認
+    const isDark = document.documentElement.classList.contains('dark');
+    const theme = isDark ? 'dark' : 'light';
+    
+    // 設定を取得してテーマを更新
+    const config = JSON.parse(wrapper.dataset.config || '{}');
+    config.colorTheme = theme;
+    if (config.theme) config.theme = theme;
+    
+    const src = wrapper.dataset.src;
+    const symbol = wrapper.dataset.symbol;
+
+    // コンテナ内を初期化 (ウィジェット用の div とコピーライト)
+    container.innerHTML = `
+      <div class="tradingview-widget-container__widget"></div>
+      <div class="tradingview-widget-copyright">
+        <a href="https://jp.tradingview.com/symbols/${symbol.replace(':', '-')}/" rel="noopener nofollow" target="_blank">
+          <span class="blue-text">TradingViewですべてのマーケットを追跡</span>
+        </a>
+      </div>
+    `;
+
+    // 新しいスクリプトタグを作成 (公式の形式に合わせる)
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = src;
+    script.async = true;
+    script.textContent = JSON.stringify(config);
+    
+    container.appendChild(script);
+  }
+
+  // ページロード時の初期化
+  const initAllWidgets = () => {
+    document.querySelectorAll('.tv-widget-wrapper').forEach(wrapper => {
+      renderTradingViewWidget(wrapper);
+    });
+  };
+
+  // 初回実行
+  if (document.readyState === 'complete') {
+    initAllWidgets();
+  } else {
+    window.addEventListener('load', initAllWidgets);
+  }
+
+  // Astro のページ遷移対応 (View Transitions 用)
+  document.addEventListener('astro:page-load', initAllWidgets);
+
+  // テーマ切り替えの監視
+  const themeObserver = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+        initAllWidgets();
+      }
+    });
+  });
+  themeObserver.observe(document.documentElement, { attributes: true });
+</script>
+
+<style is:global>
+  .tradingview-widget-container {
+    width: 100%;
+  }
+  .tradingview-widget-copyright {
+    font-size: 13px !important;
+    line-height: 32px !important;
+    text-align: center !important;
+    color: #9db2bd !important;
+    margin-top: 5px;
+  }
+  .blue-text {
+    color: #2962ff !important;
+  }
+</style>

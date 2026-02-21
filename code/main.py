@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 import warnings
-# Suppress deprecation warnings
+# Plotly 6.0.0+ deprecation warnings (scattermapbox -> scattermap)
+warnings.filterwarnings("ignore", category=FutureWarning, message=".*scattermapbox.*")
 warnings.filterwarnings("ignore", message=".*Timestamp.utcnow is deprecated.*")
-warnings.filterwarnings("ignore", message=".*scattermapbox.*")
 
 import market_data
 import risk_return
-import report_generator
+import generate_json_reports
 import utils
 import os
 import shutil
@@ -14,21 +14,23 @@ import json
 import plotly.io as pio
 import polars as pl
 
-# Plotly 6.0.0+ deprecation fix: 
-# Default templates still contain 'scattermapbox', which triggers a warning.
-# We migrate them to 'scattermap' to follow the recommendation.
+# Plotly 6.0.0+ template migration:
+# Default templates still contain 'scattermapbox' references.
+# We migrate them to 'scattermap' to align with Plotly 6.0 recommendations.
 def fix_plotly_templates():
-    for name in pio.templates:
-        template = pio.templates[name]
-        try:
-            if hasattr(template.layout.template.data, 'scattermapbox'):
-                # Accessing it might trigger the warning, but we do it once to fix it
-                smb = template.layout.template.data.scattermapbox
-                if smb:
-                    template.layout.template.data.scattermap = smb
-                template.layout.template.data.scattermapbox = None
-        except:
-            pass
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        for name in pio.templates:
+            template = pio.templates[name]
+            try:
+                data = template.layout.template.data
+                if hasattr(data, 'scattermapbox'):
+                    smb = data.scattermapbox
+                    if smb:
+                        data.scattermap = smb
+                    data.scattermapbox = None
+            except:
+                pass
 
 fix_plotly_templates()
 
@@ -141,15 +143,16 @@ if __name__ == "__main__":
             utils.log_event("ERROR", "SYSTEM", f"Failed to calculate risk metrics: {e}")
             df_metrics = pl.DataFrame()
 
-        # 3. レポート作成
+        # 3. レポート作成 (JSON)
         try:
-            report_generator.export_full_analysis_reports(df_sp500, df_metrics, output_dir=output_reports_dir)
-            utils.log_event("SUCCESS", "SYSTEM", "Generated all reports")
+            # generate_json_reports.py はデフォルトで ../stock-blog/public/reports に出力する
+            generate_json_reports.export_json_reports(df_sp500, df_metrics)
+            utils.log_event("SUCCESS", "SYSTEM", "Generated all JSON reports")
         except Exception as e:
-            utils.log_event("ERROR", "SYSTEM", f"Report generation failed: {e}")
+            utils.log_event("ERROR", "SYSTEM", f"JSON Report generation failed: {e}")
         
-        # 4. Astroへ反映
-        copy_reports_to_astro()
+        # 4. Astroへ反映 (JSON生成で直接出力しているため不要)
+        # copy_reports_to_astro()
 
         # 最後にエラー要約を表示
         if os.path.exists(utils.LOG_FILE):

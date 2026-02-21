@@ -1,0 +1,97 @@
+---
+interface Peer {
+  Symbol: string;
+  Symbol_YF: string;
+  Daily_Change?: number;
+}
+
+interface Props {
+  title: string;
+  peers: Peer[];
+  collapsible?: boolean;
+}
+
+const { title, peers, collapsible = false } = Astro.props;
+
+const formatChange = (change?: number) => {
+  if (change === undefined || change === null) return null;
+  const val = (change * 100).toFixed(2);
+  const color = change >= 0 ? "text-green-500" : "text-red-500";
+  const arrow = change >= 0 ? "▲" : "▼";
+  return { val, color, arrow };
+};
+---
+
+<div class="peers-container mb-8">
+  <h2 class="text-xl font-bold mb-4 border-b pb-2">{title}</h2>
+  
+  {collapsible ? (
+    <details class="cursor-pointer">
+      <summary class="text-skin-accent hover:underline mb-4">クリックして展開</summary>
+      <div class="flex flex-wrap gap-2 mt-2">
+        {peers.map(peer => {
+          const change = formatChange(peer.Daily_Change);
+          return (
+            <a href={`/report/${peer.Symbol_YF}`} class="peer-link">
+              <span>{peer.Symbol}</span>
+              {change && (
+                <span class={`ml-1 text-xs ${change.color}`}>
+                  {change.arrow}{change.val}%
+                </span>
+              )}
+            </a>
+          );
+        })}
+        {peers.length === 0 && <span class="text-gray-500">なし</span>}
+      </div>
+    </details>
+  ) : (
+    <div class="flex flex-wrap gap-2">
+      {peers.map(peer => {
+        const change = formatChange(peer.Daily_Change);
+        return (
+          <a href={`/report/${peer.Symbol_YF}`} class="peer-link">
+            <span>{peer.Symbol}</span>
+            {change && (
+              <span class={`ml-1 text-xs ${change.color}`}>
+                {change.arrow}{change.val}%
+              </span>
+            )}
+          </a>
+        );
+      })}
+      {peers.length === 0 && <span class="text-gray-500">なし</span>}
+    </div>
+  )}
+</div>
+
+<style>
+  .peer-link {
+    display: flex;
+    align-items: center;
+    padding: 4px 10px;
+    background-color: var(--color-fill);
+    color: var(--color-text-base);
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.9em;
+    font-weight: bold;
+    transition: all 0.2s;
+    border: 1px solid rgb(var(--color-border));
+  }
+  
+  .peer-link:hover {
+    background-color: rgb(var(--color-accent));
+    color: white;
+    border-color: rgb(var(--color-accent));
+  }
+
+  /* Hover state text color adjustment for clarity */
+  .peer-link:hover span[class*="text-"] {
+    color: white !important;
+  }
+
+  .dark .peer-link {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+</style>

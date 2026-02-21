@@ -1,0 +1,136 @@
+---
+interface Props {
+  chartData: any;
+  title?: string;
+  id: string;
+}
+
+const { chartData, title, id } = Astro.props;
+---
+
+<div class="plotly-chart-container my-8">
+  {title && <h3 class="text-xl font-bold mb-4">{title}</h3>}
+  {chartData && !chartData.error ? (
+    <div id={id} class="plotly-graph-div w-full min-h-[450px]"></div>
+  ) : (
+    <div class="flex items-center justify-center min-h-[100px] bg-skin-fill/30 border border-dashed border-skin-line rounded-lg">
+      <p class="text-gray-500 italic">{chartData?.error || 'データが利用できません'}</p>
+    </div>
+  )}
+</div>
+
+<script is:inline src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+
+<script define:vars={{ id, chartData }}>
+  function renderChart() {
+    const container = document.getElementById(id);
+    if (!container || !chartData || chartData.error) return;
+
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark' || document.documentElement.classList.contains('dark');
+    const layout = {
+      ...chartData.layout,
+      template: isDark ? 'plotly_dark' : 'plotly_white',
+      paper_bgcolor: 'rgba(0,0,0,0)',
+      plot_bgcolor: 'rgba(0,0,0,0)',
+      autosize: true,
+    };
+
+    // リスク・リターン分析以外は縦線を消す
+    if (id !== 'chart-risk-return') {
+      if (!layout.xaxis) layout.xaxis = {};
+      layout.xaxis.showgrid = false;
+    }
+
+    if (isDark) {
+      // 灰色部分を白色に、白色の部分を灰色に
+      // 補助線（グリッド線）はダークモードでは目立ちすぎないよう透過度を調整
+      const grey = '#9ca3af';
+      const gridWhite = 'rgba(255, 255, 255, 0.1)';
+      const zeroWhite = 'rgba(255, 255, 255, 0.2)';
+
+      layout.font = { ...layout.font, color: grey };
+      
+      const updateAxis = (axis) => {
+        if (!layout[axis]) return;
+        layout[axis].gridcolor = gridWhite;
+        layout[axis].zerolinecolor = zeroWhite;
+        layout[axis].tickfont = { ...layout[axis].tickfont, color: grey };
+        if (layout[axis].title) {
+          if (typeof layout[axis].title === 'string') {
+            layout[axis].title = { text: layout[axis].title, font: { color: grey } };
+          } else {
+            layout[axis].title.font = { ...layout[axis].title.font, color: grey };
+          }
+        }
+      };
+
+      updateAxis('xaxis');
+      updateAxis('yaxis');
+      updateAxis('yaxis2'); // 右軸も更新
+
+      if (layout.legend) {
+        layout.legend.font = { ...layout.legend.font, color: grey };
+      }
+
+      // リスク・リターン分析のプロット色をダークモード用に調整
+      if (id === 'chart-risk-return' && chartData.data) {
+        chartData.data.forEach(trace => {
+          if (trace.name === 'S&P500銘柄' && trace.marker) {
+            trace.marker.color = '#cbd5e1'; // 灰色(#72777B)から明るい灰色へ
+          }
+          if (trace.name === 'S&P 500' && trace.marker) {
+            trace.marker.color = '#ffffff'; // 黒色から白色へ
+          }
+        });
+      }
+    } else {
+      // デイモード（ライトモード）の補助線が薄すぎる場合の調整
+      const lightGrey = 'rgba(0, 0, 0, 0.1)';
+      const updateAxisLight = (axis) => {
+        if (!layout[axis]) return;
+        layout[axis].gridcolor = lightGrey;
+        layout[axis].zerolinecolor = 'rgba(0, 0, 0, 0.2)';
+      };
+      updateAxisLight('xaxis');
+      updateAxisLight('yaxis');
+      updateAxisLight('yaxis2');
+    }
+
+    // Ensure margins and fonts look good
+    if (window.innerWidth < 768) {
+      layout.margin = { l: 40, r: 20, t: 80, b: 60 };
+      if (layout.font) layout.font.size = 10;
+    }
+
+    Plotly.newPlot(container, chartData.data, layout, {
+      displayModeBar: false,
+      responsive: true,
+      scrollZoom: false
+    });
+  }
+
+  // Initial render
+  renderChart();
+
+  // Watch for theme changes
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.type === 'attributes' && (mutation.attributeName === 'class' || mutation.attributeName === 'data-theme')) {
+        renderChart();
+      }
+    });
+  });
+  observer.observe(document.documentElement, { attributes: true });
+
+  // Handle resize
+  window.addEventListener('resize', () => {
+    Plotly.Plots.resize(document.getElementById(id));
+  });
+</script>
+
+<style>
+  .plotly-chart-container {
+    width: 100%;
+    overflow: hidden;
+  }
+</style>
