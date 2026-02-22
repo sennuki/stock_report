@@ -22,7 +22,8 @@ let config: any = {};
 
 if (type === 'symbol-info') {
   scriptSrc = "https://s3.tradingview.com/external-embedding/embed-widget-symbol-info.js";
-  config = { ...baseConfig, symbol, height: "auto" };
+  // height: "auto" だと遷移時に潰れることがあるため、十分な固定値をデフォルトにする
+  config = { ...baseConfig, symbol, height: height === 450 ? 210 : height };
 } else if (type === 'symbol-overview') {
   scriptSrc = "https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js";
   config = {

@@ -16,12 +16,21 @@ from tqdm import tqdm
 def get_market_info(symbol):
     try:
         t = utils.get_ticker(symbol)
-        ex = t.info.get('exchange', 'Unknown')
+        info = t.info
+        ex = info.get('exchange', 'Unknown')
         m_map = {'NMS':'NASDAQ', 'NGM':'NASDAQ', 'NCM':'NASDAQ', 'NYQ':'NYSE', 'ASE':'AMEX', 'PCX':'NYSE', 'PNK':'OTC'}
-        return symbol, m_map.get(ex, ex)
+        
+        # 株価変化率の取得
+        prev_close = info.get('previousClose')
+        curr_price = info.get('currentPrice') or info.get('regularMarketPrice')
+        daily_change = None
+        if prev_close and curr_price:
+            daily_change = (curr_price - prev_close) / prev_close
+            
+        return symbol, m_map.get(ex, ex), daily_change
     except Exception as e:
         # print(f"Error fetching info for {symbol}: {e}") # Debug output
-        return symbol, "NYSE"
+        return symbol, "NYSE", None
 
 def fetch_sp500_companies_optimized():
     print("S&P 500リストを取得中...")
@@ -40,6 +49,7 @@ def fetch_sp500_companies_optimized():
 
         symbols = df['Symbol_YF'].to_list()
         ex_map = {}
+        change_map = {}
         print(f"{len(symbols)} 銘柄の市場情報を取得中... (並列処理)")
         # Rate limit回避のため並列数を抑える
         # GitHub Actions では 1、ローカルでも 1 をデフォルトにする
@@ -49,10 +59,14 @@ def fetch_sp500_companies_optimized():
         with ThreadPoolExecutor(max_workers=current_max_workers) as ex:
             f_map = {ex.submit(get_market_info, s): s for s in symbols}
             for f in tqdm(as_completed(f_map), total=len(symbols)):
-                s, e = f.result()
+                s, e, c = f.result()
                 ex_map[s] = e
+                change_map[s] = c
 
-        return df.with_columns(pl.col('Symbol_YF').map_elements(lambda s: ex_map.get(s, "NYSE"), return_dtype=pl.Utf8).alias('Exchange'))
+        return df.with_columns([
+            pl.col('Symbol_YF').map_elements(lambda s: ex_map.get(s, "NYSE"), return_dtype=pl.Utf8).alias('Exchange'),
+            pl.col('Symbol_YF').map_elements(lambda s: change_map.get(s), return_dtype=pl.Float64).alias('Daily_Change')
+        ])
     except Exception as e:
         print(f"Failed to fetch S&P 500 list: {e}")
         return pl.DataFrame()
