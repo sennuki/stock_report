@@ -20,8 +20,16 @@ const { symbol } = Astro.params;
 const jsonPath = path.join(process.cwd(), "public", "reports", `${symbol}.json`);
 
 let reportData: any = null;
+let lastUpdated: string = "";
 
 if (fs.existsSync(jsonPath)) {
+  const stats = fs.statSync(jsonPath);
+  lastUpdated = new Intl.DateTimeFormat("ja-JP", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }).format(stats.mtime);
+
   const content = fs.readFileSync(jsonPath, "utf-8");
   reportData = JSON.parse(content);
 }
@@ -54,7 +62,8 @@ const base = import.meta.env.BASE_URL.endsWith("/")
       </div>
     ) : (
       <div class="report-content bg-skin-card p-4 sm:p-8 rounded-lg border border-skin-line shadow-sm">
-        <h1 class="text-3xl font-bold mb-6">銘柄分析レポート: {reportData.symbol} ({reportData.security})</h1>
+        <h1 class="text-3xl font-bold mb-2">銘柄分析レポート: {reportData.symbol} ({reportData.security})</h1>
+        {lastUpdated && <p class="text-sm text-gray-500 mb-6">最終更新日: {lastUpdated}</p>}
 
             <TradingViewWidget symbol={reportData.full_symbol} type="symbol-info" />
 
@@ -63,13 +72,13 @@ const base = import.meta.env.BASE_URL.endsWith("/")
         <nav class="toc bg-skin-fill/50 p-6 rounded-lg border border-skin-line mb-10">
             <h3 class="text-lg font-bold mb-4">目次</h3>
             <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 list-disc pl-5">
-                <li><a href="#stock-chart" class="text-skin-accent hover:underline">株価推移・概要</a></li>
-                <li><a href="#risk-return" class="text-skin-accent hover:underline">リスク・リターン分析</a></li>
-                <li><a href="#peers" class="text-skin-accent hover:underline">同業種・競合</a></li>
-                <li><a href="#sector-peers" class="text-skin-accent hover:underline">同セクター他社</a></li>
-                <li><a href="#performance" class="text-skin-accent hover:underline">パフォーマンス比較</a></li>
-                <li><a href="#fundamentals" class="text-skin-accent hover:underline">ファンダメンタルズ分析 (概要)</a></li>
-                <li><a href="#fundamentals-detail" class="text-skin-accent hover:underline">財務データ推移 (詳細)</a>
+                <li><a href="#stock-chart" class="text-skin-accent hover:underline">{symbol}の株価推移・概要</a></li>
+                <li><a href="#risk-return" class="text-skin-accent hover:underline">{symbol}のリスク・リターン分析</a></li>
+                <li><a href="#peers" class="text-skin-accent hover:underline">{symbol}の同業種・競合</a></li>
+                <li><a href="#sector-peers" class="text-skin-accent hover:underline">{symbol}の同セクター他社</a></li>
+                <li><a href="#performance" class="text-skin-accent hover:underline">{symbol}のパフォーマンス比較</a></li>
+                <li><a href="#fundamentals" class="text-skin-accent hover:underline">{symbol}のファンダメンタルズ分析 (概要)</a></li>
+                <li><a href="#fundamentals-detail" class="text-skin-accent hover:underline">{symbol}の財務データ推移 (詳細)</a>
                     <ul class="pl-5 mt-1 text-sm list-circle">
                         <li><a href="#balance-sheet" class="text-skin-accent hover:underline">貸借対照表</a></li>
                         <li><a href="#income-statement" class="text-skin-accent hover:underline">損益計算書</a></li>
@@ -82,12 +91,12 @@ const base = import.meta.env.BASE_URL.endsWith("/")
         </nav>
 
         <section id="stock-chart">
-          <h2 class="text-2xl font-bold mb-4 border-b pb-2">📈 株価推移・概要</h2>
+          <h2 class="text-2xl font-bold mb-4 border-b pb-2">📈 {symbol}の株価推移・概要</h2>
                 <TradingViewWidget symbol={reportData.full_symbol} type="symbol-overview" height={500} />
         </section>
 
         <section id="risk-return" class="mt-12">
-          <h2 class="text-2xl font-bold mb-4 border-b pb-2">🎯 リスク・リターン分析</h2>
+          <h2 class="text-2xl font-bold mb-4 border-b pb-2">🎯 {symbol}のリスク・リターン分析</h2>
           <p class="mb-4">
             <span class="inline-block w-3 h-3 bg-red-500 rounded-full mr-1"></span> <strong>{reportData.symbol}</strong> (対象) vs 
             <span class="inline-block w-3 h-3 bg-blue-500 transform rotate-45 mr-1"></span> <strong>{reportData.sector_etf}</strong> (セクター) vs 
@@ -97,17 +106,17 @@ const base = import.meta.env.BASE_URL.endsWith("/")
         </section>
 
         <section id="peers" class="mt-12">
-          <PeerLinks title={`🏢 同業種・競合 (${reportData.sub_industry})`} peers={reportData.peers.sub_industry} />
+          <PeerLinks title={`🏢 ${symbol}の同業種・競合 (${reportData.sub_industry})`} peers={reportData.peers.sub_industry} />
         </section>
 
         <section id="sector-peers">
-          <PeerLinks title={`🏭 同セクター他社 (${reportData.sector})`} peers={reportData.peers.sector} collapsible={true} />
+          <PeerLinks title={`🏭 ${symbol}の同セクター他社 (${reportData.sector})`} peers={reportData.peers.sector} collapsible={true} />
         </section>
 
         <hr class="my-12 border-skin-line" />
 
         <section id="performance">
-          <h2 class="text-2xl font-bold mb-4 border-b pb-2">📈 パフォーマンス比較</h2>
+          <h2 class="text-2xl font-bold mb-4 border-b pb-2">📈 {symbol}のパフォーマンス比較</h2>
           <TradingViewWidget 
             symbol={reportData.full_symbol} 
             type="advanced-chart" 
@@ -120,12 +129,12 @@ const base = import.meta.env.BASE_URL.endsWith("/")
         </section>
 
         <section id="fundamentals" class="mt-12">
-          <h2 class="text-2xl font-bold mb-4 border-b pb-2">📊 ファンダメンタルズ分析</h2>
+          <h2 class="text-2xl font-bold mb-4 border-b pb-2">📊 {symbol}のファンダメンタルズ分析</h2>
           <TradingViewWidget symbol={reportData.full_symbol} type="financials" height={950} />
         </section>
 
         <section id="fundamentals-detail" class="mt-12">
-          <h2 class="text-2xl font-bold mb-4 border-b pb-2">📈 財務データ推移 (詳細分析)</h2>
+          <h2 class="text-2xl font-bold mb-4 border-b pb-2">📈 {symbol}の財務データ推移 (詳細分析)</h2>
           
           <div id="balance-sheet" class="scroll-mt-20">
             <PlotlyChart chartData={reportData.charts.bs} id="chart-bs" title="貸借対照表" />

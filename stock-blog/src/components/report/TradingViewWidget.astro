@@ -75,8 +75,8 @@ if (type === 'symbol-info') {
 const widgetId = containerId || `tv-widget-${Math.random().toString(36).substring(2, 11)}`;
 ---
 
-<div 
-  class="tv-widget-wrapper mb-8" 
+<trading-view-widget 
+  class="tv-widget-wrapper mb-8 block" 
   id={widgetId} 
   data-config={JSON.stringify(config)}
   data-src={scriptSrc}
@@ -89,75 +89,86 @@ const widgetId = containerId || `tv-widget-${Math.random().toString(36).substrin
         <span class="blue-text">TradingViewですべてのマーケットを追跡</span>
       </a>
     </div>
-    <!-- Script will be injected here -->
   </div>
-</div>
+</trading-view-widget>
 
-<script is:inline>
-  function renderTradingViewWidget(wrapper) {
-    if (!wrapper) return;
-    
-    const container = wrapper.querySelector('.tradingview-widget-container');
-    if (!container) return;
+<script>
+  class TradingViewWidget extends HTMLElement {
+    private observer: MutationObserver | null = null;
 
-    // 現在のテーマを確認
-    const isDark = document.documentElement.classList.contains('dark');
-    const theme = isDark ? 'dark' : 'light';
-    
-    // 設定を取得してテーマを更新
-    const config = JSON.parse(wrapper.dataset.config || '{}');
-    config.colorTheme = theme;
-    if (config.theme) config.theme = theme;
-    
-    const src = wrapper.dataset.src;
-    const symbol = wrapper.dataset.symbol;
+    constructor() {
+      super();
+    }
 
-    // コンテナ内を初期化 (ウィジェット用の div とコピーライト)
-    container.innerHTML = `
-      <div class="tradingview-widget-container__widget"></div>
-      <div class="tradingview-widget-copyright">
-        <a href="https://jp.tradingview.com/symbols/${symbol.replace(':', '-')}/" rel="noopener nofollow" target="_blank">
-          <span class="blue-text">TradingViewですべてのマーケットを追跡</span>
-        </a>
-      </div>
-    `;
+    connectedCallback() {
+      this.render();
+      this.setupThemeObserver();
+    }
 
-    // 新しいスクリプトタグを作成 (公式の形式に合わせる)
-    const script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src = src;
-    script.async = true;
-    script.textContent = JSON.stringify(config);
-    
-    container.appendChild(script);
-  }
-
-  // ページロード時の初期化
-  const initAllWidgets = () => {
-    document.querySelectorAll('.tv-widget-wrapper').forEach(wrapper => {
-      renderTradingViewWidget(wrapper);
-    });
-  };
-
-  // 初回実行
-  if (document.readyState === 'complete') {
-    initAllWidgets();
-  } else {
-    window.addEventListener('load', initAllWidgets);
-  }
-
-  // Astro のページ遷移対応 (View Transitions 用)
-  document.addEventListener('astro:page-load', initAllWidgets);
-
-  // テーマ切り替えの監視
-  const themeObserver = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-        initAllWidgets();
+    disconnectedCallback() {
+      if (this.observer) {
+        this.observer.disconnect();
       }
-    });
-  });
-  themeObserver.observe(document.documentElement, { attributes: true });
+    }
+
+    setupThemeObserver() {
+      this.observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+            this.render();
+          }
+        });
+      });
+      
+      this.observer.observe(document.documentElement, { attributes: true });
+    }
+
+    render() {
+      const container = this.querySelector('.tradingview-widget-container');
+      if (!container) return;
+
+      // 現在のテーマを確認
+      const isDark = document.documentElement.classList.contains('dark');
+      const theme = isDark ? 'dark' : 'light';
+      
+      // 設定を取得してテーマを更新
+      const configStr = this.dataset.config;
+      if (!configStr) return;
+
+      const config = JSON.parse(configStr);
+      config.colorTheme = theme;
+      if (config.theme) config.theme = theme;
+      
+      const src = this.dataset.src;
+      const symbol = this.dataset.symbol;
+
+      if (!src || !symbol) return;
+
+      // コンテナ内を初期化 (ウィジェット用の div とコピーライト)
+      container.innerHTML = `
+        <div class="tradingview-widget-container__widget"></div>
+        <div class="tradingview-widget-copyright">
+          <a href="https://jp.tradingview.com/symbols/${symbol.replace(':', '-')}/" rel="noopener nofollow" target="_blank">
+            <span class="blue-text">TradingViewですべてのマーケットを追跡</span>
+          </a>
+        </div>
+      `;
+
+      // 新しいスクリプトタグを作成
+      const script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.src = src;
+      script.async = true;
+      script.textContent = JSON.stringify(config);
+      
+      container.appendChild(script);
+    }
+  }
+
+  // Define the custom element only once
+  if (!customElements.get('trading-view-widget')) {
+    customElements.define('trading-view-widget', TradingViewWidget);
+  }
 </script>
 
 <style is:global>

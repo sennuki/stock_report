@@ -26,6 +26,12 @@ const { chartData, title, id } = Astro.props;
     const container = document.getElementById(id);
     if (!container || !chartData || chartData.error) return;
 
+    // Plotlyがロードされるのを待つ
+    if (typeof Plotly === 'undefined') {
+      setTimeout(renderChart, 100);
+      return;
+    }
+
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark' || document.documentElement.classList.contains('dark');
     const layout = {
       ...chartData.layout,
@@ -110,7 +116,17 @@ const { chartData, title, id } = Astro.props;
   }
 
   // Initial render
-  renderChart();
+  if (document.readyState === 'complete') {
+    renderChart();
+  } else {
+    window.addEventListener('load', renderChart);
+  }
+
+  // Re-render on page load (for Astro transitions)
+  // define:vars inside a component will run every time the component is mounted.
+  // We use { once: true } to avoid accumulating listeners if define:vars re-runs unexpectedly,
+  // but actually define:vars re-runs on every transition anyway.
+  document.addEventListener('astro:page-load', renderChart);
 
   // Watch for theme changes
   const observer = new MutationObserver((mutations) => {
@@ -123,9 +139,20 @@ const { chartData, title, id } = Astro.props;
   observer.observe(document.documentElement, { attributes: true });
 
   // Handle resize
-  window.addEventListener('resize', () => {
-    Plotly.Plots.resize(document.getElementById(id));
-  });
+  const resizeHandler = () => {
+    if (typeof Plotly !== 'undefined') {
+      const container = document.getElementById(id);
+      if (container) Plotly.Plots.resize(container);
+    }
+  };
+  window.addEventListener('resize', resizeHandler);
+
+  // Cleanup to prevent memory leaks during View Transitions
+  document.addEventListener('astro:before-preparation', () => {
+    observer.disconnect();
+    window.removeEventListener('resize', resizeHandler);
+    document.removeEventListener('astro:page-load', renderChart);
+  }, { once: true });
 </script>
 
 <style>
