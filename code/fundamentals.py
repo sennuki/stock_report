@@ -505,9 +505,9 @@ def get_bs_plotly_fig(data_dict):
     if num_q > 0:
         buttons.append(dict(label="四半期", method="update", args=[{"visible": [False]*num_a + [True]*num_q}]))
 
-    updatemenus = [dict(type="buttons", direction="right", x=0.5, xanchor="center", y=1.2, showactive=True, buttons=buttons)] if len(buttons) > 1 else None
+    updatemenus = [dict(type="buttons", direction="right", x=0.5, xanchor="center", y=1.2, yanchor="top", showactive=True, buttons=buttons)] if len(buttons) > 1 else None
 
-    fig.update_layout(barmode='group', height=500, margin=dict(t=100,b=80, l=60, r=40),
+    fig.update_layout(barmode='group', height=500, margin=dict(t=120, b=80, l=60, r=40),
                       template='plotly_white', showlegend=True,
                       xaxis=dict(type='category', tickangle=0),
                       yaxis=dict(type='linear', rangemode='tozero', automargin=True, gridcolor='#F3F4F6'),
@@ -566,7 +566,7 @@ def get_is_plotly_fig(data_dict):
     if num_q > 0:
         buttons.append(dict(label="四半期", method="update", args=[{"visible": [False]*num_a + [True]*num_q}]))
 
-    updatemenus = [dict(type="buttons", direction="right", x=0.5, xanchor="center", y=1.2, showactive=True, buttons=buttons)] if len(buttons) > 1 else None
+    updatemenus = [dict(type="buttons", direction="right", x=0.5, xanchor="center", y=1.2, yanchor="top", showactive=True, buttons=buttons)] if len(buttons) > 1 else None
 
     # 左右の軸の0位置を合わせるための計算
     def get_range(df, cols, is_ratio=False):
@@ -606,7 +606,7 @@ def get_is_plotly_fig(data_dict):
     # ここではシンプルに両方の軸に zeroline を強調し、rangemode='tozero' を基本とする。
 
     fig.update_layout(
-        barmode='group', height=500, margin=dict(t=100,b=80, l=60, r=60), 
+        barmode='group', height=500, margin=dict(t=120, b=80, l=60, r=60), 
         template='plotly_white', showlegend=True,
         xaxis=dict(type='category', tickangle=0),
         yaxis=dict(title='金額', showgrid=True, type='linear', automargin=True, gridcolor='#F3F4F6', zeroline=True, zerolinecolor='#444', zerolinewidth=2, rangemode='nonnegative' if df_a.filter(pl.col('Value')<0).is_empty() else 'normal'),
@@ -654,9 +654,9 @@ def get_cf_plotly_fig(data_dict):
     if num_q > 0:
         buttons.append(dict(label="四半期", method="update", args=[{"visible": [False]*num_a + [True]*num_q}]))
 
-    updatemenus = [dict(type="buttons", direction="right", x=0.5, xanchor="center", y=1.2, showactive=True, buttons=buttons)] if len(buttons) > 1 else None
+    updatemenus = [dict(type="buttons", direction="right", x=0.5, xanchor="center", y=1.2, yanchor="top", showactive=True, buttons=buttons)] if len(buttons) > 1 else None
 
-    fig.update_layout(barmode='group', height=500, margin=dict(t=100,b=80, l=60, r=40),
+    fig.update_layout(barmode='group', height=500, margin=dict(t=120, b=80, l=60, r=40),
                       template='plotly_white', showlegend=True,
                       xaxis=dict(type='category', tickangle=0),
                       yaxis=dict(title='金額', type='linear', automargin=True, gridcolor='#F3F4F6'),
@@ -716,10 +716,10 @@ def get_tp_plotly_fig(data_dict):
     if num_q > 0:
         buttons.append(dict(label="四半期", method="update", args=[{"visible": [False]*num_a + [True]*num_q}]))
 
-    updatemenus = [dict(type="buttons", direction="right", x=0.5, xanchor="center", y=1.2, showactive=True, buttons=buttons)] if len(buttons) > 1 else None
+    updatemenus = [dict(type="buttons", direction="right", x=0.5, xanchor="center", y=1.2, yanchor="top", showactive=True, buttons=buttons)] if len(buttons) > 1 else None
 
     fig.update_layout(
-        barmode='group', height=500, margin=dict(t=100,b=80, l=60, r=60), template='plotly_white',
+        barmode='group', height=500, margin=dict(t=120, b=80, l=60, r=60), template='plotly_white',
         xaxis=dict(type='category', tickangle=0),
         yaxis=dict(title='金額', showgrid=True, type='linear', automargin=True, gridcolor='#F3F4F6', zeroline=True, zerolinecolor='#444', zerolinewidth=2, rangemode='tozero'),
         yaxis2=dict(title='還元性向', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='linear', automargin=True, zeroline=True, zerolinecolor='#444', zerolinewidth=2, rangemode='tozero'),

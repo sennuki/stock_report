@@ -35,14 +35,35 @@ if (fs.existsSync(jsonPath)) {
 }
 
 const stockInfo = (stocks as any[]).find((s: any) => s.Symbol_YF === symbol);
-const title = `銘柄分析: ${symbol} - ${stockInfo?.Security || ''}`;
+const title = `${symbol} (${stockInfo?.Security || ''}) 銘柄分析：株価・PER・配当利回り・ファンダメンタル分析`;
+const description = `${symbol} (${stockInfo?.Security || ''}) の最新株価、PER、配当利回り、財務推移などのファンダメンタルデータを網羅。投資判断に役立つ分析レポートを定期的に更新しています。`;
 
 const base = import.meta.env.BASE_URL.endsWith("/")
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
+
+// Calculate Analyst Summary in frontmatter to avoid template parsing issues with "<"
+let analystSummary = null;
+if (reportData?.analyst_ratings) {
+  const r = reportData.analyst_ratings;
+  const total = (r.strongBuy || 0) + (r.buy || 0) + (r.hold || 0) + (r.sell || 0) + (r.strongSell || 0);
+  const score = total > 0 
+    ? ((r.strongBuy || 0) * 1 + (r.buy || 0) * 2 + (r.hold || 0) * 3 + (r.sell || 0) * 4 + (r.strongSell || 0) * 5) / total 
+    : 0;
+  
+  let assessment = "不明";
+  let assessmentColor = "text-gray-500";
+  if (score > 0 && score <= 1.5) { assessment = "強気買い (Strong Buy)"; assessmentColor = "text-green-600"; }
+  else if (score > 1.5 && score <= 2.5) { assessment = "買い (Buy)"; assessmentColor = "text-green-500"; }
+  else if (score > 2.5 && score <= 3.5) { assessment = "中立 (Hold)"; assessmentColor = "text-gray-500"; }
+  else if (score > 3.5 && score <= 4.5) { assessment = "売り (Sell)"; assessmentColor = "text-red-500"; }
+  else if (score > 4.5) { assessment = "強い売り (Strong Sell)"; assessmentColor = "text-red-700"; }
+
+  analystSummary = { total, score, assessment, assessmentColor, ratings: r };
+}
 ---
 
-<Layout title={title}>
+<Layout title={title} description={description}>
   <Header />
   
   <main id="main-content" class="w-full px-4 py-8 max-w-app mx-auto">
@@ -63,7 +84,14 @@ const base = import.meta.env.BASE_URL.endsWith("/")
     ) : (
       <div class="report-content bg-skin-card p-4 sm:p-8 rounded-lg border border-skin-line shadow-sm">
         <h1 class="text-3xl font-bold mb-2">銘柄分析レポート: {reportData.symbol} ({reportData.security})</h1>
-        {lastUpdated && <p class="text-sm text-gray-500 mb-6">最終更新日: {lastUpdated}</p>}
+        {lastUpdated && (
+          <div class="flex items-center text-sm text-gray-500 mb-6 bg-skin-fill/30 px-3 py-1.5 rounded-md border border-skin-line w-fit">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-skin-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>最終更新日: {lastUpdated} <span class="mx-2 text-skin-line">|</span> 米国市場閉場後、全銘柄を毎日自動更新</span>
+          </div>
+        )}
 
             <TradingViewWidget symbol={reportData.full_symbol} type="symbol-info" />
 
@@ -87,6 +115,7 @@ const base = import.meta.env.BASE_URL.endsWith("/")
                         <li><a href="#dividend-history" class="text-skin-accent hover:underline">1株あたり配当金</a></li>
                     </ul>
                 </li>
+                <li><a href="#analyst-ratings" class="text-skin-accent hover:underline">🎯 アナリスト評価</a></li>
             </ul>
         </nav>
 
@@ -156,6 +185,64 @@ const base = import.meta.env.BASE_URL.endsWith("/")
             <PlotlyChart chartData={reportData.charts.dps} id="chart-dps" title="1株あたり配当金" />
             <p class="text-sm text-gray-500 mt-2">※配当回数を推定して年換算利回りを算出しています。</p>
           </div>
+        </section>
+
+        <hr class="my-12 border-skin-line" />
+
+        <section id="analyst-ratings" class="mt-12">
+          <h2 class="text-2xl font-bold mb-6 border-b pb-2">🎯 アナリスト評価 (直近)</h2>
+          {analystSummary ? (
+            <div class="space-y-8">
+              {/* Summary Card */}
+              <div class="bg-skin-fill/20 p-6 rounded-lg border border-skin-line flex flex-col sm:flex-row justify-around items-center text-center gap-6">
+                <div>
+                  <div class="text-sm opacity-70 mb-1">総合評価</div>
+                  <div class={`text-2xl font-bold ${analystSummary.assessmentColor}`}>{analystSummary.assessment}</div>
+                </div>
+                <div class="w-px h-10 bg-skin-line hidden sm:block"></div>
+                <div>
+                  <div class="text-sm opacity-70 mb-1">平均スコア</div>
+                  <div class="text-2xl font-bold text-skin-base">{analystSummary.score.toFixed(2)} <span class="text-sm font-normal opacity-50">/ 5.0</span></div>
+                </div>
+                <div class="w-px h-10 bg-skin-line hidden sm:block"></div>
+                <div>
+                  <div class="text-sm opacity-70 mb-1">アナリスト数</div>
+                  <div class="text-2xl font-bold text-skin-base">{analystSummary.total}人</div>
+                </div>
+              </div>
+
+              <div class="space-y-6">
+                {[
+                  { label: "強気買い (Strong Buy)", key: "strongBuy", color: "text-green-600" },
+                  { label: "買い (Buy)", key: "buy", color: "text-green-500" },
+                  { label: "中立 (Hold)", key: "hold", color: "text-gray-500" },
+                  { label: "売り (Sell)", key: "sell", color: "text-red-500" },
+                  { label: "強い売り (Strong Sell)", key: "strongSell", color: "text-red-700" }
+                ].map((rating) => (
+                  <div class="rating-row">
+                    <div class="flex justify-between items-center mb-2">
+                      <span class={`font-bold ${rating.color}`}>{rating.label}</span>
+                      <span class="text-sm font-medium">{analystSummary.ratings[rating.key] || 0}人</span>
+                    </div>
+                    <div class="flex flex-wrap gap-0.5 text-lg leading-none opacity-80">
+                      {Array.from({ length: analystSummary.ratings[rating.key] || 0 }).map(() => (
+                        <span title={rating.label}>👤</span>
+                      ))}
+                      {(!analystSummary.ratings[rating.key] || analystSummary.ratings[rating.key] === 0) && (
+                        <span class="text-gray-300 text-sm italic">該当なし</span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p class="text-xs text-gray-400 mt-8">
+                ※平均スコアは 1.0(強気買い)から5.0(強い売り)の範囲で算出しています。<br />
+                ※アナリストの推奨評価の合計人数を表示しています。投資の最終判断はご自身で行ってください。
+              </p>
+            </div>
+          ) : (
+            <p class="text-gray-500">アナリスト評価データは現在利用できません。</p>
+          )}
         </section>
       </div>
     )}

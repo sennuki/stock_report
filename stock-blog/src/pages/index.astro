@@ -63,11 +63,21 @@ const base = import.meta.env.BASE_URL.endsWith("/")
   <Header />
   <main id="main-content">
     <section id="hero" class="pt-8 pb-6">
+      <div class="flex justify-center mb-4">
+        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 border border-green-200 dark:border-green-800">
+          <span class="relative flex h-2 w-2 mr-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+          </span>
+          米国市場閉場後、全500銘柄を毎日自動更新中
+        </span>
+      </div>
       <h1 class="my-4 text-3xl font-bold sm:my-8 sm:text-4xl text-center">
-        S&P 500 銘柄分析レポート一覧
+        S&P 500 銘柄分析レポート
       </h1>
-      <p class="mb-6 mt-2 text-center opacity-80">
-        S&P 500構成銘柄の最新分析レポートをセクター別に掲載しています。
+      <p class="mb-6 mt-2 text-center opacity-80 max-w-2xl mx-auto px-4">
+        株価・PER・配当利回り・財務諸表などのファンダメンタルデータを集約。
+        すべてのレポートは毎日自動更新され、常に最新の市場状況を反映しています。
       </p>
     </section>
 

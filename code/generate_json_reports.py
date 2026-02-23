@@ -88,6 +88,18 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir):
         report_data["charts"]["tp"] = fig_to_dict(fundamentals.get_tp_plotly_fig(fin_data.get('tp', {})))
         report_data["charts"]["dps"] = fig_to_dict(fundamentals.get_dps_eps_plotly_fig(fin_data.get('dps', {}), fin_data.get('is', {})))
         
+        # --- Add Analyst Ratings ---
+        try:
+            recs = ticker_obj.recommendations_summary
+            if recs is not None and not recs.empty:
+                # Use current month (period '0m')
+                current_recs = recs[recs['period'] == '0m']
+                if not current_recs.empty:
+                    report_data["analyst_ratings"] = current_recs.to_dict('records')[0]
+        except Exception as ree:
+            print(f"Error fetching recommendations for {ticker_display}: {ree}")
+        # ----------------------------
+
     except Exception as e:
         print(f"Error fetching financials for {ticker_display}: {e}")
         report_data["error"] = str(e)
