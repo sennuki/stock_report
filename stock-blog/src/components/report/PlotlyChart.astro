@@ -43,13 +43,18 @@ const { chartData, title, id } = Astro.props;
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             observer.disconnect();
-            // 2フレーム待機してDOMの安定を待つ
-            requestAnimationFrame(() => {
-              requestAnimationFrame(() => {
-                renderChart(container, chartData);
-                (container as any)._plotly_initialized = true;
-              });
+            
+            // ResizeObserver でコンテナの高さが確定するのを待つ (Astro View Transitions 対策)
+            const ro = new ResizeObserver(() => {
+              if (container.clientHeight > 100) {
+                ro.disconnect();
+                requestAnimationFrame(() => {
+                  renderChart(container, chartData);
+                  (container as any)._plotly_initialized = true;
+                });
+              }
             });
+            ro.observe(container);
           }
         });
       }, { rootMargin: '200px' });
@@ -59,11 +64,7 @@ const { chartData, title, id } = Astro.props;
   }
 
   function renderChart(container: HTMLElement, chartData: any) {
-    if (typeof Plotly === 'undefined') {
-      console.warn('Plotly library is not yet available, retrying in 500ms...');
-      setTimeout(() => renderChart(container, chartData), 500);
-      return;
-    }
+    if (typeof Plotly === 'undefined') return;
 
     const isDark = document.documentElement.classList.contains('dark') || 
                    document.documentElement.getAttribute('data-theme') === 'dark';
@@ -73,16 +74,18 @@ const { chartData, title, id } = Astro.props;
     layout.template = isDark ? 'plotly_dark' : 'plotly_white';
     layout.paper_bgcolor = 'rgba(0,0,0,0)';
     layout.plot_bgcolor = 'rgba(0,0,0,0)';
-    layout.height = 500; // 高さを固定して座標の圧縮を防ぐ
-    layout.autosize = true;
+    layout.height = 500;
+    layout.autosize = true; // 横幅いっぱいに広げる
+    layout.margin = { t: 50, r: 30, b: 50, l: 60 };
 
     // 軸やフォントの色のみ微調整
     const grey = isDark ? '#9ca3af' : 'rgba(0, 0, 0, 0.6)';
     const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
     
     const updateAxis = (axisName: string) => {
-      if (!layout[axisName]) return;
+      if (!layout[axisName]) layout[axisName] = {};
       layout[axisName].gridcolor = gridColor;
+      layout[axisName].automargin = true;
       if (!layout[axisName].tickfont) layout[axisName].tickfont = {};
       layout[axisName].tickfont.color = grey;
       if (layout[axisName].title && typeof layout[axisName].title !== 'string') {
@@ -92,11 +95,20 @@ const { chartData, title, id } = Astro.props;
     };
     ['xaxis', 'yaxis', 'yaxis2'].forEach(updateAxis);
 
-    // 描画
-    Plotly.react(container, chartData.data, layout, {
+    // 以前の状態を完全にクリアしてから描画
+    Plotly.purge(container);
+    Plotly.newPlot(container, chartData.data, layout, {
       displayModeBar: false,
       responsive: true,
       scrollZoom: false
+    }).then(() => {
+      // 描画直後と、アニメーション終了後の2段階でリサイズ
+      requestAnimationFrame(() => {
+        Plotly.Plots.resize(container);
+        setTimeout(() => {
+          if (container) Plotly.Plots.resize(container);
+        }, 500);
+      });
     });
   }
 
