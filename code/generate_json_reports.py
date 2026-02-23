@@ -88,6 +88,12 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir):
         report_data["charts"]["tp"] = fig_to_dict(fundamentals.get_tp_plotly_fig(fin_data.get('tp', {})))
         report_data["charts"]["dps"] = fig_to_dict(fundamentals.get_dps_eps_plotly_fig(fin_data.get('dps', {}), fin_data.get('is', {})))
         
+        # --- Add Valuation Data ---
+        if "valuation" in fin_data:
+            report_data["valuation"] = fin_data["valuation"]
+            report_data["charts"]["pe_valuation"] = fig_to_dict(fundamentals.get_valuation_plotly_fig(fin_data["valuation"]))
+        # ----------------------------
+
         # --- Add Analyst Ratings ---
         try:
             recs = ticker_obj.recommendations_summary

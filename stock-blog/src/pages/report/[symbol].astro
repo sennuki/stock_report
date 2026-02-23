@@ -101,6 +101,7 @@ if (reportData?.analyst_ratings) {
             <h3 class="text-lg font-bold mb-4">目次</h3>
             <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 list-disc pl-5">
                 <li><a href="#stock-chart" class="text-skin-accent hover:underline">{symbol}の株価推移・概要</a></li>
+                <li><a href="#valuation" class="text-skin-accent hover:underline">{symbol}の過去PER比較</a></li>
                 <li><a href="#risk-return" class="text-skin-accent hover:underline">{symbol}のリスク・リターン分析</a></li>
                 <li><a href="#peers" class="text-skin-accent hover:underline">{symbol}の同業種・競合</a></li>
                 <li><a href="#sector-peers" class="text-skin-accent hover:underline">{symbol}の同セクター他社</a></li>
@@ -115,7 +116,7 @@ if (reportData?.analyst_ratings) {
                         <li><a href="#dividend-history" class="text-skin-accent hover:underline">1株あたり配当金</a></li>
                     </ul>
                 </li>
-                <li><a href="#analyst-ratings" class="text-skin-accent hover:underline">🎯 アナリスト評価</a></li>
+                <li><a href="#analyst-ratings" class="text-skin-accent hover:underline">{symbol}のアナリスト評価 (直近)</a></li>
             </ul>
         </nav>
 
@@ -123,6 +124,25 @@ if (reportData?.analyst_ratings) {
           <h2 class="text-2xl font-bold mb-4 border-b pb-2">📈 {symbol}の株価推移・概要</h2>
                 <TradingViewWidget symbol={reportData.full_symbol} type="symbol-overview" height={650} />
         </section>
+
+        {reportData.charts.pe_valuation && (
+          <section id="valuation" class="mt-12 bg-skin-fill/10 p-6 rounded-lg border border-skin-line">
+            <h2 class="text-xl font-bold mb-4 flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-skin-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+              過去5年間のPER水準との比較
+            </h2>
+            <div class="mb-2">
+              <PlotlyChart chartData={reportData.charts.pe_valuation} id="chart-pe-valuation" />
+            </div>
+            <p class="text-sm text-gray-500 text-center">
+              {reportData.valuation.current < reportData.valuation.median 
+                ? "現在のPERは過去5年間の中央値よりも低く、歴史的に見て割安な水準にあります。" 
+                : "現在のPERは過去5年間の中央値よりも高く、歴史的に見て割高な水準にあります。"}
+            </p>
+          </section>
+        )}
 
         <section id="risk-return" class="mt-12">
           <h2 class="text-2xl font-bold mb-4 border-b pb-2">🎯 {symbol}のリスク・リターン分析</h2>
@@ -190,7 +210,7 @@ if (reportData?.analyst_ratings) {
         <hr class="my-12 border-skin-line" />
 
         <section id="analyst-ratings" class="mt-12">
-          <h2 class="text-2xl font-bold mb-6 border-b pb-2">🎯 アナリスト評価 (直近)</h2>
+          <h2 class="text-2xl font-bold mb-6 border-b pb-2">🎯 {symbol}のアナリスト評価 (直近)</h2>
           {analystSummary ? (
             <div class="space-y-8">
               {/* Summary Card */}

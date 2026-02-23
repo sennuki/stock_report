@@ -8,10 +8,13 @@ interface Props {
 const { chartData, title, id } = Astro.props;
 ---
 
-<div class="plotly-chart-container my-8">
+<div 
+  class="plotly-chart-wrapper my-8" 
+  data-chart={JSON.stringify(chartData)}
+>
   {title && <h3 class="text-xl font-bold mb-4">{title}</h3>}
   {chartData && !chartData.error ? (
-    <div id={id} class="plotly-graph-div w-full min-h-[450px]"></div>
+    <div id={id} class="plotly-graph-div w-full min-h-[500px] h-[500px]"></div>
   ) : (
     <div class="flex items-center justify-center min-h-[100px] bg-skin-fill/30 border border-dashed border-skin-line rounded-lg">
       <p class="text-gray-500 italic">{chartData?.error || 'データが利用できません'}</p>
@@ -19,145 +22,115 @@ const { chartData, title, id } = Astro.props;
   )}
 </div>
 
-<script is:inline src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+<script>
+  declare const Plotly: any;
 
-<script define:vars={{ id, chartData }}>
-  function renderChart() {
-    const container = document.getElementById(id);
-    if (!container || !chartData || chartData.error) return;
+  function initPlotlyCharts() {
+    const wrappers = document.querySelectorAll('.plotly-chart-wrapper');
+    
+    wrappers.forEach(wrapper => {
+      const container = wrapper.querySelector('.plotly-graph-div') as HTMLElement;
+      if (!container || (container as any)._plotly_initialized) return;
 
-    // Plotlyがロードされるのを待つ
-    if (typeof Plotly === 'undefined') {
-      setTimeout(renderChart, 100);
-      return;
-    }
+      const chartDataStr = (wrapper as HTMLElement).dataset.chart;
+      if (!chartDataStr) return;
 
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark' || document.documentElement.classList.contains('dark');
-    const layout = {
-      ...chartData.layout,
-      template: isDark ? 'plotly_dark' : 'plotly_white',
-      paper_bgcolor: 'rgba(0,0,0,0)',
-      plot_bgcolor: 'rgba(0,0,0,0)',
-      autosize: true,
-    };
+      const chartData = JSON.parse(chartDataStr);
+      if (!chartData || chartData.error) return;
 
-    // リスク・リターン分析以外は縦線を消す
-    if (id !== 'chart-risk-return') {
-      if (!layout.xaxis) layout.xaxis = {};
-      layout.xaxis.showgrid = false;
-    }
-
-    if (isDark) {
-      // 灰色部分を白色に、白色の部分を灰色に
-      // 補助線（グリッド線）はダークモードでは目立ちすぎないよう透過度を調整
-      const grey = '#9ca3af';
-      const gridWhite = 'rgba(255, 255, 255, 0.1)';
-      const zeroWhite = 'rgba(255, 255, 255, 0.2)';
-
-      layout.font = { ...layout.font, color: grey };
-      
-      const updateAxis = (axis) => {
-        if (!layout[axis]) return;
-        layout[axis].gridcolor = gridWhite;
-        layout[axis].zerolinecolor = zeroWhite;
-        layout[axis].tickfont = { ...layout[axis].tickfont, color: grey };
-        if (layout[axis].title) {
-          if (typeof layout[axis].title === 'string') {
-            layout[axis].title = { text: layout[axis].title, font: { color: grey } };
-          } else {
-            layout[axis].title.font = { ...layout[axis].title.font, color: grey };
-          }
-        }
-      };
-
-      updateAxis('xaxis');
-      updateAxis('yaxis');
-      updateAxis('yaxis2'); // 右軸も更新
-
-      if (layout.legend) {
-        layout.legend.font = { ...layout.legend.font, color: grey };
-      }
-
-      // リスク・リターン分析のプロット色をダークモード用に調整
-      if (id === 'chart-risk-return' && chartData.data) {
-        chartData.data.forEach(trace => {
-          if (trace.name === 'S&P500銘柄' && trace.marker) {
-            trace.marker.color = '#cbd5e1'; // 灰色(#72777B)から明るい灰色へ
-          }
-          if (trace.name === 'S&P 500' && trace.marker) {
-            trace.marker.color = '#ffffff'; // 黒色から白色へ
+      // IntersectionObserver で画面に近づいたときに描画
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            observer.disconnect();
+            // 2フレーム待機してDOMの安定を待つ
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                renderChart(container, chartData);
+                (container as any)._plotly_initialized = true;
+              });
+            });
           }
         });
+      }, { rootMargin: '200px' });
+      
+      observer.observe(container);
+    });
+  }
+
+  function renderChart(container: HTMLElement, chartData: any) {
+    if (typeof Plotly === 'undefined') return;
+
+    const isDark = document.documentElement.classList.contains('dark') || 
+                   document.documentElement.getAttribute('data-theme') === 'dark';
+    
+    // データ側のレイアウトを尊重しつつ、テーマとサイズのみ同期
+    const layout = JSON.parse(JSON.stringify(chartData.layout || {}));
+    layout.template = isDark ? 'plotly_dark' : 'plotly_white';
+    layout.paper_bgcolor = 'rgba(0,0,0,0)';
+    layout.plot_bgcolor = 'rgba(0,0,0,0)';
+    layout.height = 500; // 高さを固定して座標の圧縮を防ぐ
+    layout.autosize = true;
+
+    // 軸やフォントの色のみ微調整
+    const grey = isDark ? '#9ca3af' : 'rgba(0, 0, 0, 0.6)';
+    const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+    
+    const updateAxis = (axisName: string) => {
+      if (!layout[axisName]) return;
+      layout[axisName].gridcolor = gridColor;
+      if (!layout[axisName].tickfont) layout[axisName].tickfont = {};
+      layout[axisName].tickfont.color = grey;
+      if (layout[axisName].title && typeof layout[axisName].title !== 'string') {
+        if (!layout[axisName].title.font) layout[axisName].title.font = {};
+        layout[axisName].title.font.color = grey;
       }
-    } else {
-      // デイモード（ライトモード）の補助線が薄すぎる場合の調整
-      const lightGrey = 'rgba(0, 0, 0, 0.1)';
-      const updateAxisLight = (axis) => {
-        if (!layout[axis]) return;
-        layout[axis].gridcolor = lightGrey;
-        layout[axis].zerolinecolor = 'rgba(0, 0, 0, 0.2)';
-      };
-      updateAxisLight('xaxis');
-      updateAxisLight('yaxis');
-      updateAxisLight('yaxis2');
-    }
+    };
+    ['xaxis', 'yaxis', 'yaxis2'].forEach(updateAxis);
 
-    // Ensure margins and fonts look good
-    if (window.innerWidth < 768) {
-      layout.margin = { l: 40, r: 20, t: 80, b: 60 };
-      if (layout.font) layout.font.size = 10;
-    }
-
-    Plotly.newPlot(container, chartData.data, layout, {
+    // 描画
+    Plotly.react(container, chartData.data, layout, {
       displayModeBar: false,
       responsive: true,
       scrollZoom: false
     });
   }
 
-  // Initial render
-  if (document.readyState === 'complete') {
-    renderChart();
-  } else {
-    window.addEventListener('load', renderChart);
-  }
+  // ページロードおよび遷移時に実行
+  document.addEventListener('astro:page-load', () => {
+    document.querySelectorAll('.plotly-graph-div').forEach(el => {
+      (el as any)._plotly_initialized = false;
+    });
+    initPlotlyCharts();
+  });
 
-  // Re-render on page load (for Astro transitions)
-  // define:vars inside a component will run every time the component is mounted.
-  // We use { once: true } to avoid accumulating listeners if define:vars re-runs unexpectedly,
-  // but actually define:vars re-runs on every transition anyway.
-  document.addEventListener('astro:page-load', renderChart);
-
-  // Watch for theme changes
-  const observer = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      if (mutation.type === 'attributes' && (mutation.attributeName === 'class' || mutation.attributeName === 'data-theme')) {
-        renderChart();
+  // テーマ変更時に再描画
+  const themeObserver = new MutationObserver(() => {
+    document.querySelectorAll('.plotly-graph-div').forEach(container => {
+      const wrapper = container.closest('.plotly-chart-wrapper') as HTMLElement;
+      if (wrapper && (container as any)._plotly_initialized) {
+        const chartData = JSON.parse(wrapper.dataset.chart || '{}');
+        renderChart(container as HTMLElement, chartData);
       }
     });
   });
-  observer.observe(document.documentElement, { attributes: true });
+  themeObserver.observe(document.documentElement, { attributes: true });
 
-  // Handle resize
-  const resizeHandler = () => {
-    if (typeof Plotly !== 'undefined') {
-      const container = document.getElementById(id);
-      if (container) Plotly.Plots.resize(container);
-    }
-  };
-  window.addEventListener('resize', resizeHandler);
-
-  // Cleanup to prevent memory leaks during View Transitions
-  document.addEventListener('astro:before-preparation', () => {
-    observer.disconnect();
-    window.removeEventListener('resize', resizeHandler);
-    document.removeEventListener('astro:page-load', renderChart);
-  }, { once: true });
+  // リサイズ対応
+  window.addEventListener('resize', () => {
+    document.querySelectorAll('.plotly-graph-div').forEach(container => {
+      if ((container as any)._plotly_initialized) {
+        Plotly.Plots.resize(container);
+      }
+    });
+  });
 </script>
 
-<style>
-  .plotly-chart-container {
+<style is:global>
+  .plotly-graph-div {
     width: 100%;
-    overflow: hidden;
+    height: 500px !important;
+    min-height: 500px !important;
+    overflow: visible !important;
   }
 </style>

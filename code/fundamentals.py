@@ -256,7 +256,65 @@ def get_financial_data(ticker_obj):
         'quarterly': process_tp(ticker_obj.quarterly_cashflow)
     }
 
-    # 5. 1株あたり配当金 (DPS)
+    # 5. PER Valuation Data
+    try:
+        # Get historical EPS
+        is_q = get_attr(ticker_obj, ['quarterly_income_stmt', 'quarterly_incomestmt', 'quarterly_financials'])
+        if is_q is not None and not is_q.empty:
+            # Look for EPS items
+            eps_keys = ['Basic EPS', 'BasicEPS', 'DilEarningsPerShare', 'Diluted EPS']
+            eps_row = None
+            for k in eps_keys:
+                if k in is_q.index:
+                    eps_row = is_q.loc[k]
+                    break
+            
+            if eps_row is not None:
+                # Convert to series and sort by date
+                eps_series = eps_row.iloc[::-1] # Oldest to newest
+                # Calculate TTM EPS (Rolling sum of 4 quarters)
+                ttm_eps = eps_series.rolling(window=4).sum().dropna()
+                
+                if not ttm_eps.empty:
+                    # Get historical prices for those dates
+                    dates = ttm_eps.index
+                    start_date = dates.min() - datetime.timedelta(days=5)
+                    end_date = dates.max() + datetime.timedelta(days=5)
+                    hist = ticker_obj.history(start=start_date, end=end_date)
+                    
+                    pe_list = []
+                    for date in dates:
+                        try:
+                            # Use price close at the financial report date
+                            target_date = date.replace(hour=0, minute=0, second=0, tzinfo=None)
+                            if target_date in hist.index:
+                                price = hist.loc[target_date]['Close']
+                            else:
+                                price = hist.asof(target_date)['Close']
+                            
+                            eps = ttm_eps[date]
+                            if eps > 0: # Avoid negative PER for valuation
+                                pe_list.append(price / eps)
+                        except:
+                            continue
+                    
+                    if pe_list:
+                        pe_array = np.array(pe_list)
+                        # Current PE
+                        current_price = ticker_obj.fast_info['lastPrice']
+                        current_ttm_eps = ttm_eps.iloc[-1]
+                        current_pe = current_price / current_ttm_eps if current_ttm_eps > 0 else None
+                        
+                        data['valuation'] = {
+                            'min': float(np.percentile(pe_array, 10)), # 10th percentile for stability
+                            'median': float(np.median(pe_array)),
+                            'max': float(np.percentile(pe_array, 90)), # 90th percentile for stability
+                            'current': float(current_pe) if current_pe else None
+                        }
+    except Exception as ve:
+        print(f"Error calculating valuation for {symbol}: {ve}")
+
+    # 6. 1株あたり配当金 (DPS)
     try:
         divs = ticker_obj.dividends
         if not divs.empty:
@@ -301,6 +359,69 @@ def get_financial_data(ticker_obj):
         data['dps'] = {'annual': pl.DataFrame(), 'quarterly': pl.DataFrame()}
 
     return data
+
+def get_valuation_plotly_fig(valuation_data):
+    """
+    valuation_data: {'min': 10, 'median': 20, 'max': 30, 'current': 25}
+    1D Visualization of P/E valuation relative to history.
+    """
+    if not valuation_data or not valuation_data.get('current'):
+        return "評価データ不足"
+    
+    v = valuation_data
+    # Determine Color
+    # Under median = green (undervalued), Over median = yellow/orange (overvalued)
+    color = "#2ca02c" if v['current'] <= v['median'] else "#ff7f0e"
+    if v['current'] > v['max']: color = "#d62728" # Deep red if over max
+
+    fig = go.Figure()
+
+    # Base track (range min to max)
+    fig.add_trace(go.Scatter(
+        x=[v['min'], v['max']], y=[0, 0],
+        mode='lines+markers',
+        line=dict(color='#E5E7EB', width=12),
+        marker=dict(size=14, symbol='line-ns', color='#9CA3AF'),
+        hoverinfo='skip',
+        showlegend=False
+    ))
+
+    # Median Tick
+    fig.add_trace(go.Scatter(
+        x=[v['median']], y=[0],
+        mode='markers+text',
+        marker=dict(size=20, symbol='line-ns', color='#4B5563', line=dict(width=2)),
+        text=["中央値"], textposition="bottom center",
+        hovertemplate=f"過去5年中央値: {v['median']:.1f}x<extra></extra>",
+        showlegend=False
+    ))
+
+    # Current Point
+    fig.add_trace(go.Scatter(
+        x=[v['current']], y=[0],
+        mode='markers+text',
+        marker=dict(size=18, color=color, line=dict(color='white', width=2)),
+        text=[f"{v['current']:.1f}x"], textposition="top center",
+        textfont=dict(size=16, color=color),
+        hovertemplate=f"現在PER: {v['current']:.1f}x<extra></extra>",
+        showlegend=False
+    ))
+
+    fig.update_layout(
+        height=140, margin=dict(t=40, b=40, l=40, r=40),
+        template='plotly_white',
+        xaxis=dict(
+            showgrid=False, zeroline=False, showticklabels=True,
+            range=[min(v['min'], v['current']) * 0.8, max(v['max'], v['current']) * 1.2],
+            dtick=5, ticks="outside", ticksuffix="x"
+        ),
+        yaxis=dict(showgrid=False, zeroline=False, showticklabels=False, range=[-1, 1]),
+        hovermode='closest',
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)'
+    )
+    
+    return fig
 
 def get_dps_eps_plotly_html(data_dict, is_data_dict):
     fig = get_dps_eps_plotly_fig(data_dict, is_data_dict)
