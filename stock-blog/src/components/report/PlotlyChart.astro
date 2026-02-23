@@ -59,7 +59,11 @@ const { chartData, title, id } = Astro.props;
   }
 
   function renderChart(container: HTMLElement, chartData: any) {
-    if (typeof Plotly === 'undefined') return;
+    if (typeof Plotly === 'undefined') {
+      console.warn('Plotly library is not yet available, retrying in 500ms...');
+      setTimeout(() => renderChart(container, chartData), 500);
+      return;
+    }
 
     const isDark = document.documentElement.classList.contains('dark') || 
                    document.documentElement.getAttribute('data-theme') === 'dark';
