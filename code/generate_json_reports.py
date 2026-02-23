@@ -13,6 +13,9 @@ import risk_return
 import utils
 import market_data
 
+import time
+import random
+
 # Force Plotly to use standard JSON output
 pio.json.config.default_engine = 'json'
 
@@ -46,6 +49,9 @@ def fig_to_dict(fig):
     return clean_plotly_data(data)
 
 def generate_json_for_ticker(row, df_info, df_metrics, output_dir):
+    # Add a small random delay to mimic human behavior and avoid rate limits
+    time.sleep(random.uniform(0.5, 1.5))
+    
     ticker_display = row['Symbol']
     chart_target_symbol = row['Symbol_YF']
     current_sector = row['GICS Sector']
@@ -107,8 +113,14 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir):
         # ----------------------------
 
     except Exception as e:
-        print(f"Error fetching financials for {ticker_display}: {e}")
-        report_data["error"] = str(e)
+        error_msg = str(e)
+        print(f"Error fetching financials for {ticker_display}: {error_msg}")
+        report_data["error"] = error_msg
+        
+        # If rate limited, sleep longer for the next one
+        if "Rate limited" in error_msg or "429" in error_msg:
+            print(f"Rate limit detected for {ticker_display}. Sleeping for 30 seconds...")
+            time.sleep(30)
 
     # 2. Risk Return Chart
     try:
@@ -147,7 +159,7 @@ def export_json_reports(df_info, df_metrics, output_dir="../stock-blog/public/re
 
     print(f"\nJSONレポート生成開始: {output_dir}")
     rows = df_info.to_dicts()
-    max_workers = 10 
+    max_workers = 1 
     
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
         futures = {executor.submit(generate_json_for_ticker, row, df_info, df_metrics, output_dir): row['Symbol'] for row in rows}

@@ -49,7 +49,7 @@ def get_session():
         # リトライ設定
         retry = Retry(
             total=5,
-            backoff_factor=2,
+            backoff_factor=3,
             status_forcelist=[403, 429, 500, 502, 503, 504],
         )
         adapter = HTTPAdapter(max_retries=retry)
