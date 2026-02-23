@@ -96,12 +96,14 @@ const widgetId = containerId || `tv-widget-${Math.random().toString(36).substrin
 <script>
   class TradingViewWidget extends HTMLElement {
     private observer: MutationObserver | null = null;
+    private currentTheme: string | null = null;
 
     constructor() {
       super();
     }
 
     connectedCallback() {
+      // 初期レンダリング
       this.render();
       this.setupThemeObserver();
     }
@@ -114,23 +116,31 @@ const widgetId = containerId || `tv-widget-${Math.random().toString(36).substrin
 
     setupThemeObserver() {
       this.observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
+        for (const mutation of mutations) {
           if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
             this.render();
+            break;
           }
-        });
+        }
       });
       
       this.observer.observe(document.documentElement, { attributes: true });
     }
 
     render() {
+      if (!this.isConnected) return;
+
       const container = this.querySelector('.tradingview-widget-container');
       if (!container) return;
 
       // 現在のテーマを確認
-      const isDark = document.documentElement.classList.contains('dark');
+      const isDark = document.documentElement.classList.contains('dark') || 
+                     document.documentElement.getAttribute('data-theme') === 'dark';
       const theme = isDark ? 'dark' : 'light';
+      
+      // テーマが変わっていない場合は何もしない
+      if (this.currentTheme === theme) return;
+      this.currentTheme = theme;
       
       // 設定を取得してテーマを更新
       const configStr = this.dataset.config;
@@ -145,7 +155,7 @@ const widgetId = containerId || `tv-widget-${Math.random().toString(36).substrin
 
       if (!src || !symbol) return;
 
-      // コンテナ内を初期化 (ウィジェット用の div とコピーライト)
+      // コンテナ内を初期化
       container.innerHTML = `
         <div class="tradingview-widget-container__widget"></div>
         <div class="tradingview-widget-copyright">

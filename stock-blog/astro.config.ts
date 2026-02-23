@@ -58,7 +58,7 @@ export default defineConfig({
       }),
       PUBLIC_GOOGLE_ANALYTICS_ID: envField.string({
         access: "public",
-        context: "client",
+        context: "server",
         optional: true,
       }),
     },

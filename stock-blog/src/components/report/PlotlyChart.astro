@@ -104,9 +104,13 @@ const { chartData, title, id } = Astro.props;
     }).then(() => {
       // 描画直後と、アニメーション終了後の2段階でリサイズ
       requestAnimationFrame(() => {
-        Plotly.Plots.resize(container);
+        if (container && container.isConnected && (container as HTMLElement).offsetParent !== null) {
+          Plotly.Plots.resize(container);
+        }
         setTimeout(() => {
-          if (container) Plotly.Plots.resize(container);
+          if (container && container.isConnected && (container as HTMLElement).offsetParent !== null) {
+            Plotly.Plots.resize(container);
+          }
         }, 500);
       });
     });
@@ -124,7 +128,7 @@ const { chartData, title, id } = Astro.props;
   const themeObserver = new MutationObserver(() => {
     document.querySelectorAll('.plotly-graph-div').forEach(container => {
       const wrapper = container.closest('.plotly-chart-wrapper') as HTMLElement;
-      if (wrapper && (container as any)._plotly_initialized) {
+      if (wrapper && (container as any)._plotly_initialized && container.isConnected && (container as HTMLElement).offsetParent !== null) {
         const chartData = JSON.parse(wrapper.dataset.chart || '{}');
         renderChart(container as HTMLElement, chartData);
       }
@@ -135,7 +139,7 @@ const { chartData, title, id } = Astro.props;
   // リサイズ対応
   window.addEventListener('resize', () => {
     document.querySelectorAll('.plotly-graph-div').forEach(container => {
-      if ((container as any)._plotly_initialized) {
+      if ((container as any)._plotly_initialized && container.isConnected && (container as HTMLElement).offsetParent !== null) {
         Plotly.Plots.resize(container);
       }
     });
