@@ -193,17 +193,20 @@ def generate_scatter_fig(df_metrics, target_symbol, sector_etf_symbol):
             font=dict(color='#374151')
         ),
         updatemenus=[dict(
-            type="dropdown",
-            direction="down",
+            type="buttons",
+            direction="right",
             active=4, # 2年 (インデックス4) をアクティブに
             x=0.5,
-            y=1.25,
+            y=1.2,
             xanchor="center",
-            yanchor="top",
+            yanchor="bottom",
             showactive=True,
             buttons=buttons,
             pad={"r": 10, "t": 10},
-            font=dict(size=12)
+            font=dict(size=12),
+            bgcolor="white",
+            bordercolor="#E5E7EB",
+            borderwidth=1
         )]
     )
     
