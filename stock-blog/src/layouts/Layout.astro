@@ -62,6 +62,15 @@ const structuredData = {
   class={`${scrollSmooth && "scroll-smooth"}`}
 >
   <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FMHBEP634W"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-FMHBEP634W');
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link
@@ -146,26 +155,6 @@ const structuredData = {
           name="google-site-verification"
           content={PUBLIC_GOOGLE_SITE_VERIFICATION}
         />
-      )
-    }
-
-    {
-      PUBLIC_GOOGLE_ANALYTICS_ID && (
-        <>
-          <script
-            is:inline
-            async
-            src={`https://www.googletagmanager.com/gtag/js?id=${PUBLIC_GOOGLE_ANALYTICS_ID}`}
-          />
-          <script is:inline define:vars={{ PUBLIC_GOOGLE_ANALYTICS_ID }}>
-            window.dataLayer = window.dataLayer || [];
-            function gtag() {
-              dataLayer.push(arguments);
-            }
-            gtag("js", new Date());
-            gtag("config", PUBLIC_GOOGLE_ANALYTICS_ID);
-          </script>
-        </>
       )
     }
 
