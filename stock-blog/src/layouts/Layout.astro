@@ -174,6 +174,16 @@ const structuredData = {
     <!-- Plotly.js -->
     <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" is:inline charset="utf-8"></script>
 
+    <script is:inline>
+      // View Transitions 遷移後に Plotly チャートが存在する場合のみ強制リロード
+      // (SPA遷移では Plotly のグローバルな状態やイベントリスナーが壊れやすいため)
+      document.addEventListener('astro:after-swap', () => {
+        if (document.querySelector('.plotly-chart-wrapper')) {
+          window.location.reload();
+        }
+      });
+    </script>
+
     <!-- Minimal inline script to prevent FOUC - sets theme immediately -->
     <script is:inline>
       (function () {
