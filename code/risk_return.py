@@ -178,7 +178,10 @@ def generate_scatter_fig(df_metrics, target_symbol, sector_etf_symbol):
 
     fig.update_layout(
         xaxis=dict(title='リスク (ボラティリティ 年率)', tickformat='.0%', fixedrange=True, gridcolor='#E5E7EB'),
-        yaxis=dict(title='リターン (年率換算)', tickformat='.0%', fixedrange=True, automargin=True, gridcolor='#E5E7EB'),
+        yaxis=dict(
+            title=dict(text='リターン (年率換算)', font=dict(color='#374151')),
+            tickformat='.0%', fixedrange=True, automargin=True, gridcolor='#E5E7EB'
+        ),
         margin=dict(l=60, r=30, t=130, b=40), height=600, template='plotly_white',
         autosize=True,
         legend=dict(
@@ -186,7 +189,8 @@ def generate_scatter_fig(df_metrics, target_symbol, sector_etf_symbol):
             yanchor="bottom",
             y=1.02,
             xanchor="right",
-            x=1.0
+            x=1.0,
+            font=dict(color='#374151')
         ),
         updatemenus=[dict(
             type="dropdown",
