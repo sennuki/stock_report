@@ -14,3 +14,4 @@ dist/
 stock-blog/public/output_reports_full/
 stock-blog/src/data/blog/
 stock-blog/src/data/stocks.json
+stock-blog/public/reports/*.json
