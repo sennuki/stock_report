@@ -257,62 +257,62 @@ def get_financial_data(ticker_obj):
     }
 
     # 5. PER Valuation Data
-    try:
-        # Get historical EPS
-        is_q = get_attr(ticker_obj, ['quarterly_income_stmt', 'quarterly_incomestmt', 'quarterly_financials'])
-        if is_q is not None and not is_q.empty:
-            # Look for EPS items
-            eps_keys = ['Basic EPS', 'BasicEPS', 'DilEarningsPerShare', 'Diluted EPS']
-            eps_row = None
-            for k in eps_keys:
-                if k in is_q.index:
-                    eps_row = is_q.loc[k]
-                    break
-            
-            if eps_row is not None:
-                # Convert to series and sort by date
-                eps_series = eps_row.iloc[::-1] # Oldest to newest
-                # Calculate TTM EPS (Rolling sum of 4 quarters)
-                ttm_eps = eps_series.rolling(window=4).sum().dropna()
-                
-                if not ttm_eps.empty:
-                    # Get historical prices for those dates
-                    dates = ttm_eps.index
-                    start_date = dates.min() - datetime.timedelta(days=5)
-                    end_date = dates.max() + datetime.timedelta(days=5)
-                    hist = ticker_obj.history(start=start_date, end=end_date)
-                    
-                    pe_list = []
-                    for date in dates:
-                        try:
-                            # Use price close at the financial report date
-                            target_date = date.replace(hour=0, minute=0, second=0, tzinfo=None)
-                            if target_date in hist.index:
-                                price = hist.loc[target_date]['Close']
-                            else:
-                                price = hist.asof(target_date)['Close']
-                            
-                            eps = ttm_eps[date]
-                            if eps > 0: # Avoid negative PER for valuation
-                                pe_list.append(price / eps)
-                        except:
-                            continue
-                    
-                    if pe_list:
-                        pe_array = np.array(pe_list)
-                        # Current PE
-                        current_price = ticker_obj.fast_info['lastPrice']
-                        current_ttm_eps = ttm_eps.iloc[-1]
-                        current_pe = current_price / current_ttm_eps if current_ttm_eps > 0 else None
-                        
-                        data['valuation'] = {
-                            'min': float(np.percentile(pe_array, 10)), # 10th percentile for stability
-                            'median': float(np.median(pe_array)),
-                            'max': float(np.percentile(pe_array, 90)), # 90th percentile for stability
-                            'current': float(current_pe) if current_pe else None
-                        }
-    except Exception as ve:
-        print(f"Error calculating valuation for {symbol}: {ve}")
+    # try:
+    #     # Get historical EPS
+    #     is_q = get_attr(ticker_obj, ['quarterly_income_stmt', 'quarterly_incomestmt', 'quarterly_financials'])
+    #     if is_q is not None and not is_q.empty:
+    #         # Look for EPS items
+    #         eps_keys = ['Basic EPS', 'BasicEPS', 'DilEarningsPerShare', 'Diluted EPS']
+    #         eps_row = None
+    #         for k in eps_keys:
+    #             if k in is_q.index:
+    #                 eps_row = is_q.loc[k]
+    #                 break
+    #         
+    #         if eps_row is not None:
+    #             # Convert to series and sort by date
+    #             eps_series = eps_row.iloc[::-1] # Oldest to newest
+    #             # Calculate TTM EPS (Rolling sum of 4 quarters)
+    #             ttm_eps = eps_series.rolling(window=4).sum().dropna()
+    #             
+    #             if not ttm_eps.empty:
+    #                 # Get historical prices for those dates
+    #                 dates = ttm_eps.index
+    #                 start_date = dates.min() - datetime.timedelta(days=5)
+    #                 end_date = dates.max() + datetime.timedelta(days=5)
+    #                 hist = ticker_obj.history(start=start_date, end=end_date)
+    #                 
+    #                 pe_list = []
+    #                 for date in dates:
+    #                     try:
+    #                         # Use price close at the financial report date
+    #                         target_date = date.replace(hour=0, minute=0, second=0, tzinfo=None)
+    #                         if target_date in hist.index:
+    #                             price = hist.loc[target_date]['Close']
+    #                         else:
+    #                             price = hist.asof(target_date)['Close']
+    #                         
+    #                         eps = ttm_eps[date]
+    #                         if eps > 0: # Avoid negative PER for valuation
+    #                             pe_list.append(price / eps)
+    #                     except:
+    #                         continue
+    #                 
+    #                 if pe_list:
+    #                     pe_array = np.array(pe_list)
+    #                     # Current PE
+    #                     current_price = ticker_obj.fast_info['lastPrice']
+    #                     current_ttm_eps = ttm_eps.iloc[-1]
+    #                     current_pe = current_price / current_ttm_eps if current_ttm_eps > 0 else None
+    #                     
+    #                     data['valuation'] = {
+    #                         'min': float(np.percentile(pe_array, 10)), # 10th percentile for stability
+    #                         'median': float(np.median(pe_array)),
+    #                         'max': float(np.percentile(pe_array, 90)), # 90th percentile for stability
+    #                         'current': float(current_pe) if current_pe else None
+    #                     }
+    # except Exception as ve:
+    #     print(f"Error calculating valuation for {symbol}: {ve}")
 
     # 6. 1株あたり配当金 (DPS)
     try:
@@ -626,7 +626,19 @@ def get_bs_plotly_fig(data_dict):
     if num_q > 0:
         buttons.append(dict(label="四半期", method="update", args=[{"visible": [False]*num_a + [True]*num_q}]))
 
-    updatemenus = [dict(type="buttons", direction="right", x=0.5, xanchor="center", y=1.2, yanchor="top", showactive=True, buttons=buttons)] if len(buttons) > 1 else None
+    updatemenus = [dict(
+        type="buttons",
+        direction="right",
+        x=0.5,
+        xanchor="center",
+        y=1.2,
+        yanchor="top",
+        showactive=True,
+        buttons=buttons,
+        font=dict(size=12, color='white'),
+        bgcolor='rgba(100, 100, 100, 0.3)',
+        bordercolor='rgba(255, 255, 255, 0.5)'
+    )] if len(buttons) > 1 else None
 
     fig.update_layout(barmode='group', height=500, margin=dict(t=120, b=80, l=60, r=40),
                       template='plotly_white', showlegend=True,
@@ -687,7 +699,19 @@ def get_is_plotly_fig(data_dict):
     if num_q > 0:
         buttons.append(dict(label="四半期", method="update", args=[{"visible": [False]*num_a + [True]*num_q}]))
 
-    updatemenus = [dict(type="buttons", direction="right", x=0.5, xanchor="center", y=1.2, yanchor="top", showactive=True, buttons=buttons)] if len(buttons) > 1 else None
+    updatemenus = [dict(
+        type="buttons",
+        direction="right",
+        x=0.5,
+        xanchor="center",
+        y=1.2,
+        yanchor="top",
+        showactive=True,
+        buttons=buttons,
+        font=dict(size=12, color='white'),
+        bgcolor='rgba(100, 100, 100, 0.3)',
+        bordercolor='rgba(255, 255, 255, 0.5)'
+    )] if len(buttons) > 1 else None
 
     # 左右の軸の0位置を合わせるための計算
     def get_range(df, cols, is_ratio=False):
@@ -775,7 +799,19 @@ def get_cf_plotly_fig(data_dict):
     if num_q > 0:
         buttons.append(dict(label="四半期", method="update", args=[{"visible": [False]*num_a + [True]*num_q}]))
 
-    updatemenus = [dict(type="buttons", direction="right", x=0.5, xanchor="center", y=1.2, yanchor="top", showactive=True, buttons=buttons)] if len(buttons) > 1 else None
+    updatemenus = [dict(
+        type="buttons",
+        direction="right",
+        x=0.5,
+        xanchor="center",
+        y=1.2,
+        yanchor="top",
+        showactive=True,
+        buttons=buttons,
+        font=dict(size=12, color='white'),
+        bgcolor='rgba(100, 100, 100, 0.3)',
+        bordercolor='rgba(255, 255, 255, 0.5)'
+    )] if len(buttons) > 1 else None
 
     fig.update_layout(barmode='group', height=500, margin=dict(t=120, b=80, l=60, r=40),
                       template='plotly_white', showlegend=True,
@@ -837,7 +873,19 @@ def get_tp_plotly_fig(data_dict):
     if num_q > 0:
         buttons.append(dict(label="四半期", method="update", args=[{"visible": [False]*num_a + [True]*num_q}]))
 
-    updatemenus = [dict(type="buttons", direction="right", x=0.5, xanchor="center", y=1.2, yanchor="top", showactive=True, buttons=buttons)] if len(buttons) > 1 else None
+    updatemenus = [dict(
+        type="buttons",
+        direction="right",
+        x=0.5,
+        xanchor="center",
+        y=1.2,
+        yanchor="top",
+        showactive=True,
+        buttons=buttons,
+        font=dict(size=12, color='white'),
+        bgcolor='rgba(100, 100, 100, 0.3)',
+        bordercolor='rgba(255, 255, 255, 0.5)'
+    )] if len(buttons) > 1 else None
 
     fig.update_layout(
         barmode='group', height=500, margin=dict(t=120, b=80, l=60, r=60), template='plotly_white',

@@ -71,6 +71,21 @@ const { chartData, title, id } = Astro.props;
     
     // データ側のレイアウトを尊重しつつ、テーマとサイズのみ同期
     const layout = JSON.parse(JSON.stringify(chartData.layout || {}));
+    
+    // updatemenus（切り替えボタン）が存在する場合、そのスタイルを調整
+    if (layout.updatemenus && layout.updatemenus.length > 0) {
+      layout.updatemenus.forEach((menu: any) => {
+        if (!menu.font) menu.font = {};
+        // 全てのボタンの文字色を「ほぼ黒」に統一（Plotlyの制限により選択・非選択で色を分けられないため）
+        menu.font.color = isDark ? '#1a1a1a' : (menu.font.color || '#333333');
+        // 背景色を明るくして、黒い文字とのコントラストを確保（ダークモードでもボタンが浮き上がって見えるように）
+        if (!menu.bgcolor) menu.bgcolor = isDark ? 'rgba(200, 200, 200, 0.8)' : 'rgba(235, 235, 235, 0.9)';
+        // 選択中のボタンは真っ白にして、強調する
+        if (!menu.activecolor) menu.activecolor = isDark ? 'rgba(255, 255, 255, 1.0)' : 'rgba(255, 255, 255, 1.0)';
+        if (!menu.bordercolor) menu.bordercolor = isDark ? 'rgba(0, 0, 0, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+      });
+    }
+
     layout.template = isDark ? 'plotly_dark' : 'plotly_white';
     layout.paper_bgcolor = 'rgba(0,0,0,0)';
     layout.plot_bgcolor = 'rgba(0,0,0,0)';
@@ -94,6 +109,11 @@ const { chartData, title, id } = Astro.props;
       }
     };
     ['xaxis', 'yaxis', 'yaxis2'].forEach(updateAxis);
+
+    // レジェンドの文字色を軸と同じ色に設定
+    if (!layout.legend) layout.legend = {};
+    if (!layout.legend.font) layout.legend.font = {};
+    layout.legend.font.color = grey;
 
     // 以前の状態を完全にクリアしてから描画
     Plotly.purge(container);

@@ -203,7 +203,9 @@ def generate_scatter_fig(df_metrics, target_symbol, sector_etf_symbol):
             showactive=True,
             buttons=buttons,
             pad={"r": 10, "t": 10},
-            font=dict(size=12)
+            font=dict(size=12, color='white'),
+            bgcolor='rgba(100, 100, 100, 0.3)',
+            bordercolor='rgba(255, 255, 255, 0.5)'
         )]
     )
     
