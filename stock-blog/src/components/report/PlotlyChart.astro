@@ -92,7 +92,8 @@ const { chartData, title, id } = Astro.props;
     layout.plot_bgcolor = 'rgba(0,0,0,0)';
     layout.height = isMobile ? 400 : 500;
     layout.autosize = true; // 横幅いっぱいに広げる
-    layout.margin = isMobile ? { t: 40, r: 10, b: 40, l: 50 } : { t: 50, r: 30, b: 50, l: 60 };
+    // モバイル時はラベルが傾くため、下の余白を大幅に増やす (40 -> 100)
+    layout.margin = isMobile ? { t: 40, r: 10, b: 100, l: 50 } : { t: 50, r: 30, b: 50, l: 60 };
     
     // モバイルでの誤動作（意図しないズームやスクロールの妨げ）を防ぐ
     layout.dragmode = false; 
@@ -121,10 +122,16 @@ const { chartData, title, id } = Astro.props;
     };
     ['xaxis', 'yaxis', 'yaxis2'].forEach(updateAxis);
 
-    // レジェンドの文字色を軸と同じ色に設定
+    // レジェンドのスタイルと位置を調整
     if (!layout.legend) layout.legend = {};
     if (!layout.legend.font) layout.legend.font = {};
     layout.legend.font.color = grey;
+    
+    // モバイル時は凡例をさらに下に配置して重なりを防ぐ
+    if (isMobile) {
+      layout.legend.y = -0.4; 
+      layout.legend.yanchor = 'top';
+    }
 
     // 以前の状態を完全にクリアしてから描画
     Plotly.purge(container);
