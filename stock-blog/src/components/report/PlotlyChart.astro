@@ -107,6 +107,13 @@ const { chartData, title, id } = Astro.props;
       layout[axisName].automargin = true;
       if (!layout[axisName].tickfont) layout[axisName].tickfont = {};
       layout[axisName].tickfont.color = grey;
+      
+      // モバイル時のラベル重なり対策 (特に貸借対照表などの日付)
+      if (axisName === 'xaxis' && isMobile) {
+        layout[axisName].tickangle = 45; // ラベルを斜めにする
+        layout[axisName].nticks = 5;      // ラベルの数を間引く
+      }
+
       if (layout[axisName].title && typeof layout[axisName].title !== 'string') {
         if (!layout[axisName].title.font) layout[axisName].title.font = {};
         layout[axisName].title.font.color = grey;
