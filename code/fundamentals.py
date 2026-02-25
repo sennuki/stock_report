@@ -754,8 +754,8 @@ def get_is_plotly_fig(data_dict):
         barmode='group', height=500, margin=dict(t=120, b=80, l=60, r=60), 
         template='plotly_white', showlegend=True,
         xaxis=dict(type='category', tickangle=0),
-        yaxis=dict(title='金額', showgrid=True, type='linear', automargin=True, gridcolor='#F3F4F6', zeroline=True, zerolinecolor='#444', zerolinewidth=2, rangemode='nonnegative' if df_a.filter(pl.col('Value')<0).is_empty() else 'normal'),
-        yaxis2=dict(title='利益率', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='linear', automargin=True, zeroline=True, zerolinecolor='#444', zerolinewidth=2, rangemode='nonnegative' if df_a.filter(pl.col('Value')<0).is_empty() else 'normal'),
+        yaxis=dict(title='金額', showgrid=True, type='linear', automargin=True, gridcolor='#F3F4F6', zeroline=True, zerolinecolor='#444', zerolinewidth=2, rangemode='tozero'),
+        yaxis2=dict(title='利益率', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='linear', automargin=True, zeroline=True, zerolinecolor='#444', zerolinewidth=2, rangemode='tozero'),
                       legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5),
                       updatemenus=updatemenus)
     return fig
