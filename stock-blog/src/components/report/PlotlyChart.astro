@@ -84,7 +84,21 @@ const { chartData, title, id } = Astro.props;
         // 選択中のボタンは真っ白にして、強調する
         if (!menu.activecolor) menu.activecolor = isDark ? 'rgba(255, 255, 255, 1.0)' : 'rgba(255, 255, 255, 1.0)';
         if (!menu.bordercolor) menu.bordercolor = isDark ? 'rgba(0, 0, 0, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+        
+        // モバイル時はボタンを縦に並べる
+        if (isMobile) {
+          menu.direction = "down";
+          menu.x = 0.5;
+          menu.xanchor = "center";
+          // ボタンが増える分、グラフに被らないよう位置をさらに上に
+          menu.y = 1.45; 
+        }
       });
+    }
+
+    // モバイル時はボタンが縦に並ぶため、さらに上部マージンを増やす
+    if (isMobile) {
+      layout.margin.t = 180;
     }
 
     layout.template = isDark ? 'plotly_dark' : 'plotly_white';
