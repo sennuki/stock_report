@@ -450,18 +450,18 @@ def get_dps_eps_plotly_fig(data_dict, is_data_dict):
     
     freq = estimate_frequency(df_dps_q)
     
-    # 5年分のデータを抽出 (直近の配当日から遡って5年分)
-    df_q_sorted = df_dps_q.sort('Date')
-    latest_date_str = df_q_sorted['Date'][-1]
-    latest_date = datetime.datetime.strptime(latest_date_str, '%Y-%m-%d')
-    # 5年前の同月同日を計算 (簡易的だが365*5より確実)
+    # 5年分のデータを抽出 (現在の日付から遡って5年分)
+    now = datetime.datetime.now()
     try:
-        cutoff_date_obj = latest_date.replace(year=latest_date.year - 5)
+        cutoff_date_obj = now.replace(year=now.year - 5)
     except ValueError: # 2月29日の場合など
-        cutoff_date_obj = latest_date - datetime.timedelta(days=5*365 + 1)
+        cutoff_date_obj = now - datetime.timedelta(days=5*365 + 1)
     
     cutoff_date = cutoff_date_obj.strftime('%Y-%m-%d')
+    df_q_sorted = df_dps_q.sort('Date')
     df_q_plot = df_q_sorted.filter(pl.col('Date') >= cutoff_date)
+
+    if df_q_plot.is_empty(): return '直近5年間の配当実績なし'
 
     # 利回り計算: (配当額 * 頻度) / 当時の株価
     df_q_plot = df_q_plot.with_columns([
