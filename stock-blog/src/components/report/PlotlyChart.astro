@@ -73,19 +73,23 @@ const { chartData, title, id } = Astro.props;
     // データ側のレイアウトを尊重しつつ、テーマとサイズのみ同期
     const layout = JSON.parse(JSON.stringify(chartData.layout || {}));
     
-    // updatemenus（切り替えボタン）が存在する場合、そのスタイルを調整
+    // テンプレートを復活させる（全体のデザインを整えるため）
+    layout.template = isDark ? 'plotly_dark' : 'plotly_white';
+
+    // サイトのテーマカラーを定義
+    const accentColor = isDark ? '#ff6b01' : '#006cac'; // オレンジ / 青
+    const inactiveBg = isDark ? '#374151' : '#9ca3af';  // 濃いグレー / 灰色
+
+    // updatemenus（切り替えボタン）の設定
     if (layout.updatemenus && layout.updatemenus.length > 0) {
       layout.updatemenus.forEach((menu: any) => {
-        if (!menu.font) menu.font = {};
-        // 全てのボタンの文字色を「ほぼ黒」に統一（Plotlyの制限により選択・非選択で色を分けられないため）
-        menu.font.color = isDark ? '#1a1a1a' : (menu.font.color || '#333333');
-        // 背景色を明るくして、黒い文字とのコントラストを確保（ダークモードでもボタンが浮き上がって見えるように）
-        if (!menu.bgcolor) menu.bgcolor = isDark ? 'rgba(200, 200, 200, 0.8)' : 'rgba(235, 235, 235, 0.9)';
-        // 選択中のボタンは真っ白にして、強調する
-        if (!menu.activecolor) menu.activecolor = isDark ? 'rgba(255, 255, 255, 1.0)' : 'rgba(255, 255, 255, 1.0)';
-        if (!menu.bordercolor) menu.bordercolor = isDark ? 'rgba(0, 0, 0, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+        menu.font = { color: '#ffffff', size: isMobile ? 11 : 13 };
+        menu.bgcolor = inactiveBg;
+        menu.activecolor = accentColor;
+        menu.bordercolor = isDark ? accentColor : 'transparent';
+        menu.borderwidth = isDark ? 1 : 0;
+        menu.showactive = true;
         
-        // モバイル時はドロップダウン形式にする
         if (isMobile) {
           menu.type = "dropdown";
           menu.direction = "down";
@@ -96,55 +100,36 @@ const { chartData, title, id } = Astro.props;
       });
     }
 
-    // モバイル時はドロップダウンになるため、マージンを適正化（180 -> 100）
-    if (isMobile) {
-      layout.margin.t = 100;
-    }
-
-    layout.template = isDark ? 'plotly_dark' : 'plotly_white';
+    // 全体の背景を透過
     layout.paper_bgcolor = 'rgba(0,0,0,0)';
     layout.plot_bgcolor = 'rgba(0,0,0,0)';
-    layout.height = isMobile ? 400 : 500;
-    layout.autosize = true; // 横幅いっぱいに広げる
-    // モバイル時はラベルが傾くため、下の余白を大幅に増やす (40 -> 100)
-    layout.margin = isMobile ? { t: 40, r: 10, b: 100, l: 50 } : { t: 50, r: 30, b: 50, l: 60 };
     
-    // モバイルでの誤動作（意図しないズームやスクロールの妨げ）を防ぐ
+    if (isMobile) {
+      layout.margin = { t: 100, r: 10, b: 100, l: 50 };
+    } else {
+      layout.margin = { t: 50, r: 30, b: 50, l: 60 };
+    }
+    
     layout.dragmode = false; 
 
-    // 軸やフォントの色のみ微調整
+    // 軸の設定（テンプレートの上から微調整）
     const grey = isDark ? '#9ca3af' : 'rgba(0, 0, 0, 0.6)';
     const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
     
     const updateAxis = (axisName: string) => {
       if (!layout[axisName]) layout[axisName] = {};
       layout[axisName].gridcolor = gridColor;
-      layout[axisName].automargin = true;
-      if (!layout[axisName].tickfont) layout[axisName].tickfont = {};
-      layout[axisName].tickfont.color = grey;
-      
-      // モバイル時のラベル重なり対策 (特に貸借対照表などの日付)
+      layout[axisName].tickfont = { color: grey };
       if (axisName === 'xaxis' && isMobile) {
-        layout[axisName].tickangle = 45; // ラベルを斜めにする
-        layout[axisName].nticks = 5;      // ラベルの数を間引く
-      }
-
-      if (layout[axisName].title && typeof layout[axisName].title !== 'string') {
-        if (!layout[axisName].title.font) layout[axisName].title.font = {};
-        layout[axisName].title.font.color = grey;
+        layout[axisName].tickangle = 45;
+        layout[axisName].nticks = 5;
       }
     };
     ['xaxis', 'yaxis', 'yaxis2'].forEach(updateAxis);
 
-    // レジェンドのスタイルと位置を調整
-    if (!layout.legend) layout.legend = {};
-    if (!layout.legend.font) layout.legend.font = {};
-    layout.legend.font.color = grey;
-    
-    // モバイル時は凡例をさらに下に配置して重なりを防ぐ
-    if (isMobile) {
-      layout.legend.y = -0.4; 
-      layout.legend.yanchor = 'top';
+    // 以前のオブザーバーがあれば停止（クリーンアップ）
+    if ((container as any)._custom_observer) {
+      (container as any)._custom_observer.disconnect();
     }
 
     // 以前の状態を完全にクリアしてから描画
@@ -154,9 +139,89 @@ const { chartData, title, id } = Astro.props;
       responsive: true,
       scrollZoom: false,
       staticPlot: false,
-      doubleClick: false, // モバイルでのダブルタップズームを防ぐ
       showTips: false,
     }).then(() => {
+      // 選択中のタブを強制的にアクセントカラーにする関数
+      const fixActiveTab = () => {
+        // 現在のレイアウト状態から最新のアクティブインデックスを取得
+        const currentLayout = (container as any).layout;
+        if (!currentLayout || !currentLayout.updatemenus) return;
+
+        // テーマの最新状態を再確認
+        const currentIsDark = document.documentElement.classList.contains('dark') || 
+                              document.documentElement.getAttribute('data-theme') === 'dark';
+        const currentAccent = currentIsDark ? '#ff6b01' : '#006cac';
+        const currentInactive = currentIsDark ? '#374151' : '#9ca3af';
+
+        const menuContainers = container.querySelectorAll('.updatemenu-container');
+        
+        currentLayout.updatemenus.forEach((menu: any, menuIdx: number) => {
+          const activeIdx = menu.active || 0;
+          const currentMenuContainer = menuContainers[menuIdx];
+          
+          if (currentMenuContainer) {
+            const rects = currentMenuContainer.querySelectorAll('.updatemenu-item-rect');
+            const texts = currentMenuContainer.querySelectorAll('.updatemenu-item-text');
+            
+            rects.forEach((rect: any, i: number) => {
+              const isSelected = i === activeIdx;
+              const targetColor = isSelected ? currentAccent : currentInactive;
+              
+              // Plotlyのデフォルト上書きを防ぐため、属性とスタイルの両方を設定
+              rect.setAttribute('fill', targetColor);
+              rect.style.setProperty('fill', targetColor, 'important');
+              
+              // デイモードで枠を消す
+              if (!currentIsDark) {
+                rect.setAttribute('stroke-width', '0');
+                rect.style.setProperty('stroke-width', '0', 'important');
+              } else {
+                rect.setAttribute('stroke', currentAccent);
+                rect.setAttribute('stroke-width', '1');
+                rect.style.setProperty('stroke', currentAccent, 'important');
+                rect.style.setProperty('stroke-width', '1', 'important');
+              }
+              
+              if (texts[i]) {
+                (texts[i] as HTMLElement).setAttribute('fill', '#ffffff');
+                (texts[i] as HTMLElement).style.setProperty('fill', '#ffffff', 'important');
+              }
+            });
+          }
+        });
+      };
+
+      // 1. 初回実行
+      fixActiveTab();
+
+      // 2. Plotlyのイベントで再適用（主要な更新タイミング）
+      (container as any).on('plotly_afterplot', fixActiveTab);
+      (container as any).on('plotly_restyle', fixActiveTab);
+      (container as any).on('plotly_relayout', fixActiveTab);
+      (container as any).on('plotly_click', fixActiveTab);
+
+      // 3. MutationObserverでDOMの変更を「賢く」監視
+      // 無限ループを防ぐため、自分で変更する間は監視を一時停止する
+      const observer = new MutationObserver(() => {
+        observer.disconnect(); // 監視を一時停止
+        fixActiveTab();        // スタイル適用
+        startObserving();      // 監視を再開
+      });
+
+      const startObserving = () => {
+        observer.observe(container, { 
+          childList: true, 
+          subtree: true, 
+          attributes: true, 
+          attributeFilter: ['fill', 'style'] 
+        });
+      };
+
+      startObserving();
+
+      // ページ遷移時にタイマーやオブザーバーを掃除できるように参照を保存
+      (container as any)._custom_observer = observer;
+
       // 描画直後と、アニメーション終了後の2段階でリサイズ
       requestAnimationFrame(() => {
         if (container && container.isConnected && (container as HTMLElement).offsetParent !== null) {
