@@ -5,7 +5,7 @@ import Footer from "@/components/Footer.astro";
 import stocks from "@/data/stocks.json";
 import fs from "node:fs";
 import path from "node:path";
-import PlotlyChart from "@/components/report/PlotlyChart.astro";
+import ApexChart from "@/components/report/ApexChart.astro";
 import TradingViewWidget from "@/components/report/TradingViewWidget.astro";
 import PeerLinks from "@/components/report/PeerLinks.astro";
 
@@ -118,12 +118,25 @@ if (reportData?.analyst_ratings) {
 
         <section id="risk-return" class="mt-12">
           <h2 class="text-2xl font-bold mb-4 border-b pb-2">🎯 {symbol}のリスク・リターン分析</h2>
-          <p class="mb-4">
-            <span class="inline-block w-3 h-3 bg-red-500 rounded-full mr-1"></span> <strong>{reportData.symbol}</strong> (対象) vs 
-            <span class="inline-block w-3 h-3 bg-blue-500 transform rotate-45 mr-1"></span> <strong>{reportData.sector_etf}</strong> (セクター) vs 
-            <span class="inline-block w-3 h-3 bg-black rounded-sm mr-1"></span> ★ <strong>S&P 500</strong>
-          </p>
-          <PlotlyChart chartData={reportData.charts.risk_return} id="chart-risk-return" />
+          <div class="flex flex-wrap gap-x-6 gap-y-2 mb-6 text-sm sm:text-base bg-skin-fill/20 p-4 rounded-lg border border-skin-line">
+            <div class="flex items-center">
+              <span class="inline-block w-3 h-3 bg-[#ef4444] rounded-full mr-2"></span>
+              <span class="font-bold">{reportData.symbol}</span> <span class="ml-1 opacity-70">(対象)</span>
+            </div>
+            <div class="flex items-center">
+              <span class="inline-block w-3 h-3 bg-[#3b82f6] transform rotate-45 mr-2"></span>
+              <span class="font-bold">{reportData.sector_etf}</span> <span class="ml-1 opacity-70">(セクター)</span>
+            </div>
+            <div class="flex items-center">
+              <span class="inline-block w-3 h-3 bg-[#22c55e] mr-2"></span>
+              <span class="font-bold text-skin-base">S&P 500</span> <span class="ml-1 opacity-70">(市場平均)</span>
+            </div>
+            <div class="flex items-center">
+              <span class="inline-block w-2 h-2 bg-[#94a3b8] rounded-full mr-2 opacity-50"></span>
+              <span class="opacity-70 text-xs sm:text-sm">S&P 500 構成銘柄</span>
+            </div>
+          </div>
+          <ApexChart chartData={reportData.charts.risk_return} id="chart-risk-return" />
         </section>
 
         <section id="peers" class="mt-12">
@@ -158,23 +171,23 @@ if (reportData?.analyst_ratings) {
           <h2 class="text-2xl font-bold mb-4 border-b pb-2">📈 {symbol}の財務データ推移 (詳細分析)</h2>
           
           <div id="balance-sheet" class="scroll-mt-20">
-            <PlotlyChart chartData={reportData.charts.bs} id="chart-bs" title="貸借対照表" />
+            <ApexChart chartData={reportData.charts.bs} id="chart-bs" title="貸借対照表" />
           </div>
           
           <div id="income-statement" class="scroll-mt-20">
-            <PlotlyChart chartData={reportData.charts.is} id="chart-is" title="損益計算書" />
+            <ApexChart chartData={reportData.charts.is} id="chart-is" title="損益計算書" />
           </div>
           
           <div id="cash-flow" class="scroll-mt-20">
-            <PlotlyChart chartData={reportData.charts.cf} id="chart-cf" title="キャッシュフロー" />
+            <ApexChart chartData={reportData.charts.cf} id="chart-cf" title="キャッシュフロー" />
           </div>
           
           <div id="shareholder-return" class="scroll-mt-20">
-            <PlotlyChart chartData={reportData.charts.tp} id="chart-tp" title="株主還元" />
+            <ApexChart chartData={reportData.charts.tp} id="chart-tp" title="株主還元" />
           </div>
           
           <div id="dividend-history" class="scroll-mt-20">
-            <PlotlyChart chartData={reportData.charts.dps} id="chart-dps" title="1株あたり配当金" />
+            <ApexChart chartData={reportData.charts.dps} id="chart-dps" title="1株あたり配当金" />
             <p class="text-sm text-gray-500 mt-2">※配当回数を推定して年換算利回りを算出しています。</p>
           </div>
         </section>

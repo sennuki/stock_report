@@ -429,71 +429,29 @@ def get_dps_eps_plotly_html(data_dict, is_data_dict):
     return '<h3 id="dividend-history">1株あたり配当金</h3>' + create_chart_html(fig)
 
 def get_dps_eps_plotly_fig(data_dict, is_data_dict):
-    df_dps_q = data_dict.get('quarterly', pl.DataFrame())
+    df_annual = data_dict.get('annual', pl.DataFrame())
     
-    if df_dps_q.is_empty(): return '配当実績なし'
+    if df_annual.is_empty(): return '配当実績なし'
     
-    # 頻度判定ヘルパー
-    def estimate_frequency(df):
-        if df.is_empty() or len(df) < 2: return 4 # デフォルト
-        # 直近1年間の配当回数を数える
-        last_date = datetime.datetime.strptime(df['Date'][-1], '%Y-%m-%d')
-        one_year_ago = (last_date - datetime.timedelta(days=366)).strftime('%Y-%m-%d')
-        recent_divs = df.filter(pl.col('Date') >= one_year_ago)
-        count = len(recent_divs)
-        
-        if 10 <= count <= 13: return 12
-        if 3 <= count <= 5: return 4
-        if count == 2: return 2
-        if count == 1: return 1
-        return 4 # 判定不能なら一般的四半期
-    
-    freq = estimate_frequency(df_dps_q)
-    
-    # 5年分のデータを抽出 (現在の日付から遡って5年分)
-    now = datetime.datetime.now()
-    try:
-        cutoff_date_obj = now.replace(year=now.year - 5)
-    except ValueError: # 2月29日の場合など
-        cutoff_date_obj = now - datetime.timedelta(days=5*365 + 1)
-    
-    cutoff_date = cutoff_date_obj.strftime('%Y-%m-%d')
-    df_q_sorted = df_dps_q.sort('Date')
-    df_q_plot = df_q_sorted.filter(pl.col('Date') >= cutoff_date)
+    # 直近5年分程度を表示
+    df_plot = df_annual.sort('Date').tail(10)
 
-    if df_q_plot.is_empty(): return '直近5年間の配当実績なし'
+    fig = go.Figure()
 
-    # 利回り計算: (配当額 * 頻度) / 当時の株価
-    df_q_plot = df_q_plot.with_columns([
-        (pl.col('Value') * freq / pl.col('Price')).alias('Yield')
-    ])
-
-    fig = make_subplots(specs=[[{"secondary_y": True}]])
-
-    # 配当額 (左軸)
+    # 配当額
     fig.add_trace(go.Bar(
-        name='1株配当', x=df_q_plot['Date'], y=df_q_plot['Value'],
+        name='年間配当', x=df_plot['Date'], y=df_plot['Value'],
         marker_color='#1f77b4',
-        text=df_q_plot['Value'].map_elements(lambda x: f"${x:.2f}", return_dtype=pl.Utf8),
+        text=df_plot['Value'].map_elements(lambda x: f"${x:.2f}", return_dtype=pl.Utf8),
         textposition='auto',
-        hovertemplate='配当確定日: %{x}<br>配当額: $%{y:.2f}<extra></extra>'
-    ), secondary_y=False)
-
-    # 利回り (右軸)
-    fig.add_trace(go.Scatter(
-        name='配当利回り (年換算)', x=df_q_plot['Date'], y=df_q_plot['Yield'],
-        mode='lines+markers',
-        line=dict(color='#ff7f0e', width=3),
-        marker=dict(size=8),
-        hovertemplate='配当確定日: %{x}<br>推定利回り: %{y:.2%}<extra></extra>'
-    ), secondary_y=True)
+        hovertemplate='年度: %{x}<br>合計配当額: $%{y:.2f}<extra></extra>'
+    ))
 
     fig.update_layout(
-        height=450, margin=dict(t=50, b=80, l=60, r=60),
+        height=450, margin=dict(t=50, b=80, l=60, r=40),
         template='plotly_white',
-        xaxis=dict(title='配当確定日', type='category'),
-        yaxis=dict(title='配当額 ($)', side='left', gridcolor='#F3F4F6', range=[0, df_q_plot['Value'].max() * 1.2]),
-        yaxis2=dict(title='推定利回り', side='right', tickformat='.1%', overlaying='y', showgrid=False, range=[0, max(df_q_plot['Yield'].max() * 1.2, 0.05)]),
+        xaxis=dict(title='年度', type='category'),
+        yaxis=dict(title='年間配当額 ($)', side='left', gridcolor='#F3F4F6', range=[0, df_plot['Value'].max() * 1.2]),
         legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5),
         hovermode='x unified'
     )
@@ -518,13 +476,12 @@ def get_bs_plotly_html(data_dict):
 
 def get_bs_plotly_fig(data_dict):
     df_a = data_dict.get('annual', pl.DataFrame())
-    df_q = data_dict.get('quarterly', pl.DataFrame())
     
-    if df_a.is_empty() and df_q.is_empty(): return 'データなし'
+    if df_a.is_empty(): return 'データなし'
     
     fig = go.Figure()
 
-    def add_bs_traces(fig, df, visible):
+    def add_bs_traces(fig, df):
         # 全ての日付を網羅したベースのDataFrameを作成
         all_dates = sorted(df['Date'].unique().to_list())
         df_plot = pl.DataFrame({'Date': all_dates})
@@ -575,26 +532,16 @@ def get_bs_plotly_fig(data_dict):
             ])
 
             fig.add_trace(go.Bar(name='流動資産', x=df_plot['Date'], y=df_plot['CurrAssets'], marker_color='#aec7e8',
-                                base=df_plot['NonCurrAssets'], offsetgroup=0, visible=visible,
-                                text=df_plot['CurrAssets'].map_elements(lambda x: f"${x/1e9:.1f}B" if abs(x) >= 1e8 else f"${x/1e6:.1f}M", return_dtype=pl.Utf8),
-                                textposition='auto'))
+                                base=df_plot['NonCurrAssets'], offsetgroup=0))
             fig.add_trace(go.Bar(name='固定資産', x=df_plot['Date'], y=df_plot['NonCurrAssets'], marker_color='#1f77b4',
-                                 base=0, offsetgroup=0, visible=visible,
-                                 text=df_plot['NonCurrAssets'].map_elements(lambda x: f"${x/1e9:.1f}B" if abs(x) >= 1e8 else f"${x/1e6:.1f}M", return_dtype=pl.Utf8),
-                                 textposition='auto')) 
+                                 base=0, offsetgroup=0)) 
             
             fig.add_trace(go.Bar(name='流動負債', x=df_plot['Date'], y=df_plot['CurrLiab'], marker_color='#ffbb78',
-                                 base=df_plot['BaseCurr'], offsetgroup=1, visible=visible,
-                                 text=df_plot['CurrLiab'].map_elements(lambda x: f"${x/1e9:.1f}B" if abs(x) >= 1e8 else f"${x/1e6:.1f}M", return_dtype=pl.Utf8),
-                                 textposition='auto'))
+                                 base=df_plot['BaseCurr'], offsetgroup=1))
             fig.add_trace(go.Bar(name='固定負債', x=df_plot['Date'], y=df_plot['FixedLiab'], marker_color='#ff7f0e',
-                                 base=df_plot['BaseFixed'], offsetgroup=1, visible=visible,
-                                 text=df_plot['FixedLiab'].map_elements(lambda x: f"${x/1e9:.1f}B" if abs(x) >= 1e8 else f"${x/1e6:.1f}M", return_dtype=pl.Utf8),
-                                 textposition='auto'))
+                                 base=df_plot['BaseFixed'], offsetgroup=1))
             fig.add_trace(go.Bar(name='純資産', x=df_plot['Date'], y=df_plot['Equity'], marker_color='#2ca02c',
-                                 base=0, offsetgroup=1, visible=visible,
-                                 text=df_plot['Equity'].map_elements(lambda x: f"${x/1e9:.1f}B" if abs(x) >= 1e8 else f"${x/1e6:.1f}M", return_dtype=pl.Utf8),
-                                 textposition='auto'))
+                                 base=0, offsetgroup=1))
             return 5
         
         elif df_plot['TotalAssets'].sum() != 0:
@@ -603,49 +550,21 @@ def get_bs_plotly_fig(data_dict):
             ])
             
             fig.add_trace(go.Bar(name='総資産', x=df_plot['Date'], y=df_plot['TotalAssets'], marker_color='#1f77b4',
-                                 offsetgroup=0, visible=visible,
-                                 text=df_plot['TotalAssets'].map_elements(lambda x: f"${x/1e9:.1f}B" if abs(x) >= 1e8 else f"${x/1e6:.1f}M", return_dtype=pl.Utf8),
-                                 textposition='auto'))
+                                 offsetgroup=0))
             fig.add_trace(go.Bar(name='総負債', x=df_plot['Date'], y=df_plot['TotalLiab'], marker_color='#ff7f0e',
-                                 base=df_plot['BaseLiab'], offsetgroup=1, visible=visible,
-                                 text=df_plot['TotalLiab'].map_elements(lambda x: f"${x/1e9:.1f}B" if abs(x) >= 1e8 else f"${x/1e6:.1f}M", return_dtype=pl.Utf8),
-                                 textposition='auto'))
+                                 base=df_plot['BaseLiab'], offsetgroup=1))
             fig.add_trace(go.Bar(name='純資産', x=df_plot['Date'], y=df_plot['Equity'], marker_color='#2ca02c',
-                                 base=0, offsetgroup=1, visible=visible,
-                                 text=df_plot['Equity'].map_elements(lambda x: f"${x/1e9:.1f}B" if abs(x) >= 1e8 else f"${x/1e6:.1f}M", return_dtype=pl.Utf8),
-                                 textposition='auto'))
+                                 base=0, offsetgroup=1))
             return 3
         return 0
 
-    num_a = add_bs_traces(fig, df_a, visible=True) if not df_a.is_empty() else 0
-    num_q = add_bs_traces(fig, df_q, visible=False) if not df_q.is_empty() else 0
+    add_bs_traces(fig, df_a)
 
-    buttons = []
-    if num_a > 0:
-        buttons.append(dict(label="通期", method="update", args=[{"visible": [True]*num_a + [False]*num_q}]))
-    if num_q > 0:
-        buttons.append(dict(label="四半期", method="update", args=[{"visible": [False]*num_a + [True]*num_q}]))
-
-    updatemenus = [dict(
-        type="buttons",
-        direction="right",
-        x=0.5,
-        xanchor="center",
-        y=1.2,
-        yanchor="top",
-        showactive=True,
-        buttons=buttons,
-        font=dict(size=12, color='white'),
-        bgcolor='rgba(100, 100, 100, 0.3)',
-        bordercolor='rgba(255, 255, 255, 0.5)'
-    )] if len(buttons) > 1 else None
-
-    fig.update_layout(barmode='group', height=500, margin=dict(t=120, b=80, l=60, r=40),
+    fig.update_layout(barmode='relative', height=500, margin=dict(t=50, b=80, l=60, r=40),
                       template='plotly_white', showlegend=True,
                       xaxis=dict(type='category', tickangle=0),
                       yaxis=dict(type='linear', rangemode='tozero', automargin=True, gridcolor='#F3F4F6'),
-                      legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5),
-                      updatemenus=updatemenus)
+                      legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5))
     return fig
 
 def get_is_plotly_html(data_dict):
@@ -655,109 +574,49 @@ def get_is_plotly_html(data_dict):
 
 def get_is_plotly_fig(data_dict):
     df_a = data_dict.get('annual', pl.DataFrame())
-    df_q = data_dict.get('quarterly', pl.DataFrame())
+    if df_a.is_empty(): return 'データなし'
+
+    # 日付を文字列として正規化し、TTMを除外
+    df_a = df_a.with_columns(pl.col('Date').cast(pl.Utf8))
+    df_a = df_a.filter(pl.col('Date').str.contains('TTM').not_())
     
-    if df_a.is_empty() and df_q.is_empty(): return 'データなし'
+    # 基準となる日付
+    valid_dates = df_a.filter((pl.col('Item') == 'Total Revenue') & (pl.col('Value') > 0)) \
+                      .select('Date').unique().sort('Date')['Date'].to_list()[-6:]
+    
+    if not valid_dates: return 'データなし'
+    
+    # 全ての項目について、基準日に最も近いデータを使用するようにアラインメント（簡易化のため完全一致のみ）
+    df_plot = df_a.filter(pl.col('Date').is_in(valid_dates)).unique(subset=['Item', 'Date']).sort('Date')
 
     fig = go.Figure()
     items = [('Total Revenue', '売上高', '#aec7e8'), ('Gross Profit', '売上総利益', '#1f77b4'),
              ('Operating Income', '営業利益', '#ffbb78'), ('Net Income', '純利益', '#2ca02c')]
-    ratio_items = [
-        ('Gross Profit', 'Total Revenue', '売上総利益率', '#1f77b4'),
-        ('Operating Income', 'Total Revenue', '営業利益率', '#ffbb78'),
-        ('Net Income', 'Total Revenue', '純利益率', '#2ca02c')
-    ]
-
-    def add_is_traces(fig, df, visible):
-        valid_dates = df.filter((pl.col('Item') == 'Total Revenue') & (pl.col('Value') > 0)).select('Date').unique().sort('Date')['Date'].to_list()
-        df = df.filter(pl.col('Date').is_in(valid_dates)).sort('Date')
-        count = 0
-        for item_key, name, color in items:
-            sub = df.filter(pl.col('Item') == item_key)
-            if not sub.is_empty():
-                fig.add_trace(go.Bar(name=name, x=sub['Date'], y=sub['Value'], marker_color=color, visible=visible,
-                                     text=sub['Value'].map_elements(lambda x: f"${x/1e9:.1f}B" if abs(x) >= 1e8 else f"${x/1e6:.1f}M", return_dtype=pl.Utf8),
-                                     textposition='auto'))
-                count += 1
-        try:
-            df_pivot = df.pivot(on='Item', index='Date', values='Value').sort('Date')
-            for num_key, den_key, name, color in ratio_items:
-                if num_key in df_pivot.columns and den_key in df_pivot.columns:
-                    calc = df_pivot.with_columns((pl.col(num_key) / pl.col(den_key)).alias('Ratio')).select(['Date', 'Ratio']).filter(pl.col('Ratio').is_not_nan() & pl.col('Ratio').is_infinite().not_())
-                    fig.add_trace(go.Scatter(name=name, x=calc['Date'], y=calc['Ratio'], line=dict(color=color, width=2), mode='lines+markers', yaxis='y2', visible=visible, hovertemplate='%{y:.1%}'))
-                    count += 1
-        except Exception as e:
-            print(f"Error calculating ratios: {e}")
-        return count
-
-    num_a = add_is_traces(fig, df_a, visible=True) if not df_a.is_empty() else 0
-    num_q = add_is_traces(fig, df_q, visible=False) if not df_q.is_empty() else 0
-
-    buttons = []
-    if num_a > 0:
-        buttons.append(dict(label="通期", method="update", args=[{"visible": [True]*num_a + [False]*num_q}]))
-    if num_q > 0:
-        buttons.append(dict(label="四半期", method="update", args=[{"visible": [False]*num_a + [True]*num_q}]))
-
-    updatemenus = [dict(
-        type="buttons",
-        direction="right",
-        x=0.5,
-        xanchor="center",
-        y=1.2,
-        yanchor="top",
-        showactive=True,
-        buttons=buttons,
-        font=dict(size=12, color='white'),
-        bgcolor='rgba(100, 100, 100, 0.3)',
-        bordercolor='rgba(255, 255, 255, 0.5)'
-    )] if len(buttons) > 1 else None
-
-    # 左右の軸の0位置を合わせるための計算
-    def get_range(df, cols, is_ratio=False):
-        if df.is_empty(): return 0, 1
-        vals = []
-        for c in cols:
-            if c in df.columns: vals.extend(df[c].to_list())
-        if not vals: return 0, 1
-        vmin, vmax = min(vals), max(vals)
-        if is_ratio: # 利益率などは極端な値を除外
-            vmin, vmax = max(vmin, -1.0), min(vmax, 2.0)
-        return vmin, vmax
-
-    def align_yaxis(fig, df):
-        if df.is_empty(): return
-        # 金額軸 (左)
-        is_items = ['Total Revenue', 'Gross Profit', 'Operating Income', 'Net Income']
-        y1_min, y1_max = get_range(df.pivot(on='Item', index='Date', values='Value'), is_items)
-        # 利益率軸 (右)
-        # 簡易的に、データ全体の最小・最大から比率を計算
-        y2_min, y2_max = -0.2, 1.0 # デフォルト範囲
-        
-        # 0の位置を合わせる： y1_min / y1_max == y2_min / y2_max となるように調整
-        if y1_min < 0:
-            # 負の値がある場合、正負の比率を維持する
-            ratio = abs(y1_min) / y1_max if y1_max > 0 else 1.0
-            y2_min = - (y2_max * ratio)
-        else:
-            # 負の値がない場合は0から開始
-            y1_min = 0
-            y2_min = 0
-        
-        return [y1_min * 1.1, y1_max * 1.1], [y2_min, y2_max * 1.1]
-
-    # 注: 動的な切り替え（ボタン）があるため、完全な一致は難しいが、
-    # 通期データを基準に設定するか、rangemodeを工夫する。
-    # ここではシンプルに両方の軸に zeroline を強調し、rangemode='tozero' を基本とする。
+    
+    for item_key, name, color in items:
+        sub = df_plot.filter(pl.col('Item') == item_key)
+        if not sub.is_empty():
+            fig.add_trace(go.Bar(name=name, x=sub['Date'], y=sub['Value'], marker_color=color))
+    
+    # 利益率（散布図/折れ線）
+    try:
+        df_pivot = df_plot.pivot(on='Item', index='Date', values='Value').sort('Date')
+        ratio_configs = [('Gross Profit', 'Total Revenue', '売上総利益率', '#1f77b4'),
+                         ('Operating Income', 'Total Revenue', '営業利益率', '#ffbb78'),
+                         ('Net Income', 'Total Revenue', '純利益率', '#2ca02c')]
+        for num, den, name, color in ratio_configs:
+            if num in df_pivot.columns and den in df_pivot.columns:
+                calc = df_pivot.with_columns((pl.col(num) / pl.col(den)).alias('Ratio'))
+                fig.add_trace(go.Scatter(name=name, x=calc['Date'], y=calc['Ratio'], line=dict(color=color, width=2), mode='lines+markers', yaxis='y2', hovertemplate='%{y:.1%}'))
+    except Exception as e: print(f"IS Ratio Error: {e}")
 
     fig.update_layout(
-        barmode='group', height=500, margin=dict(t=120, b=80, l=60, r=60), 
+        barmode='group', height=500, margin=dict(t=50, b=80, l=60, r=60), 
         template='plotly_white', showlegend=True,
         xaxis=dict(type='category', tickangle=0),
         yaxis=dict(title='金額', showgrid=True, type='linear', automargin=True, gridcolor='#F3F4F6', zeroline=True, zerolinecolor='#444', zerolinewidth=2, rangemode='tozero'),
         yaxis2=dict(title='利益率', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='linear', automargin=True, zeroline=True, zerolinecolor='#444', zerolinewidth=2, rangemode='tozero'),
-                      legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5),
-                      updatemenus=updatemenus)
+        legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5))
     return fig
 
 def get_cf_plotly_html(data_dict):
@@ -767,58 +626,30 @@ def get_cf_plotly_html(data_dict):
 
 def get_cf_plotly_fig(data_dict):
     df_a = data_dict.get('annual', pl.DataFrame())
-    df_q = data_dict.get('quarterly', pl.DataFrame())
+    if df_a.is_empty(): return 'データなし'
     
-    if df_a.is_empty() and df_q.is_empty(): return 'データなし'
+    df_a = df_a.with_columns(pl.col('Date').cast(pl.Utf8))
+    df_a = df_a.filter(pl.col('Date').str.contains('TTM').not_())
+    valid_dates = df_a.filter(pl.col('Item') == 'Operating Cash Flow').select('Date').unique().sort('Date')['Date'].to_list()[-6:]
+    if not valid_dates: return 'データなし'
+    
+    df_plot = df_a.filter(pl.col('Date').is_in(valid_dates)).unique(subset=['Item', 'Date']).sort('Date')
 
     fig = go.Figure()
-        
-    items = [('Net Income', '純利益', '#2ca02c'),
-             ('Operating Cash Flow', '営業CF', '#aec7e8'), ('Investing Cash Flow', '投資CF', '#1f77b4'),
-             ('Financing Cash Flow', '財務CF', '#ffbb78'), ('Free Cash Flow', 'フリーCF', '#9467bd')]
+    items = [('Net Income', '純利益', '#2ca02c'), ('Operating Cash Flow', '営業CF', '#aec7e8'), 
+             ('Investing Cash Flow', '投資CF', '#1f77b4'), ('Financing Cash Flow', '財務CF', '#ffbb78'), 
+             ('Free Cash Flow', 'フリーCF', '#9467bd')]
 
-    def add_cf_traces(fig, df, visible):
-        # 純利益か営業CFがある日付を表示対象とする
-        valid_items = ['Net Income', 'Operating Cash Flow']
-        valid_dates = df.filter(pl.col('Item').is_in(valid_items)).select('Date').unique().sort('Date')['Date'].to_list()
-        df = df.filter(pl.col('Date').is_in(valid_dates)).sort('Date')
-        for item_key, name, color in items:
-            sub = df.filter(pl.col('Item') == item_key)
-            if not sub.is_empty():
-                fig.add_trace(go.Bar(name=name, x=sub['Date'], y=sub['Value'], marker_color=color, visible=visible,
-                                     text=sub['Value'].map_elements(lambda x: f"${x/1e9:.1f}B" if abs(x) >= 1e8 else f"${x/1e6:.1f}M", return_dtype=pl.Utf8),
-                                     textposition='auto'))
-        return len(items)
+    for i, (item_key, name, color) in enumerate(items):
+        sub = df_plot.filter(pl.col('Item') == item_key)
+        if not sub.is_empty():
+            fig.add_trace(go.Bar(name=name, x=sub['Date'], y=sub['Value'], marker_color=color))
 
-    num_a = add_cf_traces(fig, df_a, visible=True) if not df_a.is_empty() else 0
-    num_q = add_cf_traces(fig, df_q, visible=False) if not df_q.is_empty() else 0
-
-    buttons = []
-    if num_a > 0:
-        buttons.append(dict(label="通期", method="update", args=[{"visible": [True]*num_a + [False]*num_q}]))
-    if num_q > 0:
-        buttons.append(dict(label="四半期", method="update", args=[{"visible": [False]*num_a + [True]*num_q}]))
-
-    updatemenus = [dict(
-        type="buttons",
-        direction="right",
-        x=0.5,
-        xanchor="center",
-        y=1.2,
-        yanchor="top",
-        showactive=True,
-        buttons=buttons,
-        font=dict(size=12, color='white'),
-        bgcolor='rgba(100, 100, 100, 0.3)',
-        bordercolor='rgba(255, 255, 255, 0.5)'
-    )] if len(buttons) > 1 else None
-
-    fig.update_layout(barmode='group', height=500, margin=dict(t=120, b=80, l=60, r=40),
+    fig.update_layout(barmode='group', height=500, margin=dict(t=50, b=80, l=60, r=40),
                       template='plotly_white', showlegend=True,
                       xaxis=dict(type='category', tickangle=0),
-                      yaxis=dict(title='金額', type='linear', automargin=True, gridcolor='#F3F4F6'),
-                      legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5),
-                      updatemenus=updatemenus)
+                      yaxis=dict(title='金額', type='linear', automargin=True),
+                      legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5))
     return fig
 
 def get_tp_plotly_html(data_dict):
@@ -828,72 +659,40 @@ def get_tp_plotly_html(data_dict):
 
 def get_tp_plotly_fig(data_dict):
     df_a = data_dict.get('annual', pl.DataFrame())
-    df_q = data_dict.get('quarterly', pl.DataFrame())
+    if df_a.is_empty(): return 'データなし'
+
+    df_a = df_a.with_columns(pl.col('Date').cast(pl.Utf8))
+    df_a = df_a.filter(pl.col('Date').str.contains('TTM').not_())
+    valid_dates = df_a.filter(pl.col('Item') == 'Net Income From Continuing Operations').select('Date').unique().sort('Date')['Date'].to_list()[-6:]
+    if not valid_dates: return 'データなし'
     
-    if df_a.is_empty() and df_q.is_empty(): return 'データなし'
+    df_plot = df_a.filter(pl.col('Date').is_in(valid_dates)).unique(subset=['Item', 'Date']).sort('Date')
 
     fig = go.Figure()
+    ni = df_plot.filter(pl.col('Item') == 'Net Income From Continuing Operations')
+    div = df_plot.filter(pl.col('Item') == 'Cash Dividends Paid')
+    repo = df_plot.filter(pl.col('Item') == 'Repurchase Of Capital Stock')
+    div_r = df_plot.filter(pl.col('Item') == 'Dividends Ratio / Net Income')
+    total_r = df_plot.filter(pl.col('Item') == 'Total Payout Ratio / Net Income')
 
-    def add_tp_traces(fig, df, visible):
-        valid_dates = df.filter(pl.col('Item') == 'Net Income From Continuing Operations').select('Date').unique().sort('Date')['Date'].to_list()
-        df = df.filter(pl.col('Date').is_in(valid_dates)).sort('Date')
-        ni = df.filter(pl.col('Item') == 'Net Income From Continuing Operations')
-        div = df.filter(pl.col('Item') == 'Cash Dividends Paid')
-        repo = df.filter(pl.col('Item') == 'Repurchase Of Capital Stock')
-        div_r = df.filter(pl.col('Item') == 'Dividends Ratio / Net Income')
-        total_r = df.filter(pl.col('Item') == 'Total Payout Ratio / Net Income')
-
-        # 純利益 (左側)
-        fig.add_trace(go.Bar(name='純利益', x=ni['Date'], y=ni['Value'], marker_color='#2ca02c', offsetgroup=0, visible=visible,
-                             text=ni['Value'].map_elements(lambda x: f"${x/1e9:.1f}B" if abs(x) >= 1e8 else f"${x/1e6:.1f}M", return_dtype=pl.Utf8),
-                             textposition='auto'))
-        # 配当金 (右側の下)
-        fig.add_trace(go.Bar(name='配当金', x=div['Date'], y=div['Value'].abs(), marker_color='#aec7e8', offsetgroup=1, visible=visible,
-                             text=div['Value'].map_elements(lambda x: f"${abs(x)/1e9:.1f}B" if abs(x) >= 1e8 else f"${abs(x)/1e6:.1f}M", return_dtype=pl.Utf8),
-                             textposition='auto'))
-        # 自社株買い (右側の配当の上)
-        fig.add_trace(go.Bar(name='自社株買い', x=repo['Date'], y=repo['Value'].abs(), marker_color='#1f77b4', base=div['Value'].abs(), offsetgroup=1, visible=visible,
-                             text=repo['Value'].map_elements(lambda x: f"${abs(x)/1e9:.1f}B" if abs(x) >= 1e8 else f"${abs(x)/1e6:.1f}M", return_dtype=pl.Utf8),
-                             textposition='auto'))
-        
-        # 性向 (折れ線)
-        fig.add_trace(go.Scatter(name='配当性向', x=div_r['Date'], y=div_r['Value'], marker_color='#ffbb78', mode='lines+markers', yaxis='y2', hovertemplate='%{y:.1%}', visible=visible))
-        fig.add_trace(go.Scatter(name='総還元性向', x=total_r['Date'], y=total_r['Value'], marker_color='#ff7f0e', mode='lines+markers', yaxis='y2', hovertemplate='%{y:.1%}', visible=visible))
-
-    _add_traces(fig, df_a, add_tp_traces, visible=True)
-    _add_traces(fig, df_q, add_tp_traces, visible=False)
-
-    # タブ切り替えボタンの作成
-    num_a = 5 if not df_a.is_empty() else 0
-    num_q = 5 if not df_q.is_empty() else 0
+    # 純利益
+    fig.add_trace(go.Bar(name='純利益', x=ni['Date'], y=ni['Value'], marker_color='#2ca02c', offsetgroup=0))
     
-    buttons = []
-    if num_a > 0:
-        buttons.append(dict(label="通期", method="update", args=[{"visible": [True]*num_a + [False]*num_q}]))
-    if num_q > 0:
-        buttons.append(dict(label="四半期", method="update", args=[{"visible": [False]*num_a + [True]*num_q}]))
-
-    updatemenus = [dict(
-        type="buttons",
-        direction="right",
-        x=0.5,
-        xanchor="center",
-        y=1.2,
-        yanchor="top",
-        showactive=True,
-        buttons=buttons,
-        font=dict(size=12, color='white'),
-        bgcolor='rgba(100, 100, 100, 0.3)',
-        bordercolor='rgba(255, 255, 255, 0.5)'
-    )] if len(buttons) > 1 else None
+    # 還元
+    dv = div['Value'].abs()
+    rv = repo['Value'].abs()
+    fig.add_trace(go.Bar(name='配当金', x=div['Date'], y=dv, marker_color='#aec7e8', offsetgroup=1))
+    fig.add_trace(go.Bar(name='自社株買い', x=repo['Date'], y=rv, marker_color='#1f77b4', base=dv, offsetgroup=1))
+    
+    fig.add_trace(go.Scatter(name='配当性向', x=div_r['Date'], y=div_r['Value'], marker_color='#ffbb78', mode='lines+markers', yaxis='y2', hovertemplate='%{y:.1%}'))
+    fig.add_trace(go.Scatter(name='総還元性向', x=total_r['Date'], y=total_r['Value'], marker_color='#ff7f0e', mode='lines+markers', yaxis='y2', hovertemplate='%{y:.1%}'))
 
     fig.update_layout(
-        barmode='group', height=500, margin=dict(t=120, b=80, l=60, r=60), template='plotly_white',
+        barmode='group', height=500, margin=dict(t=50, b=80, l=60, r=60), template='plotly_white',
         xaxis=dict(type='category', tickangle=0),
-        yaxis=dict(title='金額', showgrid=True, type='linear', automargin=True, gridcolor='#F3F4F6', zeroline=True, zerolinecolor='#444', zerolinewidth=2, rangemode='tozero'),
-        yaxis2=dict(title='還元性向', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='linear', automargin=True, zeroline=True, zerolinecolor='#444', zerolinewidth=2, rangemode='tozero'),
-        legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5),
-        updatemenus=updatemenus
+        yaxis=dict(title='金額', showgrid=True, type='linear', automargin=True),
+        yaxis2=dict(title='還元性向', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='linear', automargin=True),
+        legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5)
     )
     return fig
 
