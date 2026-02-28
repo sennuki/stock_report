@@ -10,318 +10,245 @@ const { chartData, title, id, height = 450 } = Astro.props;
 ---
 
 <div 
-  class="apex-chart-wrapper my-8" 
+  class="apex-chart-wrapper my-16" 
   data-chart={JSON.stringify(chartData)}
-  data-id={id}
+  data-symbol={chartData.symbol}
 >
-  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
-    {title && <h3 class="text-xl font-bold text-skin-base">{title}</h3>}
-    <div class="chart-controls flex gap-2"></div>
-  </div>
-
-  {chartData && !chartData.error ? (
-    <div id={id} class="apex-graph-div w-full" style={`min-height: ${height}px;`}></div>
-  ) : (
-    <div class="flex items-center justify-center min-h-[100px] bg-skin-fill/30 border border-dashed border-skin-line rounded-lg">
-      <p class="text-gray-500 italic">{chartData?.error || 'データが利用できません'}</p>
-    </div>
-  )}
+  {title && <h3 class="text-xl font-bold mb-8">{title}</h3>}
+  <div class="chart-controls flex justify-center gap-2 mb-8"></div>
+  <div id={id} class="apex-graph-div" style={`height: ${height}px;`}></div>
 </div>
 
 <script>
   import ApexCharts from 'apexcharts';
 
   function initApexCharts() {
-    const wrappers = document.querySelectorAll('.apex-chart-wrapper');
-    
-    wrappers.forEach(wrapper => {
-      const container = wrapper.querySelector('.apex-graph-div') as HTMLElement;
-      if (!container || (container as any)._apex_initialized) return;
-
-      const chartDataStr = (wrapper as HTMLElement).dataset.chart;
-      if (!chartDataStr) return;
-
-      const chartData = JSON.parse(chartDataStr);
-      if (!chartData || chartData.error) return;
-
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            observer.disconnect();
-            renderApexChart(wrapper as HTMLElement, container, chartData);
-            (container as any)._apex_initialized = true;
-          }
-        });
-      }, { rootMargin: '200px' });
-      
-      observer.observe(container);
+    document.querySelectorAll('.apex-graph-div').forEach(container => {
+      if ((container as any)._apex_initialized) return;
+      const wrapper = container.closest('.apex-chart-wrapper') as HTMLElement;
+      if (!wrapper) return;
+      const chartData = JSON.parse(wrapper.dataset.chart || '{}');
+      renderApexChart(wrapper, container as HTMLElement, chartData);
+      (container as any)._apex_initialized = true;
     });
   }
 
   function renderApexChart(wrapper: HTMLElement, container: HTMLElement, plotlyData: any) {
-    const isDark = document.documentElement.classList.contains('dark') || 
-                   document.documentElement.getAttribute('data-theme') === 'dark';
-    
-    try {
-      const options = transformPlotlyToApex(plotlyData, isDark);
-      
-      if ((container as any)._chart_instance) {
-        (container as any)._chart_instance.destroy();
-      }
+    if (!plotlyData || !plotlyData.data) return;
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const options = transformPlotlyToApex(plotlyData, isDark);
+    if (!options) return;
 
-      const chart = new ApexCharts(container, options);
-      chart.render();
-      (container as any)._chart_instance = chart;
+    if ((container as any)._chart_instance) (container as any)._chart_instance.destroy();
+    const chart = new ApexCharts(container, options);
+    (container as any)._chart_instance = chart;
+    chart.render().then(() => setupControls(wrapper, chart, plotlyData));
+  }
 
-      setupControls(wrapper, chart, plotlyData);
-    } catch (err) {
-      console.error(`ApexChart Rendering Error [${container.id}]:`, err);
-    }
+  // Y軸の単位変換（T, B, M, %）
+  function formatYValue(v: any, isPercent: boolean) {
+    if (v === null || v === undefined) return '';
+    if (isPercent) return (parseFloat(v) * 100).toFixed(0) + '%';
+    const absV = Math.abs(v);
+    if (absV >= 1e12) return (v / 1e12).toFixed(1) + 'T';
+    if (absV >= 1e9) return (v / 1e9).toFixed(1) + 'B';
+    if (absV >= 1e6) return (v / 1e6).toFixed(1) + 'M';
+    return v.toLocaleString();
   }
 
   function setupControls(wrapper: HTMLElement, chart: ApexCharts, plotlyData: any) {
     const controlsContainer = wrapper.querySelector('.chart-controls');
     if (!controlsContainer || !plotlyData.layout?.updatemenus) return;
-
     controlsContainer.innerHTML = '';
-    const menus = plotlyData.layout.updatemenus;
+    const fullSeries = (chart as any).w.config._fullSeries || [];
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
 
-    menus.forEach((menu: any) => {
-      if (menu.buttons) {
-        menu.buttons.forEach((btn: any, idx: number) => {
-          const button = document.createElement('button');
-          button.textContent = btn.label;
-          button.className = `px-3 py-1 text-sm font-medium rounded-md border transition-colors ${
-            idx === 0 
-              ? 'bg-skin-accent text-white border-skin-accent' 
-              : 'bg-skin-fill text-skin-base border-skin-line hover:border-skin-accent'
-          }`;
-          
-          button.onclick = () => {
-            controlsContainer.querySelectorAll('button').forEach(b => {
-              b.classList.remove('bg-skin-accent', 'text-white', 'border-skin-accent');
-              b.classList.add('bg-skin-fill', 'text-skin-base', 'border-skin-line');
-            });
-            button.classList.remove('bg-skin-fill', 'text-skin-base', 'border-skin-line');
-            button.classList.add('bg-skin-accent', 'text-white', 'border-skin-accent');
-
-            if (btn.args && btn.args[0] && btn.args[0].visible) {
-              const visibleArr = btn.args[0].visible;
-              visibleArr.forEach((isVisible: boolean, sIdx: number) => {
-                const anyChart = chart as any;
-                if (anyChart.w.config.series[sIdx]) {
-                  const seriesName = anyChart.w.config.series[sIdx].name;
-                  if (isVisible) chart.showSeries(seriesName);
-                  else chart.hideSeries(seriesName);
-                }
-              });
-            }
-          };
-          
-          controlsContainer.appendChild(button);
+    plotlyData.layout.updatemenus[0].buttons.forEach((btn: any, btnIdx: number) => {
+      const button = document.createElement('button');
+      button.textContent = btn.label;
+      button.className = `px-4 py-1.5 text-sm font-medium rounded-md border transition-colors ${btnIdx === 0 ? 'bg-skin-accent text-white border-skin-accent' : 'bg-skin-fill text-skin-base border-skin-line hover:border-skin-accent'}`;
+      
+      button.onclick = () => {
+        controlsContainer.querySelectorAll('button').forEach(b => {
+          b.classList.remove('bg-skin-accent', 'text-white', 'border-skin-accent');
+          b.classList.add('bg-skin-fill', 'text-skin-base', 'border-skin-line');
         });
-      }
+        button.classList.add('bg-skin-accent', 'text-white', 'border-skin-accent');
+
+        if (btn.args && btn.args[0] && btn.args[0].visible) {
+          const visMask = btn.args[0].visible;
+          const filtered = fullSeries.filter((s: any) => visMask[s.originalIndex] === true);
+          const isScatter = filtered.some((s:any) => s.type === 'scatter');
+          
+          // X軸カテゴリの更新
+          let cats = [];
+          if (!isScatter && filtered.length > 0) {
+            cats = plotlyData.data[filtered[0].originalIndex]?.x || [];
+          }
+
+          chart.updateOptions({
+            series: filtered,
+            colors: filtered.map((s: any) => s.color),
+            xaxis: isScatter ? { type: 'numeric', categories: [] } : { categories: cats, type: 'category' },
+            yaxis: filtered.map((s: any, i: number) => {
+              const is2 = s.yaxisIndex === 1;
+              const first0 = filtered.findIndex((fs:any) => fs.yaxisIndex === 0);
+              const first1 = filtered.findIndex((fs:any) => fs.yaxisIndex === 1);
+              return {
+                seriesName: is2 ? (first1 !== -1 ? filtered[first1].name : s.name) : (first0 !== -1 ? filtered[first0].name : s.name),
+                show: i === first0 || i === first1,
+                opposite: is2,
+                labels: { formatter: (v: any) => formatYValue(v, is2 || isScatter), style: { colors: isDark ? '#9ca3af' : '#6b7280' } }
+              };
+            })
+          }, false, true);
+        }
+      };
+      controlsContainer.appendChild(button);
     });
   }
 
   function transformPlotlyToApex(plotlyData: any, isDark: boolean) {
     const data = plotlyData.data || [];
     const layout = plotlyData.layout || {};
-    const isScatter = data.some((d: any) => d.type === 'scatter' && d.mode === 'markers');
+    const isScatterChart = data.some((d: any) => d.type === 'scatter' && d.mode === 'markers');
     
-    const seenNamesLegend = new Set<string>();
-    const uniqueColors: string[] = [];
-    const series = data.map((d: any) => {
-      let color = d.marker?.color || d.line?.color;
-      if (Array.isArray(color)) color = color[0];
-      const finalColor = color || (isDark ? '#ff6b01' : '#006cac');
-
+    // 全シリーズの変換
+    const allSeries = data.map((d: any, idx: number) => {
       const name = d.name || '';
-      if (!seenNamesLegend.has(name)) {
-        seenNamesLegend.add(name);
-        uniqueColors.push(finalColor);
-      }
+      const isRatio = name.includes('率') || name.includes('性向');
+      const type = isScatterChart ? 'scatter' : (isRatio ? 'line' : (d.type === 'bar' ? 'bar' : 'line'));
       
       const s: any = {
         name: name,
-        type: (d.type === 'scatter' && d.mode === 'markers') ? 'scatter' : (d.type === 'bar' ? 'bar' : 'line'),
-        data: d.y || [],
-        yaxisIndex: d.yaxis === 'y2' ? 1 : 0
+        type: type,
+        data: isScatterChart ? (d.x || []).map((xv:any, i:number)=>({x:xv, y:d.y[i], symbol:d.text?d.text[i]:''})) : (d.y || []),
+        yaxisIndex: isRatio ? 1 : (d.yaxis === 'y2' ? 1 : 0),
+        color: d.marker?.color || d.line?.color || (isDark ? '#ff6b01' : '#006cac'),
+        originalIndex: idx,
+        originalOrder: 0
       };
 
-      if (name.includes('負債') || name.includes('純資産')) {
-        s.group = 'liabilities';
-      } else if (name.includes('資産')) {
-        s.group = 'assets';
-      }
+      // 積み上げ用順序
+      if (name.includes('流動')) s.originalOrder = 1;
+      else if (name.includes('固定')) s.originalOrder = 2;
+      else if (name.includes('純資産')) s.originalOrder = 3;
+      else if (name.includes('配当')) s.originalOrder = 1;
+      else if (name.includes('自社株')) s.originalOrder = 2;
+// グループ割り当て (積み上げと並列を制御)
+if (name.includes('流動資産') || name.includes('固定資産')) s.group = 'assets';
+else if (name.includes('負債') || name.includes('純資産')) s.group = 'liabilities';
+else if (name.includes('配当') || name.includes('自社株')) s.group = 'payout';
+else if (name.includes('純利益')) s.group = 'net_income';
+else if (s.type === 'bar') {
+  // それ以外の棒グラフ（売上高、営業利益、各キャッシュフロー項目など）は
+  // シリーズ名をグループ名にすることで、独立した棒（並列表示）にする
+  s.group = name.replace(' (Q)', ''); 
+}
 
-      return s;
-    });
+return s;
+});
 
-    const categories = data.length > 0 ? (data[0].x || []) : [];
-
-    // 軸名とインデックスの特定
-    const primarySeriesName = series.length > 0 ? series[0].name : 'primary';
-    const secondaryIdx = data.findIndex((d: any) => d.yaxis === 'y2');
-    const secondarySeriesName = secondaryIdx !== -1 ? series[secondaryIdx].name : null;
-
-    // Y軸設定: 重要：シリーズの数と同じ数だけyaxis設定が必要
-    const yaxisConfig = series.map((s: any, idx: number) => {
-      const isSecondary = s.yaxisIndex === 1;
-      const isFirstOfAxis = isSecondary ? idx === secondaryIdx : idx === 0;
-
-      return {
-        seriesName: isSecondary ? secondarySeriesName : primarySeriesName,
-        show: isFirstOfAxis,
-        opposite: isSecondary,
-        min: isSecondary ? 0 : undefined,
-        title: { text: isFirstOfAxis ? (isSecondary ? layout.yaxis2?.title?.text : layout.yaxis?.title?.text) : undefined },
-        labels: {
-          formatter: (val: number) => {
-            if (val === null || val === undefined) return '';
-            if (isSecondary) return (val * 100).toFixed(0) + '%';
-            const absVal = Math.abs(val);
-            if (absVal >= 1e12) return (val / 1e12).toFixed(1) + 'T';
-            if (absVal >= 1e9) return (val / 1e9).toFixed(1) + 'B';
-            if (absVal >= 1e6) return (val / 1e6).toFixed(1) + 'M';
-            return val.toLocaleString();
-          }
-        }
-      };
-    });
-
-    // ラベルを表示するシリーズ
-    const enabledLabelIndices = series
-      .map((s: any, idx: number) => (s.yaxisIndex === 0 && !isScatter) ? idx : -1)
-      .filter((idx: number) => idx !== -1);
-
-    let options: any = {
-      series: series,
-      colors: uniqueColors,
-      chart: {
-        height: '100%',
-        type: isScatter ? 'scatter' : (series.length > 0 ? series[0].type : 'line'),
-        stacked: layout.barmode !== 'group' && !isScatter,
-        toolbar: { show: false },
-        background: 'transparent',
-        foreColor: isDark ? '#9ca3af' : '#4b5563',
-        fontFamily: 'inherit',
-        animations: { enabled: true, easing: 'easeinout', speed: 800 }
-      },
-      theme: { mode: isDark ? 'dark' : 'light' },
-      dataLabels: {
-        enabled: enabledLabelIndices.length > 0,
-        enabledOnSeries: enabledLabelIndices,
-        formatter: (val: number) => {
-          if (val === null || val === undefined || val === 0) return '';
-          const absVal = Math.abs(val);
-          if (absVal >= 1e12) return (val / 1e12).toFixed(1) + 'T';
-          if (absVal >= 1e9) return (val / 1e9).toFixed(1) + 'B';
-          if (absVal >= 1e6) return (val / 1e6).toFixed(1) + 'M';
-          if (absVal >= 1e3) return (val / 1e3).toFixed(0) + 'K';
-          return val.toFixed(2);
-        },
-        style: { fontSize: '10px', colors: [isDark ? '#f3f4f6' : '#374151'] },
-        dropShadow: { enabled: false }
-      },
-      stroke: {
-        width: series.map((s: any) => s.type === 'line' ? 3 : 0),
-        curve: 'smooth'
-      },
-      markers: {
-        size: series.map((s: any) => s.type === 'line' ? 4 : 0),
-        strokeWidth: 2,
-        hover: { size: 6 }
-      },
-      xaxis: {
-        categories: isScatter ? [] : categories,
-        type: isScatter ? 'numeric' : 'category',
-        labels: { rotate: 0 }
-      },
-      yaxis: yaxisConfig,
-      grid: {
-        borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
-        strokeDashArray: 4
-      },
-      tooltip: {
-        theme: isDark ? 'dark' : 'light',
-        shared: !isScatter,
-        intersect: isScatter,
-        y: { formatter: (val: number) => (val !== null && val !== undefined) ? val.toLocaleString() : '0' }
-      },
-      legend: {
-        position: 'top',
-        horizontalAlign: 'center',
-        fontSize: '13px',
-        itemMargin: { horizontal: 10, vertical: 5 },
-        customLegendItems: Array.from(seenNamesLegend),
-        onItemClick: { toggleDataSeries: true }
-      }
-    };
-
-    // Scatter (リスク・リターン) 専用
-    if (isScatter) {
-      options.series = data.map((d: any) => ({
-        name: d.name || '',
-        type: 'scatter',
-        data: (d.x || []).map((xVal: any, i: number) => [xVal, d.y[i]])
-      }));
-      options.xaxis.labels = { formatter: (val: any) => (parseFloat(val) * 100).toFixed(1) + '%' };
-      
-      // 散布図は1軸設定でOK
-      options.yaxis = [{
-        title: { text: layout.yaxis?.title?.text },
-        labels: { formatter: (val: any) => (parseFloat(val) * 100).toFixed(1) + '%' },
-        tickAmount: 6
-      }];
-
-      const markerShapes = data.map((d: any) => {
-        const name = d.name || '';
-        if (name === 'S&P 500') return 'square';
-        if (name.includes('セクター')) return 'diamond';
-        return 'circle';
+// 積み上げ判定: 棒グラフがあれば基本Stackedを有効にする（グループ名で並列/積み上げを制御するため）
+const hasBar = allSeries.some(s => s.type === 'bar');
+const hasStacking = hasBar && !isScatterChart;
+    // シリーズの並び替えロジック
+    if (hasStacking) {
+      allSeries.sort((a: any, b: any) => {
+        // グループ間の並び順を詳細に定義
+        const groupPriority: any = { 
+          'net_income': 5,  // 純利益を最優先（左端）にする
+          '売上高': 10, '売上総利益': 20, '営業利益': 30,
+          '営業CF': 10, '投資CF': 20, '財務CF': 30, 'フリーCF': 40,
+          'assets': 10, 
+          'payout': 60,
+          'liabilities': 60
+        };
+        const pA = groupPriority[a.group] || 99;
+        const pB = groupPriority[b.group] || 99;
+        
+        if (pA !== pB) return pA - pB;
+        
+        // 2. 同一グループ内での積み上げ順 (originalOrder)
+        if (a.group === b.group) return b.originalOrder - a.originalOrder;
+        
+        return 0;
       });
-
-      const markerSizes = data.map((d: any, idx: number) => {
-        if (idx === 3) return 10; 
-        if (d.name?.includes('S&P 500') || d.name?.includes('セクター')) return 8;
-        return 4;
-      });
-
-      options.markers = { size: markerSizes, shape: markerShapes };
-      options.colors = data.map((d: any, idx: number) => {
-        if (idx === 3) return '#ef4444';
-        if (d.name === 'S&P 500') return '#22c55e';
-        if (d.name?.includes('セクター')) return '#3b82f6';
-        return '#94a3b8';
-      });
-      
-      options.tooltip.x = { show: true, formatter: (val: any) => 'リスク: ' + (parseFloat(val) * 100).toFixed(2) + '%' };
-      options.tooltip.y = { formatter: (val: any) => 'リターン: ' + (parseFloat(val) * 100).toFixed(2) + '%' };
     }
 
-    return options;
+    const initial = allSeries.filter((s) => data[s.originalIndex]?.visible !== false);
+    if (initial.length === 0) return null;
+
+    const cats = !isScatterChart ? (data[initial[0].originalIndex]?.x || []) : [];
+
+    return {
+      series: initial,
+      colors: initial.map(s => s.color),
+      _fullSeries: allSeries,
+      chart: {
+        height: '100%',
+        type: isScatterChart ? 'scatter' : 'line',
+        stacked: hasStacking && !isScatterChart,
+        stackType: 'normal',
+        toolbar: { show: false },
+        background: 'transparent',
+        foreColor: isDark ? '#9ca3af' : '#6b7280',
+        animations: { enabled: true }
+      },
+      theme: { mode: isDark ? 'dark' : 'light' },
+      xaxis: {
+        categories: isScatterChart ? undefined : cats,
+        type: isScatterChart ? 'numeric' : 'category',
+        axisBorder: { show: false },
+        min: isScatterChart ? 0 : undefined,
+        labels: { formatter: isScatterChart ? (v:any)=>(parseFloat(v)*100).toFixed(0)+'%' : undefined }
+      },
+      yaxis: initial.map((s: any, i: number) => {
+        const is2 = s.yaxisIndex === 1;
+        const f0 = initial.findIndex(fs => fs.yaxisIndex === 0);
+        const f1 = initial.findIndex(fs => fs.yaxisIndex === 1);
+        return {
+          seriesName: is2 ? (f1 !== -1 ? initial[f1].name : s.name) : (f0 !== -1 ? initial[f0].name : s.name),
+          show: i === f0 || i === f1,
+          opposite: is2,
+          title: { text: i === f0 ? (layout.yaxis?.title?.text || '') : (i === f1 ? (layout.yaxis2?.title?.text || '') : '') },
+          labels: { formatter: (v: any) => formatYValue(v, is2 || isScatterChart) }
+        };
+      }),
+      grid: { borderColor: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)', strokeDashArray: 4, padding: { top: 20, right: 20, bottom: 10, left: 20 } },
+      stroke: { width: initial.map(s => s.type === 'line' ? 3 : (s.type === 'scatter' ? 1 : 0)), curve: 'smooth' },
+      markers: { 
+        size: initial.map(s => s.type === 'line' ? 4 : (s.type === 'scatter' ? (s.name.includes('対象')?10:6) : 0)),
+        strokeWidth: initial.map(s => (s.type === 'scatter' && !s.name.toLowerCase().includes('銘柄') && !s.name.toLowerCase().includes('s&p 500') && !s.name.toLowerCase().includes('セクター')) ? 0 : 2),
+        strokeColors: '#fff'
+      },
+      fill: { opacity: initial.map(s => s.type === 'scatter' ? 0.8 : 1) },
+      tooltip: {
+        shared: !isScatterChart,
+        custom: isScatterChart ? ({ seriesIndex, dataPointIndex, w }: any) => {
+          const s = w.config.series[seriesIndex]; const p = s.data[dataPointIndex];
+          return `<div class="p-2 bg-skin-fill border border-skin-line rounded shadow-lg text-skin-base"><div class="font-bold border-b border-skin-line mb-1">${p.symbol || s.name}</div><div>リスク: ${(p.x * 100).toFixed(1)}%</div><div>リターン: ${(p.y * 100).toFixed(1)}%</div></div>`;
+        } : undefined,
+        y: { formatter: (v: any, { seriesIndex, w }: any) => {
+          const s = w.config.series[seriesIndex];
+          return formatYValue(v, s?.yaxisIndex === 1);
+        }}
+      },
+      legend: { position: 'top', offsetY: -10, customLegendItems: Array.from(new Set(initial.map(s => s.name))) }
+    };
   }
 
-  document.addEventListener('astro:page-load', () => {
-    initApexCharts();
-  });
-
-  const themeObserver = new MutationObserver(() => {
-    document.querySelectorAll('.apex-graph-div').forEach(container => {
-      const wrapper = container.closest('.apex-chart-wrapper') as HTMLElement;
-      if (wrapper && (container as any)._apex_initialized) {
-        const chartData = JSON.parse(wrapper.dataset.chart || '{}');
-        renderApexChart(wrapper, container as HTMLElement, chartData);
-      }
-    });
-  });
+  document.addEventListener('astro:page-load', initApexCharts);
+  const themeObserver = new MutationObserver(initApexCharts);
   themeObserver.observe(document.documentElement, { attributes: true });
-
 </script>
 
 <style>
-  .apex-graph-div {
-    width: 100%;
+  .apex-graph-div { width: 100%; }
+  .apex-chart-wrapper {
+    background: rgba(var(--color-fill), 0.05);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    border: 1px solid rgba(var(--color-line), 0.1);
   }
 </style>
