@@ -33,7 +33,12 @@ def run_quick_test(target_symbols=["MSFT", "MO", "GOOGL"]):
         })
 
     # 2. リスク指標計算
-    df_metrics = risk_return.calculate_market_metrics_parallel(df_test['Symbol_YF'].to_list())
+    if 'Symbol_YF' in df_all.columns and not df_all.is_empty():
+        symbols_to_calc = df_all['Symbol_YF'].to_list()
+    else:
+        symbols_to_calc = df_test['Symbol_YF'].to_list()
+        
+    df_metrics = risk_return.calculate_market_metrics_parallel(symbols_to_calc)
 
     # 3. レポート作成
     report_generator.export_full_analysis_reports(df_test, df_metrics, output_dir=output_reports_dir)

@@ -63,6 +63,13 @@ const { chartData, title, id, height = 450 } = Astro.props;
     const fullSeries = (chart as any).w.config._fullSeries || [];
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
 
+    const getRange = (obj: any, axis: string) => {
+      if (!obj) return null;
+      if (obj[`${axis}.range`]) return obj[`${axis}.range`];
+      if (obj[axis] && obj[axis].range) return obj[axis].range;
+      return null;
+    };
+
     plotlyData.layout.updatemenus[0].buttons.forEach((btn: any, btnIdx: number) => {
       const button = document.createElement('button');
       button.textContent = btn.label;
@@ -75,9 +82,10 @@ const { chartData, title, id, height = 450 } = Astro.props;
         });
         button.classList.add('bg-skin-accent', 'text-white', 'border-skin-accent');
 
-        if (btn.args && btn.args[0] && btn.args[0].visible) {
+        if (btn.args && btn.args[0] && (btn.args[0].visible || btn.args[0].method === 'update')) {
           const visMask = btn.args[0].visible;
-          const filtered = fullSeries.filter((s: any) => visMask[s.originalIndex] === true);
+          const layoutUpdate = btn.args[1] || {};
+          const filtered = fullSeries.filter((s: any) => !visMask || visMask[s.originalIndex] === true);
           const isScatter = filtered.some((s:any) => s.type === 'scatter');
           
           // X軸カテゴリの更新
@@ -86,20 +94,34 @@ const { chartData, title, id, height = 450 } = Astro.props;
             cats = plotlyData.data[filtered[0].originalIndex]?.x || [];
           }
 
+          let xaxisOptions: any = isScatter ? { type: 'numeric', categories: [] } : { categories: cats, type: 'category' };
+          const xRange = getRange(layoutUpdate, 'xaxis');
+          if (isScatter && xRange) {
+             xaxisOptions.min = xRange[0];
+             xaxisOptions.max = xRange[1];
+          }
+
+          const yRange = getRange(layoutUpdate, 'yaxis');
+
           chart.updateOptions({
             series: filtered,
             colors: filtered.map((s: any) => s.color),
-            xaxis: isScatter ? { type: 'numeric', categories: [] } : { categories: cats, type: 'category' },
+            xaxis: xaxisOptions,
             yaxis: filtered.map((s: any, i: number) => {
               const is2 = s.yaxisIndex === 1;
               const first0 = filtered.findIndex((fs:any) => fs.yaxisIndex === 0);
               const first1 = filtered.findIndex((fs:any) => fs.yaxisIndex === 1);
-              return {
+              let yAxisOpt: any = {
                 seriesName: is2 ? (first1 !== -1 ? filtered[first1].name : s.name) : (first0 !== -1 ? filtered[first0].name : s.name),
                 show: i === first0 || i === first1,
                 opposite: is2,
                 labels: { formatter: (v: any) => formatYValue(v, is2 || isScatter), style: { colors: isDark ? '#9ca3af' : '#6b7280' } }
               };
+              if (isScatter && !is2 && yRange) {
+                 yAxisOpt.min = yRange[0];
+                 yAxisOpt.max = yRange[1];
+              }
+              return yAxisOpt;
             })
           }, false, true);
         }
@@ -112,6 +134,13 @@ const { chartData, title, id, height = 450 } = Astro.props;
     const data = plotlyData.data || [];
     const layout = plotlyData.layout || {};
     const isScatterChart = data.some((d: any) => d.type === 'scatter' && d.mode === 'markers');
+
+    const getRange = (obj: any, axis: string) => {
+      if (!obj) return null;
+      if (obj[`${axis}.range`]) return obj[`${axis}.range`];
+      if (obj[axis] && obj[axis].range) return obj[axis].range;
+      return null;
+    };
     
     // 全シリーズの変換
     const allSeries = data.map((d: any, idx: number) => {
@@ -122,7 +151,14 @@ const { chartData, title, id, height = 450 } = Astro.props;
       const s: any = {
         name: name,
         type: type,
-        data: isScatterChart ? (d.x || []).map((xv:any, i:number)=>({x:xv, y:d.y[i], symbol:d.text?d.text[i]:''})) : (d.y || []),
+        data: isScatterChart ? (d.x || []).map((xv:any, i:number)=>({
+          x: xv, 
+          y: d.y[i], 
+          symbol: d.text ? d.text[i] : '',
+          origX: d.customdata ? d.customdata[i][0] : xv,
+          origY: d.customdata ? d.customdata[i][1] : d.y[i],
+          customText: d.customdata ? d.customdata[i][2] : (d.text ? d.text[i] : '')
+        })) : (d.y || []),
         yaxisIndex: isRatio ? 1 : (d.yaxis === 'y2' ? 1 : 0),
         color: d.marker?.color || d.line?.color || (isDark ? '#ff6b01' : '#006cac'),
         originalIndex: idx,
@@ -199,6 +235,8 @@ const { chartData, title, id, height = 450 } = Astro.props;
     if (initial.length === 0) return null;
 
     const cats = !isScatterChart ? (data[initial[0].originalIndex]?.x || []) : [];
+    const xRange = getRange(layout, 'xaxis');
+    const yRange = getRange(layout, 'yaxis');
 
     return {
       series: initial,
@@ -219,17 +257,25 @@ const { chartData, title, id, height = 450 } = Astro.props;
         categories: cats,
         type: isScatterChart ? 'numeric' : 'category',
         axisBorder: { show: false },
-        min: isScatterChart ? 0 : undefined,
+        min: isScatterChart ? (xRange ? xRange[0] : 0) : undefined,
+        max: isScatterChart ? (xRange ? xRange[1] : undefined) : undefined,
         labels: { formatter: isScatterChart ? (v:any)=>(parseFloat(v)*100).toFixed(0)+'%' : undefined }
       },
       yaxis: initial.map((s: any, i: number) => {
         const is2 = s.yaxisIndex === 1;
         const f0 = initial.findIndex((fs: any) => fs.yaxisIndex === 0);
         const f1 = initial.findIndex((fs: any) => fs.yaxisIndex === 1);
+        let minVal, maxVal;
+        if (isScatterChart && !is2 && yRange) {
+           minVal = yRange[0];
+           maxVal = yRange[1];
+        }
         return {
           seriesName: is2 ? (f1 !== -1 ? initial[f1].name : s.name) : (f0 !== -1 ? initial[f0].name : s.name),
           show: i === f0 || i === f1,
           opposite: is2,
+          min: minVal,
+          max: maxVal,
           title: { text: i === f0 ? (layout.yaxis?.title?.text || '') : (i === f1 ? (layout.yaxis2?.title?.text || '') : '') },
           labels: { formatter: (v: any) => formatYValue(v, is2 || isScatterChart) }
         };
@@ -246,7 +292,10 @@ const { chartData, title, id, height = 450 } = Astro.props;
         shared: !isScatterChart,
         custom: isScatterChart ? ({ seriesIndex, dataPointIndex, w }: any) => {
           const s = w.config.series[seriesIndex]; const p = s.data[dataPointIndex];
-          return `<div class="p-2 bg-skin-fill border border-skin-line rounded shadow-lg text-skin-base"><div class="font-bold border-b border-skin-line mb-1">${p.symbol || s.name}</div><div>リスク: ${(p.x * 100).toFixed(1)}%</div><div>リターン: ${(p.y * 100).toFixed(1)}%</div></div>`;
+          const xVal = p.origX !== undefined ? p.origX : p.x;
+          const yVal = p.origY !== undefined ? p.origY : p.y;
+          const symbol = p.customText || p.symbol || s.name;
+          return `<div class="p-2 bg-skin-fill border border-skin-line rounded shadow-lg text-skin-base"><div class="font-bold border-b border-skin-line mb-1">${symbol}</div><div>リスク: ${(xVal * 100).toFixed(1)}%</div><div>リターン: ${(yVal * 100).toFixed(1)}%</div></div>`;
         } : undefined,
         y: { formatter: (v: any, { seriesIndex, w }: any) => {
           const s = w.config.series[seriesIndex];
