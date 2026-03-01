@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 import warnings
+import logging
+# yfinance 1.1.0+ outputs noisy 404 errors for some symbols
+logging.getLogger('yfinance').setLevel(logging.CRITICAL)
+
 # Plotly 6.0.0+ deprecation warnings (scattermapbox -> scattermap)
 warnings.filterwarnings("ignore", category=FutureWarning, message=".*scattermapbox.*")
 warnings.filterwarnings("ignore", message=".*Timestamp.utcnow is deprecated.*")
@@ -84,10 +88,8 @@ def export_stocks_json(df):
         print(f"JSON保存エラー: {e}")
 
 if __name__ == "__main__":
-    # ログのリセット
-    if os.path.exists(utils.LOG_FILE):
-        os.remove(utils.LOG_FILE)
-    utils.log_event("INFO", "SYSTEM", "Execution started")
+    # ログの記録開始
+    utils.log_event("INFO", "SYSTEM", "--- Execution started ---")
 
     # スクリプトのディレクトリを基準にする
     base_dir = os.path.dirname(os.path.abspath(__file__))

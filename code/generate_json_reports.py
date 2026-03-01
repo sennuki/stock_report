@@ -7,6 +7,9 @@ import numpy as np
 import base64
 from tqdm import tqdm
 import plotly.io as pio
+import logging
+# Suppress noisy yfinance errors
+logging.getLogger('yfinance').setLevel(logging.CRITICAL)
 
 import fundamentals
 import risk_return
@@ -102,14 +105,16 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir):
 
         # --- Add Analyst Ratings ---
         try:
-            recs = ticker_obj.recommendations_summary
+            # yfinance 1.1.0+ may output 404 or other errors for some symbols
+            recs = getattr(ticker_obj, 'recommendations_summary', None)
             if recs is not None and not recs.empty:
                 # Use current month (period '0m')
                 current_recs = recs[recs['period'] == '0m']
                 if not current_recs.empty:
                     report_data["analyst_ratings"] = current_recs.to_dict('records')[0]
-        except Exception as ree:
-            print(f"Error fetching recommendations for {ticker_display}: {ree}")
+        except Exception:
+            # Silently skip if recommendations are unavailable
+            pass
         # ----------------------------
 
     except Exception as e:

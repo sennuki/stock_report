@@ -64,9 +64,14 @@ def get_financial_data(ticker_obj):
 
     def get_attr(obj, names):
         for name in names:
-            val = getattr(obj, name, None)
-            if val is not None and not (isinstance(val, pd.DataFrame) and val.empty):
-                return val
+            try:
+                val = getattr(obj, name, None)
+                if val is not None and not (isinstance(val, pd.DataFrame) and val.empty):
+                    return val
+            except Exception as e:
+                # 404などのエラーが発生した場合はスキップして次の候補を探す
+                print(f"Warning: Could not access {name} for {symbol}: {e}")
+                continue
         return None
 
     def extract_and_melt(pandas_df, targets):
@@ -323,16 +328,34 @@ def get_financial_data(ticker_obj):
             history = ticker_obj.history(start=df_divs['Date'].min(), end=df_divs['Date'].max() + datetime.timedelta(days=5))
             
             def get_price(date):
+                if history.empty:
+                    return None
                 try:
-                    # 配当落ち日前後の終値を取得 (権利落ち日は株価が下がるため、前日の価格が理想的だが、
-                    # ここではシンプルに当日のCloseを取得)
-                    target_date = date.replace(hour=0, minute=0, second=0)
+                    # 時間を00:00:00に正規化し、マイクロ秒を除去
+                    target_date = date.replace(hour=0, minute=0, second=0, microsecond=0)
+                    
+                    # タイムゾーンの整合性を確認（両方がaware、または両方がnaiveである必要がある）
+                    if hasattr(target_date, 'tzinfo') and hasattr(history.index, 'tzinfo'):
+                        if (target_date.tzinfo is None) != (history.index.tzinfo is None):
+                            # 片方だけがnaiveな場合は、もう片方に合わせる
+                            if target_date.tzinfo is None:
+                                target_date = target_date.replace(tzinfo=history.index.tzinfo)
+                            else:
+                                target_date = target_date.replace(tzinfo=None)
+                        elif target_date.tzinfo != history.index.tzinfo:
+                            # 両方awareだがタイムゾーンが異なる場合は変換
+                            target_date = target_date.astimezone(history.index.tzinfo)
+                    
                     if target_date in history.index:
-                        return history.loc[target_date]['Close']
+                        val = history.loc[target_date]['Close']
                     else:
                         # 休日などの場合は直近の営業日を探す
-                        return history.asof(target_date)['Close']
-                except:
+                        val = history.asof(target_date)
+                        if isinstance(val, pd.Series):
+                            val = val['Close']
+                    
+                    return float(val) if pd.notnull(val) else None
+                except Exception:
                     return None
 
             df_divs['Price'] = df_divs['Date'].apply(get_price)
