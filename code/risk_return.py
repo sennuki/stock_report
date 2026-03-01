@@ -66,14 +66,18 @@ def process_single_stock(symbol):
         
         for p in PERIOD_CONFIGS:
             key = p['key']
+            is_valid_period = True
             if p['days'] == "YTD":
                 # 年初来: その年の1月1日以降
                 sub = hist.filter(pl.col("Date") >= datetime(last_date.year, 1, 1))
                 if len(sub) < 5: sub = hist.tail(21)
             else:
                 sub = hist.tail(p['days'])
+                # 要求期間の80%以上のデータが存在しない場合は無効とする（上場直後の銘柄を長期グラフから除外）
+                if len(sub) < p['days'] * 0.8:
+                    is_valid_period = False
             
-            if len(sub) < 5:
+            if len(sub) < 5 or not is_valid_period:
                 results[f'HV_{key}'] = None
                 results[f'Ret_{key}'] = None
             else:

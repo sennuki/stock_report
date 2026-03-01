@@ -133,32 +133,44 @@ const { chartData, title, id, height = 450 } = Astro.props;
       if (name.includes('流動')) s.originalOrder = 1;
       else if (name.includes('固定')) s.originalOrder = 2;
       else if (name.includes('純資産')) s.originalOrder = 3;
-      else if (name.includes('配当')) s.originalOrder = 1;
-      else if (name.includes('自社株')) s.originalOrder = 2;
-// グループ割り当て (積み上げと並列を制御)
-if (name.includes('流動資産') || name.includes('固定資産')) s.group = 'assets';
-else if (name.includes('負債') || name.includes('純資産')) s.group = 'liabilities';
-else if (name.includes('配当') || name.includes('自社株')) s.group = 'payout';
-else if (name.includes('純利益')) s.group = 'net_income';
-else if (s.type === 'bar') {
-  // それ以外の棒グラフ（売上高、営業利益、各キャッシュフロー項目など）は
-  // シリーズ名をグループ名にすることで、独立した棒（並列表示）にする
-  s.group = name.replace(' (Q)', ''); 
-}
+      // ApexChartsの積み上げは配列の先頭が下になる。
+      // 現在のソートは b.originalOrder - a.originalOrder (降順) なので、
+      // originalOrder が大きい方が配列の先頭（＝下）になる。
+      // したがって配当金を下にするには、配当金の値を自社株より大きくする。
+      else if (name.includes('配当')) s.originalOrder = 2;
+      else if (name.includes('自社株')) s.originalOrder = 1;
 
-return s;
-});
+      // グループ割り当て (積み上げと並列を制御)
+      if (name.includes('流動資産') || name.includes('固定資産')) s.group = 'assets';
+      else if (name.includes('負債') || name.includes('純資産')) s.group = 'liabilities';
+      else if (name.includes('配当') || name.includes('自社株')) s.group = 'payout';
+      else if (name.includes('純利益')) {
+        // キャッシュフローグラフの場合は「net_income_cf」として左側に
+        // 損益計算書の場合は「net_income_is」として右側に配置するため識別
+        const isCFChart = data.some((os: any) => os.name && os.name.includes('営業CF'));
+        s.group = isCFChart ? 'net_income_cf' : 'net_income_is';
+      }
+      else if (s.type === 'bar') {
+        // それ以外の棒グラフ（売上高、営業利益、各キャッシュフロー項目など）は
+        // シリーズ名をグループ名にすることで、独立した棒（並列表示）にする
+        s.group = name.replace(' (Q)', ''); 
+      }
 
-// 積み上げ判定: 棒グラフがあれば基本Stackedを有効にする（グループ名で並列/積み上げを制御するため）
-const hasBar = allSeries.some(s => s.type === 'bar');
-const hasStacking = hasBar && !isScatterChart;
+      return s;
+    });
+
+    // 積み上げ判定: 棒グラフがあれば基本Stackedを有効にする（グループ名で並列/積み上げを制御するため）
+    const hasBar = allSeries.some((s: any) => s.type === 'bar');
+    const hasStacking = hasBar && !isScatterChart;
+
     // シリーズの並び替えロジック
     if (hasStacking) {
       allSeries.sort((a: any, b: any) => {
         // グループ間の並び順を詳細に定義
         const groupPriority: any = { 
-          'net_income': 5,  // 純利益を最優先（左端）にする
+          'net_income_cf': 5,  // CFの純利益は左端
           '売上高': 10, '売上総利益': 20, '営業利益': 30,
+          'net_income_is': 50, // ISの純利益は右側
           '営業CF': 10, '投資CF': 20, '財務CF': 30, 'フリーCF': 40,
           'assets': 10, 
           'payout': 60,
@@ -169,21 +181,28 @@ const hasStacking = hasBar && !isScatterChart;
         
         if (pA !== pB) return pA - pB;
         
-        // 2. 同一グループ内での積み上げ順 (originalOrder)
+        // 1.5 棒グラフ(bar)と折れ線(line)が混ざると積み上げが壊れるため、グラフタイプで分離する
+        if (a.type !== b.type) {
+          // barを先にする
+          if (a.type === 'bar') return -1;
+          if (b.type === 'bar') return 1;
+        }
+
+        // 2. 同一グループ・同一タイプ内での積み上げ順 (originalOrder)
         if (a.group === b.group) return b.originalOrder - a.originalOrder;
         
         return 0;
       });
     }
 
-    const initial = allSeries.filter((s) => data[s.originalIndex]?.visible !== false);
+    const initial = allSeries.filter((s: any) => data[s.originalIndex]?.visible !== false);
     if (initial.length === 0) return null;
 
     const cats = !isScatterChart ? (data[initial[0].originalIndex]?.x || []) : [];
 
     return {
       series: initial,
-      colors: initial.map(s => s.color),
+      colors: initial.map((s: any) => s.color),
       _fullSeries: allSeries,
       chart: {
         height: '100%',
@@ -197,7 +216,7 @@ const hasStacking = hasBar && !isScatterChart;
       },
       theme: { mode: isDark ? 'dark' : 'light' },
       xaxis: {
-        categories: isScatterChart ? undefined : cats,
+        categories: cats,
         type: isScatterChart ? 'numeric' : 'category',
         axisBorder: { show: false },
         min: isScatterChart ? 0 : undefined,
@@ -205,8 +224,8 @@ const hasStacking = hasBar && !isScatterChart;
       },
       yaxis: initial.map((s: any, i: number) => {
         const is2 = s.yaxisIndex === 1;
-        const f0 = initial.findIndex(fs => fs.yaxisIndex === 0);
-        const f1 = initial.findIndex(fs => fs.yaxisIndex === 1);
+        const f0 = initial.findIndex((fs: any) => fs.yaxisIndex === 0);
+        const f1 = initial.findIndex((fs: any) => fs.yaxisIndex === 1);
         return {
           seriesName: is2 ? (f1 !== -1 ? initial[f1].name : s.name) : (f0 !== -1 ? initial[f0].name : s.name),
           show: i === f0 || i === f1,
@@ -216,13 +235,13 @@ const hasStacking = hasBar && !isScatterChart;
         };
       }),
       grid: { borderColor: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)', strokeDashArray: 4, padding: { top: 20, right: 20, bottom: 10, left: 20 } },
-      stroke: { width: initial.map(s => s.type === 'line' ? 3 : (s.type === 'scatter' ? 1 : 0)), curve: 'smooth' },
+      stroke: { width: initial.map((s: any) => s.type === 'line' ? 3 : (s.type === 'scatter' ? 1 : 0)), curve: 'smooth' },
       markers: { 
-        size: initial.map(s => s.type === 'line' ? 4 : (s.type === 'scatter' ? (s.name.includes('対象')?10:6) : 0)),
-        strokeWidth: initial.map(s => (s.type === 'scatter' && !s.name.toLowerCase().includes('銘柄') && !s.name.toLowerCase().includes('s&p 500') && !s.name.toLowerCase().includes('セクター')) ? 0 : 2),
+        size: initial.map((s: any) => s.type === 'line' ? 4 : (s.type === 'scatter' ? (s.name.includes('対象')?10:6) : 0)),
+        strokeWidth: initial.map((s: any) => (s.type === 'scatter' && !s.name.toLowerCase().includes('銘柄') && !s.name.toLowerCase().includes('s&p 500') && !s.name.toLowerCase().includes('セクター')) ? 0 : 2),
         strokeColors: '#fff'
       },
-      fill: { opacity: initial.map(s => s.type === 'scatter' ? 0.8 : 1) },
+      fill: { opacity: initial.map((s: any) => s.type === 'scatter' ? 0.8 : 1) },
       tooltip: {
         shared: !isScatterChart,
         custom: isScatterChart ? ({ seriesIndex, dataPointIndex, w }: any) => {
@@ -234,7 +253,7 @@ const hasStacking = hasBar && !isScatterChart;
           return formatYValue(v, s?.yaxisIndex === 1);
         }}
       },
-      legend: { position: 'top', offsetY: -10, customLegendItems: Array.from(new Set(initial.map(s => s.name))) }
+      legend: { position: 'top', offsetY: -10, customLegendItems: Array.from(new Set(initial.map((s: any) => s.name))) }
     };
   }
 
