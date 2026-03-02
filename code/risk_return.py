@@ -167,6 +167,15 @@ def generate_scatter_fig(df_metrics, target_symbol, sector_etf_symbol):
             raw_max_y = q3_y + iqr_y * 1.5
             raw_min_y = q1_y - iqr_y * 1.5
             
+            # ターゲット銘柄とセクターETF、指数の値も考慮に入れる（これらが外枠を広げるように）
+            special_symbols = [target_symbol, sector_etf_symbol, '^GSPC']
+            df_special = df_p.filter(pl.col('Symbol').is_in(special_symbols))
+            if not df_special.is_empty():
+                target_max_y = df_special[ret_col].max()
+                target_min_y = df_special[ret_col].min()
+                if target_max_y is not None: raw_max_y = max(raw_max_y, target_max_y * 1.1)
+                if target_min_y is not None: raw_min_y = min(raw_min_y, target_min_y * 1.1)
+
             # X軸 (下限0.0固定)
             # ステップを算出して綺麗な倍数に切り上げ (5分割を想定)
             step_x = 0.1 # 10%
@@ -193,9 +202,11 @@ def generate_scatter_fig(df_metrics, target_symbol, sector_etf_symbol):
             ticks = max(5, ticks)
             max_y = min_y + ticks * step_y
             
-            # ただし、グラフが潰れないように最大500% (5.0) でキャップする
-            if max_y > 5.0:
-                max_y = 5.0
+            # グラフが潰れないようにキャップする
+            # 1ヶ月(1M)の場合は最大2000%(20.0)まで動的に許容し、それ以外は500%(5.0)でキャップする
+            cap_y = 20.0 if key == "1M" else 5.0
+            if max_y > cap_y:
+                max_y = cap_y
                 
             # X軸も同様に極端な値をキャップ (最大でも300% (3.0)程度で十分)
             if max_x > 3.0:

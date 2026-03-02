@@ -96,9 +96,11 @@ const { chartData, title, id, height = 450 } = Astro.props;
 
           let xaxisOptions: any = isScatter ? { type: 'numeric', categories: [] } : { categories: cats, type: 'category' };
           const xRange = getRange(layoutUpdate, 'xaxis');
-          if (isScatter && xRange) {
-             xaxisOptions.min = xRange[0];
-             xaxisOptions.max = xRange[1];
+          if (isScatter) {
+             const allX = filtered.flatMap((s:any) => s.data.map((p:any) => p.x));
+             xaxisOptions.min = 0;
+             // Python側で計算されたxRange[1]（最大リスクのクリップ値）を優先
+             xaxisOptions.max = xRange ? xRange[1] : (allX.length > 0 ? Math.max(...allX) : undefined);
           }
 
           const yRange = getRange(layoutUpdate, 'yaxis');
@@ -107,6 +109,16 @@ const { chartData, title, id, height = 450 } = Astro.props;
             series: filtered,
             colors: filtered.map((s: any) => s.color),
             xaxis: xaxisOptions,
+            annotations: isScatter ? {
+              position: 'back',
+              yaxis: [{
+                y: 0,
+                borderColor: isDark ? 'rgba(156, 163, 175, 0.4)' : 'rgba(107, 114, 128, 0.4)',
+                strokeDashArray: 0,
+                borderWidth: 2,
+                label: { show: false }
+              }]
+            } : { yaxis: [] },
             yaxis: filtered.map((s: any, i: number) => {
               const is2 = s.yaxisIndex === 1;
               const first0 = filtered.findIndex((fs:any) => fs.yaxisIndex === 0);
@@ -117,9 +129,19 @@ const { chartData, title, id, height = 450 } = Astro.props;
                 opposite: is2,
                 labels: { formatter: (v: any) => formatYValue(v, is2 || isScatter), style: { colors: isDark ? '#9ca3af' : '#6b7280' } }
               };
-              if (isScatter && !is2 && yRange) {
-                 yAxisOpt.min = yRange[0];
-                 yAxisOpt.max = yRange[1];
+              if (isScatter && !is2) {
+                 const allY = filtered.flatMap((s:any) => s.data.map((p:any) => p.y));
+                 const dataMinY = allY.length > 0 ? Math.min(...allY) : 0;
+                 const dataMaxY = allY.length > 0 ? Math.max(...allY) : 0.2;
+
+                 // yRange[0]（Python側で算出された下限）を信頼。
+                 // -1.0 (-100%) との小さい方を採用し、データの最小値も考慮。
+                 yAxisOpt.min = yRange ? Math.min(yRange[0], -1.0) : Math.min(dataMinY, -1.0);
+                 // Python側で算出された上限（クリップ値）を優先。
+                 yAxisOpt.max = yRange ? yRange[1] : dataMaxY;
+                 
+                 yAxisOpt.forceNiceScale = false;
+                 yAxisOpt.tickAmount = 8;
               }
               return yAxisOpt;
             })
@@ -133,7 +155,7 @@ const { chartData, title, id, height = 450 } = Astro.props;
   function transformPlotlyToApex(plotlyData: any, isDark: boolean) {
     const data = plotlyData.data || [];
     const layout = plotlyData.layout || {};
-    const isScatterChart = data.some((d: any) => d.type === 'scatter' && d.mode === 'markers');
+    const isScatterChart = data.some((d: any) => d.type === 'scatter' && d.mode && d.mode.includes('markers'));
 
     const getRange = (obj: any, axis: string) => {
       if (!obj) return null;
@@ -257,8 +279,8 @@ const { chartData, title, id, height = 450 } = Astro.props;
         categories: cats,
         type: isScatterChart ? 'numeric' : 'category',
         axisBorder: { show: false },
-        min: isScatterChart ? (xRange ? xRange[0] : 0) : undefined,
-        max: isScatterChart ? (xRange ? xRange[1] : undefined) : undefined,
+        min: isScatterChart ? 0 : undefined,
+        max: isScatterChart ? (xRange ? xRange[1] : (initial.length > 0 ? Math.max(...initial.flatMap((s:any) => s.data.map((p:any) => p.x))) : undefined)) : undefined,
         labels: { formatter: isScatterChart ? (v:any)=>(parseFloat(v)*100).toFixed(0)+'%' : undefined }
       },
       yaxis: initial.map((s: any, i: number) => {
@@ -266,9 +288,15 @@ const { chartData, title, id, height = 450 } = Astro.props;
         const f0 = initial.findIndex((fs: any) => fs.yaxisIndex === 0);
         const f1 = initial.findIndex((fs: any) => fs.yaxisIndex === 1);
         let minVal, maxVal;
-        if (isScatterChart && !is2 && yRange) {
-           minVal = yRange[0];
-           maxVal = yRange[1];
+        if (isScatterChart && !is2) {
+           const allY = initial.flatMap((series:any) => series.data.map((p:any) => p.y));
+           const dataMinY = allY.length > 0 ? Math.min(...allY) : 0;
+           const dataMaxY = allY.length > 0 ? Math.max(...allY) : 0.2;
+           
+           // Python側で算出された下限と -100% を考慮
+           minVal = yRange ? Math.min(yRange[0], -1.0) : Math.min(dataMinY, -1.0);
+           // Python側で算出された上限（クリップ値）を優先。
+           maxVal = yRange ? yRange[1] : dataMaxY;
         }
         return {
           seriesName: is2 ? (f1 !== -1 ? initial[f1].name : s.name) : (f0 !== -1 ? initial[f0].name : s.name),
@@ -276,15 +304,27 @@ const { chartData, title, id, height = 450 } = Astro.props;
           opposite: is2,
           min: minVal,
           max: maxVal,
+          forceNiceScale: false,
+          tickAmount: isScatterChart ? 8 : undefined,
           title: { text: i === f0 ? (layout.yaxis?.title?.text || '') : (i === f1 ? (layout.yaxis2?.title?.text || '') : '') },
           labels: { formatter: (v: any) => formatYValue(v, is2 || isScatterChart) }
         };
       }),
+      annotations: isScatterChart ? {
+        position: 'back',
+        yaxis: [{
+          y: 0,
+          borderColor: isDark ? 'rgba(156, 163, 175, 0.4)' : 'rgba(107, 114, 128, 0.4)',
+          strokeDashArray: 0,
+          borderWidth: 2,
+          label: { show: false }
+        }]
+      } : undefined,
       grid: { borderColor: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)', strokeDashArray: 4, padding: { top: 20, right: 20, bottom: 10, left: 20 } },
       stroke: { width: initial.map((s: any) => s.type === 'line' ? 3 : (s.type === 'scatter' ? 1 : 0)), curve: 'smooth' },
       markers: { 
-        size: initial.map((s: any) => s.type === 'line' ? 4 : (s.type === 'scatter' ? (s.name.includes('対象')?10:6) : 0)),
-        strokeWidth: initial.map((s: any) => (s.type === 'scatter' && !s.name.toLowerCase().includes('銘柄') && !s.name.toLowerCase().includes('s&p 500') && !s.name.toLowerCase().includes('セクター')) ? 0 : 2),
+        size: initial.map((s: any) => s.type === 'line' ? 4 : (s.type === 'scatter' ? (s.name.includes('対象')?10:(s.name.includes('S&P 500') && !s.name.includes('銘柄')?8:(s.name.includes('セクター')?8:4))) : 0)),
+        strokeWidth: initial.map((s: any) => (s.type === 'scatter' && (s.name.includes('対象') || s.name.includes('セクター') || (s.name.includes('S&P 500') && !s.name.includes('銘柄')))) ? 2 : 0),
         strokeColors: '#fff'
       },
       fill: { opacity: initial.map((s: any) => s.type === 'scatter' ? 0.8 : 1) },
