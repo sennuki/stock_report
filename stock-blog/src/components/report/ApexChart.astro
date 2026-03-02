@@ -10,13 +10,13 @@ const { chartData, title, id, height = 450 } = Astro.props;
 ---
 
 <div 
-  class="apex-chart-wrapper my-16" 
+  class="apex-chart-wrapper mt-24 mb-8 bg-transparent" 
   data-chart={JSON.stringify(chartData)}
   data-symbol={chartData.symbol}
 >
-  {title && <h3 class="text-xl font-bold mb-8">{title}</h3>}
+  {title && <h3 class="text-2xl font-bold mb-8">{title}</h3>}
   <div class="chart-controls flex justify-center gap-2 mb-8"></div>
-  <div id={id} class="apex-graph-div" style={`height: ${height}px;`}></div>
+  <div id={id} class="apex-graph-div w-full" style={`min-height: ${height}px;`}></div>
 </div>
 
 <script>
@@ -73,14 +73,14 @@ const { chartData, title, id, height = 450 } = Astro.props;
     plotlyData.layout.updatemenus[0].buttons.forEach((btn: any, btnIdx: number) => {
       const button = document.createElement('button');
       button.textContent = btn.label;
-      button.className = `px-4 py-1.5 text-sm font-medium rounded-md border transition-colors ${btnIdx === 0 ? 'bg-skin-accent text-white border-skin-accent' : 'bg-skin-fill text-skin-base border-skin-line hover:border-skin-accent'}`;
+      button.className = `px-4 py-1.5 text-sm font-medium rounded-md border transition-colors ${btnIdx === 0 ? 'bg-foreground text-white border-foreground' : 'bg-background text-foreground border-border hover:border-accent'}`;
       
       button.onclick = () => {
         controlsContainer.querySelectorAll('button').forEach(b => {
-          b.classList.remove('bg-skin-accent', 'text-white', 'border-skin-accent');
-          b.classList.add('bg-skin-fill', 'text-skin-base', 'border-skin-line');
+          b.classList.remove('bg-foreground', 'text-white', 'border-foreground');
+          b.classList.add('bg-background', 'text-foreground', 'border-border');
         });
-        button.classList.add('bg-skin-accent', 'text-white', 'border-skin-accent');
+        button.classList.add('bg-foreground', 'text-white', 'border-foreground');
 
         if (btn.args && btn.args[0] && (btn.args[0].visible || btn.args[0].method === 'update')) {
           const visMask = btn.args[0].visible;
@@ -322,6 +322,13 @@ const { chartData, title, id, height = 450 } = Astro.props;
            minVal = yRange ? Math.min(yRange[0], -1.0) : Math.min(dataMinY, -1.0);
            // Python側で算出された上限（クリップ値）を優先。
            maxVal = yRange ? yRange[1] : dataMaxY;
+        } else {
+           const axisSeries = initial.filter((fs: any) => fs.yaxisIndex === s.yaxisIndex);
+           const allY = axisSeries.flatMap((series: any) => series.data.map((val:any) => Number(val) || 0));
+           const dataMinY = allY.length > 0 ? Math.min(...allY) : 0;
+           if (dataMinY >= 0 && (!yRange || yRange[0] >= 0)) {
+               minVal = 0;
+           }
         }
         return {
           seriesName: is2 ? (f1 !== -1 ? initial[f1].name : s.name) : (f0 !== -1 ? initial[f0].name : s.name),
@@ -345,7 +352,7 @@ const { chartData, title, id, height = 450 } = Astro.props;
           label: { show: false }
         }]
       } : undefined,
-      grid: { borderColor: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)', strokeDashArray: 4, padding: { top: 20, right: 20, bottom: 10, left: 20 } },
+      grid: { borderColor: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)', strokeDashArray: 4, padding: { top: 20, right: 20, bottom: 0, left: 20 } },
       stroke: { width: initial.map((s: any) => s.type === 'line' ? 3 : (s.type === 'scatter' ? 1 : 0)), curve: 'smooth' },
       markers: { 
         size: initial.map((s: any) => s.type === 'line' ? 4 : (s.type === 'scatter' ? (s.name.includes('対象')?10:(s.name.includes('S&P 500') && !s.name.includes('銘柄')?8:(s.name.includes('セクター')?8:4))) : 0)),
@@ -360,7 +367,7 @@ const { chartData, title, id, height = 450 } = Astro.props;
           const xVal = p.origX !== undefined ? p.origX : p.x;
           const yVal = p.origY !== undefined ? p.origY : p.y;
           const symbol = p.customText || p.symbol || s.name;
-          return `<div class="p-2 bg-skin-fill border border-skin-line rounded shadow-lg text-skin-base"><div class="font-bold border-b border-skin-line mb-1">${symbol}</div><div>リスク: ${(xVal * 100).toFixed(1)}%</div><div>リターン: ${(yVal * 100).toFixed(1)}%</div></div>`;
+          return `<div class="p-2 bg-background border border-border rounded shadow-lg text-foreground"><div class="font-bold border-b border-border mb-1">${symbol}</div><div>リスク: ${(xVal * 100).toFixed(1)}%</div><div>リターン: ${(yVal * 100).toFixed(1)}%</div></div>`;
         } : undefined,
         y: { formatter: (v: any, { seriesIndex, w }: any) => {
           const s = w.config.series[seriesIndex];
@@ -375,13 +382,3 @@ const { chartData, title, id, height = 450 } = Astro.props;
   const themeObserver = new MutationObserver(initApexCharts);
   themeObserver.observe(document.documentElement, { attributes: true });
 </script>
-
-<style>
-  .apex-graph-div { width: 100%; }
-  .apex-chart-wrapper {
-    background: rgba(var(--color-fill), 0.05);
-    border-radius: 0.75rem;
-    padding: 1.5rem;
-    border: 1px solid rgba(var(--color-line), 0.1);
-  }
-</style>
