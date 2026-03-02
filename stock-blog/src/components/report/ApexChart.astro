@@ -155,7 +155,8 @@ const { chartData, title, id, height = 450 } = Astro.props;
   function transformPlotlyToApex(plotlyData: any, isDark: boolean) {
     const data = plotlyData.data || [];
     const layout = plotlyData.layout || {};
-    const isScatterChart = data.some((d: any) => d.type === 'scatter' && d.mode && d.mode.includes('markers'));
+    // 棒グラフ（bar）を含まず、かつマーカー（markers）を含む場合のみ散布図とみなす
+    const isScatterChart = data.some((d: any) => d.type === 'scatter' && d.mode && d.mode.includes('markers')) && !data.some((d: any) => d.type === 'bar');
 
     const getRange = (obj: any, axis: string) => {
       if (!obj) return null;
@@ -168,7 +169,8 @@ const { chartData, title, id, height = 450 } = Astro.props;
     const allSeries = data.map((d: any, idx: number) => {
       const name = d.name || '';
       const isRatio = name.includes('率') || name.includes('性向');
-      const type = isScatterChart ? 'scatter' : (isRatio ? 'line' : (d.type === 'bar' ? 'bar' : 'line'));
+      // 棒グラフ（bar）は常に棒グラフとして扱う。それ以外は散布図判定に従う。
+      const type = (d.type === 'bar') ? 'bar' : (isScatterChart ? 'scatter' : (isRatio ? 'line' : (d.type === 'bar' ? 'bar' : 'line')));
       
       const s: any = {
         name: name,
@@ -279,11 +281,34 @@ const { chartData, title, id, height = 450 } = Astro.props;
         categories: cats,
         type: isScatterChart ? 'numeric' : 'category',
         axisBorder: { show: false },
-        min: isScatterChart ? 0 : undefined,
         max: isScatterChart ? (xRange ? xRange[1] : (initial.length > 0 ? Math.max(...initial.flatMap((s:any) => s.data.map((p:any) => p.x))) : undefined)) : undefined,
         labels: { formatter: isScatterChart ? (v:any)=>(parseFloat(v)*100).toFixed(0)+'%' : undefined }
       },
+      dataLabels: {
+        enabled: !isScatterChart,
+        formatter: (v: any, { seriesIndex, w }: any) => {
+          const s = w.config.series[seriesIndex];
+          // 折れ線グラフ（line）の場合は数値を表示しない
+          if (s?.type === 'line') return '';
+          return formatYValue(v, s?.yaxisIndex === 1);
+        },
+        style: {
+          fontSize: '10px',
+          colors: ['#fff']
+        },
+        background: {
+          enabled: true,
+          foreColor: '#fff',
+          padding: 3,
+          borderRadius: 2,
+          borderWidth: 0,
+          opacity: 0.1,
+          color: '#000'
+        },
+        dropShadow: { enabled: false }
+      },
       yaxis: initial.map((s: any, i: number) => {
+
         const is2 = s.yaxisIndex === 1;
         const f0 = initial.findIndex((fs: any) => fs.yaxisIndex === 0);
         const f1 = initial.findIndex((fs: any) => fs.yaxisIndex === 1);
