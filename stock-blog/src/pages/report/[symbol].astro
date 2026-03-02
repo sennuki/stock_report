@@ -30,7 +30,9 @@ if (fs.existsSync(jsonPath)) {
     day: "numeric",
   }).format(stats.mtime);
 
-  const content = fs.readFileSync(jsonPath, "utf-8");
+  let content = fs.readFileSync(jsonPath, "utf-8");
+  // Fix invalid JSON produced by Python's json.dump (NaN to null)
+  content = content.replace(/\bNaN\b/g, "null");
   reportData = JSON.parse(content);
 }
 

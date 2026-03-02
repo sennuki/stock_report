@@ -129,7 +129,14 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir):
 
     # 2. Risk Return Chart
     try:
-        fig_rr = risk_return.generate_scatter_fig(df_metrics, chart_target_symbol, sector_etf_ticker)
+        # Join df_info to df_metrics to add Security column for hover tooltips
+        df_metrics_with_name = df_metrics.join(
+            df_info.select(["Symbol_YF", "Security"]), 
+            left_on="Symbol", 
+            right_on="Symbol_YF", 
+            how="left"
+        )
+        fig_rr = risk_return.generate_scatter_fig(df_metrics_with_name, chart_target_symbol, sector_etf_ticker)
         report_data["charts"]["risk_return"] = fig_to_dict(fig_rr)
     except Exception as e:
         print(f"Error generating risk-return for {ticker_display}: {e}")

@@ -226,10 +226,11 @@ def generate_scatter_fig(df_metrics, target_symbol, sector_etf_symbol):
             clipped_x = [min(max_x, max(min_x, val)) if val is not None else None for val in orig_x]
             clipped_y = [min(max_y, max(min_y, val)) if val is not None else None for val in orig_y]
             
-            cdata = [[ox, oy, t] for ox, oy, t in zip(orig_x, orig_y, txt)]
+            sec = df["Security"].to_list() if "Security" in df.columns else [""] * len(txt)
+            cdata = [[ox, oy, t, s] for ox, oy, t, s in zip(orig_x, orig_y, txt, sec)]
             return clipped_x, clipped_y, cdata, txt
 
-        hovertemplate_str = "<b>%{customdata[2]}</b><br>リスク: %{customdata[0]:.1%}<br>リターン: %{customdata[1]:.1%}<extra></extra>"
+        hovertemplate_str = "<b>%{customdata[2]}</b><br>%{customdata[3]}<br>リスク: %{customdata[0]:.1%}<br>リターン: %{customdata[1]:.1%}<extra></extra>"
 
         # 1. その他
         df_others = df_p.filter(~pl.col('Symbol').is_in([target_symbol, '^GSPC', sector_etf_symbol]))
@@ -254,6 +255,7 @@ def generate_scatter_fig(df_metrics, target_symbol, sector_etf_symbol):
             x, y, cdata, _ = get_data(df_sp500_idx)
             for cd in cdata:
                 cd[2] = 'S&P 500'
+                cd[3] = 'S&P 500 Index'
             fig.add_trace(go.Scatter(x=x, y=y, customdata=cdata, text=['S&P 500'], mode='markers+text', textposition="top center", name='S&P 500',
                                     hovertemplate=hovertemplate_str,
                                     marker=dict(size=12, color='black', symbol='star'), visible=visible))
