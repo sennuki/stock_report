@@ -267,7 +267,7 @@ const { chartData, title, id, height = 450 } = Astro.props;
       if (name.includes('流動資産') || name.includes('固定資産')) s.group = 'assets';
       else if (name.includes('負債') || name.includes('純資産')) s.group = 'liabilities';
       else if (name.includes('配当') || name.includes('自社株')) s.group = 'payout';
-      else if (name.includes('純利益')) {
+      else if (name.includes('純利益') && !isRatio) {
         // キャッシュフローグラフの場合は「net_income_cf」として左側に
         // 損益計算書の場合は「net_income_is」として右側に配置するため識別
         const isCFChart = data.some((os: any) => os.name && os.name.includes('営業CF'));
@@ -312,9 +312,12 @@ const { chartData, title, id, height = 450 } = Astro.props;
         }
 
         // 2. 同一グループ・同一タイプ内での積み上げ順 (originalOrder)
-        if (a.group === b.group) return b.originalOrder - a.originalOrder;
+        if (a.group === b.group && a.originalOrder !== b.originalOrder) {
+          return b.originalOrder - a.originalOrder;
+        }
         
-        return 0;
+        // フォールバック: 元のインデックス順を保持
+        return a.originalIndex - b.originalIndex;
       });
     }
 
@@ -447,3 +450,44 @@ const { chartData, title, id, height = 450 } = Astro.props;
   const themeObserver = new MutationObserver(initApexCharts);
   themeObserver.observe(document.documentElement, { attributes: true });
 </script>
+
+<style is:global>
+  /* 損益計算書のレジェンドを「金額グループ」と「比率グループ」に分ける */
+  #chart-is .apexcharts-legend {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important; /* 両方のグループを中央揃え */
+    align-items: center !important;
+    width: 100% !important;
+    padding-bottom: 12px !important;
+    gap: 8px 16px !important;
+  }
+  
+  /* 各項目の文字が切れたり縦並びにならないようにする */
+  #chart-is .apexcharts-legend-series {
+    margin: 0 !important; 
+    display: flex !important;
+    align-items: center !important;
+    white-space: nowrap !important; 
+  }
+
+  #chart-is .apexcharts-legend-text {
+    white-space: nowrap !important;
+  }
+
+  /* 
+   * flexboxで中央揃えを維持したまま、4番目と5番目の間で強制的に改行させる
+   * 透明な全幅の要素を疑似要素で作って、orderを使って4番目(金額)の直後に配置する
+   */
+  #chart-is .apexcharts-legend::before {
+    content: "" !important;
+    display: block !important;
+    width: 100% !important;
+    order: 4 !important; /* 4番目の直後に配置 */
+  }
+
+  /* 5番目以降（比率グループ）を改行要素(order:4)より後に配置するためのorder設定 */
+  #chart-is .apexcharts-legend-series:nth-child(n+5) {
+    order: 5 !important;
+  }
+</style>
