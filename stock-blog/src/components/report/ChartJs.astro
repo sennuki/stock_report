@@ -1,0 +1,399 @@
+---
+interface Props {
+  chartData: any;
+  title?: string;
+  id: string;
+  height?: number;
+}
+
+const { chartData, title, id, height = 450 } = Astro.props;
+---
+
+<div 
+  class="chartjs-wrapper mt-24 mb-8 bg-transparent" 
+  data-chart={JSON.stringify(chartData)}
+  data-symbol={chartData.symbol}
+>
+  {title && <h3 class="text-2xl font-bold mb-8 text-foreground">{title}</h3>}
+  <div class="chart-controls flex justify-center gap-2 mb-8"></div>
+  <div class="chartjs-graph-div w-full relative" style={`height: ${height}px;`}>
+    <canvas id={id}></canvas>
+  </div>
+</div>
+
+<script>
+  import Chart from 'chart.js/auto';
+
+  function getThemeColors() {
+    const html = document.documentElement;
+    const isDark = html.classList.contains('dark') || html.getAttribute('data-theme') === 'dark';
+    return {
+      isDark,
+      textColor: isDark ? '#e5e7eb' : '#1f2937', 
+      gridColor: isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.1)'
+    };
+  }
+
+  function applyThemeToChart(chart: any) {
+    const { textColor, gridColor, isDark } = getThemeColors();
+    chart.options.color = textColor;
+    if (chart.options.scales.x) {
+      chart.options.scales.x.ticks.color = textColor;
+      chart.options.scales.x.grid.color = gridColor;
+    }
+    if (chart.options.scales.y) {
+      chart.options.scales.y.ticks.color = textColor;
+      chart.options.scales.y.grid.color = (ctx: any) => 
+        ctx.tick?.value === 0 ? (isDark ? 'rgba(229, 231, 235, 0.4)' : 'rgba(31, 41, 55, 0.4)') : gridColor;
+    }
+    if (chart.options.scales.y1) chart.options.scales.y1.ticks.color = textColor;
+    if (chart.options.plugins.legend && chart.options.plugins.legend.labels) {
+      chart.options.plugins.legend.labels.color = textColor;
+    }
+    chart.update('none');
+  }
+
+  function initChartJs() {
+    const { textColor } = getThemeColors();
+    Chart.defaults.color = textColor;
+
+    document.querySelectorAll('.chartjs-graph-div canvas').forEach(canvas => {
+      const chartInstance = (canvas as any)._chart_instance;
+      if ((canvas as any)._chart_initialized && chartInstance) {
+        applyThemeToChart(chartInstance);
+        return;
+      }
+      const container = canvas.closest('.chartjs-graph-div') as HTMLElement;
+      const wrapper = container.closest('.chartjs-wrapper') as HTMLElement;
+      if (!wrapper) return;
+      const chartData = JSON.parse(wrapper.dataset.chart || '{}');
+      renderChartJs(wrapper, canvas as HTMLCanvasElement, chartData);
+      (canvas as any)._chart_initialized = true;
+    });
+  }
+
+  function renderChartJs(wrapper: HTMLElement, canvas: HTMLCanvasElement, plotlyData: any) {
+    if (!plotlyData || !plotlyData.data) return;
+    const { isDark, textColor, gridColor } = getThemeColors();
+    const config = transformPlotlyToChartJs(plotlyData, isDark, textColor, gridColor);
+    if (!config) return;
+    if ((canvas as any)._chart_instance) (canvas as any)._chart_instance.destroy();
+    const chart = new Chart(canvas, config as any);
+    (canvas as any)._chart_instance = chart;
+    setupControls(wrapper, chart, plotlyData);
+  }
+
+  function formatYValueAbbreviated(v: any, isPercent: boolean) {
+    if (v === null || v === undefined || isNaN(v)) return '';
+    if (isPercent) return (parseFloat(v) * 100).toFixed(0) + '%';
+    const absV = Math.abs(v);
+    if (absV >= 1e12) return (v / 1e12).toFixed(1) + 'T';
+    if (absV >= 1e9) return (v / 1e9).toFixed(1) + 'B';
+    if (absV >= 1e6) return (v / 1e6).toFixed(1) + 'M';
+    return v.toLocaleString();
+  }
+
+  function formatYValueMillions(v: any, isPercent: boolean) {
+    if (v === null || v === undefined || isNaN(v)) return '';
+    if (isPercent) return (parseFloat(v) * 100).toFixed(1) + '%';
+    const absV = Math.abs(v);
+    if (absV > 0 && absV < 100000) return v.toLocaleString();
+    return Math.round(v / 1e6).toLocaleString() + 'M';
+  }
+
+  function setupControls(wrapper: HTMLElement, chart: any, plotlyData: any) {
+    const controlsContainer = wrapper.querySelector('.chart-controls');
+    if (!controlsContainer || !plotlyData.layout?.updatemenus) return;
+    controlsContainer.innerHTML = '';
+    const isScatterChart = chart.config.type === 'scatter';
+
+    const updateChartData = (btn: any) => {
+      if (btn.args && btn.args[0]) {
+        const visMask = btn.args[0].visible; 
+        if (!chart._userHiddenLabels) chart._userHiddenLabels = new Set();
+        chart.data.datasets.forEach((ds: any, idx: number) => {
+          const originalIdx = ds.originalIndex;
+          const isPeriodVisible = visMask ? (visMask[originalIdx] === true) : true;
+          const isUserHidden = chart._userHiddenLabels.has(ds.label);
+          ds._periodVisible = isPeriodVisible;
+          chart.setDatasetVisibility(idx, isPeriodVisible && !isUserHidden);
+        });
+
+        const firstVisibleIdx = chart.data.datasets.findIndex((ds:any) => ds._periodVisible);
+        if (!isScatterChart && firstVisibleIdx !== -1) {
+          const ds = chart.data.datasets[firstVisibleIdx];
+          const originalDataSeries = plotlyData.data[ds.originalIndex];
+          if (originalDataSeries && originalDataSeries.x) chart.data.labels = originalDataSeries.x;
+        }
+
+        if (isScatterChart) {
+          const visibleDatasets = chart.data.datasets.filter((ds: any, i: number) => chart.isDatasetVisible(i));
+          if (visibleDatasets.length > 0) {
+            const yValues = visibleDatasets.flatMap((ds: any) => ds.data.map((p: any) => p.y)).filter(v => v !== null && !isNaN(v));
+            if (yValues.length > 0 && chart.options.scales.y) {
+              const minV = Math.min(...yValues);
+              const maxV = Math.max(...yValues);
+              const range = maxV - minV;
+              const padding = range === 0 ? Math.abs(maxV) * 0.05 || 0.01 : range * 0.05;
+              chart.options.scales.y.min = minV - padding;
+              chart.options.scales.y.max = maxV + padding;
+            }
+            if (chart.options.scales.x) {
+              const xValues = visibleDatasets.flatMap((ds: any) => ds.data.map((p: any) => p.x)).filter(v => v !== null && !isNaN(v));
+              if (xValues.length > 0) {
+                const minX = Math.min(...xValues);
+                const maxX = Math.max(...xValues);
+                const rangeX = maxX - minX;
+                const paddingX = rangeX === 0 ? Math.abs(maxX) * 0.05 || 0.01 : rangeX * 0.05;
+                chart.options.scales.x.min = minX - paddingX;
+                chart.options.scales.x.max = maxX + paddingX;
+              }
+            }
+          }
+        } else if (chart.options.scales.y) {
+          chart.options.scales.y.min = undefined;
+          chart.options.scales.y.max = undefined;
+        }
+        chart.update();
+      }
+    };
+
+    const select = document.createElement('select');
+    select.className = "sm:hidden px-4 py-2 text-sm font-medium rounded-md border bg-background text-foreground border-border outline-none focus:ring-2 focus:ring-accent w-[200px] text-center mb-4";
+    const btnGroup = document.createElement('div');
+    btnGroup.className = "hidden sm:flex justify-center flex-wrap gap-2 mb-4";
+    const buttons: HTMLButtonElement[] = [];
+    let activeIdx = 0;
+    plotlyData.layout.updatemenus[0].buttons.forEach((btn: any, btnIdx: number) => {
+      const isVisibleArr = btn.args && btn.args[0] && btn.args[0].visible;
+      if (isVisibleArr) {
+        const matches = isVisibleArr.every((v: any, i: number) => (v === true) === (plotlyData.data[i]?.visible !== false));
+        if (matches) activeIdx = btnIdx;
+      }
+      const option = document.createElement('option');
+      option.value = btnIdx.toString();
+      option.textContent = btn.label;
+      select.appendChild(option);
+      const button = document.createElement('button');
+      button.textContent = btn.label;
+      button.className = `px-4 py-1.5 text-sm font-medium rounded-md border transition-colors bg-background text-foreground border-border hover:border-accent`;
+      buttons.push(button);
+      btnGroup.appendChild(button);
+      button.onclick = () => {
+        select.value = btnIdx.toString();
+        buttons.forEach(b => {
+          b.classList.remove('bg-foreground', 'text-white', 'border-foreground');
+          b.classList.add('bg-background', 'text-foreground', 'border-border');
+        });
+        button.classList.add('bg-foreground', 'text-white', 'border-foreground');
+        updateChartData(btn);
+      };
+    });
+    select.onchange = (e) => buttons[parseInt((e.target as HTMLSelectElement).value, 10)].click();
+    if (buttons[activeIdx]) {
+      buttons[activeIdx].classList.add('bg-foreground', 'text-white', 'border-foreground');
+      select.value = activeIdx.toString();
+    }
+    const selectWrapper = document.createElement('div');
+    selectWrapper.className = "w-full flex justify-center sm:hidden";
+    selectWrapper.appendChild(select);
+    controlsContainer.appendChild(selectWrapper);
+    controlsContainer.appendChild(btnGroup);
+  }
+
+  function transformPlotlyToChartJs(plotlyData: any, isDark: boolean, textColor: string, gridColor: string) {
+    const data = plotlyData.data || [];
+    const layout = plotlyData.layout || {};
+    const isScatterChart = data.some((d: any) => d.type === 'scatter' && d.mode && d.mode.includes('markers')) && !data.some((d: any) => d.type === 'bar');
+
+    const allSeries = data.map((d: any, idx: number) => {
+      const name = d.name || '';
+      const isRatio = name.includes('率') || name.includes('性向');
+      const type = (d.type === 'bar') ? 'bar' : (isScatterChart ? 'scatter' : (isRatio ? 'line' : 'line'));
+      let baseColor = d.marker?.color || d.line?.color || (isDark ? '#ff6b01' : '#006cac');
+      if (isScatterChart && name.includes('S&P') && !name.includes('銘柄')) baseColor = '#22c55e';
+
+      const s: any = {
+        label: name,
+        type: type,
+        yAxisID: isRatio ? 'y1' : (d.yaxis === 'y2' ? 'y1' : 'y'),
+        originalIndex: idx,
+        hidden: d.visible === false,
+        _periodVisible: d.visible !== false,
+        backgroundColor: baseColor,
+        borderColor: baseColor,
+        borderWidth: type === 'line' ? 2 : (type === 'scatter' ? 1 : 0),
+        pointRadius: type === 'line' ? 4 : (type === 'scatter' ? (name.includes('対象')?9:(name.includes('S&P') && !name.includes('銘柄')?7:(name.includes('セクター')?7:2.5))) : 0),
+        pointBorderWidth: (type === 'scatter' && (name.includes('対象') || name.includes('セクター') || (name.includes('S&P') && !name.includes('銘柄')))) ? 2 : 0,
+        pointBorderColor: '#fff',
+        pointStyle: d.marker?.symbol === 'diamond' ? 'rectRot' : ( (name.includes('S&P') && !name.includes('銘柄')) ? 'triangle' : 'circle' ),
+        tension: 0.4,
+        order: isScatterChart ? (name.includes('対象') ? 1 : (name.includes('セクター') || name.includes('ETF')) ? 2 : (name.includes('S&P') && !name.includes('銘柄')) ? 3 : 10) : undefined
+      };
+
+      if (isScatterChart) {
+        s.data = (d.x || []).map((xv:any, i:number)=>({
+          x: xv, y: d.y[i], 
+          symbol: d.text ? (Array.isArray(d.text) ? d.text[i] : d.text) : '',
+          origX: (d.customdata && d.customdata[i]) ? d.customdata[i][0] : xv,
+          origY: (d.customdata && d.customdata[i]) ? d.customdata[i][1] : d.y[i],
+          customText: (d.customdata && d.customdata[i]) ? d.customdata[i][2] : (d.text ? (Array.isArray(d.text) ? d.text[i] : d.text) : '')
+        }));
+      } else {
+        s.data = d.y || [];
+      }
+
+      // BS stacking order: Fixed items at bottom, Current items on top
+      if (name.includes('固定資産')) s._originalOrder = 1;
+      else if (name.includes('流動資産')) s._originalOrder = 2;
+      else if (name.includes('純資産')) s._originalOrder = 1;
+      else if (name.includes('固定負債')) s._originalOrder = 2;
+      else if (name.includes('流動負債')) s._originalOrder = 3;
+      else if (name.includes('配当')) s._originalOrder = 2;
+      else if (name.includes('自社株')) s._originalOrder = 1;
+      else s._originalOrder = 9;
+
+      if (name.includes('流動資産') || name.includes('固定資産')) s.stack = 'assets';
+      else if (name.includes('負債') || name.includes('純資産')) s.stack = 'liabilities';
+      else if (name.includes('配当') || name.includes('自社株')) s.stack = 'payout';
+      else if (name.includes('純利益') && !isRatio) s.stack = data.some((os: any) => os.name && os.name.includes('営業CF')) ? 'net_income_cf' : 'net_income_is';
+      else if (type === 'bar') s.stack = name.replace(' (Q)', ''); 
+
+      return s;
+    });
+
+    const hasBar = allSeries.some((s: any) => s.type === 'bar');
+    const isBarmodeGroup = layout.barmode === 'group';
+    const hasStacking = hasBar && !isScatterChart && !isBarmodeGroup;
+
+    if (hasStacking) {
+      allSeries.sort((a: any, b: any) => {
+        const groupPriority: any = { 'net_income_cf': 5, '売上高': 10, '売上総利益': 20, '営業利益': 30, 'net_income_is': 50, '営業CF': 10, '投資CF': 20, '財務CF': 30, 'フリーCF': 40, 'assets': 10, 'payout': 60, 'liabilities': 60 };
+        const pA = groupPriority[a.stack] || 99;
+        const pB = groupPriority[b.stack] || 99;
+        if (pA !== pB) return pA - pB;
+        if (a.type !== b.type) return a.type === 'bar' ? -1 : 1;
+        // Correct order for stacking: smaller _originalOrder is bottom
+        if (a.stack === b.stack && a._originalOrder !== b._originalOrder) return a._originalOrder - b._originalOrder;
+        return a.originalIndex - b.originalIndex;
+      });
+    }
+
+    if (allSeries.length === 0) return null;
+    const initialVisible = allSeries.filter(s => s._periodVisible);
+    const firstVisible = initialVisible[0] || allSeries[0];
+    const labels = !isScatterChart ? (data[firstVisible.originalIndex]?.x || []) : [];
+    
+    let initialMinY, initialMaxY;
+    if (isScatterChart) {
+      const allInitialY = initialVisible.flatMap(ds => ds.data.map((p: any) => p.y)).filter(v => v !== null && !isNaN(v));
+      if (allInitialY.length > 0) {
+        const minV = Math.min(...allInitialY);
+        const maxV = Math.max(...allInitialY);
+        const range = maxV - minV;
+        const padding = range === 0 ? Math.abs(maxV) * 0.05 || 0.01 : range * 0.05;
+        initialMinY = minV - padding; initialMaxY = maxV + padding;
+      }
+    }
+
+    let xOpts: any = { type: isScatterChart ? 'linear' : 'category', grid: { color: gridColor }, ticks: { color: textColor } };
+    if (isScatterChart) {
+      const allInitialX = initialVisible.flatMap(ds => ds.data.map((p: any) => p.x)).filter(v => v !== null && !isNaN(v));
+      if (allInitialX.length > 0) {
+        const minX = Math.min(...allInitialX);
+        const maxX = Math.max(...allInitialX);
+        const rangeX = maxX - minX;
+        const paddingX = rangeX === 0 ? Math.abs(maxX) * 0.05 || 0.01 : rangeX * 0.05;
+        xOpts.min = minX - paddingX; xOpts.max = maxX + paddingX;
+      }
+      xOpts.ticks.callback = (value: any) => (value * 100).toFixed(0) + '%';
+    }
+
+    return {
+      type: isScatterChart ? 'scatter' : 'bar',
+      data: { labels: labels, datasets: allSeries },
+      options: {
+        color: textColor,
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: { duration: 400 },
+        interaction: { mode: isScatterChart ? 'nearest' : 'index', intersect: isScatterChart },
+        plugins: {
+          legend: {
+            position: 'top',
+            labels: { 
+              color: textColor, 
+              usePointStyle: true,
+              generateLabels: function(chart: any) {
+                const datasets = chart.data.datasets;
+                const labels: any[] = [];
+                const seen = new Set();
+                const userHidden = chart._userHiddenLabels || new Set();
+                // Ensure legend text uses correct theme color
+                const currentIsDark = document.documentElement.classList.contains('dark') || document.documentElement.getAttribute('data-theme') === 'dark';
+                const currentTextColor = currentIsDark ? '#e5e7eb' : '#1f2937';
+
+                const sortedForLegend = [...datasets].sort((a, b) => (a.order || 0) - (b.order || 0));
+                sortedForLegend.forEach((ds: any) => {
+                  if (seen.has(ds.label)) return;
+                  seen.add(ds.label);
+                  labels.push({ text: ds.label, fillStyle: ds.backgroundColor, strokeStyle: ds.borderColor, lineWidth: ds.borderWidth, hidden: userHidden.has(ds.label), pointStyle: ds.pointStyle, fontColor: currentTextColor });
+                });
+                return labels;
+              }
+            },
+            onClick: function(e: any, legendItem: any, legend: any) {
+              const label = legendItem.text;
+              const ci = legend.chart;
+              if (!ci._userHiddenLabels) ci._userHiddenLabels = new Set();
+              if (ci._userHiddenLabels.has(label)) ci._userHiddenLabels.delete(label); else ci._userHiddenLabels.add(label);
+              ci.data.datasets.forEach((ds: any, i: number) => { if (ds.label === label) ci.setDatasetVisibility(i, ds._periodVisible && !ci._userHiddenLabels.has(label)); });
+              ci.update();
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context: any) {
+                if (isScatterChart) {
+                  const p = context.raw;
+                  const xVal = p.origX !== undefined ? p.origX : p.x;
+                  const yVal = p.origY !== undefined ? p.origY : p.y;
+                  const symbol = p.customText || p.symbol || context.dataset.label;
+                  return `${symbol} - リスク: ${(xVal * 100).toFixed(1)}%, リターン: ${(yVal * 100).toFixed(1)}%`;
+                }
+                return context.dataset.label + ': ' + formatYValueMillions(context.raw, context.dataset.yAxisID === 'y1');
+              }
+            }
+          }
+        },
+        scales: {
+          x: xOpts,
+          y: {
+            type: 'linear',
+            display: true,
+            position: 'left',
+            grid: { color: (ctx: any) => ctx.tick?.value === 0 ? (getThemeColors().isDark ? 'rgba(229, 231, 235, 0.4)' : 'rgba(31, 41, 55, 0.4)') : gridColor, lineWidth: (ctx: any) => ctx.tick?.value === 0 ? 2 : 1 },
+            ticks: { color: textColor, callback: (value: any) => formatYValueAbbreviated(value, isScatterChart) },
+            stacked: !isScatterChart && data.some((s:any)=>s.type==='bar') && layout.barmode !== 'group',
+            title: { display: !!layout.yaxis?.title?.text, text: layout.yaxis?.title?.text, color: textColor },
+            min: isScatterChart ? initialMinY : undefined, max: isScatterChart ? initialMaxY : undefined,
+            beginAtZero: !isScatterChart
+          },
+          y1: {
+            type: 'linear',
+            display: data.some(s => s.name.includes('率') || s.name.includes('性向')),
+            position: 'right',
+            grid: { drawOnChartArea: false },
+            ticks: { color: textColor, callback: (value: any) => formatYValueAbbreviated(value, true) },
+            stacked: false,
+            title: { display: !!layout.yaxis2?.title?.text, text: layout.yaxis2?.title?.text, color: textColor }
+          }
+        }
+      }
+    };
+  }
+
+  document.addEventListener('astro:page-load', () => setTimeout(initChartJs, 20));
+  const themeObserver = new MutationObserver(() => initChartJs());
+  themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'class'] });
+</script>

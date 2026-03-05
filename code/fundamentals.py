@@ -500,7 +500,7 @@ def get_bs_plotly_html(data_dict):
 def get_bs_plotly_fig(data_dict):
     df_a = data_dict.get('annual', pl.DataFrame())
     df_q = data_dict.get('quarterly', pl.DataFrame())
-    if df_a.is_empty() and df_q.is_empty(): return 'データなし'
+    if df_a.is_empty(): return 'データなし'
     
     fig = go.Figure()
 
@@ -559,24 +559,7 @@ def get_bs_plotly_fig(data_dict):
             fig.add_trace(go.Bar(name='純資産' + suffix, x=df_plot['Date'], y=df_plot['Equity'], marker_color='#2ca02c', offsetgroup=1, visible=visible))
             fig.add_trace(go.Bar(name='総負債' + suffix, x=df_plot['Date'], y=df_plot['TotalLiab'], marker_color='#ff7f0e', offsetgroup=1, visible=visible))
 
-    initial_len = len(fig.data)
     add_bs_traces(fig, df_a, suffix="", visible=True)
-    n_a = len(fig.data) - initial_len
-    
-    add_bs_traces(fig, df_q, suffix=" (Q)", visible=False)
-    n_q = len(fig.data) - initial_len - n_a
-
-    if n_a > 0 and n_q > 0:
-        fig.update_layout(
-            updatemenus=[dict(
-                type="buttons", direction="right", x=0.5, y=1.2, xanchor="center",
-                buttons=[
-                    dict(label="通年", method="update", args=[{"visible": [True]*n_a + [False]*n_q}]),
-                    dict(label="四半期", method="update", args=[{"visible": [False]*n_a + [True]*n_q}])
-                ]
-            )]
-        )
-
     fig.update_layout(barmode='relative', height=500, margin=dict(t=50, b=80, l=60, r=40),
                       template='plotly_white', showlegend=True,
                       xaxis=dict(type='category', tickangle=0),
@@ -592,7 +575,7 @@ def get_is_plotly_html(data_dict):
 def get_is_plotly_fig(data_dict):
     df_a = data_dict.get('annual', pl.DataFrame())
     df_q = data_dict.get('quarterly', pl.DataFrame())
-    if df_a.is_empty() and df_q.is_empty(): return 'データなし'
+    if df_a.is_empty(): return 'データなし'
 
     fig = go.Figure()
 
@@ -627,24 +610,7 @@ def get_is_plotly_fig(data_dict):
         except: pass
 
     # トレース追加
-    initial_len = len(fig.data)
     add_is_traces(fig, df_a, suffix="", visible=True)
-    n_a = len(fig.data) - initial_len
-    
-    add_is_traces(fig, df_q, suffix=" (Q)", visible=False)
-    n_q = len(fig.data) - initial_len - n_a
-
-    if n_a > 0 and n_q > 0:
-        fig.update_layout(
-            updatemenus=[dict(
-                type="buttons", direction="right", x=0.5, y=1.2, xanchor="center",
-                buttons=[
-                    dict(label="通年", method="update", args=[{"visible": [True]*n_a + [False]*n_q}]),
-                    dict(label="四半期", method="update", args=[{"visible": [False]*n_a + [True]*n_q}])
-                ]
-            )]
-        )
-
     fig.update_layout(
         barmode='group', height=500, margin=dict(t=50, b=80, l=60, r=60), 
         template='plotly_white', showlegend=True,
@@ -662,7 +628,7 @@ def get_cf_plotly_html(data_dict):
 def get_cf_plotly_fig(data_dict):
     df_a = data_dict.get('annual', pl.DataFrame())
     df_q = data_dict.get('quarterly', pl.DataFrame())
-    if df_a.is_empty() and df_q.is_empty(): return 'データなし'
+    if df_a.is_empty(): return 'データなし'
     
     fig = go.Figure()
 
@@ -684,24 +650,7 @@ def get_cf_plotly_fig(data_dict):
             if not sub.is_empty():
                 fig.add_trace(go.Bar(name=name + suffix, x=sub['Date'], y=sub['Value'], marker_color=color, visible=visible))
 
-    initial_len = len(fig.data)
     add_cf_traces(fig, df_a, suffix="", visible=True)
-    n_a = len(fig.data) - initial_len
-    
-    add_cf_traces(fig, df_q, suffix=" (Q)", visible=False)
-    n_q = len(fig.data) - initial_len - n_a
-
-    if n_a > 0 and n_q > 0:
-        fig.update_layout(
-            updatemenus=[dict(
-                type="buttons", direction="right", x=0.5, y=1.2, xanchor="center",
-                buttons=[
-                    dict(label="通年", method="update", args=[{"visible": [True]*n_a + [False]*n_q}]),
-                    dict(label="四半期", method="update", args=[{"visible": [False]*n_a + [True]*n_q}])
-                ]
-            )]
-        )
-
     fig.update_layout(barmode='group', height=500, margin=dict(t=50, b=80, l=60, r=40),
                       template='plotly_white', showlegend=True,
                       xaxis=dict(type='category', tickangle=0),
@@ -717,7 +666,7 @@ def get_tp_plotly_html(data_dict):
 def get_tp_plotly_fig(data_dict):
     df_a = data_dict.get('annual', pl.DataFrame())
     df_q = data_dict.get('quarterly', pl.DataFrame())
-    if df_a.is_empty() and df_q.is_empty(): return 'データなし'
+    if df_a.is_empty(): return 'データなし'
 
     fig = go.Figure()
     
@@ -753,20 +702,7 @@ def get_tp_plotly_fig(data_dict):
         return 5 # 追加したトレース数
 
     # トレースの追加
-    n_a = add_tp_traces(fig, df_a, suffix="", visible=True)
-    n_q = add_tp_traces(fig, df_q, suffix=" (Q)", visible=False)
-
-    # 切り替えボタンの設定
-    if n_a > 0 and n_q > 0:
-        fig.update_layout(
-            updatemenus=[dict(
-                type="buttons", direction="right", x=0.5, y=1.2, xanchor="center",
-                buttons=[
-                    dict(label="通年", method="update", args=[{"visible": [True]*n_a + [False]*n_q}]),
-                    dict(label="四半期", method="update", args=[{"visible": [False]*n_a + [True]*n_q}])
-                ]
-            )]
-        )
+    add_tp_traces(fig, df_a, suffix="", visible=True)
 
     fig.update_layout(
         barmode='group', height=500, margin=dict(t=50, b=80, l=60, r=60), template='plotly_white',

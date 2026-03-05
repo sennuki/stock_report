@@ -5,7 +5,7 @@ import Footer from "@/components/Footer.astro";
 import stocks from "@/data/stocks.json";
 import fs from "node:fs";
 import path from "node:path";
-import ApexChart from "@/components/report/ApexChart.astro";
+import ChartJs from "@/components/report/ChartJs.astro";
 import TradingViewWidget from "@/components/report/TradingViewWidget.astro";
 import PeerLinks from "@/components/report/PeerLinks.astro";
 
@@ -138,7 +138,7 @@ if (reportData?.analyst_ratings) {
               <span class="opacity-70 text-xs sm:text-sm">S&P 500 構成銘柄</span>
             </div>
           </div>
-          <ApexChart chartData={reportData.charts.risk_return} id="chart-risk-return" />
+          <ChartJs chartData={reportData.charts.risk_return} id="chart-risk-return" />
         </section>
 
         <section id="peers" class="mt-12">
@@ -173,23 +173,23 @@ if (reportData?.analyst_ratings) {
           <h2 class="text-2xl font-bold mb-8 border-b pb-2">📈 {symbol}の財務データ推移 (詳細分析)</h2>
 
           <div id="balance-sheet" class="scroll-mt-20 my-24">
-            <ApexChart chartData={reportData.charts.bs} id="chart-bs" title="貸借対照表" />
+            <ChartJs chartData={reportData.charts.bs} id="chart-bs" title="貸借対照表" />
           </div>
 
           <div id="income-statement" class="scroll-mt-20 my-24">
-            <ApexChart chartData={reportData.charts.is} id="chart-is" title="損益計算書" />
+            <ChartJs chartData={reportData.charts.is} id="chart-is" title="損益計算書" />
           </div>
 
           <div id="cash-flow" class="scroll-mt-20 my-24">
-            <ApexChart chartData={reportData.charts.cf} id="chart-cf" title="キャッシュフロー" />
+            <ChartJs chartData={reportData.charts.cf} id="chart-cf" title="キャッシュフロー" />
           </div>
 
           <div id="shareholder-return" class="scroll-mt-20 my-24">
-            <ApexChart chartData={reportData.charts.tp} id="chart-tp" title="株主還元" />
+            <ChartJs chartData={reportData.charts.tp} id="chart-tp" title="株主還元" />
           </div>
 
           <div id="dividend-history" class="scroll-mt-20 my-24">
-            <ApexChart chartData={reportData.charts.dps} id="chart-dps" title="1株あたり配当金" />
+            <ChartJs chartData={reportData.charts.dps} id="chart-dps" title="1株あたり配当金" />
             <p class="text-sm text-gray-500 mt-24 block relative z-10">※配当回数を推定して年換算利回りを算出しています。</p>
           </div>
         </section>
