@@ -107,6 +107,51 @@ const { chartData, title, id, height = 450 } = Astro.props;
     controlsContainer.innerHTML = '';
     const isScatterChart = chart.config.type === 'scatter';
 
+    // Handle legend grouping
+    const datasets = chart.data.datasets;
+    const groups = new Set<string>();
+    datasets.forEach((ds: any) => {
+      const match = ds.label.match(/\(([^)]+)\)$/);
+      if (match) groups.add(match[1]);
+    });
+
+    if (groups.size > 1) {
+      const groupList = Array.from(groups).sort();
+      const groupControls = document.createElement('div');
+      groupControls.className = "flex justify-center gap-2 mb-4 w-full";
+      
+      groupList.forEach(groupName => {
+        const btn = document.createElement('button');
+        btn.textContent = groupName;
+        const isDefault = groupName.includes('通期') || groupName === groupList[0];
+        btn.className = `px-3 py-1 text-xs font-medium rounded-full border transition-colors ${isDefault ? 'bg-accent text-white border-accent' : 'bg-background text-foreground border-border'}`;
+        
+        btn.onclick = () => {
+          groupControls.querySelectorAll('button').forEach(b => {
+            b.classList.remove('bg-accent', 'text-white', 'border-accent');
+            b.classList.add('bg-background', 'text-foreground', 'border-border');
+          });
+          btn.classList.add('bg-accent', 'text-white', 'border-accent');
+          btn.classList.remove('bg-background', 'text-foreground', 'border-border');
+          
+          chart._activeGroup = groupName;
+          
+          // Re-evaluate visibility for all datasets based on new group
+          chart.data.datasets.forEach((ds: any, idx: number) => {
+            const inActiveGroup = ds.label.includes(`(${groupName})`);
+            const isUserHidden = chart._userHiddenLabels && chart._userHiddenLabels.has(ds.label);
+            chart.setDatasetVisibility(idx, ds._periodVisible && !isUserHidden && inActiveGroup);
+          });
+          
+          chart.update();
+        };
+        
+        if (isDefault) chart._activeGroup = groupName;
+        groupControls.appendChild(btn);
+      });
+      controlsContainer.appendChild(groupControls);
+    }
+
     const updateChartData = (btn: any) => {
       if (btn.args && btn.args[0]) {
         const visMask = btn.args[0].visible; 
@@ -116,10 +161,12 @@ const { chartData, title, id, height = 450 } = Astro.props;
           const isPeriodVisible = visMask ? (visMask[originalIdx] === true) : true;
           const isUserHidden = chart._userHiddenLabels.has(ds.label);
           ds._periodVisible = isPeriodVisible;
-          chart.setDatasetVisibility(idx, isPeriodVisible && !isUserHidden);
+          
+          const inActiveGroup = chart._activeGroup ? ds.label.includes(`(${chart._activeGroup})`) : true;
+          chart.setDatasetVisibility(idx, isPeriodVisible && !isUserHidden && inActiveGroup);
         });
 
-        const firstVisibleIdx = chart.data.datasets.findIndex((ds:any) => ds._periodVisible);
+        const firstVisibleIdx = chart.data.datasets.findIndex((ds:any) => ds._periodVisible && (chart._activeGroup ? ds.label.includes(`(${chart._activeGroup})`) : true));
         if (!isScatterChart && firstVisibleIdx !== -1) {
           const ds = chart.data.datasets[firstVisibleIdx];
           const originalDataSeries = plotlyData.data[ds.originalIndex];
@@ -129,7 +176,7 @@ const { chartData, title, id, height = 450 } = Astro.props;
         if (isScatterChart) {
           const visibleDatasets = chart.data.datasets.filter((ds: any, i: number) => chart.isDatasetVisible(i));
           if (visibleDatasets.length > 0) {
-            const yValues = visibleDatasets.flatMap((ds: any) => ds.data.map((p: any) => p.y)).filter(v => v !== null && !isNaN(v));
+            const yValues = visibleDatasets.flatMap((ds: any) => ds.data.map((p: any) => p.y)).filter((v: any) => v !== null && !isNaN(v));
             if (yValues.length > 0 && chart.options.scales.y) {
               const minV = Math.min(...yValues);
               const maxV = Math.max(...yValues);
@@ -139,7 +186,7 @@ const { chartData, title, id, height = 450 } = Astro.props;
               chart.options.scales.y.max = maxV + padding;
             }
             if (chart.options.scales.x) {
-              const xValues = visibleDatasets.flatMap((ds: any) => ds.data.map((p: any) => p.x)).filter(v => v !== null && !isNaN(v));
+              const xValues = visibleDatasets.flatMap((ds: any) => ds.data.map((p: any) => p.x)).filter((v: any) => v !== null && !isNaN(v));
               if (xValues.length > 0) {
                 const minX = Math.min(...xValues);
                 const maxX = Math.max(...xValues);
@@ -228,7 +275,7 @@ const { chartData, title, id, height = 450 } = Astro.props;
         pointBorderColor: '#fff',
         pointStyle: d.marker?.symbol === 'diamond' ? 'rectRot' : ( (name.includes('S&P') && !name.includes('銘柄')) ? 'triangle' : 'circle' ),
         tension: 0.4,
-        order: isScatterChart ? (name.includes('対象') ? 1 : (name.includes('セクター') || name.includes('ETF')) ? 2 : (name.includes('S&P') && !name.includes('銘柄')) ? 3 : 10) : undefined
+        order: isScatterChart ? (name.includes('対象') ? 1 : (name.includes('セクター') || name.includes('ETF')) ? 2 : (name.includes('S&P') && !name.includes('銘柄')) ? 3 : 10) : (type === 'line' ? 1 : 2)
       };
 
       if (isScatterChart) {
@@ -280,13 +327,13 @@ const { chartData, title, id, height = 450 } = Astro.props;
     }
 
     if (allSeries.length === 0) return null;
-    const initialVisible = allSeries.filter(s => s._periodVisible);
+    const initialVisible = allSeries.filter((s: any) => s._periodVisible);
     const firstVisible = initialVisible[0] || allSeries[0];
     const labels = !isScatterChart ? (data[firstVisible.originalIndex]?.x || []) : [];
     
     let initialMinY, initialMaxY;
     if (isScatterChart) {
-      const allInitialY = initialVisible.flatMap(ds => ds.data.map((p: any) => p.y)).filter(v => v !== null && !isNaN(v));
+      const allInitialY = initialVisible.flatMap((ds: any) => ds.data.map((p: any) => p.y)).filter((v: any) => v !== null && !isNaN(v));
       if (allInitialY.length > 0) {
         const minV = Math.min(...allInitialY);
         const maxV = Math.max(...allInitialY);
@@ -298,7 +345,7 @@ const { chartData, title, id, height = 450 } = Astro.props;
 
     let xOpts: any = { type: isScatterChart ? 'linear' : 'category', grid: { color: gridColor }, ticks: { color: textColor } };
     if (isScatterChart) {
-      const allInitialX = initialVisible.flatMap(ds => ds.data.map((p: any) => p.x)).filter(v => v !== null && !isNaN(v));
+      const allInitialX = initialVisible.flatMap((ds: any) => ds.data.map((p: any) => p.x)).filter((v: any) => v !== null && !isNaN(v));
       if (allInitialX.length > 0) {
         const minX = Math.min(...allInitialX);
         const maxX = Math.max(...allInitialX);
@@ -335,19 +382,34 @@ const { chartData, title, id, height = 450 } = Astro.props;
 
                 const sortedForLegend = [...datasets].sort((a, b) => (a.order || 0) - (b.order || 0));
                 sortedForLegend.forEach((ds: any) => {
-                  if (seen.has(ds.label)) return;
-                  seen.add(ds.label);
-                  labels.push({ text: ds.label, fillStyle: ds.backgroundColor, strokeStyle: ds.borderColor, lineWidth: ds.borderWidth, hidden: userHidden.has(ds.label), pointStyle: ds.pointStyle, fontColor: currentTextColor });
+                  const label = ds.label.replace(/\([^)]+\)$/, '').trim();
+                  if (seen.has(label)) return;
+                  if (chart._activeGroup && !ds.label.includes(`(${chart._activeGroup})`)) return;
+                  seen.add(label);
+                  labels.push({ text: label, fillStyle: ds.backgroundColor, strokeStyle: ds.borderColor, lineWidth: ds.borderWidth, hidden: userHidden.has(ds.label), pointStyle: ds.pointStyle, fontColor: currentTextColor });
                 });
                 return labels;
               }
             },
             onClick: function(e: any, legendItem: any, legend: any) {
-              const label = legendItem.text;
+              const labelText = legendItem.text;
               const ci = legend.chart;
               if (!ci._userHiddenLabels) ci._userHiddenLabels = new Set();
-              if (ci._userHiddenLabels.has(label)) ci._userHiddenLabels.delete(label); else ci._userHiddenLabels.add(label);
-              ci.data.datasets.forEach((ds: any, i: number) => { if (ds.label === label) ci.setDatasetVisibility(i, ds._periodVisible && !ci._userHiddenLabels.has(label)); });
+              
+              // Find all datasets that match this label (across groups)
+              const matchingDatasets = ci.data.datasets.filter((d: any) => d.label.startsWith(labelText));
+              const isCurrentlyHidden = ci._userHiddenLabels.has(matchingDatasets[0]?.label);
+              
+              matchingDatasets.forEach((ds: any) => {
+                if (isCurrentlyHidden) ci._userHiddenLabels.delete(ds.label);
+                else ci._userHiddenLabels.add(ds.label);
+              });
+
+              ci.data.datasets.forEach((ds: any, i: number) => {
+                const inActiveGroup = ci._activeGroup ? ds.label.includes(`(${ci._activeGroup})`) : true;
+                const isUserHidden = ci._userHiddenLabels.has(ds.label);
+                ci.setDatasetVisibility(i, ds._periodVisible && !isUserHidden && inActiveGroup);
+              });
               ci.update();
             }
           },
@@ -381,7 +443,7 @@ const { chartData, title, id, height = 450 } = Astro.props;
           },
           y1: {
             type: 'linear',
-            display: data.some(s => s.name.includes('率') || s.name.includes('性向')),
+            display: data.some((s: any) => s.name.includes('率') || s.name.includes('性向')),
             position: 'right',
             grid: { drawOnChartArea: false },
             ticks: { color: textColor, callback: (value: any) => formatYValueAbbreviated(value, true) },

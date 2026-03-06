@@ -611,12 +611,21 @@ def get_is_plotly_fig(data_dict):
 
     # トレース追加
     add_is_traces(fig, df_a, suffix="", visible=True)
+
+    # 利益率の軸(yaxis2)の範囲調整（上端にマージンを持たせる）
+    ratios = [v for t in fig.data if t.yaxis == 'y2' and t.y is not None for v in (t.y if isinstance(t.y, (list, tuple)) else t.y.to_list()) if v is not None]
+    y2_range = None
+    if ratios:
+        max_r = max(ratios)
+        min_r = min(ratios)
+        y2_range = [min(0, min_r - 0.05), max_r + 0.05]
+
     fig.update_layout(
         barmode='group', height=500, margin=dict(t=50, b=80, l=60, r=60), 
         template='plotly_white', showlegend=True,
         xaxis=dict(type='category', tickangle=0),
         yaxis=dict(title='金額', showgrid=True, type='linear', automargin=True, gridcolor='#F3F4F6', zeroline=True, zerolinecolor='#444', zerolinewidth=2, rangemode='tozero'),
-        yaxis2=dict(title='利益率', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='linear', automargin=True, zeroline=True, zerolinecolor='#444', zerolinewidth=2, rangemode='tozero'),
+        yaxis2=dict(title='利益率', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='linear', automargin=True, zeroline=True, zerolinecolor='#444', zerolinewidth=2, range=y2_range),
         legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5))
     return fig
 
@@ -704,11 +713,19 @@ def get_tp_plotly_fig(data_dict):
     # トレースの追加
     add_tp_traces(fig, df_a, suffix="", visible=True)
 
+    # 利益率の軸(yaxis2)の範囲調整
+    ratios = [v for t in fig.data if t.yaxis == 'y2' and t.y is not None for v in (t.y if isinstance(t.y, (list, tuple)) else t.y.to_list()) if v is not None]
+    y2_range = None
+    if ratios:
+        max_r = max(ratios)
+        min_r = min(ratios)
+        y2_range = [min(0, min_r - 0.05), max_r + 0.05]
+
     fig.update_layout(
         barmode='group', height=500, margin=dict(t=50, b=80, l=60, r=60), template='plotly_white',
         xaxis=dict(type='category', tickangle=0),
         yaxis=dict(title='金額', showgrid=True, type='linear', automargin=True),
-        yaxis2=dict(title='還元性向', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='linear', automargin=True),
+        yaxis2=dict(title='還元性向', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='linear', automargin=True, range=y2_range),
         legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5)
     )
     return fig
