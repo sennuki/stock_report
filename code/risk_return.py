@@ -235,7 +235,7 @@ def generate_scatter_fig(df_metrics, target_symbol, sector_etf_symbol):
         # 1. その他
         df_others = df_p.filter(~pl.col('Symbol').is_in([target_symbol, '^GSPC', sector_etf_symbol]))
         x, y, cdata, txt = get_data(df_others)
-        fig.add_trace(go.Scatter(x=x, y=y, customdata=cdata, text=txt, mode='markers', name='S&P500銘柄', 
+        fig.add_trace(go.Scatter(x=x, y=y, customdata=cdata, text=txt, mode='markers', name=f'S&P500銘柄 ({p["label"]})', 
                                 hovertemplate=hovertemplate_str,
                                 marker=dict(size=6, color='#72777B', opacity=0.4), visible=visible))
         
@@ -243,11 +243,11 @@ def generate_scatter_fig(df_metrics, target_symbol, sector_etf_symbol):
         df_sector = df_p.filter(pl.col('Symbol') == sector_etf_symbol)
         if not df_sector.is_empty():
             x, y, cdata, txt = get_data(df_sector)
-            fig.add_trace(go.Scatter(x=x, y=y, customdata=cdata, text=txt, mode='markers+text', textposition="top center", name='セクターETF',
+            fig.add_trace(go.Scatter(x=x, y=y, customdata=cdata, text=txt, mode='markers+text', textposition="top center", name=f'{sector_etf_symbol} ({p["label"]})',
                                     hovertemplate=hovertemplate_str,
-                                    marker=dict(size=12, color='blue', symbol='diamond'), visible=visible))
+                                    marker=dict(size=12, color='blue'), visible=visible))
         else:
-            fig.add_trace(go.Scatter(x=[None], y=[None], name='セクターETF', visible=visible))
+            fig.add_trace(go.Scatter(x=[None], y=[None], name=f'{sector_etf_symbol} ({p["label"]})', visible=visible))
         
         # 3. 市場
         df_sp500_idx = df_p.filter(pl.col('Symbol') == '^GSPC')
@@ -256,49 +256,35 @@ def generate_scatter_fig(df_metrics, target_symbol, sector_etf_symbol):
             for cd in cdata:
                 cd[2] = 'S&P 500'
                 cd[3] = 'S&P 500 Index'
-            fig.add_trace(go.Scatter(x=x, y=y, customdata=cdata, text=['S&P 500'], mode='markers+text', textposition="top center", name='S&P 500',
+            fig.add_trace(go.Scatter(x=x, y=y, customdata=cdata, text=['S&P 500'], mode='markers+text', textposition="top center", name=f'S&P 500 ({p["label"]})',
                                     hovertemplate=hovertemplate_str,
-                                    marker=dict(size=12, color='black', symbol='star'), visible=visible))
+                                    marker=dict(size=12, color='black'), visible=visible))
         else:
-            fig.add_trace(go.Scatter(x=[None], y=[None], name='S&P 500', visible=visible))
+            fig.add_trace(go.Scatter(x=[None], y=[None], name=f'S&P 500 ({p["label"]})', visible=visible))
         
         # 4. ターゲット
         df_target = df_p.filter(pl.col('Symbol') == target_symbol)
         if not df_target.is_empty():
             x, y, cdata, txt = get_data(df_target)
-            fig.add_trace(go.Scatter(x=x, y=y, customdata=cdata, text=txt, mode='markers+text', textposition="bottom center", name='対象銘柄',
+            fig.add_trace(go.Scatter(x=x, y=y, customdata=cdata, text=txt, mode='markers+text', textposition="bottom center", name=f'{target_symbol} ({p["label"]})',
                                     hovertemplate=hovertemplate_str,
                                     marker=dict(size=16, color='red', line=dict(width=2, color='white')), visible=visible))
         else:
-            fig.add_trace(go.Scatter(x=[None], y=[None], name='対象銘柄', visible=visible))
+            fig.add_trace(go.Scatter(x=[None], y=[None], name=f'{target_symbol} ({p["label"]})', visible=visible))
         
         trace_counts.append(4)
 
-    # ボタン作成と初期レイアウト設定
-    buttons = []
+    # 初期レイアウト設定
     default_xaxis_range = None
     default_yaxis_range = None
     
     for i, p in enumerate(PERIOD_CONFIGS):
-        vis_array = []
-        for j, count in enumerate(trace_counts):
-            vis_array.extend([i == j] * count)
-        
-        pr = period_ranges[i] if i < len(period_ranges) else {'min_x': 0, 'max_x': 2, 'min_y': -2, 'max_y': 2}
-        layout_update = {
-            "title": f"リスク・リターン分析 ({p['label']})",
-            "xaxis.range": [pr['min_x'], pr['max_x']],
-            "yaxis.range": [pr['min_y'], pr['max_y']]
-        }
-        
         if p['key'] == "1Y":
+            pr = period_ranges[i] if i < len(period_ranges) else {'min_x': 0, 'max_x': 2, 'min_y': -2, 'max_y': 2}
             default_xaxis_range = [pr['min_x'], pr['max_x']]
             default_yaxis_range = [pr['min_y'], pr['max_y']]
 
-        buttons.append(dict(label=p['label'], method="update", args=[{"visible": vis_array}, layout_update]))
-
     fig.update_layout(
-        updatemenus=[dict(type="buttons", direction="right", x=0.5, y=1.2, xanchor="center", buttons=buttons)],
         xaxis=dict(title='リスク (ボラティリティ 年率)', tickformat='.0%', gridcolor='#E5E7EB', range=default_xaxis_range),
         yaxis=dict(title='リターン (年率換算)', tickformat='.0%', gridcolor='#E5E7EB', range=default_yaxis_range),
         margin=dict(l=60, r=30, t=80, b=40), height=550, template='plotly_white',

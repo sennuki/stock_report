@@ -1,6 +1,6 @@
 ---
 import { ClientRouter } from "astro:transitions";
-import { PUBLIC_GOOGLE_SITE_VERIFICATION, PUBLIC_GOOGLE_ANALYTICS_ID } from "astro:env/server";
+import { PUBLIC_GOOGLE_SITE_VERIFICATION } from "astro:env/server";
 import { SITE } from "@/config";
 import "@/styles/global.css";
 
@@ -62,7 +62,7 @@ const structuredData = {
 >
   <head>
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FMHBEP634W"></script>
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-FMHBEP634W"></script>
     <script is:inline>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}

@@ -8,11 +8,13 @@ import base64
 from tqdm import tqdm
 import plotly.io as pio
 import logging
+import datetime
 # Suppress noisy yfinance errors
 logging.getLogger('yfinance').setLevel(logging.CRITICAL)
 
 import fundamentals
 import risk_return
+import performance_comparison
 import utils
 import market_data
 
@@ -35,7 +37,9 @@ def clean_plotly_data(obj):
         return [clean_plotly_data(v) for v in obj]
     elif isinstance(obj, np.ndarray):
         return obj.tolist()
-    elif isinstance(obj, np.generic):
+    elif isinstance(obj, (np.generic, datetime.datetime, datetime.date)):
+        if hasattr(obj, 'isoformat'):
+            return obj.isoformat()
         return obj.item()
     return obj
 
@@ -130,6 +134,9 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir):
 
     # 2. Risk Return Chart
     try:
+        # Ensure Symbol column in df_metrics is string
+        df_metrics = df_metrics.with_columns(pl.col("Symbol").cast(pl.String))
+        
         # Join df_info to df_metrics to add Security column for hover tooltips
         df_metrics_with_name = df_metrics.join(
             df_info.select(["Symbol_YF", "Security"]), 
@@ -142,7 +149,14 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir):
     except Exception as e:
         print(f"Error generating risk-return for {ticker_display}: {e}")
 
-    # 3. Peers
+    # 3. Performance Comparison Chart
+    try:
+        fig_perf = performance_comparison.generate_performance_chart_fig(chart_target_symbol, sector_etf_ticker)
+        report_data["charts"]["performance"] = fig_to_dict(fig_perf)
+    except Exception as e:
+        print(f"Error generating performance comparison for {ticker_display}: {e}")
+
+    # 4. Peers
     # Get metrics for all peers
     peer_metrics = df_metrics.select(["Symbol", "Daily_Change"])
 

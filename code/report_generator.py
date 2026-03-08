@@ -8,6 +8,7 @@ from tqdm import tqdm
 
 import fundamentals
 import market_data  # For type checking or if we want to run full generation here
+import performance_comparison
 import risk_return
 import utils
 
@@ -101,7 +102,7 @@ TEMPLATE = """<!DOCTYPE html>
         }}
     </style>
 </head>
-<body data-pagefind-body>
+<body data-pagefind-ignore>
 
 <h1>銘柄分析レポート: {ticker} ({security})</h1>
 
@@ -148,7 +149,7 @@ TEMPLATE = """<!DOCTYPE html>
 
 <hr>
 <h2 id="performance">📈 パフォーマンス比較</h2>
-<div id="tv-advanced-chart-placeholder"></div>
+{performance_chart_html}
 
 <hr>
 <h2 id="fundamentals">📊 ファンダメンタルズ分析</h2>
@@ -210,7 +211,10 @@ def generate_report_for_ticker(row, df_info, df_metrics, output_dir):
     # 2. リスクリターンチャート生成
     volatility_chart_html = risk_return.generate_scatter_html(df_metrics, chart_target_symbol, sector_etf_ticker)
 
-    # 3. タグ生成
+    # 3. パフォーマンス比較チャート生成 (Chart.js互換HTML)
+    performance_chart_html = performance_comparison.generate_performance_chart_html(chart_target_symbol, sector_etf_ticker)
+
+    # 4. タグ生成
     def create_tags(target_df):
         # 内部リンクを生成 (Astroのベースパスを考慮せず、相対または絶対パスで記述)
         # ここでは /report/{Symbol_YF} へのリンクを作成する
@@ -232,6 +236,7 @@ def generate_report_for_ticker(row, df_info, df_metrics, output_dir):
         sector_name=safe_sector_name, sub_industry=safe_sub_industry,
         sub_industry_peers_html=create_tags(sub_peers), sector_other_peers_html=create_tags(other_peers),
         volatility_chart_html=volatility_chart_html,
+        performance_chart_html=performance_chart_html,
         chart_bs=chart_bs, chart_is=chart_is, chart_cf=chart_cf, chart_tp=chart_tp, chart_dps=chart_dps
     )
     
