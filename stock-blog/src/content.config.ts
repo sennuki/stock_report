@@ -1,11 +1,9 @@
 import { defineCollection, z } from "astro:content";
-import { glob } from "astro/loaders";
 import { SITE } from "@/config";
 
-export const BLOG_PATH = "src/data/blog";
-
+// Markdown ベースの投稿機能は現在使用していないため、定義のみ最小限で維持
 const blog = defineCollection({
-  loader: glob({ pattern: "**/[^_]*.md", base: `./${BLOG_PATH}` }),
+  loader: async () => [], // 空の配列を返す
   schema: ({ image }) =>
     z.object({
       author: z.string().default(SITE.author),

@@ -425,7 +425,7 @@ def get_financial_data(ticker_obj):
 
     return data
 
-def get_valuation_plotly_fig(valuation_data):
+def get_valuation_chart_data(valuation_data):
     """
     valuation_data: {'min': 10, 'median': 20, 'max': 30, 'current': 25}
     1D Visualization of P/E valuation relative to history.
@@ -488,12 +488,12 @@ def get_valuation_plotly_fig(valuation_data):
     
     return fig
 
-def get_dps_eps_plotly_html(data_dict, is_data_dict):
-    fig = get_dps_eps_plotly_fig(data_dict, is_data_dict)
+def get_dps_eps_chart_html(data_dict, is_data_dict):
+    fig = get_dps_eps_chart_data(data_dict, is_data_dict)
     if isinstance(fig, str): return f'<h3 id="dividend-history">1株あたり配当金</h3><p>{fig}</p>'
     return '<h3 id="dividend-history">1株あたり配当金</h3>' + create_chart_html(fig)
 
-def get_dps_eps_plotly_fig(data_dict, is_data_dict):
+def get_dps_eps_chart_data(data_dict, is_data_dict):
     df_annual = data_dict.get('annual', pl.DataFrame())
     df_q = data_dict.get('quarterly', pl.DataFrame())
     
@@ -595,7 +595,7 @@ def get_dps_eps_plotly_fig(data_dict, is_data_dict):
     
     return fig
 
-def get_dps_history_plotly_fig(data_dict):
+def get_dps_history_chart_data(data_dict):
     # 下位互換性のために残すが、統合されたので実際には使用しない
     return '統合されました'
 
@@ -610,12 +610,12 @@ def _add_traces(fig, df, func, visible=True):
     if df.is_empty(): return
     func(fig, df, visible)
 
-def get_bs_plotly_html(data_dict):
-    fig = get_bs_plotly_fig(data_dict)
+def get_bs_chart_html(data_dict):
+    fig = get_bs_chart_data(data_dict)
     if isinstance(fig, str): return f'<h3 id="balance-sheet">貸借対照表</h3><p>{fig}</p>'
     return '<h3 id="balance-sheet">貸借対照表</h3>' + create_chart_html(fig)
 
-def get_bs_plotly_fig(data_dict):
+def get_bs_chart_data(data_dict):
     df_a = data_dict.get('annual', pl.DataFrame())
     df_q = data_dict.get('quarterly', pl.DataFrame())
     if df_a.is_empty() and df_q.is_empty(): return 'データなし'
@@ -725,12 +725,12 @@ def get_bs_plotly_fig(data_dict):
     fig.update_traces(texttemplate='%{text}', textposition='inside')
     return fig
 
-def get_is_plotly_html(data_dict):
-    fig = get_is_plotly_fig(data_dict)
+def get_is_chart_html(data_dict):
+    fig = get_is_chart_data(data_dict)
     if isinstance(fig, str): return f'<h3 id="income-statement">損益計算書</h3><p>{fig}</p>'
     return '<h3 id="income-statement">損益計算書</h3>' + create_chart_html(fig)
 
-def get_is_plotly_fig(data_dict):
+def get_is_chart_data(data_dict):
     df_a = data_dict.get('annual', pl.DataFrame())
     df_q = data_dict.get('quarterly', pl.DataFrame())
     if df_a.is_empty() and df_q.is_empty(): return 'データなし'
@@ -792,12 +792,12 @@ def get_is_plotly_fig(data_dict):
         legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5))
     return fig
 
-def get_cf_plotly_html(data_dict):
-    fig = get_cf_plotly_fig(data_dict)
+def get_cf_chart_html(data_dict):
+    fig = get_cf_chart_data(data_dict)
     if isinstance(fig, str): return f'<h3 id="cash-flow">キャッシュフロー</h3><p>{fig}</p>'
     return '<h3 id="cash-flow">キャッシュフロー</h3>' + create_chart_html(fig)
 
-def get_cf_plotly_fig(data_dict):
+def get_cf_chart_data(data_dict):
     df_a = data_dict.get('annual', pl.DataFrame())
     df_q = data_dict.get('quarterly', pl.DataFrame())
     if df_a.is_empty() and df_q.is_empty(): return 'データなし'
@@ -835,12 +835,12 @@ def get_cf_plotly_fig(data_dict):
                       legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5))
     return fig
 
-def get_tp_plotly_html(data_dict):
-    fig = get_tp_plotly_fig(data_dict)
+def get_tp_chart_html(data_dict):
+    fig = get_tp_chart_data(data_dict)
     if isinstance(fig, str): return f'<h3 id="shareholder-return">株主還元</h3><p>{fig}</p>'
     return '<h3 id="shareholder-return">株主還元</h3>' + create_chart_html(fig)
 
-def get_tp_plotly_fig(data_dict):
+def get_tp_chart_data(data_dict):
     df_a = data_dict.get('annual', pl.DataFrame())
     df_q = data_dict.get('quarterly', pl.DataFrame())
     if df_a.is_empty() and df_q.is_empty(): return 'データなし'
