@@ -85,7 +85,7 @@ const { chartData, title, id, height = 450 } = Astro.props;
 
   function formatYValueAbbreviated(v: any, isPercent: boolean) {
     if (v === null || v === undefined || isNaN(v)) return '';
-    if (isPercent) return (parseFloat(v) * 100).toFixed(0) + '%';
+    if (isPercent) return (parseFloat(v) * 100).toFixed(2) + '%';
     const absV = Math.abs(v);
     if (absV >= 1e12) return (v / 1e12).toFixed(1) + 'T';
     if (absV >= 1e9) return (v / 1e9).toFixed(1) + 'B';
@@ -95,7 +95,7 @@ const { chartData, title, id, height = 450 } = Astro.props;
 
   function formatYValueMillions(v: any, isPercent: boolean) {
     if (v === null || v === undefined || isNaN(v)) return '';
-    if (isPercent) return (parseFloat(v) * 100).toFixed(1) + '%';
+    if (isPercent) return (parseFloat(v) * 100).toFixed(2) + '%';
     const absV = Math.abs(v);
     if (absV > 0 && absV < 100000) return v.toLocaleString();
     return Math.round(v / 1e6).toLocaleString() + 'M';
@@ -206,17 +206,22 @@ const { chartData, title, id, height = 450 } = Astro.props;
     };
 
     const select = document.createElement('select');
-    select.className = "sm:hidden px-4 py-2 text-sm font-medium rounded-md border bg-background text-foreground border-border outline-none focus:ring-2 focus:ring-accent w-[200px] text-center mb-4";
+    select.className = "px-4 py-2 text-sm font-medium rounded-md border bg-background text-foreground border-border outline-none focus:ring-2 focus:ring-accent w-[200px] text-center mb-4 sm:hidden";
     const btnGroup = document.createElement('div');
-    btnGroup.className = "hidden sm:flex justify-center flex-wrap gap-2 mb-4";
+    btnGroup.className = "flex justify-center flex-wrap gap-2 mb-4";
     const buttons: HTMLButtonElement[] = [];
     let activeIdx = 0;
     plotlyData.layout.updatemenus[0].buttons.forEach((btn: any, btnIdx: number) => {
+      // Find active button based on initial visibility
       const isVisibleArr = btn.args && btn.args[0] && btn.args[0].visible;
-      if (isVisibleArr) {
-        const matches = isVisibleArr.every((v: any, i: number) => (v === true) === (plotlyData.data[i]?.visible !== false));
+      if (isVisibleArr && Array.isArray(isVisibleArr)) {
+        const matches = isVisibleArr.every((v: any, i: number) => {
+          const traceVisible = plotlyData.data[i]?.visible !== false;
+          return (v === true) === traceVisible;
+        });
         if (matches) activeIdx = btnIdx;
       }
+
       const option = document.createElement('option');
       option.value = btnIdx.toString();
       option.textContent = btn.label;
@@ -236,6 +241,10 @@ const { chartData, title, id, height = 450 } = Astro.props;
         updateChartData(btn);
       };
     });
+    
+    // Hide buttons if screen is small, otherwise hide select
+    btnGroup.classList.add('hidden', 'sm:flex');
+
     select.onchange = (e) => buttons[parseInt((e.target as HTMLSelectElement).value, 10)].click();
     if (buttons[activeIdx]) {
       buttons[activeIdx].classList.add('bg-foreground', 'text-white', 'border-foreground');
@@ -443,7 +452,7 @@ const { chartData, title, id, height = 450 } = Astro.props;
           },
           y1: {
             type: 'linear',
-            display: data.some((s: any) => s.name.includes('率') || s.name.includes('性向')),
+            display: data.some((s: any) => s.name.includes('率') || s.name.includes('性向') || s.name.includes('利回り')),
             position: 'right',
             grid: { drawOnChartArea: false },
             ticks: { color: textColor, callback: (value: any) => formatYValueAbbreviated(value, true) },

@@ -365,6 +365,44 @@ def get_financial_data(ticker_obj):
             df_divs['Year'] = df_divs['Date'].str.slice(0, 4)
             df_annual = df_divs.groupby('Year')['Dividends'].sum().reset_index()
             df_annual = df_annual.rename(columns={'Year': 'Date', 'Dividends': 'Value'})
+            
+            # 進行中の年度について、推定年間配当に置き換える (直近の配当 * 4)
+            current_year_str = str(datetime.datetime.now().year)
+            if current_year_str in df_annual['Date'].values:
+                latest_q_div = df_divs.sort_values('Date')['Dividends'].iloc[-1]
+                # 既に支払われた合計よりも推定値の方が大きい場合のみ更新
+                est_annual = latest_q_div * 4
+                idx = df_annual[df_annual['Date'] == current_year_str].index[0]
+                if est_annual > df_annual.loc[idx, 'Value']:
+                    df_annual.loc[idx, 'Value'] = est_annual
+                    df_annual.loc[idx, 'IsEstimate'] = True
+                else:
+                    df_annual.loc[idx, 'IsEstimate'] = False
+            else:
+                df_annual['IsEstimate'] = False
+            
+            # 各年の年初の株価を取得して配当利回りを計算
+            def get_year_start_price(year):
+                target_date = datetime.datetime(int(year), 1, 1)
+                # タイムゾーンを履歴データに合わせる
+                if hasattr(history.index, 'tzinfo') and history.index.tzinfo is not None:
+                    target_date = target_date.replace(tzinfo=history.index.tzinfo)
+                
+                try:
+                    # historyからその年以降の最初のデータを探す
+                    year_data = history[history.index >= target_date]
+                    if not year_data.empty:
+                        return float(year_data.iloc[0]['Close'])
+                    else:
+                        return None
+                except Exception:
+                    return None
+
+            df_annual['YearStartPrice'] = df_annual['Date'].apply(get_year_start_price)
+            df_annual['Yield'] = df_annual.apply(
+                lambda row: (row['Value'] / row['YearStartPrice']) if row['YearStartPrice'] and row['YearStartPrice'] > 0 else 0, 
+                axis=1
+            )
             df_annual['Item'] = 'DPS'
             
             # 四半期データ
@@ -453,33 +491,125 @@ def get_dps_eps_plotly_html(data_dict, is_data_dict):
 
 def get_dps_eps_plotly_fig(data_dict, is_data_dict):
     df_annual = data_dict.get('annual', pl.DataFrame())
+    df_q = data_dict.get('quarterly', pl.DataFrame())
     
-    if df_annual.is_empty(): return '配当実績なし'
+    if df_annual.is_empty() and df_q.is_empty(): return '配当実績なし'
     
-    # 直近5年分程度を表示
-    df_plot = df_annual.sort('Date').tail(10)
-
     fig = go.Figure()
+    
+    # --- 1. 年間配当 & 利回りトレース (棒グラフ & 折れ線) ---
+    if not df_annual.is_empty():
+        df_ann_plot = df_annual.sort('Date').tail(10)
+        
+        # 配当額トレース (棒グラフ)
+        fig.add_trace(go.Bar(
+            name='年間配当', x=df_ann_plot['Date'], y=df_ann_plot['Value'],
+            marker_color='#1f77b4',
+            text=df_ann_plot['Value'].map_elements(lambda x: f"${x:.2f}", return_dtype=pl.Utf8),
+            textposition='auto',
+            hovertemplate='年度: %{x}<br>合計配当額: $%{y:.2f}<extra></extra>',
+            visible=True
+        ))
+        
+        # 利回りトレース (年初株価ベース - 折れ線)
+        if 'Yield' in df_ann_plot.columns:
+            fig.add_trace(go.Scatter(
+                name='配当利回り', x=df_ann_plot['Date'], y=df_ann_plot['Yield'],
+                mode='lines+markers',
+                line=dict(color='#ff7f0e', width=3, dash='dot'),
+                marker=dict(size=8),
+                yaxis='y2',
+                hovertemplate='年度: %{x}<br>配当利回り: %{y:.2%}<extra></extra>',
+                visible=True
+            ))
 
-    # 配当額
-    fig.add_trace(go.Bar(
-        name='年間配当', x=df_plot['Date'], y=df_plot['Value'],
-        marker_color='#1f77b4',
-        text=df_plot['Value'].map_elements(lambda x: f"${x:.2f}", return_dtype=pl.Utf8),
-        textposition='auto',
-        hovertemplate='年度: %{x}<br>合計配当額: $%{y:.2f}<extra></extra>'
+    # --- 2. 権利落日ごとの配当トレース ---
+    has_history = False
+    if not df_q.is_empty():
+        has_history = True
+        df_q_plot = df_q.sort('Date').tail(20)
+        
+        # 配当額 (棒グラフ)
+        fig.add_trace(go.Bar(
+            name='配当額', x=df_q_plot['Date'], y=df_q_plot['Value'],
+            marker_color='#1f77b4',
+            hovertemplate='権利落日: %{x}<br>配当額: $%{y:.4f}<extra></extra>',
+            visible=False
+        ))
+        
+        # 利回り (折れ線)
+        if 'Price' in df_q_plot.columns and not df_q_plot['Price'].is_null().all():
+            df_q_plot = df_q_plot.with_columns(
+                (pl.col('Value') * 4 / pl.col('Price')).alias('Yield_Q')
+            )
+            fig.add_trace(go.Scatter(
+                name='予想配当利回り', x=df_q_plot['Date'], y=df_q_plot['Yield_Q'],
+                mode='lines+markers',
+                line=dict(color='#d62728', width=2, dash='dot'),
+                yaxis='y2',
+                hovertemplate='権利落日: %{x}<br>予想利回り: %{y:.2%}<extra></extra>',
+                visible=False
+            ))
+
+    # ボタン（タブ）の設定
+    num_traces = len(fig.data)
+    buttons = []
+    
+    # 年間推移を表示するマスク
+    annual_mask = [False] * num_traces
+    if num_traces >= 1: annual_mask[0] = True # 年間配当
+    if num_traces >= 2: annual_mask[1] = True # 年間利回り
+    
+    buttons.append(dict(
+        label="年間推移",
+        method="update",
+        args=[{"visible": annual_mask},
+              {"yaxis": {"title": "年間配当額 ($)", "side": "left", "gridcolor": "#F3F4F6", "rangemode": "tozero"},
+               "yaxis2": {"title": "配当利回り", "side": "right", "overlaying": "y", "showgrid": False, "tickformat": ".2%", "rangemode": "tozero", "visible": True}}]
     ))
+    
+    if has_history:
+        history_mask = [False] * num_traces
+        # 権利落日別は後ろから2つ
+        history_mask[-2] = True
+        history_mask[-1] = True
+        
+        buttons.append(dict(
+            label="権利落日別",
+            method="update",
+            args=[{"visible": history_mask},
+                  {"yaxis": {"title": "1回あたり配当額 ($)", "side": "left", "gridcolor": "#F3F4F6", "rangemode": "tozero"},
+                   "yaxis2": {"title": "予想利回り (年換算)", "side": "right", "overlaying": "y", "showgrid": False, "tickformat": ".2%", "rangemode": "tozero", "visible": True}}]
+        ))
 
     fig.update_layout(
-        height=450, margin=dict(t=50, b=80, l=60, r=40),
-        template='plotly_white',
-        xaxis=dict(title='年度', type='category'),
-        yaxis=dict(title='年間配当額 ($)', side='left', gridcolor='#F3F4F6', range=[0, df_plot['Value'].max() * 1.2]),
-        legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5),
+        height=450, margin=dict(t=80, b=50, l=60, r=60),
+        template='plotly_white', showlegend=True,
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+        xaxis=dict(type='category', tickangle=0, gridcolor='#F3F4F6'),
+        yaxis=dict(title="年間配当額 ($)", side="left", gridcolor="#F3F4F6", rangemode="tozero"),
+        yaxis2=dict(title="配当利回り", side="right", overlaying="y", showgrid=False, tickformat=".2%", rangemode="tozero"),
         hovermode='x unified'
     )
+
+    if buttons:
+        fig.update_layout(
+            updatemenus=[dict(
+                type="buttons", direction="right", active=0,
+                x=0.01, xanchor="left", y=1.2, yanchor="top",
+                buttons=buttons,
+                bgcolor="rgba(255, 255, 255, 0.8)",
+                bordercolor="#E5E7EB"
+            )]
+        )
     
     return fig
+    
+    return fig
+
+def get_dps_history_plotly_fig(data_dict):
+    # 下位互換性のために残すが、統合されたので実際には使用しない
+    return '統合されました'
 
 def create_chart_html(fig):
     """HTML化ヘルパー (ファイルサイズ削減のためライブラリ重複ロード回避)"""
@@ -613,7 +743,7 @@ def get_is_plotly_fig(data_dict):
     add_is_traces(fig, df_a, suffix="", visible=True)
 
     # 利益率の軸(yaxis2)の範囲調整（上端にマージンを持たせる）
-    ratios = [v for t in fig.data if t.yaxis == 'y2' and t.y is not None for v in (t.y if isinstance(t.y, (list, tuple)) else t.y.to_list()) if v is not None]
+    ratios = [v for t in fig.data if t.yaxis == 'y2' and t.y is not None for v in (t.y if isinstance(t.y, (list, tuple)) else (t.y.tolist() if hasattr(t.y, 'tolist') else t.y.to_list())) if v is not None]
     y2_range = None
     if ratios:
         max_r = max(ratios)
@@ -714,7 +844,7 @@ def get_tp_plotly_fig(data_dict):
     add_tp_traces(fig, df_a, suffix="", visible=True)
 
     # 利益率の軸(yaxis2)の範囲調整
-    ratios = [v for t in fig.data if t.yaxis == 'y2' and t.y is not None for v in (t.y if isinstance(t.y, (list, tuple)) else t.y.to_list()) if v is not None]
+    ratios = [v for t in fig.data if t.yaxis == 'y2' and t.y is not None for v in (t.y if isinstance(t.y, (list, tuple)) else (t.y.tolist() if hasattr(t.y, 'tolist') else t.y.to_list())) if v is not None]
     y2_range = None
     if ratios:
         max_r = max(ratios)
