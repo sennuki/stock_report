@@ -90,6 +90,10 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
             const { ctx } = chart;
             const datasets = chart.data.datasets;
             
+            // Skip for scatter charts
+            const isScatterChart = chart.config.type === 'scatter';
+            if (isScatterChart) return;
+            
             // Strictly define performance period labels
             const periodLabels = ['(1ヶ月)', '(3ヶ月)', '(6ヶ月)', '(年初来)', '(1年)', '(3年)', '(5年)', '(全期間)'];
             const isPerformanceChart = datasets.some((ds: any) => periodLabels.some(p => ds.label.endsWith(p)));
@@ -130,9 +134,14 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
     setupControls(wrapper, chart, plotlyData);
   }
 
-  function formatYValueAbbreviated(v: any, isPercent: boolean) {
+  function formatYValueAbbreviated(v: any, isPercent: boolean, isPerformance: boolean = false) {
     if (v === null || v === undefined || isNaN(v)) return '';
-    if (isPercent) return (parseFloat(v) * 100).toFixed(2) + '%';
+    if (isPercent) {
+      // For performance charts, use 0 decimal places as requested.
+      // For other percentages (like yields), use 2 decimal places.
+      const decimals = isPerformance ? 0 : 2;
+      return (parseFloat(v) * 100).toFixed(decimals) + '%';
+    }
     const absV = Math.abs(v);
     if (absV >= 1e12) return (v / 1e12).toFixed(1) + 'T';
     if (absV >= 1e9) return (v / 1e9).toFixed(1) + 'B';
@@ -381,9 +390,13 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
         backgroundColor: baseColor,
         borderColor: baseColor,
         borderWidth: type === 'line' ? 2 : (type === 'scatter' ? 1 : 0),
-        pointRadius: type === 'line' ? (isPerformanceChart ? ( (d.y || []).map((_: any, i: number, arr: any[]) => i === arr.length - 1 ? 4 : 0) ) : 4) : (type === 'scatter' ? ( (name.includes('S&P') && !name.includes('銘柄')) ? 8 : (idx % 4 === 0 ? 2.5 : 8) ) : 0),
-        pointHoverRadius: 6,
-        pointBorderWidth: (type === 'scatter' && (idx % 4 !== 0)) ? 2 : 0,
+        pointRadius: type === 'line' 
+          ? (isPerformanceChart ? ( (d.y || []).map((_: any, i: number, arr: any[]) => i === arr.length - 1 ? 4 : 0) ) : 4)
+          : (type === 'scatter' 
+            ? (name.includes('S&P500銘柄') ? 2.5 : 7) 
+            : 0),
+        pointHoverRadius: 12,
+        pointBorderWidth: (type === 'scatter' && !name.includes('S&P500銘柄')) ? 2 : 0,
         pointBorderColor: '#fff',
         pointStyle: 'circle',
         tension: 0.4,
@@ -562,7 +575,14 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
                   const symbol = p.customText || p.symbol || context.dataset.label;
                   return `${symbol} - リスク: ${(xVal * 100).toFixed(1)}%, リターン: ${(yVal * 100).toFixed(1)}%`;
                 }
-                return context.dataset.label + ': ' + formatYValueMillions(context.raw, context.dataset.yAxisID === 'y1');
+                
+                const value = context.raw;
+                if (isPerformanceChart && typeof value === 'number') {
+                  const val = value * 100;
+                  return context.dataset.label + ': ' + (val >= 0 ? '+' : '') + val.toFixed(1) + '%';
+                }
+                
+                return context.dataset.label + ': ' + formatYValueMillions(value, context.dataset.yAxisID === 'y1');
               }
             }
           }
@@ -574,7 +594,7 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
             display: true,
             position: yAxisPosition as any,
             grid: { color: (ctx: any) => ctx.tick?.value === 0 ? (getThemeColors().isDark ? 'rgba(229, 231, 235, 0.4)' : 'rgba(31, 41, 55, 0.4)') : gridColor, lineWidth: (ctx: any) => ctx.tick?.value === 0 ? 2 : 1 },
-            ticks: { color: textColor, callback: (value: any) => formatYValueAbbreviated(value, isScatterChart) },
+            ticks: { color: textColor, callback: (value: any) => formatYValueAbbreviated(value, isScatterChart || isPerformanceChart, isPerformanceChart) },
             stacked: hasStacking,
             title: { display: !!layout.yaxis?.title?.text, text: layout.yaxis?.title?.text, color: textColor },
             min: isScatterChart ? initialMinY : undefined, max: isScatterChart ? initialMaxY : undefined,
@@ -585,7 +605,7 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
             display: data.some((s: any) => s.name.includes('率') || s.name.includes('性向') || s.name.includes('利回り')),
             position: 'right',
             grid: { drawOnChartArea: false },
-            ticks: { color: textColor, callback: (value: any) => formatYValueAbbreviated(value, true) },
+            ticks: { color: textColor, callback: (value: any) => formatYValueAbbreviated(value, true, false) },
             stacked: false,
             title: { display: !!layout.yaxis2?.title?.text, text: layout.yaxis2?.title?.text, color: textColor }
           }

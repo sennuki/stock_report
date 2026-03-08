@@ -232,13 +232,16 @@ def generate_scatter_fig(df_metrics, target_symbol, sector_etf_symbol):
 
         hovertemplate_str = "<b>%{customdata[2]}</b><br>%{customdata[3]}<br>リスク: %{customdata[0]:.1%}<br>リターン: %{customdata[1]:.1%}<extra></extra>"
 
-        # 1. その他
-        df_others = df_p.filter(~pl.col('Symbol').is_in([target_symbol, '^GSPC', sector_etf_symbol]))
-        x, y, cdata, txt = get_data(df_others)
-        fig.add_trace(go.Scatter(x=x, y=y, customdata=cdata, text=txt, mode='markers', name=f'S&P500銘柄 ({p["label"]})', 
-                                hovertemplate=hovertemplate_str,
-                                marker=dict(size=6, color='#72777B', opacity=0.4), visible=visible))
-        
+        # 1. ターゲット
+        df_target = df_p.filter(pl.col('Symbol') == target_symbol)
+        if not df_target.is_empty():
+            x, y, cdata, txt = get_data(df_target)
+            fig.add_trace(go.Scatter(x=x, y=y, customdata=cdata, text=txt, mode='markers+text', textposition="bottom center", name=f'{target_symbol} ({p["label"]})',
+                                    hovertemplate=hovertemplate_str,
+                                    marker=dict(size=16, color='red', line=dict(width=2, color='white')), visible=visible))
+        else:
+            fig.add_trace(go.Scatter(x=[None], y=[None], name=f'{target_symbol} ({p["label"]})', visible=visible))
+
         # 2. セクター
         df_sector = df_p.filter(pl.col('Symbol') == sector_etf_symbol)
         if not df_sector.is_empty():
@@ -249,7 +252,7 @@ def generate_scatter_fig(df_metrics, target_symbol, sector_etf_symbol):
         else:
             fig.add_trace(go.Scatter(x=[None], y=[None], name=f'{sector_etf_symbol} ({p["label"]})', visible=visible))
         
-        # 3. 市場
+        # 3. 市場 (S&P 500 Index)
         df_sp500_idx = df_p.filter(pl.col('Symbol') == '^GSPC')
         if not df_sp500_idx.is_empty():
             x, y, cdata, _ = get_data(df_sp500_idx)
@@ -261,16 +264,13 @@ def generate_scatter_fig(df_metrics, target_symbol, sector_etf_symbol):
                                     marker=dict(size=12, color='black'), visible=visible))
         else:
             fig.add_trace(go.Scatter(x=[None], y=[None], name=f'S&P 500 ({p["label"]})', visible=visible))
-        
-        # 4. ターゲット
-        df_target = df_p.filter(pl.col('Symbol') == target_symbol)
-        if not df_target.is_empty():
-            x, y, cdata, txt = get_data(df_target)
-            fig.add_trace(go.Scatter(x=x, y=y, customdata=cdata, text=txt, mode='markers+text', textposition="bottom center", name=f'{target_symbol} ({p["label"]})',
-                                    hovertemplate=hovertemplate_str,
-                                    marker=dict(size=16, color='red', line=dict(width=2, color='white')), visible=visible))
-        else:
-            fig.add_trace(go.Scatter(x=[None], y=[None], name=f'{target_symbol} ({p["label"]})', visible=visible))
+
+        # 4. その他 (S&P 500 銘柄)
+        df_others = df_p.filter(~pl.col('Symbol').is_in([target_symbol, '^GSPC', sector_etf_symbol]))
+        x, y, cdata, txt = get_data(df_others)
+        fig.add_trace(go.Scatter(x=x, y=y, customdata=cdata, text=txt, mode='markers', name=f'S&P500銘柄 ({p["label"]})', 
+                                hovertemplate=hovertemplate_str,
+                                marker=dict(size=6, color='#72777B', opacity=0.4), visible=visible))
         
         trace_counts.append(4)
 
