@@ -368,18 +368,22 @@ def get_financial_data(ticker_obj):
             
             # 進行中の年度について、推定年間配当に置き換える (直近の配当 * 4)
             current_year_str = str(datetime.datetime.now().year)
+            df_annual['ActualValue'] = df_annual['Value']
+            df_annual['EstimatedPart'] = 0.0
+            df_annual['IsEstimate'] = False
+
             if current_year_str in df_annual['Date'].values:
                 latest_q_div = df_divs.sort_values('Date')['Dividends'].iloc[-1]
                 # 既に支払われた合計よりも推定値の方が大きい場合のみ更新
-                est_annual = latest_q_div * 4
+                est_total = latest_q_div * 4
                 idx = df_annual[df_annual['Date'] == current_year_str].index[0]
-                if est_annual > df_annual.loc[idx, 'Value']:
-                    df_annual.loc[idx, 'Value'] = est_annual
+                actual_paid = df_annual.loc[idx, 'Value']
+                
+                if est_total > actual_paid:
+                    df_annual.loc[idx, 'Value'] = est_total
+                    df_annual.loc[idx, 'ActualValue'] = actual_paid
+                    df_annual.loc[idx, 'EstimatedPart'] = est_total - actual_paid
                     df_annual.loc[idx, 'IsEstimate'] = True
-                else:
-                    df_annual.loc[idx, 'IsEstimate'] = False
-            else:
-                df_annual['IsEstimate'] = False
             
             # 各年の年初の株価を取得して配当利回りを計算
             def get_year_start_price(year):
@@ -501,15 +505,42 @@ def get_dps_eps_plotly_fig(data_dict, is_data_dict):
     if not df_annual.is_empty():
         df_ann_plot = df_annual.sort('Date').tail(10)
         
-        # 配当額トレース (棒グラフ)
+        # 各年度のラベル（最上部に表示するため、推定があるかないかで出し分ける）
+        def get_label(row):
+            # 推定がない年度は実績バーにラベルを出し、推定がある年度はここでは出さない
+            if not row['IsEstimate']:
+                return f"${row['Value']:.2f}"
+            return ""
+        
+        labels_base = [get_label(r) for r in df_ann_plot.to_dicts()]
+
+        # 実績分の配当 (棒グラフ - 土台)
         fig.add_trace(go.Bar(
-            name='年間配当 (年間推移)', x=df_ann_plot['Date'], y=df_ann_plot['Value'],
-            marker_color='#1f77b4',
-            text=df_ann_plot['Value'].map_elements(lambda x: f"${x:.2f}", return_dtype=pl.Utf8),
+            name='年間配当 (年間推移)', x=df_ann_plot['Date'], y=df_ann_plot['ActualValue'],
+            marker_color='#1f77b4', # 濃い青
+            text=labels_base,
             textposition='auto',
-            hovertemplate='年度: %{x}<br>合計配当額: $%{y:.2f}<extra></extra>',
-            visible=True
+            hovertemplate='年度: %{x}<br>配当額: $%{text}<extra></extra>',
+            visible=True,
+            legendgroup='annual_div',
+            showlegend=True
         ))
+
+        # 推定分の配当 (積み上げ用棒グラフ - 上乗せ分)
+        if 'EstimatedPart' in df_ann_plot.columns and df_ann_plot['EstimatedPart'].sum() > 0:
+            # 推定がある年度のみラベルを表示
+            labels_est = [f"${r['Value']:.2f}" if r['IsEstimate'] else "" for r in df_ann_plot.to_dicts()]
+            
+            fig.add_trace(go.Bar(
+                name='年間配当 (年間推移)', x=df_ann_plot['Date'], y=df_ann_plot['EstimatedPart'],
+                marker_color='#aec7e8', # 薄い青
+                text=labels_est,
+                textposition='auto',
+                hovertemplate='年度: %{x}<br>配当額: $%{text}<extra></extra>',
+                visible=True,
+                legendgroup='annual_div',
+                showlegend=False
+            ))
         
         # 利回りトレース (年初株価ベース - 折れ線)
         if 'Yield' in df_ann_plot.columns:
@@ -552,6 +583,7 @@ def get_dps_eps_plotly_fig(data_dict, is_data_dict):
     fig.update_layout(
         height=450, margin=dict(t=50, b=50, l=60, r=60),
         template='plotly_white', showlegend=True,
+        barmode='stack',
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
         xaxis=dict(type='category', tickangle=0, gridcolor='#F3F4F6'),
         yaxis=dict(title="年間配当額 ($)", side="left", gridcolor="#F3F4F6", rangemode="tozero"),
