@@ -97,7 +97,7 @@ def generate_performance_chart_fig(target_symbol, sector_etf_symbol):
         period_traces.append(current_period_traces)
 
     fig.update_layout(
-        xaxis=dict(title="日付", gridcolor="#E5E7EB"),
+        xaxis=dict(title="日付", gridcolor="#E5E7EB", nticks=8),
         yaxis=dict(title="累積リターン", tickformat=".0%", gridcolor="#E5E7EB"),
         margin=dict(l=60, r=30, t=80, b=40),
         height=500,
