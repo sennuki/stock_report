@@ -13,9 +13,7 @@ from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm
 
-# Plotly 6.0.0+ template migration:
-# Default templates still contain 'scattermapbox' references.
-# We migrate them to 'scattermap' to align with Plotly 6.0 recommendations.
+# Plotly 6.0.0+ template migration
 def fix_plotly_templates():
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
@@ -33,68 +31,80 @@ def fix_plotly_templates():
 
 fix_plotly_templates()
 
-PERIODS = [
-    {"label": "1ヶ月", "days": 21},
-    {"label": "6ヶ月", "days": 126},
-    {"label": "年初来", "days": "ytd"},
-    {"label": "1年", "days": 252},
-    {"label": "2年", "days": 504},
-    {"label": "5年", "days": 1260},
-    {"label": "10年", "days": 2520},
+PERIOD_CONFIGS = [
+    {"key": "1M", "label": "1ヶ月", "days": 21},
+    {"key": "3M", "label": "3ヶ月", "days": 63},
+    {"key": "6M", "label": "6ヶ月", "days": 126},
+    {"key": "YTD", "label": "年初来", "days": "YTD"},
+    {"key": "1Y", "label": "1年", "days": 252},
+    {"key": "2Y", "label": "2年", "days": 504},
+    {"key": "5Y", "label": "5年", "days": 1260},
 ]
 
 def process_single_stock(symbol):
-    """1銘柄の各期間のHVとリターンを計算"""
+    """1銘柄の各期間のリスク(HV)とリターンを計算"""
     try:
         ticker = yf.Ticker(symbol)
-        # 最大10年分取得
+        # 5年以上のデータを取得
         hist_pd = ticker.history(period="10y")
         if hist_pd.empty: return None
 
         hist = pl.from_pandas(hist_pd.reset_index()).select(['Date', 'Close'])
-        # タイムゾーンを除去して日付操作を容易にする
         hist = hist.with_columns(pl.col("Date").dt.replace_time_zone(None))
         hist = hist.with_columns([(pl.col("Close") / pl.col("Close").shift(1)).log().alias("Log_Return")])
         
-        last_date = hist['Date'].max()
         results = {'Symbol': symbol}
 
-        # 前日比の計算
+        # 前日比
         if len(hist) >= 2:
-            last_close = hist['Close'][-1]
-            prev_close = hist['Close'][-2]
-            results['Daily_Change'] = (last_close - prev_close) / prev_close
+            results['Daily_Change'] = float((hist['Close'][-1] - hist['Close'][-2]) / hist['Close'][-2])
         else:
-            results['Daily_Change'] = None
+            results['Daily_Change'] = 0.0
 
-        for p in PERIODS:
-            label = p['label']
-            if p['days'] == "ytd":
-                start_of_year = datetime(last_date.year, 1, 1)
-                sub = hist.filter(pl.col('Date') >= start_of_year)
+        # 最新の日付を取得
+        last_date = hist['Date'][-1]
+        
+        for p in PERIOD_CONFIGS:
+            key = p['key']
+            is_valid_period = True
+            if p['days'] == "YTD":
+                # 年初来: その年の1月1日以降
+                sub = hist.filter(pl.col("Date") >= datetime(last_date.year, 1, 1))
+                if len(sub) < 5: sub = hist.tail(21)
             else:
                 sub = hist.tail(p['days'])
+                # 要求期間の80%以上のデータが存在しない場合は無効とする（上場直後の銘柄を長期グラフから除外）
+                if len(sub) < p['days'] * 0.8:
+                    is_valid_period = False
             
-            if len(sub) < 5: # データが少なすぎる場合はスキップ
-                results[f'HV_{label}'] = None
-                results[f'Ret_{label}'] = None
-                continue
-
-            # 年率換算 (252営業日)
-            results[f'HV_{label}'] = sub['Log_Return'].std() * np.sqrt(252)
-            results[f'Ret_{label}'] = sub['Log_Return'].mean() * 252
+            if len(sub) < 5 or not is_valid_period:
+                results[f'HV_{key}'] = None
+                results[f'Ret_{key}'] = None
+            else:
+                # 年率換算リスク
+                std_val = sub['Log_Return'].std()
+                results[f'HV_{key}'] = float(std_val * np.sqrt(252)) if std_val is not None else 0.0
+                
+                # 年率換算リターン
+                total_ret = (hist['Close'][-1] / sub['Close'][0]) - 1
+                days_diff = (last_date - sub['Date'][0]).days
+                if days_diff > 5:
+                    ann_ret = (1 + total_ret) ** (365.0 / days_diff) - 1
+                    results[f'Ret_{key}'] = float(ann_ret) if np.isfinite(ann_ret) else 0.0
+                else:
+                    results[f'Ret_{key}'] = float(total_ret)
             
         return results
-    except: return None
+    except Exception:
+        return None
 
 def calculate_market_metrics_parallel(symbols):
     """全銘柄 + ETF + 指数の指標を計算"""
     sector_etfs = ["VOX", "VCR", "VDC", "VDE", "VFH", "VHT", "VIS", "VGT", "VAW", "VNQ", "VPU", "VOO"]
     target_symbols = list(set(symbols + ['^GSPC'] + sector_etfs))
 
-    print(f"\n{len(target_symbols)} 銘柄のリスク・リターン(多期間)を計算中...")
+    print(f"\n{len(target_symbols)} 銘柄のリスク・リターンを計算中...")
     results = []
-    # GitHub Actions では 10、ローカルでは 1 をデフォルトにする
     default_max_workers = 10 if os.getenv("GITHUB_ACTIONS") == "true" else 1
     current_max_workers = int(os.getenv("MAX_WORKERS", default_max_workers))
 
@@ -110,110 +120,175 @@ def generate_scatter_html(df_metrics, target_symbol, sector_etf_symbol):
     return fig.to_html(full_html=False, include_plotlyjs=False, config={'displayModeBar': False, 'scrollZoom': False, 'responsive': True})
 
 def generate_scatter_fig(df_metrics, target_symbol, sector_etf_symbol):
-    """リスク・リターン散布図生成 (期間切り替えタブ付き)"""
+    """リスク・リターン散布図生成 (多期間切り替え)"""
     fig = go.Figure()
+    trace_counts = []
+    period_ranges = []
     
-    # 各期間ごとにトレースを作成
-    # トレースの順序: [1M(Others, Sector, Market, Target), 6M(...), ...]
-    traces_per_period = 4
-    total_periods = len(PERIODS)
-    
-    for i, p in enumerate(PERIODS):
-        label = p['label']
-        visible = (label == "2年") # デフォルトは2年を表示
+    for p in PERIOD_CONFIGS:
+        key = p['key']
+        hv_col = f'HV_{key}'
+        ret_col = f'Ret_{key}'
+        visible = (key == "1Y") # 1年をデフォルト表示
         
-        hv_col = f'HV_{label}'
-        ret_col = f'Ret_{label}'
-        
-        # データ抽出 (HVとRetの両方が存在する銘柄のみ)
+        if hv_col not in df_metrics.columns:
+            trace_counts.append(0)
+            period_ranges.append({'min_x': 0, 'max_x': 2, 'min_y': -2, 'max_y': 2})
+            continue
+
         df_p = df_metrics.filter(pl.col(hv_col).is_not_null() & pl.col(ret_col).is_not_null())
-        
-        df_sp500_idx = df_p.filter(pl.col('Symbol') == '^GSPC')
-        df_target = df_p.filter(pl.col('Symbol') == target_symbol)
-        df_sector = df_p.filter(pl.col('Symbol') == sector_etf_symbol)
-        df_others = df_p.filter(~pl.col('Symbol').is_in([target_symbol, '^GSPC', sector_etf_symbol]))
+        if df_p.is_empty():
+            trace_counts.append(0)
+            period_ranges.append({'min_x': 0, 'max_x': 2, 'min_y': -2, 'max_y': 2})
+            continue
 
-        # 1. その他
-        fig.add_trace(go.Scatter(
-            x=df_others[hv_col], y=df_others[ret_col], text=df_others['Symbol'],
-            mode='markers', name='S&P500銘柄', 
-            marker=dict(size=6, color='#72777B', opacity=0.4),
-            visible=visible, hovertemplate='<b>%{text}</b><br>リスク: %{x:.1%}<br>リターン: %{y:.1%}<extra></extra>'
-        ))
-        # 2. セクター
-        fig.add_trace(go.Scatter(
-            x=df_sector[hv_col], y=df_sector[ret_col], text=[sector_etf_symbol],
-            mode='markers+text', textposition="top center", name=f'セクター({sector_etf_symbol})',
-            marker=dict(size=12, color='blue', symbol='diamond'),
-            visible=visible, hovertemplate='<b>%{text}</b><br>リスク: %{x:.1%}<br>リターン: %{y:.1%}<extra></extra>'
-        ))
-        # 3. 市場
-        fig.add_trace(go.Scatter(
-            x=df_sp500_idx[hv_col], y=df_sp500_idx[ret_col], text=['S&P 500'],
-            mode='markers+text', textposition="top center", name='S&P 500',
-            marker=dict(size=12, color='black', symbol='star'),
-            visible=visible, hovertemplate='<b>S&P 500</b><br>リスク: %{x:.1%}<br>リターン: %{y:.1%}<extra></extra>'
-        ))
-        # 4. ターゲット
-        fig.add_trace(go.Scatter(
-            x=df_target[hv_col], y=df_target[ret_col], text=[target_symbol],
-            mode='markers+text', textposition="bottom center", name=target_symbol,
-            marker=dict(size=16, color='red', line=dict(width=2, color='white')),
-            visible=visible, hovertemplate='<b>%{text}</b> (対象)<br>リスク: %{x:.1%}<br>リターン: %{y:.1%}<extra></extra>'
-        ))
-
-    # 切り替えボタンの作成
-    buttons = []
-    for i, p in enumerate(PERIODS):
-        # この期間のトレースだけをTrueにし、他をFalseにするリストを作成
-        visibility = [False] * (total_periods * traces_per_period)
-        for j in range(traces_per_period):
-            visibility[i * traces_per_period + j] = True
+        # 外れ値対策のためのクリップ範囲を計算
+        if len(df_p) > 10:
+            import math
+            q1_x = df_p[hv_col].quantile(0.05)
+            q3_x = df_p[hv_col].quantile(0.95)
+            q1_y = df_p[ret_col].quantile(0.05)
+            q3_y = df_p[ret_col].quantile(0.95)
             
-        buttons.append(dict(
-            label=p['label'],
-            method="update",
-            args=[{"visible": visibility}]
-        ))
+            # None フォールバック
+            q1_x = q1_x if q1_x is not None else 0.0
+            q3_x = q3_x if q3_x is not None else 1.0
+            q1_y = q1_y if q1_y is not None else -1.0
+            q3_y = q3_y if q3_y is not None else 1.0
+            
+            iqr_x = q3_x - q1_x
+            iqr_y = q3_y - q1_y
+            
+            # IQRが0の場合は少し余裕を持たせる
+            if iqr_x == 0: iqr_x = 0.1
+            if iqr_y == 0: iqr_y = 0.1
+            
+            raw_max_x = q3_x + iqr_x * 1.5
+            raw_max_y = q3_y + iqr_y * 1.5
+            raw_min_y = q1_y - iqr_y * 1.5
+            
+            # ターゲット銘柄とセクターETF、指数の値も考慮に入れる（これらが外枠を広げるように）
+            special_symbols = [target_symbol, sector_etf_symbol, '^GSPC']
+            df_special = df_p.filter(pl.col('Symbol').is_in(special_symbols))
+            if not df_special.is_empty():
+                target_max_y = df_special[ret_col].max()
+                target_min_y = df_special[ret_col].min()
+                if target_max_y is not None: raw_max_y = max(raw_max_y, target_max_y * 1.1)
+                if target_min_y is not None: raw_min_y = min(raw_min_y, target_min_y * 1.1)
+
+            # X軸 (下限0.0固定)
+            # ステップを算出して綺麗な倍数に切り上げ (5分割を想定)
+            step_x = 0.1 # 10%
+            if raw_max_x > 1.0: step_x = 0.2
+            if raw_max_x > 2.0: step_x = 0.5
+            if raw_max_x > 5.0: step_x = 1.0
+            max_x = math.ceil(raw_max_x / step_x) * step_x
+            min_x = 0.0
+            
+            # Y軸
+            # 下限は-1.0(-100%)までとする。綺麗なステップ幅を算出
+            min_y = max(-1.0, math.floor(raw_min_y * 10) / 10.0)
+            
+            range_y = raw_max_y - min_y
+            step_y = 0.2
+            if range_y > 1.5: step_y = 0.5
+            if range_y > 3.0: step_y = 1.0
+            if range_y > 10.0: step_y = 2.0
+            if range_y > 20.0: step_y = 5.0
+            
+            # 最大値を step_y の倍数になるように設定
+            ticks = math.ceil(range_y / step_y)
+            # 最小5目盛りは確保する
+            ticks = max(5, ticks)
+            max_y = min_y + ticks * step_y
+            
+            # グラフが潰れないようにキャップする
+            # 1ヶ月(1M)の場合は最大2000%(20.0)まで動的に許容し、それ以外は500%(5.0)でキャップする
+            cap_y = 20.0 if key == "1M" else 5.0
+            if max_y > cap_y:
+                max_y = cap_y
+                
+            # X軸も同様に極端な値をキャップ (最大でも300% (3.0)程度で十分)
+            if max_x > 3.0:
+                max_x = 3.0
+        else:
+            max_x, min_x = 2.0, 0.0
+            max_y, min_y = 2.0, -1.0
+
+        period_ranges.append({'min_x': min_x, 'max_x': max_x, 'min_y': min_y, 'max_y': max_y})
+
+        # プロット用データ抽出 (クリップ処理とオリジナルデータの保持)
+        def get_data(df):
+            orig_x = df[hv_col].to_list()
+            orig_y = df[ret_col].to_list()
+            txt = df['Symbol'].to_list()
+            
+            clipped_x = [min(max_x, max(min_x, val)) if val is not None else None for val in orig_x]
+            clipped_y = [min(max_y, max(min_y, val)) if val is not None else None for val in orig_y]
+            
+            sec = df["Security"].to_list() if "Security" in df.columns else [""] * len(txt)
+            cdata = [[ox, oy, t, s] for ox, oy, t, s in zip(orig_x, orig_y, txt, sec)]
+            return clipped_x, clipped_y, cdata, txt
+
+        hovertemplate_str = "<b>%{customdata[2]}</b><br>%{customdata[3]}<br>リスク: %{customdata[0]:.1%}<br>リターン: %{customdata[1]:.1%}<extra></extra>"
+
+        # 1. ターゲット
+        df_target = df_p.filter(pl.col('Symbol') == target_symbol)
+        if not df_target.is_empty():
+            x, y, cdata, txt = get_data(df_target)
+            fig.add_trace(go.Scatter(x=x, y=y, customdata=cdata, text=txt, mode='markers+text', textposition="bottom center", name=f'{target_symbol} ({p["label"]})',
+                                    hovertemplate=hovertemplate_str,
+                                    marker=dict(size=16, color='red', line=dict(width=2, color='white')), visible=visible))
+        else:
+            fig.add_trace(go.Scatter(x=[None], y=[None], name=f'{target_symbol} ({p["label"]})', visible=visible))
+
+        # 2. セクター
+        df_sector = df_p.filter(pl.col('Symbol') == sector_etf_symbol)
+        if not df_sector.is_empty():
+            x, y, cdata, txt = get_data(df_sector)
+            fig.add_trace(go.Scatter(x=x, y=y, customdata=cdata, text=txt, mode='markers+text', textposition="top center", name=f'{sector_etf_symbol} ({p["label"]})',
+                                    hovertemplate=hovertemplate_str,
+                                    marker=dict(size=12, color='blue'), visible=visible))
+        else:
+            fig.add_trace(go.Scatter(x=[None], y=[None], name=f'{sector_etf_symbol} ({p["label"]})', visible=visible))
+        
+        # 3. 市場 (S&P 500 Index)
+        df_sp500_idx = df_p.filter(pl.col('Symbol') == '^GSPC')
+        if not df_sp500_idx.is_empty():
+            x, y, cdata, _ = get_data(df_sp500_idx)
+            for cd in cdata:
+                cd[2] = 'S&P 500'
+                cd[3] = 'S&P 500 Index'
+            fig.add_trace(go.Scatter(x=x, y=y, customdata=cdata, text=['S&P 500'], mode='markers+text', textposition="top center", name=f'S&P 500 ({p["label"]})',
+                                    hovertemplate=hovertemplate_str,
+                                    marker=dict(size=12, color='black'), visible=visible))
+        else:
+            fig.add_trace(go.Scatter(x=[None], y=[None], name=f'S&P 500 ({p["label"]})', visible=visible))
+
+        # 4. その他 (S&P 500 銘柄)
+        df_others = df_p.filter(~pl.col('Symbol').is_in([target_symbol, '^GSPC', sector_etf_symbol]))
+        x, y, cdata, txt = get_data(df_others)
+        fig.add_trace(go.Scatter(x=x, y=y, customdata=cdata, text=txt, mode='markers', name=f'S&P500銘柄 ({p["label"]})', 
+                                hovertemplate=hovertemplate_str,
+                                marker=dict(size=6, color='#72777B', opacity=0.4), visible=visible))
+        
+        trace_counts.append(4)
+
+    # 初期レイアウト設定
+    default_xaxis_range = None
+    default_yaxis_range = None
+    
+    for i, p in enumerate(PERIOD_CONFIGS):
+        if p['key'] == "1Y":
+            pr = period_ranges[i] if i < len(period_ranges) else {'min_x': 0, 'max_x': 2, 'min_y': -2, 'max_y': 2}
+            default_xaxis_range = [pr['min_x'], pr['max_x']]
+            default_yaxis_range = [pr['min_y'], pr['max_y']]
 
     fig.update_layout(
-        xaxis=dict(title='リスク (ボラティリティ 年率)', tickformat='.0%', fixedrange=True, gridcolor='#E5E7EB'),
-        yaxis=dict(
-            title=dict(text='リターン (年率換算)', font=dict(color='#374151')),
-            tickformat='.0%', fixedrange=True, automargin=True, gridcolor='#E5E7EB'
-        ),
-        margin=dict(l=60, r=30, t=130, b=40), height=600, template='plotly_white',
-        autosize=True,
-        legend=dict(
-            orientation="h",
-            yanchor="bottom",
-            y=1.02,
-            xanchor="right",
-            x=1.0,
-            font=dict(color='#374151')
-        ),
-        updatemenus=[dict(
-            type="buttons",
-            direction="right",
-            active=4, # 2年 (インデックス4) をアクティブに
-            x=0.5,
-            y=1.25,
-            xanchor="center",
-            yanchor="top",
-            showactive=True,
-            buttons=buttons,
-            pad={"r": 10, "t": 10},
-            font=dict(size=12, color='white'),
-            bgcolor='rgba(100, 100, 100, 0.3)',
-            bordercolor='rgba(255, 255, 255, 0.5)'
-        )]
+        xaxis=dict(title='リスク (ボラティリティ 年率)', tickformat='.0%', gridcolor='#E5E7EB', range=default_xaxis_range),
+        yaxis=dict(title='リターン (年率換算)', tickformat='.0%', gridcolor='#E5E7EB', range=default_yaxis_range),
+        margin=dict(l=60, r=30, t=80, b=40), height=550, template='plotly_white',
+        showlegend=True,
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1.0)
     )
-    
     return fig
-
-if __name__ == "__main__":
-    df_metrics = calculate_market_metrics_parallel(["MSFT", "AAPL"])
-    html = generate_scatter_html(df_metrics, "MSFT", "VGT")
-    with open("test_scatter.html", "w") as f:
-        f.write(html)
-    print("test_scatter.html generated.")

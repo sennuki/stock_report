@@ -7,9 +7,14 @@ import numpy as np
 import base64
 from tqdm import tqdm
 import plotly.io as pio
+import logging
+import datetime
+# Suppress noisy yfinance errors
+logging.getLogger('yfinance').setLevel(logging.CRITICAL)
 
 import fundamentals
 import risk_return
+import performance_comparison
 import utils
 import market_data
 
@@ -32,7 +37,9 @@ def clean_plotly_data(obj):
         return [clean_plotly_data(v) for v in obj]
     elif isinstance(obj, np.ndarray):
         return obj.tolist()
-    elif isinstance(obj, np.generic):
+    elif isinstance(obj, (np.generic, datetime.datetime, datetime.date)):
+        if hasattr(obj, 'isoformat'):
+            return obj.isoformat()
         return obj.item()
     return obj
 
@@ -88,11 +95,12 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir):
         ticker_obj = utils.get_ticker(chart_target_symbol)
         fin_data = fundamentals.get_financial_data(ticker_obj)
         
-        report_data["charts"]["bs"] = fig_to_dict(fundamentals.get_bs_plotly_fig(fin_data.get('bs', {})))
-        report_data["charts"]["is"] = fig_to_dict(fundamentals.get_is_plotly_fig(fin_data.get('is', {})))
-        report_data["charts"]["cf"] = fig_to_dict(fundamentals.get_cf_plotly_fig(fin_data.get('cf', {})))
-        report_data["charts"]["tp"] = fig_to_dict(fundamentals.get_tp_plotly_fig(fin_data.get('tp', {})))
-        report_data["charts"]["dps"] = fig_to_dict(fundamentals.get_dps_eps_plotly_fig(fin_data.get('dps', {}), fin_data.get('is', {})))
+        report_data["charts"]["bs"] = fig_to_dict(fundamentals.get_bs_chart_data(fin_data.get('bs', {})))
+        report_data["charts"]["is"] = fig_to_dict(fundamentals.get_is_chart_data(fin_data.get('is', {})))
+        report_data["charts"]["cf"] = fig_to_dict(fundamentals.get_cf_chart_data(fin_data.get('cf', {})))
+        report_data["charts"]["tp"] = fig_to_dict(fundamentals.get_tp_chart_data(fin_data.get('tp', {})))
+        report_data["charts"]["dps"] = fig_to_dict(fundamentals.get_dps_eps_chart_data(fin_data.get('dps', {}), fin_data.get('is', {})))
+        report_data["charts"]["dps_history"] = fig_to_dict(fundamentals.get_dps_history_chart_data(fin_data.get('dps', {})))
         
         # --- Add Valuation Data ---
         # if "valuation" in fin_data:
@@ -102,14 +110,16 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir):
 
         # --- Add Analyst Ratings ---
         try:
-            recs = ticker_obj.recommendations_summary
+            # yfinance 1.1.0+ may output 404 or other errors for some symbols
+            recs = getattr(ticker_obj, 'recommendations_summary', None)
             if recs is not None and not recs.empty:
                 # Use current month (period '0m')
                 current_recs = recs[recs['period'] == '0m']
                 if not current_recs.empty:
                     report_data["analyst_ratings"] = current_recs.to_dict('records')[0]
-        except Exception as ree:
-            print(f"Error fetching recommendations for {ticker_display}: {ree}")
+        except Exception:
+            # Silently skip if recommendations are unavailable
+            pass
         # ----------------------------
 
     except Exception as e:
@@ -124,12 +134,29 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir):
 
     # 2. Risk Return Chart
     try:
-        fig_rr = risk_return.generate_scatter_fig(df_metrics, chart_target_symbol, sector_etf_ticker)
+        # Ensure Symbol column in df_metrics is string
+        df_metrics = df_metrics.with_columns(pl.col("Symbol").cast(pl.String))
+        
+        # Join df_info to df_metrics to add Security column for hover tooltips
+        df_metrics_with_name = df_metrics.join(
+            df_info.select(["Symbol_YF", "Security"]), 
+            left_on="Symbol", 
+            right_on="Symbol_YF", 
+            how="left"
+        )
+        fig_rr = risk_return.generate_scatter_fig(df_metrics_with_name, chart_target_symbol, sector_etf_ticker)
         report_data["charts"]["risk_return"] = fig_to_dict(fig_rr)
     except Exception as e:
         print(f"Error generating risk-return for {ticker_display}: {e}")
 
-    # 3. Peers
+    # 3. Performance Comparison Chart
+    try:
+        fig_perf = performance_comparison.generate_performance_chart_fig(chart_target_symbol, sector_etf_ticker)
+        report_data["charts"]["performance"] = fig_to_dict(fig_perf)
+    except Exception as e:
+        print(f"Error generating performance comparison for {ticker_display}: {e}")
+
+    # 4. Peers
     # Get metrics for all peers
     peer_metrics = df_metrics.select(["Symbol", "Daily_Change"])
 

@@ -22,7 +22,6 @@ let config: any = {};
 
 if (type === 'symbol-info') {
   scriptSrc = "https://s3.tradingview.com/external-embedding/embed-widget-symbol-info.js";
-  // height: "auto" だと遷移時に潰れることがあるため、十分な固定値をデフォルトにする
   config = { ...baseConfig, symbol, height: height === 450 ? 210 : height };
 } else if (type === 'symbol-overview') {
   scriptSrc = "https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js";
@@ -37,14 +36,11 @@ if (type === 'symbol-info') {
     "hideSymbolLogo": false,
     "scalePosition": "right",
     "scaleMode": "Normal",
-    "fontFamily": "-apple-system, BlinkMacSystemFont, Trebuchet MS, Roboto, Ubuntu, sans-serif",
     "fontSize": "10",
-    "noTimeScale": false,
     "valuesTracking": "1",
     "changeMode": "price-and-percent",
     "chartType": "area",
     "lineWidth": 2,
-    "lineType": 0,
     "dateRanges": ["1d|1", "1m|30", "3m|60", "12m|1D", "60m|1W", "all|1M"]
   };
 } else if (type === 'advanced-chart') {
@@ -54,7 +50,6 @@ if (type === 'symbol-info') {
     symbol,
     "interval": "D",
     "timezone": "Etc/UTC",
-    "theme": "light",
     "style": "2",
     "withdateranges": true,
     "hide_side_toolbar": true,
@@ -77,7 +72,7 @@ const widgetId = containerId || `tv-widget-${Math.random().toString(36).substrin
 ---
 
 <trading-view-widget 
-  class="tv-widget-wrapper mb-8 block" 
+  class="tv-widget-wrapper mb-8 block min-h-[100px]" 
   id={widgetId} 
   data-config={JSON.stringify(config)}
   data-src={scriptSrc}
@@ -85,7 +80,7 @@ const widgetId = containerId || `tv-widget-${Math.random().toString(36).substrin
 >
   <div class="tradingview-widget-container">
     <div class="tradingview-widget-container__widget"></div>
-    <div class="tradingview-widget-copyright">
+    <div class="tradingview-widget-copyright opacity-0">
       <a href={`https://jp.tradingview.com/symbols/${symbol.replace(':', '-')}/`} rel="noopener nofollow" target="_blank">
         <span class="blue-text">TradingViewですべてのマーケットを追跡</span>
       </a>
@@ -95,105 +90,81 @@ const widgetId = containerId || `tv-widget-${Math.random().toString(36).substrin
 
 <script>
   class TradingViewWidget extends HTMLElement {
-    private observer: MutationObserver | null = null;
-    private currentTheme: string | null = null;
+    private loaded = false;
+    private currentTheme = '';
 
     constructor() {
       super();
     }
 
     connectedCallback() {
-      // 初期レンダリング
-      this.render();
-      this.setupThemeObserver();
+      this.init();
     }
 
-    disconnectedCallback() {
-      if (this.observer) {
-        this.observer.disconnect();
-      }
-    }
-
-    setupThemeObserver() {
-      this.observer = new MutationObserver((mutations) => {
-        for (const mutation of mutations) {
-          if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-            this.render();
-            break;
+    init() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && !this.loaded) {
+            this.load();
+            observer.disconnect();
           }
+        });
+      }, { rootMargin: '200px' });
+      observer.observe(this);
+
+      // テーマ変更の監視
+      const themeObserver = new MutationObserver(() => {
+        const theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+        if (this.loaded && this.currentTheme !== theme) {
+          this.load(); // 再読み込みしてテーマ適用
         }
       });
-      
-      this.observer.observe(document.documentElement, { attributes: true });
+      themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
     }
 
-    render() {
-      if (!this.isConnected) return;
-
-      const container = this.querySelector('.tradingview-widget-container');
+    load() {
+      const container = this.querySelector('.tradingview-widget-container__widget');
       if (!container) return;
 
-      // 現在のテーマを確認
-      const isDark = document.documentElement.classList.contains('dark') || 
-                     document.documentElement.getAttribute('data-theme') === 'dark';
-      const theme = isDark ? 'dark' : 'light';
-      
-      // テーマが変わっていない場合は何もしない
-      if (this.currentTheme === theme) return;
+      const theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
       this.currentTheme = theme;
       
-      // 設定を取得してテーマを更新
-      const configStr = this.dataset.config;
-      if (!configStr) return;
-
-      const config = JSON.parse(configStr);
+      const config = JSON.parse(this.dataset.config || '{}');
       config.colorTheme = theme;
       if (config.theme) config.theme = theme;
+
+      // 既存の中身をクリア
+      container.innerHTML = '';
       
-      const src = this.dataset.src;
-      const symbol = this.dataset.symbol;
-
-      if (!src || !symbol) return;
-
-      // コンテナ内を初期化
-      container.innerHTML = `
-        <div class="tradingview-widget-container__widget"></div>
-        <div class="tradingview-widget-copyright">
-          <a href="https://jp.tradingview.com/symbols/${symbol.replace(':', '-')}/" rel="noopener nofollow" target="_blank">
-            <span class="blue-text">TradingViewですべてのマーケットを追跡</span>
-          </a>
-        </div>
-      `;
-
-      // 新しいスクリプトタグを作成
       const script = document.createElement('script');
       script.type = 'text/javascript';
-      script.src = src;
+      script.src = this.dataset.src || '';
       script.async = true;
       script.textContent = JSON.stringify(config);
       
       container.appendChild(script);
+      this.loaded = true;
+      
+      // コピーライトを表示
+      const copyright = this.querySelector('.tradingview-widget-copyright');
+      if (copyright) copyright.classList.remove('opacity-0');
     }
   }
 
-  // Define the custom element only once
   if (!customElements.get('trading-view-widget')) {
     customElements.define('trading-view-widget', TradingViewWidget);
   }
 </script>
 
 <style is:global>
-  .tradingview-widget-container {
-    width: 100%;
-  }
+  .tradingview-widget-container { width: 100%; }
   .tradingview-widget-copyright {
     font-size: 13px !important;
     line-height: 32px !important;
     text-align: center !important;
     color: #9db2bd !important;
     margin-top: 5px;
+    transition: opacity 0.5s;
   }
-  .blue-text {
-    color: #2962ff !important;
-  }
+  .blue-text { color: #2962ff !important; }
 </style>

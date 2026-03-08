@@ -5,7 +5,7 @@ import Footer from "@/components/Footer.astro";
 import stocks from "@/data/stocks.json";
 import fs from "node:fs";
 import path from "node:path";
-import PlotlyChart from "@/components/report/PlotlyChart.astro";
+import ChartJs from "@/components/report/ChartJs.astro";
 import TradingViewWidget from "@/components/report/TradingViewWidget.astro";
 import PeerLinks from "@/components/report/PeerLinks.astro";
 
@@ -18,6 +18,8 @@ export async function getStaticPaths() {
 
 const { symbol } = Astro.params;
 const jsonPath = path.join(process.cwd(), "public", "reports", `${symbol}.json`);
+const htmlPath = path.join(process.cwd(), "public", "output_reports_full", `${symbol}.html`);
+const hasHtmlReport = fs.existsSync(htmlPath);
 
 let reportData: any = null;
 let lastUpdated: string = "";
@@ -30,7 +32,9 @@ if (fs.existsSync(jsonPath)) {
     day: "numeric",
   }).format(stats.mtime);
 
-  const content = fs.readFileSync(jsonPath, "utf-8");
+  let content = fs.readFileSync(jsonPath, "utf-8");
+  // Fix invalid JSON produced by Python's json.dump (NaN to null)
+  content = content.replace(/\bNaN\b/g, "null");
   reportData = JSON.parse(content);
 }
 
@@ -77,10 +81,10 @@ if (reportData?.analyst_ratings) {
     </div>
 
     {!reportData ? (
-      <div class="report-content bg-skin-card p-10 rounded-lg border border-skin-line shadow-sm text-center">
-        <p class="text-xl">レポートが見つかりません: {symbol}</p>
-        <p class="mt-4 text-gray-500">データ生成プロセスを実行してください。</p>
-      </div>
+        <div class="report-content bg-skin-card p-10 rounded-lg border border-skin-line shadow-sm text-center">
+          <p class="text-xl">レポートが見つかりません: {symbol}</p>
+          <p class="mt-4 text-gray-500">データ生成プロセスを実行してください。</p>
+        </div>
     ) : (
       <div class="report-content bg-skin-card p-4 sm:p-8 rounded-lg border border-skin-line shadow-sm">
         <h1 class="text-3xl font-bold mb-2">銘柄分析レポート: {reportData.symbol} ({reportData.security})</h1>
@@ -118,12 +122,7 @@ if (reportData?.analyst_ratings) {
 
         <section id="risk-return" class="mt-12">
           <h2 class="text-2xl font-bold mb-4 border-b pb-2">🎯 {symbol}のリスク・リターン分析</h2>
-          <p class="mb-4">
-            <span class="inline-block w-3 h-3 bg-red-500 rounded-full mr-1"></span> <strong>{reportData.symbol}</strong> (対象) vs 
-            <span class="inline-block w-3 h-3 bg-blue-500 transform rotate-45 mr-1"></span> <strong>{reportData.sector_etf}</strong> (セクター) vs 
-            <span class="inline-block w-3 h-3 bg-black rounded-sm mr-1"></span> ★ <strong>S&P 500</strong>
-          </p>
-          <PlotlyChart chartData={reportData.charts.risk_return} id="chart-risk-return" />
+          <ChartJs chartData={reportData.charts.risk_return} id="chart-risk-return" height={550} />
         </section>
 
         <section id="peers" class="mt-12">
@@ -138,15 +137,19 @@ if (reportData?.analyst_ratings) {
 
         <section id="performance">
           <h2 class="text-2xl font-bold mb-4 border-b pb-2">📈 {symbol}のパフォーマンス比較</h2>
-          <TradingViewWidget 
-            symbol={reportData.full_symbol} 
-            type="advanced-chart" 
-            height={600} 
-            compareSymbols={[
-              { symbol: `AMEX:${reportData.sector_etf}`, position: "SameScale" },
-              { symbol: "FRED:SP500", position: "SameScale" }
-            ]}
-          />
+          {reportData.charts.performance ? (
+            <ChartJs chartData={reportData.charts.performance} id="chart-performance" />
+          ) : (
+            <TradingViewWidget 
+              symbol={reportData.full_symbol} 
+              type="advanced-chart" 
+              height={600} 
+              compareSymbols={[
+                { symbol: `AMEX:${reportData.sector_etf}`, position: "SameScale" },
+                { symbol: "FRED:SP500", position: "SameScale" }
+              ]}
+            />
+          )}
         </section>
 
         <section id="fundamentals" class="mt-12">
@@ -155,27 +158,27 @@ if (reportData?.analyst_ratings) {
         </section>
 
         <section id="fundamentals-detail" class="mt-12">
-          <h2 class="text-2xl font-bold mb-4 border-b pb-2">📈 {symbol}の財務データ推移 (詳細分析)</h2>
-          
-          <div id="balance-sheet" class="scroll-mt-20">
-            <PlotlyChart chartData={reportData.charts.bs} id="chart-bs" title="貸借対照表" />
+          <h2 class="text-2xl font-bold mb-8 border-b pb-2">📈 {symbol}の財務データ推移 (詳細分析)</h2>
+
+          <div id="balance-sheet" class="scroll-mt-20 my-24">
+            <ChartJs chartData={reportData.charts.bs} id="chart-bs" title="貸借対照表" />
           </div>
-          
-          <div id="income-statement" class="scroll-mt-20">
-            <PlotlyChart chartData={reportData.charts.is} id="chart-is" title="損益計算書" />
+
+          <div id="income-statement" class="scroll-mt-20 my-24">
+            <ChartJs chartData={reportData.charts.is} id="chart-is" title="損益計算書" />
           </div>
-          
-          <div id="cash-flow" class="scroll-mt-20">
-            <PlotlyChart chartData={reportData.charts.cf} id="chart-cf" title="キャッシュフロー" />
+
+          <div id="cash-flow" class="scroll-mt-20 my-24">
+            <ChartJs chartData={reportData.charts.cf} id="chart-cf" title="キャッシュフロー" />
           </div>
-          
-          <div id="shareholder-return" class="scroll-mt-20">
-            <PlotlyChart chartData={reportData.charts.tp} id="chart-tp" title="株主還元" />
+
+          <div id="shareholder-return" class="scroll-mt-20 my-24">
+            <ChartJs chartData={reportData.charts.tp} id="chart-tp" title="株主還元" />
           </div>
-          
-          <div id="dividend-history" class="scroll-mt-20">
-            <PlotlyChart chartData={reportData.charts.dps} id="chart-dps" title="1株あたり配当金" />
-            <p class="text-sm text-gray-500 mt-2">※配当回数を推定して年換算利回りを算出しています。</p>
+
+          <div id="dividend-history" class="scroll-mt-20 my-24">
+            <ChartJs chartData={reportData.charts.dps} id="chart-dps" title="1株あたり配当金" />
+            <p class="text-sm text-gray-500 mt-24 block relative z-10">※「権利落日別」タブでは、当時の株価に基づいた予想配当利回り（年換算）も表示しています。</p>
           </div>
         </section>
 

@@ -88,11 +88,12 @@ const nextPost =
   <main
     id="main-content"
     class:list={["app-layout pb-12", { "mt-8": !SITE.showBackButton }]}
-    data-pagefind-body
   >
     <h1
       transition:name={slugifyStr(title)}
       class="inline-block text-2xl font-bold text-accent sm:text-3xl"
+      data-pagefind-body
+      data-pagefind-meta="title"
     >
       {title}
     </h1>
