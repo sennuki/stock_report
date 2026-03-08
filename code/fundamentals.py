@@ -572,7 +572,7 @@ def get_dps_eps_plotly_fig(data_dict, is_data_dict):
                 (pl.col('Value') * 4 / pl.col('Price')).alias('Yield_Q')
             )
             fig.add_trace(go.Scatter(
-                name='予想配当利回り (権利落日別)', x=df_q_plot['Date'], y=df_q_plot['Yield_Q'],
+                name='配当利回り (権利落日別)', x=df_q_plot['Date'], y=df_q_plot['Yield_Q'],
                 mode='lines+markers',
                 line=dict(color='#d62728', width=2, dash='dot'),
                 yaxis='y2',
@@ -657,22 +657,60 @@ def get_bs_plotly_fig(data_dict):
         limit = 6 if suffix == "" else 8
         df_plot = df_plot.tail(limit)
 
+        # 数値を省略形式でフォーマットする関数
+        def format_bs_val(series):
+            return [
+                f"${v/1e9:.1f}B" if abs(v) >= 1e9 else (f"${v/1e6:.0f}M" if abs(v) >= 1e6 else f"${v:.0f}")
+                for v in series
+            ]
+
         trace_count = 0
         has_breakdown = (df_plot['CurrAssets'].sum() != 0)
         if has_breakdown:
             # 資産側 - 下から順に追加 (固定->流動)
-            fig.add_trace(go.Bar(name='固定資産' + suffix, x=df_plot['Date'], y=df_plot['NonCurrAssets'], marker_color='#1f77b4', offsetgroup=0, visible=visible)) 
-            fig.add_trace(go.Bar(name='流動資産' + suffix, x=df_plot['Date'], y=df_plot['CurrAssets'], marker_color='#aec7e8', offsetgroup=0, visible=visible))
+            fig.add_trace(go.Bar(
+                name='固定資産' + suffix, x=df_plot['Date'], y=df_plot['NonCurrAssets'], 
+                marker_color='#1f77b4', offsetgroup=0, visible=visible,
+                text=format_bs_val(df_plot['NonCurrAssets']), textposition='auto'
+            )) 
+            fig.add_trace(go.Bar(
+                name='流動資産' + suffix, x=df_plot['Date'], y=df_plot['CurrAssets'], 
+                marker_color='#aec7e8', offsetgroup=0, visible=visible,
+                text=format_bs_val(df_plot['CurrAssets']), textposition='auto'
+            ))
             # 負債・純資産側 - 下から順に追加 (純資産->固定負債->流動負債)
-            fig.add_trace(go.Bar(name='純資産' + suffix, x=df_plot['Date'], y=df_plot['Equity'], marker_color='#2ca02c', offsetgroup=1, visible=visible))
-            fig.add_trace(go.Bar(name='固定負債' + suffix, x=df_plot['Date'], y=df_plot['FixedLiab'], marker_color='#ff7f0e', offsetgroup=1, visible=visible))
-            fig.add_trace(go.Bar(name='流動負債' + suffix, x=df_plot['Date'], y=df_plot['CurrLiab'], marker_color='#ffbb78', offsetgroup=1, visible=visible))
+            fig.add_trace(go.Bar(
+                name='純資産' + suffix, x=df_plot['Date'], y=df_plot['Equity'], 
+                marker_color='#2ca02c', offsetgroup=1, visible=visible,
+                text=format_bs_val(df_plot['Equity']), textposition='auto'
+            ))
+            fig.add_trace(go.Bar(
+                name='固定負債' + suffix, x=df_plot['Date'], y=df_plot['FixedLiab'], 
+                marker_color='#ff7f0e', offsetgroup=1, visible=visible,
+                text=format_bs_val(df_plot['FixedLiab']), textposition='auto'
+            ))
+            fig.add_trace(go.Bar(
+                name='流動負債' + suffix, x=df_plot['Date'], y=df_plot['CurrLiab'], 
+                marker_color='#ffbb78', offsetgroup=1, visible=visible,
+                text=format_bs_val(df_plot['CurrLiab']), textposition='auto'
+            ))
             trace_count = 5
         else:
-            fig.add_trace(go.Bar(name='総資産' + suffix, x=df_plot['Date'], y=df_plot['TotalAssets'], marker_color='#1f77b4', offsetgroup=0, visible=visible))
-            fig.add_trace(go.Bar(name='純資産' + suffix, x=df_plot['Date'], y=df_plot['Equity'], marker_color='#2ca02c', offsetgroup=1, visible=visible))
-            fig.add_trace(go.Bar(name='総負債' + suffix, x=df_plot['Date'], y=df_plot['TotalLiab'], marker_color='#ff7f0e', offsetgroup=1, visible=visible))
-            trace_count = 3
+            fig.add_trace(go.Bar(
+                name='総資産' + suffix, x=df_plot['Date'], y=df_plot['TotalAssets'], 
+                marker_color='#1f77b4', offsetgroup=0, visible=visible,
+                text=format_bs_val(df_plot['TotalAssets']), textposition='auto'
+            ))
+            fig.add_trace(go.Bar(
+                name='純資産' + suffix, x=df_plot['Date'], y=df_plot['Equity'], 
+                marker_color='#2ca02c', offsetgroup=1, visible=visible,
+                text=format_bs_val(df_plot['Equity']), textposition='auto'
+            ))
+            fig.add_trace(go.Bar(
+                name='総負債' + suffix, x=df_plot['Date'], y=df_plot['TotalLiab'], 
+                marker_color='#ff7f0e', offsetgroup=1, visible=visible,
+                text=format_bs_val(df_plot['TotalLiab']), textposition='auto'
+            ))
         return trace_count
 
     add_bs_traces(fig, df_a, suffix=" (通年)", visible=True)
@@ -682,7 +720,9 @@ def get_bs_plotly_fig(data_dict):
                       template='plotly_white', showlegend=True,
                       xaxis=dict(type='category', tickangle=0),
                       yaxis=dict(type='linear', rangemode='tozero', automargin=True, gridcolor='#F3F4F6'),
-                      legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5))
+                      legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5),
+                      uniformtext=dict(minsize=8, mode='hide'))
+    fig.update_traces(texttemplate='%{text}', textposition='inside')
     return fig
 
 def get_is_plotly_html(data_dict):

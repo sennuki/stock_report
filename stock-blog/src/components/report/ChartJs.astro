@@ -78,12 +78,62 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
     if (!plotlyData || !plotlyData.data) return;
     const { isDark, textColor, gridColor } = getThemeColors();
     const yAxisPosition = wrapper.dataset.yAxisPosition || 'left';
-    const config = transformPlotlyToChartJs(plotlyData, isDark, textColor, gridColor, yAxisPosition);
+    const config = transformPlotlyToChartJs(plotlyData, isDark, textColor, gridColor, yAxisPosition, canvas.id);
     if (!config) return;
+    
+    // 既存のチャートを確実に破棄
+    const existingChart = Chart.getChart(canvas);
+    if (existingChart) existingChart.destroy();
     if ((canvas as any)._chart_instance) (canvas as any)._chart_instance.destroy();
+    
     const chart = new Chart(canvas, {
       ...config as any,
       plugins: [
+        {
+          id: 'barDataLabels',
+          afterDatasetsDraw: (chart: any) => {
+            const { ctx, data } = chart;
+            // 棒グラフかつ、特定の財務・配当チャートを対象とする
+            const targetIds = ['chart-bs', 'chart-is', 'chart-cf', 'chart-tp', 'chart-dps'];
+            if (!targetIds.includes(canvas.id)) return;
+
+            // スマホ画面かつ「権利落日別」タブの場合は配当チャートの数値を非表示にする
+            const isMobile = window.innerWidth < 640;
+            if (canvas.id === 'chart-dps' && chart._activeGroup === '権利落日別' && isMobile) {
+              return;
+            }
+
+            ctx.save();
+            data.datasets.forEach((dataset: any, i: number) => {
+              const meta = chart.getDatasetMeta(i);
+              if (meta.hidden || !chart.isDatasetVisible(i) || dataset.type !== 'bar') return;
+
+              meta.data.forEach((element: any, index: number) => {
+                const dataValue = dataset.data[index];
+                if (dataValue === null || dataValue === 0) return;
+
+                // 棒の高さがラベルを表示するのに十分か確認
+                if (Math.abs(element.height) < 12) return;
+
+                const label = formatYValueAbbreviated(dataValue, false);
+                
+                // 背景色（棒の色）に応じて文字色を調整（簡易版）
+                ctx.fillStyle = '#ffffff'; 
+                ctx.font = 'bold 10px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                
+                // 積み上げ棒の中央に描画
+                const x = element.x;
+                const y = element.y + (element.height / 2);
+                
+                // 文字が重ならないように、非常に狭い棒の場合は描画しない等の処理も可能
+                ctx.fillText(label, x, y);
+              });
+            });
+            ctx.restore();
+          }
+        },
         {
           id: 'latestValueLabel',
           afterDatasetsDraw: (chart: any) => {
@@ -134,12 +184,19 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
     setupControls(wrapper, chart, plotlyData);
   }
 
-  function formatYValueAbbreviated(v: any, isPercent: boolean, isPerformance: boolean = false) {
+  function formatYValueAbbreviated(v: any, isPercent: boolean, isPerformance: boolean = false, canvasId: string = '') {
     if (v === null || v === undefined || isNaN(v)) return '';
     if (isPercent) {
-      // For performance charts, use 0 decimal places as requested.
-      // For other percentages (like yields), use 2 decimal places.
-      const decimals = isPerformance ? 0 : 2;
+      // 損益計算書(chart-is)と株主還元(chart-tp)の比率は小数点0桁にする
+      const isFinRatio = ['chart-is', 'chart-tp'].includes(canvasId);
+      
+      // パフォーマンスチャートは0桁
+      // 財務比率(利益率、総還元性向)も0桁
+      // それ以外（配当利回りなど）は2桁
+      let decimals = 2;
+      if (isPerformance || isFinRatio) {
+        decimals = 0;
+      }
       return (parseFloat(v) * 100).toFixed(decimals) + '%';
     }
     const absV = Math.abs(v);
@@ -365,7 +422,7 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
     }
   }
 
-  function transformPlotlyToChartJs(plotlyData: any, isDark: boolean, textColor: string, gridColor: string, yAxisPosition: string = 'left') {
+  function transformPlotlyToChartJs(plotlyData: any, isDark: boolean, textColor: string, gridColor: string, yAxisPosition: string = 'left', canvasId: string = '') {
     const data = plotlyData.data || [];
     const layout = plotlyData.layout || {};
     const isScatterChart = data.some((d: any) => d.type === 'scatter' && d.mode && d.mode.includes('markers')) && !data.some((d: any) => d.type === 'bar');
@@ -594,7 +651,7 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
             display: true,
             position: yAxisPosition as any,
             grid: { color: (ctx: any) => ctx.tick?.value === 0 ? (getThemeColors().isDark ? 'rgba(229, 231, 235, 0.4)' : 'rgba(31, 41, 55, 0.4)') : gridColor, lineWidth: (ctx: any) => ctx.tick?.value === 0 ? 2 : 1 },
-            ticks: { color: textColor, callback: (value: any) => formatYValueAbbreviated(value, isScatterChart || isPerformanceChart, isPerformanceChart) },
+            ticks: { color: textColor, callback: (value: any) => formatYValueAbbreviated(value, isScatterChart || isPerformanceChart, isPerformanceChart, canvasId) },
             stacked: hasStacking,
             title: { display: !!layout.yaxis?.title?.text, text: layout.yaxis?.title?.text, color: textColor },
             min: isScatterChart ? initialMinY : undefined, max: isScatterChart ? initialMaxY : undefined,
@@ -605,7 +662,7 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
             display: data.some((s: any) => s.name.includes('率') || s.name.includes('性向') || s.name.includes('利回り')),
             position: 'right',
             grid: { drawOnChartArea: false },
-            ticks: { color: textColor, callback: (value: any) => formatYValueAbbreviated(value, true, false) },
+            ticks: { color: textColor, callback: (value: any) => formatYValueAbbreviated(value, true, false, canvasId) },
             stacked: false,
             title: { display: !!layout.yaxis2?.title?.text, text: layout.yaxis2?.title?.text, color: textColor }
           }
