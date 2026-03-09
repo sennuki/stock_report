@@ -136,6 +136,7 @@ if (reportData?.analyst_ratings) {
                 <li><a href="#fundamentals" class="text-skin-accent hover:underline">{symbol}のファンダメンタルズ分析 (概要)</a></li>
                 <li><a href="#fundamentals-detail" class="text-skin-accent hover:underline">{symbol}の財務データ推移 (詳細)</a></li>
                 <li><a href="#analyst-ratings" class="text-skin-accent hover:underline">{symbol}のアナリスト評価 (直近)</a></li>
+                <li><a href="#japan-brokers" class="text-skin-accent hover:underline">日本の証券会社での取り扱い</a></li>
             </ul>
         </nav>
 
@@ -619,6 +620,111 @@ if (reportData?.analyst_ratings) {
           ) : (
             <p class="text-gray-500">アナリスト評価データは現在利用できません。</p>
           )}
+        </section>
+
+        <section id="japan-brokers" class="mt-20 border-t-2 border-skin-accent/20 pt-10 pb-8">
+          <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+             <span class="text-2xl">🇯🇵</span> 日本の証券会社での購入可否
+          </h2>
+          
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class={`p-6 rounded-lg border-2 flex flex-col justify-between bg-transparent ${reportData.is_available_monex ? 'border-green-500/30' : 'border-gray-300'}`}>
+              <div class="flex items-center gap-4 mb-6">
+                <div class={`p-3 rounded-full ${reportData.is_available_monex ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
+                   {reportData.is_available_monex ? (
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                     </svg>
+                   ) : (
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                     </svg>
+                   )}
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold text-skin-base">マネックス証券</h3>
+                  <p class="text-sm opacity-70">Monex Securities</p>
+                </div>
+              </div>
+              <div class="flex flex-col gap-3">
+                <span class={`w-full text-center py-2 rounded-full font-bold text-sm ${reportData.is_available_monex ? 'bg-green-600 text-white' : 'bg-gray-400 text-white'}`}>
+                  {reportData.is_available_monex ? '購入可能' : '取扱なし'}
+                </span>
+                <a href="https://mst.monex.co.jp/mst/servlet/ITS/ucu/UsSymbolListGST?etf=0" target="_blank" rel="noopener noreferrer" class="text-xs text-skin-accent hover:underline flex items-center justify-center gap-1">
+                  公式サイトを確認
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+
+            <div class={`p-6 rounded-lg border-2 flex flex-col justify-between bg-transparent ${reportData.is_available_rakuten ? 'border-green-500/30' : 'border-gray-300'}`}>
+              <div class="flex items-center gap-4 mb-6">
+                <div class={`p-3 rounded-full ${reportData.is_available_rakuten ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
+                   {reportData.is_available_rakuten ? (
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                     </svg>
+                   ) : (
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                     </svg>
+                   )}
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold text-skin-base">楽天証券</h3>
+                  <p class="text-sm opacity-70">Rakuten Securities</p>
+                </div>
+              </div>
+              <div class="flex flex-col gap-3">
+                <span class={`w-full text-center py-2 rounded-full font-bold text-sm ${reportData.is_available_rakuten ? 'bg-green-600 text-white' : 'bg-gray-400 text-white'}`}>
+                  {reportData.is_available_rakuten ? '購入可能' : '取扱なし'}
+                </span>
+                <a href="https://www.rakuten-sec.co.jp/web/market/search/us_search/result.html?all=on&vall=on&forwarding=na&target=0&theme=na&returns=na&head_office=na&name=&code=&sector=na&pageNo=&c=us&p=result&r1=on" target="_blank" rel="noopener noreferrer" class="text-xs text-skin-accent hover:underline flex items-center justify-center gap-1">
+                  公式サイトを確認
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+
+            <div class={`p-6 rounded-lg border-2 flex flex-col justify-between bg-transparent ${reportData.is_available_sbi ? 'border-green-500/30' : 'border-gray-300'}`}>
+              <div class="flex items-center gap-4 mb-6">
+                <div class={`p-3 rounded-full ${reportData.is_available_sbi ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
+                   {reportData.is_available_sbi ? (
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                     </svg>
+                   ) : (
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                     </svg>
+                   )}
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold text-skin-base">SBI証券</h3>
+                  <p class="text-sm opacity-70">SBI Securities</p>
+                </div>
+              </div>
+              <div class="flex flex-col gap-3">
+                <span class={`w-full text-center py-2 rounded-full font-bold text-sm ${reportData.is_available_sbi ? 'bg-green-600 text-white' : 'bg-gray-400 text-white'}`}>
+                  {reportData.is_available_sbi ? '購入可能' : '取扱なし'}
+                </span>
+                <a href="https://search.sbisec.co.jp/v2/popwin/info/stock/pop6040_usequity_list.html#us" target="_blank" rel="noopener noreferrer" class="text-xs text-skin-accent hover:underline flex items-center justify-center gap-1">
+                  公式サイトを確認
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <p class="text-xs text-gray-500 mt-6 bg-skin-fill/50 p-4 rounded border border-skin-line italic">
+            ※本データは各証券会社が公開している「取扱銘柄リスト」に基づき自動判定されています。最新の取扱状況や、売買停止・特定口座の対応状況については必ず各証券会社の公式サイトをご確認ください。
+          </p>
         </section>
       </div>
     )}

@@ -55,7 +55,7 @@ def fig_to_dict(fig):
     # Thoroughly clean bdata and numpy types
     return clean_plotly_data(data)
 
-def generate_json_for_ticker(row, df_info, df_metrics, output_dir):
+def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols=None, rakuten_symbols=None, sbi_symbols=None):
     # Add a small random delay to mimic human behavior and avoid rate limits
     time.sleep(random.uniform(0.5, 1.5))
     
@@ -65,6 +65,11 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir):
     current_sub_industry = row['GICS Sub-Industry']
     exchange = row['Exchange']
     
+    # Check availability
+    is_available_monex = ticker_display in monex_symbols if monex_symbols else False
+    is_available_rakuten = ticker_display in rakuten_symbols if rakuten_symbols else False
+    is_available_sbi = ticker_display in sbi_symbols if sbi_symbols else False
+
     # TradingView symbol
     tv_ticker = ticker_display.replace("-", ".")
     full_symbol = f"{exchange}:{tv_ticker}"
@@ -88,6 +93,9 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir):
         "exchange": exchange,
         "full_symbol": full_symbol,
         "sector_etf": sector_etf_ticker,
+        "is_available_monex": is_available_monex,
+        "is_available_rakuten": is_available_rakuten,
+        "is_available_sbi": is_available_sbi,
         "charts": {}
     }
 
@@ -290,11 +298,22 @@ def export_json_reports(df_info, df_metrics, output_dir="../stock-blog/public/re
     if not os.path.exists(output_dir): os.makedirs(output_dir)
 
     print(f"\nJSONレポート生成開始: {output_dir}")
+    
+    # 取扱銘柄リストを取得
+    monex_symbols = market_data.get_monex_available_symbols()
+    print(f"マネックス証券 取扱銘柄数: {len(monex_symbols)}")
+    
+    rakuten_symbols = market_data.get_rakuten_available_symbols()
+    print(f"楽天証券 取扱銘柄数: {len(rakuten_symbols)}")
+    
+    sbi_symbols = market_data.get_sbi_available_symbols()
+    print(f"SBI証券 取扱銘柄数: {len(sbi_symbols)}")
+
     rows = df_info.to_dicts()
     max_workers = 1 
     
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
-        futures = {executor.submit(generate_json_for_ticker, row, df_info, df_metrics, output_dir): row['Symbol'] for row in rows}
+        futures = {executor.submit(generate_json_for_ticker, row, df_info, df_metrics, output_dir, monex_symbols, rakuten_symbols, sbi_symbols): row['Symbol'] for row in rows}
         for future in tqdm(concurrent.futures.as_completed(futures), total=len(rows)):
             try:
                 future.result()
