@@ -160,6 +160,177 @@ def get_sbi_available_symbols():
             
     return symbols
 
+def get_mufg_available_symbols():
+    """
+    三菱UFJ eスマート証券（auカブコム証券）の米国株取扱銘柄リストを取得し、シンボルのセットを返します。
+    """
+    url = "https://kabu.com/process/beikabu.js"
+    csv_path = "Mufg_US_LIST.js"
+    
+    if os.path.exists(csv_path):
+        try:
+            with open(csv_path, "r", encoding="utf-8", errors="replace") as f:
+                content = f.read()
+        except Exception:
+            content = None
+    else:
+        content = None
+
+    if not content:
+        if curl_requests:
+            try:
+                resp = curl_requests.get(url, impersonate="chrome110")
+                resp.raise_for_status()
+                # Content is usually UTF-8
+                content = resp.content.decode("utf-8", errors="replace")
+                with open(csv_path, "w", encoding="utf-8", errors="replace") as f:
+                    f.write(content)
+            except Exception as e:
+                print(f"Error fetching MUFG list: {e}")
+                return set()
+        else:
+            return set()
+
+    import re
+    symbols = set()
+    # <td>A</td> のような形式を抽出
+    # beikabu.js の構造: <td>SYMBOL</td>
+    matches = re.findall(r"<td>([A-Z\.]+?)</td>", content)
+    for symbol in matches:
+        if symbol and any(c.isalnum() for c in symbol):
+            symbols.add(symbol)
+    
+    return symbols
+
+def get_matsui_available_symbols():
+    """
+    松井証券の米国株取扱銘柄リストを取得し、シンボルのセットを返します。
+    """
+    url = "https://www.matsui.co.jp/us-stock/domestic/list/symbollist/symbollist.csv"
+    csv_path = "Matsui_US_LIST.csv"
+    
+    if os.path.exists(csv_path):
+        try:
+            with open(csv_path, "rb") as f:
+                content = f.read().decode("cp932", errors="replace")
+        except Exception:
+            content = None
+    else:
+        content = None
+
+    if not content:
+        if curl_requests:
+            try:
+                resp = curl_requests.get(url, impersonate="chrome110")
+                resp.raise_for_status()
+                content = resp.content.decode("cp932", errors="replace")
+                with open(csv_path, "wb") as f:
+                    f.write(resp.content)
+            except Exception as e:
+                print(f"Error fetching Matsui list: {e}")
+                return set()
+        else:
+            return set()
+
+    symbols = set()
+    lines = content.splitlines()
+    for line in lines:
+        parts = line.split(",")
+        if len(parts) >= 1:
+            symbol = parts[0].strip()
+            # ヘッダー「コード」を除外
+            if symbol and symbol != "コード" and any(c.isalnum() for c in symbol):
+                symbols.add(symbol)
+    
+    return symbols
+
+def get_dmm_available_symbols():
+    """
+    DMM株の米国株取扱銘柄リストを取得し、シンボルのセットを返します。
+    """
+    url = "https://kabu.dmm.com/_data/us-stock.csv"
+    csv_path = "Dmm_US_LIST.csv"
+    
+    if os.path.exists(csv_path):
+        try:
+            with open(csv_path, "r", encoding="utf-8", errors="replace") as f:
+                content = f.read()
+        except Exception:
+            content = None
+    else:
+        content = None
+
+    if not content:
+        if curl_requests:
+            try:
+                resp = curl_requests.get(url, impersonate="chrome110")
+                resp.raise_for_status()
+                content = resp.text
+                with open(csv_path, "w", encoding="utf-8", errors="replace") as f:
+                    f.write(content)
+            except Exception as e:
+                print(f"Error fetching DMM list: {e}")
+                return set()
+        else:
+            return set()
+
+    symbols = set()
+    lines = content.splitlines()
+    for line in lines:
+        parts = line.split(",")
+        if len(parts) >= 1:
+            symbol = parts[0].strip()
+            # ヘッダー「code」を除外
+            if symbol and symbol != "code" and any(c.isalnum() for c in symbol):
+                symbols.add(symbol)
+    
+    return symbols
+
+def get_paypay_available_symbols():
+    """
+    PayPay証券の米国株取扱銘柄リストを取得し、シンボルのセットを返します。
+    """
+    urls = [
+        "https://www.paypay-sec.co.jp/us-stock/list/data-us_stock.json",
+        "https://www.paypay-sec.co.jp/us-stock/list/data-us_etf.json"
+    ]
+    cache_path = "Paypay_US_LIST.txt"
+    
+    if os.path.exists(cache_path):
+        try:
+            with open(cache_path, "r", encoding="utf-8") as f:
+                return set(line.strip() for line in f if line.strip())
+        except Exception:
+            pass
+
+    if not curl_requests:
+        return set()
+
+    import json
+    symbols = set()
+    
+    for url in urls:
+        try:
+            resp = curl_requests.get(url, impersonate="chrome110", timeout=15)
+            resp.raise_for_status()
+            data = resp.json()
+            for item in data:
+                symbol = item.get("codenumber", "").strip()
+                if symbol and any(c.isalnum() for c in symbol):
+                    symbols.add(symbol)
+        except Exception as e:
+            print(f"Error fetching PayPay list from {url}: {e}")
+
+    if symbols:
+        try:
+            with open(cache_path, "w", encoding="utf-8") as f:
+                for s in sorted(list(symbols)):
+                    f.write(f"{s}\n")
+        except Exception:
+            pass
+
+    return symbols
+
 def get_market_info(symbol):
     try:
         t = utils.get_ticker(symbol)

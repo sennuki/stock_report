@@ -8,6 +8,10 @@ dist/
 *.log
 # 生成されたレポート（HTMLファイル）を除外
 *.html
+*US_LIST.csv
+*US_LIST.js
+*US_LIST.html
+*US_LIST.txt
 **/output_reports_full/
 **/test_reports/
 .venv/

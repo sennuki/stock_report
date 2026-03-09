@@ -627,7 +627,7 @@ if (reportData?.analyst_ratings) {
              <span class="text-2xl">🇯🇵</span> 日本の証券会社での購入可否
           </h2>
           
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div class={`p-6 rounded-lg border-2 flex flex-col justify-between bg-transparent ${reportData.is_available_monex ? 'border-green-500/30' : 'border-gray-300'}`}>
               <div class="flex items-center gap-4 mb-6">
                 <div class={`p-3 rounded-full ${reportData.is_available_monex ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
@@ -713,6 +713,130 @@ if (reportData?.analyst_ratings) {
                   {reportData.is_available_sbi ? '購入可能' : '取扱なし'}
                 </span>
                 <a href="https://search.sbisec.co.jp/v2/popwin/info/stock/pop6040_usequity_list.html#us" target="_blank" rel="noopener noreferrer" class="text-xs text-skin-accent hover:underline flex items-center justify-center gap-1">
+                  公式サイトを確認
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+
+            <div class={`p-6 rounded-lg border-2 flex flex-col justify-between bg-transparent ${reportData.is_available_mufg ? 'border-green-500/30' : 'border-gray-300'}`}>
+              <div class="flex items-center gap-4 mb-6">
+                <div class={`p-3 rounded-full ${reportData.is_available_mufg ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
+                   {reportData.is_available_mufg ? (
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                     </svg>
+                   ) : (
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                     </svg>
+                   )}
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold text-skin-base leading-tight">三菱UFJ<br/>eスマート証券</h3>
+                  <p class="text-xs opacity-70 mt-1">au Kabucom Securities</p>
+                </div>
+              </div>
+              <div class="flex flex-col gap-3">
+                <span class={`w-full text-center py-2 rounded-full font-bold text-sm ${reportData.is_available_mufg ? 'bg-green-600 text-white' : 'bg-gray-400 text-white'}`}>
+                  {reportData.is_available_mufg ? '購入可能' : '取扱なし'}
+                </span>
+                <a href="https://kabu.com/item/foreign_stock/us_stock/meigara.html" target="_blank" rel="noopener noreferrer" class="text-xs text-skin-accent hover:underline flex items-center justify-center gap-1">
+                  公式サイトを確認
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+
+            <div class={`p-6 rounded-lg border-2 flex flex-col justify-between bg-transparent ${reportData.is_available_matsui ? 'border-green-500/30' : 'border-gray-300'}`}>
+              <div class="flex items-center gap-4 mb-6">
+                <div class={`p-3 rounded-full ${reportData.is_available_matsui ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
+                   {reportData.is_available_matsui ? (
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                     </svg>
+                   ) : (
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                     </svg>
+                   )}
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold text-skin-base">松井証券</h3>
+                  <p class="text-sm opacity-70">Matsui Securities</p>
+                </div>
+              </div>
+              <div class="flex flex-col gap-3">
+                <span class={`w-full text-center py-2 rounded-full font-bold text-sm ${reportData.is_available_matsui ? 'bg-green-600 text-white' : 'bg-gray-400 text-white'}`}>
+                  {reportData.is_available_matsui ? '購入可能' : '取扱なし'}
+                </span>
+                <a href="https://www.matsui.co.jp/us-stock/domestic/list/symbollist/" target="_blank" rel="noopener noreferrer" class="text-xs text-skin-accent hover:underline flex items-center justify-center gap-1">
+                  公式サイトを確認
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+
+            <div class={`p-6 rounded-lg border-2 flex flex-col justify-between bg-transparent ${reportData.is_available_dmm ? 'border-green-500/30' : 'border-gray-300'}`}>
+              <div class="flex items-center gap-4 mb-6">
+                <div class={`p-3 rounded-full ${reportData.is_available_dmm ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
+                   {reportData.is_available_dmm ? (
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                     </svg>
+                   ) : (
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                     </svg>
+                   )}
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold text-skin-base">DMM株</h3>
+                  <p class="text-sm opacity-70">DMM Stock</p>
+                </div>
+              </div>
+              <div class="flex flex-col gap-3">
+                <span class={`w-full text-center py-2 rounded-full font-bold text-sm ${reportData.is_available_dmm ? 'bg-green-600 text-white' : 'bg-gray-400 text-white'}`}>
+                  {reportData.is_available_dmm ? '購入可能' : '取扱なし'}
+                </span>
+                <a href="https://kabu.dmm.com/us/stock/stock_list/us_stock_list/" target="_blank" rel="noopener noreferrer" class="text-xs text-skin-accent hover:underline flex items-center justify-center gap-1">
+                  公式サイトを確認
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+
+            <div class={`p-6 rounded-lg border-2 flex flex-col justify-between bg-transparent ${reportData.is_available_paypay ? 'border-green-500/30' : 'border-gray-300'}`}>
+              <div class="flex items-center gap-4 mb-6">
+                <div class={`p-3 rounded-full ${reportData.is_available_paypay ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
+                   {reportData.is_available_paypay ? (
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                     </svg>
+                   ) : (
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                     </svg>
+                   )}
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold text-skin-base">PayPay証券</h3>
+                  <p class="text-sm opacity-70">PayPay Securities</p>
+                </div>
+              </div>
+              <div class="flex flex-col gap-3">
+                <span class={`w-full text-center py-2 rounded-full font-bold text-sm ${reportData.is_available_paypay ? 'bg-green-600 text-white' : 'bg-gray-400 text-white'}`}>
+                  {reportData.is_available_paypay ? '購入可能' : '取扱なし'}
+                </span>
+                <a href="https://www.paypay-sec.co.jp/us-stock/list/" target="_blank" rel="noopener noreferrer" class="text-xs text-skin-accent hover:underline flex items-center justify-center gap-1">
                   公式サイトを確認
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />

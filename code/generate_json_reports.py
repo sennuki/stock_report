@@ -55,7 +55,7 @@ def fig_to_dict(fig):
     # Thoroughly clean bdata and numpy types
     return clean_plotly_data(data)
 
-def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols=None, rakuten_symbols=None, sbi_symbols=None):
+def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols=None, rakuten_symbols=None, sbi_symbols=None, mufg_symbols=None, matsui_symbols=None, dmm_symbols=None, paypay_symbols=None):
     # Add a small random delay to mimic human behavior and avoid rate limits
     time.sleep(random.uniform(0.5, 1.5))
     
@@ -69,7 +69,10 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols
     is_available_monex = ticker_display in monex_symbols if monex_symbols else False
     is_available_rakuten = ticker_display in rakuten_symbols if rakuten_symbols else False
     is_available_sbi = ticker_display in sbi_symbols if sbi_symbols else False
-
+    is_available_mufg = ticker_display in mufg_symbols if mufg_symbols else False
+    is_available_matsui = ticker_display in matsui_symbols if matsui_symbols else False
+    is_available_dmm = ticker_display in dmm_symbols if dmm_symbols else False
+    is_available_paypay = ticker_display in paypay_symbols if paypay_symbols else False
     # TradingView symbol
     tv_ticker = ticker_display.replace("-", ".")
     full_symbol = f"{exchange}:{tv_ticker}"
@@ -96,6 +99,10 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols
         "is_available_monex": is_available_monex,
         "is_available_rakuten": is_available_rakuten,
         "is_available_sbi": is_available_sbi,
+        "is_available_mufg": is_available_mufg,
+        "is_available_matsui": is_available_matsui,
+        "is_available_dmm": is_available_dmm,
+        "is_available_paypay": is_available_paypay,
         "charts": {}
     }
 
@@ -118,42 +125,50 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols
 
         # --- Add Earnings Surprise ---
         try:
-            ed = ticker_obj.earnings_dates
+            # yfinance property access can sometimes raise KeyError internally for specific tickers
+            ed = getattr(ticker_obj, 'earnings_dates', None)
             if ed is not None and not ed.empty:
-                # Latest reported
-                valid_ed = ed[ed['Reported EPS'].notnull()].sort_index(ascending=False)
-                if not valid_ed.empty:
-                    latest = valid_ed.iloc[0]
-                    report_data["earnings_surprise"] = {
-                        "date": valid_ed.index[0].strftime('%Y-%m-%d'),
-                        "actual": float(latest['Reported EPS']),
-                        "estimate": float(latest['EPS Estimate']) if not np.isnan(latest['EPS Estimate']) else None,
-                        "surprise_pct": float(latest['Surprise(%)']) if not np.isnan(latest['Surprise(%)']) else None
-                    }
-                
-                # Next earnings (where Reported EPS is NaN)
-                next_ed = ed[ed['Reported EPS'].isnull()].sort_index(ascending=True)
-                if not next_ed.empty:
-                    next_item = next_ed.iloc[0]
-                    report_data["next_earnings"] = {
-                        "date": next_ed.index[0].strftime('%Y-%m-%d'),
-                        "estimate": float(next_item['EPS Estimate']) if not np.isnan(next_item['EPS Estimate']) else None
-                    }
+                # Ensure it's a DataFrame and has required columns
+                required_cols = ['Reported EPS', 'EPS Estimate', 'Surprise(%)']
+                if all(col in ed.columns for col in required_cols):
+                    # Latest reported
+                    valid_ed = ed[ed['Reported EPS'].notnull()].sort_index(ascending=False)
+                    if not valid_ed.empty:
+                        latest = valid_ed.iloc[0]
+                        report_data["earnings_surprise"] = {
+                            "date": valid_ed.index[0].strftime('%Y-%m-%d') if hasattr(valid_ed.index[0], 'strftime') else str(valid_ed.index[0]),
+                            "actual": float(latest['Reported EPS']),
+                            "estimate": float(latest['EPS Estimate']) if not np.isnan(latest['EPS Estimate']) else None,
+                            "surprise_pct": float(latest['Surprise(%)']) if not np.isnan(latest['Surprise(%)']) else None
+                        }
+                    
+                    # Next earnings (where Reported EPS is NaN)
+                    next_ed = ed[ed['Reported EPS'].isnull()].sort_index(ascending=True)
+                    if not next_ed.empty:
+                        next_item = next_ed.iloc[0]
+                        report_data["next_earnings"] = {
+                            "date": next_ed.index[0].strftime('%Y-%m-%d') if hasattr(next_ed.index[0], 'strftime') else str(next_ed.index[0]),
+                            "estimate": float(next_item['EPS Estimate']) if not np.isnan(next_item['EPS Estimate']) else None
+                        }
+                else:
+                    missing = [col for col in required_cols if col not in ed.columns]
+                    # print(f"Skipping earnings surprise for {ticker_display}: Missing columns {missing}")
         except Exception as es_err:
+            # Silently log to console, don't stop execution
             print(f"Error fetching earnings surprise for {ticker_display}: {es_err}")
         # ----------------------------
 
         # --- Add Consensus Data ---
         try:
             def df_to_dict_safe(df):
-                if df is None or df.empty: return None
+                if df is None or not hasattr(df, 'empty') or df.empty: return None
                 return df.replace({np.nan: None}).to_dict('index')
 
             report_data["consensus"] = {
-                "earnings": df_to_dict_safe(ticker_obj.earnings_estimate),
-                "revenue": df_to_dict_safe(ticker_obj.revenue_estimate),
-                "eps_trend": df_to_dict_safe(ticker_obj.eps_trend),
-                "eps_revisions": df_to_dict_safe(ticker_obj.eps_revisions)
+                "earnings": df_to_dict_safe(getattr(ticker_obj, 'earnings_estimate', None)),
+                "revenue": df_to_dict_safe(getattr(ticker_obj, 'revenue_estimate', None)),
+                "eps_trend": df_to_dict_safe(getattr(ticker_obj, 'eps_trend', None)),
+                "eps_revisions": df_to_dict_safe(getattr(ticker_obj, 'eps_revisions', None))
             }
         except Exception as cons_err:
             print(f"Error fetching consensus for {ticker_display}: {cons_err}")
@@ -309,11 +324,23 @@ def export_json_reports(df_info, df_metrics, output_dir="../stock-blog/public/re
     sbi_symbols = market_data.get_sbi_available_symbols()
     print(f"SBI証券 取扱銘柄数: {len(sbi_symbols)}")
 
+    mufg_symbols = market_data.get_mufg_available_symbols()
+    print(f"三菱UFJ eスマート証券 取扱銘柄数: {len(mufg_symbols)}")
+    
+    matsui_symbols = market_data.get_matsui_available_symbols()
+    print(f"松井証券 取扱銘柄数: {len(matsui_symbols)}")
+
+    dmm_symbols = market_data.get_dmm_available_symbols()
+    print(f"DMM株 取扱銘柄数: {len(dmm_symbols)}")
+
+    paypay_symbols = market_data.get_paypay_available_symbols()
+    print(f"PayPay証券 取扱銘柄数: {len(paypay_symbols)}")
+
     rows = df_info.to_dicts()
     max_workers = 1 
-    
+
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
-        futures = {executor.submit(generate_json_for_ticker, row, df_info, df_metrics, output_dir, monex_symbols, rakuten_symbols, sbi_symbols): row['Symbol'] for row in rows}
+        futures = {executor.submit(generate_json_for_ticker, row, df_info, df_metrics, output_dir, monex_symbols, rakuten_symbols, sbi_symbols, mufg_symbols, matsui_symbols, dmm_symbols, paypay_symbols): row['Symbol'] for row in rows}
         for future in tqdm(concurrent.futures.as_completed(futures), total=len(rows)):
             try:
                 future.result()
