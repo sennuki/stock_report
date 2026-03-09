@@ -537,9 +537,9 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
         color: textColor,
         maxTicksLimit: 8,
         autoSkip: true,
-        callback: function(val: any, index: number) {
+        callback: function(this: any, val: any): any {
           // For category axis, we get the label string
-          const label = this.getLabelForValue(val);
+          const label: any = this.getLabelForValue(val);
           if (typeof label === 'string' && label.includes('T')) {
             // Convert "2024-03-08T00:00:00" to "2024-03-08"
             return label.split('T')[0];
