@@ -108,6 +108,82 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir):
         #    report_data["charts"]["pe_valuation"] = fig_to_dict(fundamentals.get_valuation_plotly_fig(fin_data["valuation"]))
         # ----------------------------
 
+        # --- Add Earnings Surprise ---
+        try:
+            ed = ticker_obj.earnings_dates
+            if ed is not None and not ed.empty:
+                # Latest reported
+                valid_ed = ed[ed['Reported EPS'].notnull()].sort_index(ascending=False)
+                if not valid_ed.empty:
+                    latest = valid_ed.iloc[0]
+                    report_data["earnings_surprise"] = {
+                        "date": valid_ed.index[0].strftime('%Y-%m-%d'),
+                        "actual": float(latest['Reported EPS']),
+                        "estimate": float(latest['EPS Estimate']) if not np.isnan(latest['EPS Estimate']) else None,
+                        "surprise_pct": float(latest['Surprise(%)']) if not np.isnan(latest['Surprise(%)']) else None
+                    }
+                
+                # Next earnings (where Reported EPS is NaN)
+                next_ed = ed[ed['Reported EPS'].isnull()].sort_index(ascending=True)
+                if not next_ed.empty:
+                    next_item = next_ed.iloc[0]
+                    report_data["next_earnings"] = {
+                        "date": next_ed.index[0].strftime('%Y-%m-%d'),
+                        "estimate": float(next_item['EPS Estimate']) if not np.isnan(next_item['EPS Estimate']) else None
+                    }
+        except Exception as es_err:
+            print(f"Error fetching earnings surprise for {ticker_display}: {es_err}")
+        # ----------------------------
+
+        # --- Add Consensus Data ---
+        try:
+            def df_to_dict_safe(df):
+                if df is None or df.empty: return None
+                return df.replace({np.nan: None}).to_dict('index')
+
+            report_data["consensus"] = {
+                "earnings": df_to_dict_safe(ticker_obj.earnings_estimate),
+                "revenue": df_to_dict_safe(ticker_obj.revenue_estimate),
+                "eps_trend": df_to_dict_safe(ticker_obj.eps_trend),
+                "eps_revisions": df_to_dict_safe(ticker_obj.eps_revisions)
+            }
+        except Exception as cons_err:
+            print(f"Error fetching consensus for {ticker_display}: {cons_err}")
+        # ----------------------------
+
+        # --- Add Highlights ---
+        try:
+            info = ticker_obj.info
+            
+            def normalize_ratio(val):
+                if val is None: return None
+                # If value is > 1.0 (like 0.89 being 0.89%), it might be percentage.
+                # But dividend yield can be very small (0.0089).
+                # Actually, many yfinance fields are inconsistent.
+                # For MSFT: dividendYield=0.89 (%), payoutRatio=0.21 (ratio).
+                # It seems dividendYield is often percentage while growth is ratio.
+                return val
+                
+            report_data["highlights"] = {
+                "revenue_growth": info.get("revenueGrowth"),
+                "earnings_growth": info.get("earningsGrowth"),
+                "profit_margins": info.get("profitMargins"),
+                "operating_margins": info.get("operatingMargins"),
+                "roe": info.get("returnOnEquity"),
+                "roa": info.get("returnOnAssets"),
+                "eps_ttm": info.get("trailingEps"),
+                "eps_forward": info.get("forwardEps"),
+                "pe_ttm": info.get("trailingPE"),
+                "pe_forward": info.get("forwardPE"),
+                "dividend_yield": info.get("dividendYield") / 100 if info.get("dividendYield") is not None and info.get("dividendYield") > 0.05 else info.get("dividendYield"),
+                "payout_ratio": info.get("payoutRatio"),
+                "debt_to_equity": info.get("debtToEquity"),
+                "current_ratio": info.get("currentRatio")
+            }
+        except Exception as h_err:
+            print(f"Error fetching highlights for {ticker_display}: {h_err}")
+        # ----------------------------
+
         # --- Add Analyst Ratings ---
         try:
             # yfinance 1.1.0+ may output 404 or other errors for some symbols
