@@ -1,10 +1,8 @@
-name: Generate and Deploy Stock Reports
+name: Generate Stock Reports (TEST - No Deploy)
 
 on:
-  schedule:
-    - cron: '0 21 * * 1-5' # 平日毎日実行
   push:
-    branches: [ master ] # コードが更新された時も実行
+    branches: [ feature/workflow-test-no-deploy ] # このブランチのみで実行
   workflow_dispatch: # 手動実行用
 
 permissions:
@@ -13,7 +11,7 @@ permissions:
   id-token: write
 
 jobs:
-  build-and-deploy:
+  build-only:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -35,17 +33,9 @@ jobs:
       - name: Install Python dependencies
         run: uv pip install --system -r requirements.txt
 
-      - name: Restore yfinance cache
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/py-yfinance
-          key: ${{ runner.os }}-yfinance-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-yfinance-
-
       - name: Create output directories
         run: |
-          mkdir -p stock-blog/public/output_reports_full
+          mkdir -p stock-blog/public/reports
           mkdir -p stock-blog/src/data/blog
           echo "[]" > stock-blog/src/data/stocks.json
 
@@ -85,20 +75,7 @@ jobs:
       - name: Build Astro site
         run: |
           cd stock-blog
-          pnpm exec astro build && pnpm exec pagefind --site dist && cp -r dist/pagefind public/
+          pnpm exec astro build
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./stock-blog/dist
-
-  deploy:
-    needs: build-and-deploy
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Success Message
+        run: echo "Build completed successfully without deploying to Pages."
