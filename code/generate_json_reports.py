@@ -112,11 +112,40 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir):
         try:
             # yfinance 1.1.0+ may output 404 or other errors for some symbols
             recs = getattr(ticker_obj, 'recommendations_summary', None)
+            analyst_data = {}
             if recs is not None and not recs.empty:
                 # Use current month (period '0m')
                 current_recs = recs[recs['period'] == '0m']
                 if not current_recs.empty:
-                    report_data["analyst_ratings"] = current_recs.to_dict('records')[0]
+                    analyst_data = current_recs.to_dict('records')[0]
+            
+            # Add target prices from info
+            info = ticker_obj.info
+            target_keys = [
+                'targetHighPrice', 'targetLowPrice', 'targetMeanPrice', 
+                'targetMedianPrice', 'currentPrice', 'numberOfAnalystOpinions'
+            ]
+            for key in target_keys:
+                if key in info:
+                    analyst_data[key] = info[key]
+            
+            # Add recent rating changes (upgrades/downgrades)
+            try:
+                ud = ticker_obj.upgrades_downgrades
+                if ud is not None and not ud.empty:
+                    # Take the last 10 changes, convert index to string
+                    recent_ud = ud.sort_index(ascending=False).head(10).reset_index()
+                    # Convert Timestamp to string
+                    recent_ud['GradeDate'] = recent_ud['GradeDate'].dt.strftime('%Y-%m-%d')
+                    # Replace NaN with null for JSON compatibility
+                    recent_ud = recent_ud.replace({np.nan: None})
+                    report_data["rating_changes"] = recent_ud.to_dict('records')
+            except Exception as ud_err:
+                print(f"Error fetching upgrades/downgrades for {ticker_display}: {ud_err}")
+
+            if analyst_data:
+                report_data["analyst_ratings"] = analyst_data
+
         except Exception:
             # Silently skip if recommendations are unavailable
             pass

@@ -44,6 +44,18 @@ const base = import.meta.env.BASE_URL.endsWith("/")
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
 
+// Helper to translate grades to "Japanese (English)"
+const translateGrade = (grade: string) => {
+  if (!grade) return "---";
+  const g = grade.toLowerCase();
+  if (g.includes('strong buy')) return `強気買い (${grade})`;
+  if (g.includes('buy') || g.includes('outperform') || g.includes('overweight')) return `買い (${grade})`;
+  if (g.includes('hold') || g.includes('neutral') || g.includes('equal-weight') || g.includes('market perform')) return `中立 (${grade})`;
+  if (g.includes('sell') || g.includes('underperform') || g.includes('underweight')) return `売り (${grade})`;
+  if (g.includes('strong sell')) return `強い売り (${grade})`;
+  return grade;
+};
+
 // Calculate Analyst Summary in frontmatter to avoid template parsing issues with "<"
 let analystSummary = null;
 if (reportData?.analyst_ratings) {
@@ -61,7 +73,19 @@ if (reportData?.analyst_ratings) {
   else if (score > 3.5 && score <= 4.5) { assessment = "売り (Sell)"; assessmentColor = "text-red-500"; }
   else if (score > 4.5) { assessment = "強い売り (Strong Sell)"; assessmentColor = "text-red-700"; }
 
-  analystSummary = { total, score, assessment, assessmentColor, ratings: r };
+  analystSummary = { 
+    total, 
+    score, 
+    assessment, 
+    assessmentColor, 
+    ratings: r,
+    targetHigh: r.targetHighPrice,
+    targetLow: r.targetLowPrice,
+    targetMean: r.targetMeanPrice,
+    targetMedian: r.targetMedianPrice,
+    currentPrice: r.currentPrice,
+    opinions: r.numberOfAnalystOpinions
+  };
 }
 ---
 
@@ -228,6 +252,121 @@ if (reportData?.analyst_ratings) {
                   </div>
                 ))}
               </div>
+
+              {/* Target Price Section */}
+              {analystSummary.targetMean && (
+                <div class="mt-12 bg-skin-fill/20 p-6 rounded-lg border border-skin-line">
+                  <h3 class="text-xl font-bold mb-6 text-center">🎯 目標株価 (Target Price)</h3>
+                  <div class="grid grid-cols-1 md:grid-cols-4 gap-6 text-center">
+                    <div>
+                      <div class="text-sm opacity-70 mb-1">平均目標株価</div>
+                      <div class="text-2xl font-bold text-skin-accent">${analystSummary.targetMean.toFixed(2)}</div>
+                      {analystSummary.currentPrice && (
+                        <div class={`text-sm mt-1 font-semibold ${analystSummary.targetMean > analystSummary.currentPrice ? 'text-green-600' : 'text-red-600'}`}>
+                          {((analystSummary.targetMean / analystSummary.currentPrice - 1) * 100).toFixed(1)}% {analystSummary.targetMean > analystSummary.currentPrice ? '上昇余地' : '下落予想'}
+                        </div>
+                      )}
+                    </div>
+                    <div>
+                      <div class="text-sm opacity-70 mb-1">最高目標株価</div>
+                      <div class="text-xl font-bold text-green-600">${analystSummary.targetHigh.toFixed(2)}</div>
+                    </div>
+                    <div>
+                      <div class="text-sm opacity-70 mb-1">最低目標株価</div>
+                      <div class="text-xl font-bold text-red-600">${analystSummary.targetLow.toFixed(2)}</div>
+                    </div>
+                    <div>
+                      <div class="text-sm opacity-70 mb-1">現在価格</div>
+                      <div class="text-xl font-bold opacity-80">${analystSummary.currentPrice?.toFixed(2) || '---'}</div>
+                    </div>
+                  </div>
+                  <div class="mt-6 pt-6 border-t border-skin-line/30 flex justify-between items-center text-sm opacity-70">
+                    <span>アナリスト予想数: {analystSummary.opinions || '---'}人</span>
+                    <span>中央値: ${analystSummary.targetMedian?.toFixed(2) || '---'}</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Recent Analyst Rating Changes */}
+              {reportData.rating_changes && reportData.rating_changes.length > 0 && (
+                <div class="mt-12 overflow-x-auto bg-skin-fill/10 p-4 rounded-lg border border-skin-line">
+                  <h3 class="text-xl font-bold mb-4 px-2">📑 最近のレーティング変更</h3>
+                  <table class="min-w-full divide-y divide-skin-line text-sm">
+                    <thead class="bg-skin-fill/20">
+                      <tr>
+                        <th scope="col" class="px-4 py-3 text-left font-semibold">日付</th>
+                        <th scope="col" class="px-4 py-3 text-left font-semibold">調査会社</th>
+                        <th scope="col" class="px-4 py-3 text-left font-semibold">格付け</th>
+                        <th scope="col" class="px-4 py-3 text-left font-semibold">アクション</th>
+                        <th scope="col" class="px-4 py-3 text-right font-semibold">目標株価 (新/旧)</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-skin-line">
+                      {reportData.rating_changes.map((change: any) => (
+                        <tr class="hover:bg-skin-fill/10">
+                          <td class="px-4 py-3 whitespace-nowrap opacity-80">{change.GradeDate}</td>
+                          <td class="px-4 py-3 font-medium">{change.Firm}</td>
+                          <td class="px-4 py-3">
+                            <span class={`font-bold ${
+                              change.ToGrade?.toLowerCase().includes('buy') || change.ToGrade?.toLowerCase().includes('outperform') || change.ToGrade?.toLowerCase().includes('overweight') 
+                              ? 'text-green-600' : 
+                              change.ToGrade?.toLowerCase().includes('sell') || change.ToGrade?.toLowerCase().includes('underperform') || change.ToGrade?.toLowerCase().includes('underweight')
+                              ? 'text-red-600' : 'text-skin-base opacity-70'
+                            }`}>
+                              {translateGrade(change.ToGrade)}
+                            </span>
+                          </td>
+                          <td class="px-4 py-3 italic opacity-70">
+                            {(() => {
+                              const action = change.Action?.toLowerCase();
+                              let text = change.Action || '---';
+                              let colorClass = '';
+                              
+                              if (action === 'up') {
+                                text = `格上げ (up)`;
+                                colorClass = 'text-green-600 font-semibold not-italic';
+                              } else if (action === 'down') {
+                                text = `格下げ (down)`;
+                                colorClass = 'text-red-600 font-semibold not-italic';
+                              } else if (action === 'main') {
+                                text = `維持 (main)`;
+                              } else if (action === 'reit') {
+                                text = `再確認 (reit)`;
+                              } else if (action === 'init') {
+                                text = `新規開始 (init)`;
+                              }
+                              
+                              return <span class={colorClass}>{text}</span>;
+                            })()}
+                          </td>
+                          <td class="px-4 py-3 text-right whitespace-nowrap">
+                            <div class="flex items-center justify-end gap-1.5">
+                              {change.priorPriceTarget && (
+                                <span class="text-xs opacity-50">${change.priorPriceTarget}</span>
+                              )}
+                              {change.priorPriceTarget && change.currentPriceTarget && (
+                                <span class="text-xs opacity-30">→</span>
+                              )}
+                              {change.currentPriceTarget ? (
+                                <span class={`font-bold ${
+                                  change.priorPriceTarget 
+                                  ? (change.currentPriceTarget > change.priorPriceTarget ? 'text-green-600' : change.currentPriceTarget < change.priorPriceTarget ? 'text-red-600' : '')
+                                  : ''
+                                }`}>
+                                  ${change.currentPriceTarget}
+                                </span>
+                              ) : (
+                                !change.priorPriceTarget && <span class="opacity-30">---</span>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
               <p class="text-xs text-gray-400 mt-8">
                 ※平均スコアは 1.0(強気買い)から5.0(強い売り)の範囲で算出しています。<br />
                 ※アナリストの推奨評価の合計人数を表示しています。投資の最終判断はご自身で行ってください。
