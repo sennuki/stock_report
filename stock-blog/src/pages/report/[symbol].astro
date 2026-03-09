@@ -210,82 +210,94 @@ if (reportData?.analyst_ratings) {
           <h2 class="text-2xl font-bold mb-6 border-b pb-2">🎯 {symbol}のアナリスト評価 (直近)</h2>
           {analystSummary ? (
             <div class="space-y-8">
-              {/* Summary Card */}
-              <div class="bg-skin-fill/20 p-6 rounded-lg border border-skin-line flex flex-col sm:flex-row justify-around items-center text-center gap-6">
-                <div>
-                  <div class="text-sm opacity-70 mb-1">総合評価</div>
-                  <div class={`text-2xl font-bold ${analystSummary.assessmentColor}`}>{analystSummary.assessment}</div>
-                </div>
-                <div class="w-px h-10 bg-skin-line hidden sm:block"></div>
-                <div>
-                  <div class="text-sm opacity-70 mb-1">平均スコア</div>
-                  <div class="text-2xl font-bold text-skin-base">{analystSummary.score.toFixed(2)} <span class="text-sm font-normal opacity-50">/ 5.0</span></div>
-                </div>
-                <div class="w-px h-10 bg-skin-line hidden sm:block"></div>
-                <div>
-                  <div class="text-sm opacity-70 mb-1">アナリスト数</div>
-                  <div class="text-2xl font-bold text-skin-base">{analystSummary.total}人</div>
-                </div>
-              </div>
-
-              <div class="space-y-6">
-                {[
-                  { label: "強気買い (Strong Buy)", key: "strongBuy", color: "text-green-600" },
-                  { label: "買い (Buy)", key: "buy", color: "text-green-500" },
-                  { label: "中立 (Hold)", key: "hold", color: "text-gray-500" },
-                  { label: "売り (Sell)", key: "sell", color: "text-red-500" },
-                  { label: "強い売り (Strong Sell)", key: "strongSell", color: "text-red-700" }
-                ].map((rating) => (
-                  <div class="rating-row">
-                    <div class="flex justify-between items-center mb-2">
-                      <span class={`font-bold ${rating.color}`}>{rating.label}</span>
-                      <span class="text-sm font-medium">{analystSummary.ratings[rating.key] || 0}人</span>
-                    </div>
-                    <div class="flex flex-wrap gap-0.5 text-lg leading-none opacity-80">
-                      {Array.from({ length: analystSummary.ratings[rating.key] || 0 }).map(() => (
-                        <span title={rating.label}>👤</span>
-                      ))}
-                      {(!analystSummary.ratings[rating.key] || analystSummary.ratings[rating.key] === 0) && (
-                        <span class="text-gray-300 text-sm italic">該当なし</span>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Target Price Section */}
-              {analystSummary.targetMean && (
-                <div class="mt-12 bg-skin-fill/20 p-6 rounded-lg border border-skin-line">
-                  <h3 class="text-xl font-bold mb-6 text-center">🎯 目標株価 (Target Price)</h3>
-                  <div class="grid grid-cols-1 md:grid-cols-4 gap-6 text-center">
-                    <div>
-                      <div class="text-sm opacity-70 mb-1">平均目標株価</div>
-                      <div class="text-2xl font-bold text-skin-accent">${analystSummary.targetMean.toFixed(2)}</div>
-                      {analystSummary.currentPrice && (
-                        <div class={`text-sm mt-1 font-semibold ${analystSummary.targetMean > analystSummary.currentPrice ? 'text-green-600' : 'text-red-600'}`}>
-                          {((analystSummary.targetMean / analystSummary.currentPrice - 1) * 100).toFixed(1)}% {analystSummary.targetMean > analystSummary.currentPrice ? '上昇余地' : '下落予想'}
+              {/* Consolidated Summary & Target Price Block */}
+              <div class="bg-skin-fill/20 p-6 sm:p-8 rounded-lg border border-skin-line shadow-sm">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 divide-y lg:divide-y-0 lg:divide-x divide-skin-line/50">
+                  
+                  {/* Left Column: Target Price */}
+                  <div class="pb-8 lg:pb-0 lg:pr-12">
+                    <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+                      <span class="text-2xl">🎯</span> 目標株価 (Target Price)
+                    </h3>
+                    <div class="space-y-6">
+                      <div class="flex justify-between items-end border-b border-skin-line/30 pb-4">
+                        <div>
+                          <div class="text-sm opacity-70 mb-1">平均目標株価</div>
+                          <div class="text-3xl font-bold text-skin-accent">${analystSummary.targetMean?.toFixed(2)}</div>
                         </div>
-                      )}
-                    </div>
-                    <div>
-                      <div class="text-sm opacity-70 mb-1">最高目標株価</div>
-                      <div class="text-xl font-bold text-green-600">${analystSummary.targetHigh.toFixed(2)}</div>
-                    </div>
-                    <div>
-                      <div class="text-sm opacity-70 mb-1">最低目標株価</div>
-                      <div class="text-xl font-bold text-red-600">${analystSummary.targetLow.toFixed(2)}</div>
-                    </div>
-                    <div>
-                      <div class="text-sm opacity-70 mb-1">現在価格</div>
-                      <div class="text-xl font-bold opacity-80">${analystSummary.currentPrice?.toFixed(2) || '---'}</div>
+                        {analystSummary.currentPrice && (
+                          <div class={`text-lg font-bold mb-1 ${analystSummary.targetMean > analystSummary.currentPrice ? 'text-green-600' : 'text-red-600'}`}>
+                            {((analystSummary.targetMean / analystSummary.currentPrice - 1) * 100).toFixed(1)}% {analystSummary.targetMean > analystSummary.currentPrice ? '上昇余地' : '下落予想'}
+                          </div>
+                        )}
+                      </div>
+                      
+                      <div class="grid grid-cols-3 gap-4 text-center">
+                        <div class="bg-skin-fill/30 p-3 rounded-md">
+                          <div class="text-xs opacity-70 mb-1">最高</div>
+                          <div class="text-lg font-bold text-green-600">${analystSummary.targetHigh?.toFixed(2)}</div>
+                        </div>
+                        <div class="bg-skin-fill/30 p-3 rounded-md">
+                          <div class="text-xs opacity-70 mb-1">最低</div>
+                          <div class="text-lg font-bold text-red-600">${analystSummary.targetLow?.toFixed(2)}</div>
+                        </div>
+                        <div class="bg-skin-fill/30 p-3 rounded-md">
+                          <div class="text-xs opacity-70 mb-1">現在</div>
+                          <div class="text-lg font-bold opacity-80">${analystSummary.currentPrice?.toFixed(2) || '---'}</div>
+                        </div>
+                      </div>
+
+                      <div class="flex justify-between text-sm opacity-60 px-1 pt-2">
+                        <span>アナリスト予想数: {analystSummary.opinions || '---'}人</span>
+                        <span>中央値: ${analystSummary.targetMedian?.toFixed(2) || '---'}</span>
+                      </div>
                     </div>
                   </div>
-                  <div class="mt-6 pt-6 border-t border-skin-line/30 flex justify-between items-center text-sm opacity-70">
-                    <span>アナリスト予想数: {analystSummary.opinions || '---'}人</span>
-                    <span>中央値: ${analystSummary.targetMedian?.toFixed(2) || '---'}</span>
+
+                  {/* Right Column: Overall Rating & Distribution */}
+                  <div class="pt-8 lg:pt-0 lg:pl-12">
+                    <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+                      <span class="text-2xl">📊</span> 総合評価と推奨分布
+                    </h3>
+                    <div class="space-y-6">
+                      <div class="flex justify-between items-center border-b border-skin-line/30 pb-4">
+                        <div>
+                          <div class="text-sm opacity-70 mb-1">総合評価</div>
+                          <div class={`text-2xl font-bold ${analystSummary.assessmentColor}`}>{analystSummary.assessment}</div>
+                        </div>
+                        <div class="text-right">
+                          <div class="text-sm opacity-70 mb-1">平均スコア</div>
+                          <div class="text-2xl font-bold text-skin-base">{analystSummary.score.toFixed(2)} <span class="text-xs font-normal opacity-50">/ 5.0</span></div>
+                        </div>
+                      </div>
+
+                      <div class="space-y-3">
+                        {[
+                          { label: "強気買い", key: "strongBuy", color: "bg-green-600" },
+                          { label: "買い", key: "buy", color: "bg-green-400" },
+                          { label: "中立", key: "hold", color: "bg-gray-400" },
+                          { label: "売り", key: "sell", color: "bg-red-400" },
+                          { label: "強い売り", key: "strongSell", color: "bg-red-600" }
+                        ].map((rating) => (
+                          <div class="flex items-center gap-3">
+                            <span class="text-xs w-16 shrink-0 opacity-80">{rating.label}</span>
+                            <div class="flex-grow h-2 bg-skin-fill/50 rounded-full overflow-hidden">
+                               <div 
+                                 class={`h-full ${rating.color}`} 
+                                 style={`width: ${analystSummary.total > 0 ? (analystSummary.ratings[rating.key] || 0) / analystSummary.total * 100 : 0}%`}
+                               ></div>
+                            </div>
+                            <span class="text-xs font-medium w-6 text-right">{analystSummary.ratings[rating.key] || 0}</span>
+                          </div>
+                        ))}
+                      </div>
+                      <div class="text-right text-xs opacity-60">
+                        推奨アナリスト合計: {analystSummary.total}人
+                      </div>
+                    </div>
                   </div>
                 </div>
-              )}
+              </div>
 
               {/* Recent Analyst Rating Changes */}
               {reportData.rating_changes && reportData.rating_changes.length > 0 && (
