@@ -1,6 +1,8 @@
 import { defineCollection, z } from "astro:content";
 import { SITE } from "@/config";
 
+export const BLOG_PATH = "src/content/blog";
+
 // Markdown ベースの投稿機能は現在使用していないため、定義のみ最小限で維持
 const blog = defineCollection({
   loader: async () => [], // 空の配列を返す
