@@ -25,18 +25,19 @@
 
 | ディレクトリ | 役割 |
 | :--- | :--- |
-| `src/data/blog/` | **レポート本文**。Python スクリプトによって生成された各銘柄の Markdown ファイルが配置されます。 |
-| `src/data/stocks.json` | 銘柄リストのインデックスデータ。検索や一覧表示に使用されます。 |
-| `public/output_reports_full/` | **チャート画像・資産**。Python 側で生成された Plotly のチャートなどが格納され、記事から参照されます。 |
+| `public/reports/` | **銘柄データ (JSON)**。Python 側で生成された詳細な財務データ、チャート用データが格納されます。 |
+| `src/data/stocks.json` | 銘柄リストのインデックスデータ。銘柄一覧ページ (`index.astro`) の生成に使用されます。 |
+| `src/data/blog/` | (非推奨) 旧形式のレポート本文。現在は `src/pages/report/[symbol].astro` による動的生成に移行したため、基本的には使用されません。 |
+| `public/output_reports_full/` | (非推奨) 旧形式の HTML レポート。現在は JSON データから直接コンポーネントをレンダリングするため、使用されません。 |
 
 ## 4. スクリプト
 
 | ファイル名 | 役割 |
 | :--- | :--- |
-| `scripts/generate-blog-posts.js` | Python 側の出力を Astro のコンテンツ形式に変換・整理するための補助スクリプト。 |
+| `scripts/generate-blog-posts.js` | (非推奨) 旧形式の Markdown 記事生成スクリプト。現在は使用されていません。 |
 
 ## 開発フロー
 
-1.  **データ更新**: ルートの `code/` ディレクトリにある Python スクリプトを実行し、`src/data/blog/` と `public/output_reports_full/` を更新。
-2.  **プレビュー**: `npm run dev` でローカルサーバーを起動し確認。
-3.  **ビルド**: `npm run build` で静的ファイルを生成。
+1.  **データ更新**: ルートの `code/` ディレクトリにある Python スクリプトを実行し、`src/data/stocks.json` と `public/reports/` を更新。
+2.  **プレビュー**: `pnpm run dev` でローカルサーバーを起動し確認。
+3.  **ビルド**: `pnpm run build` で静的ファイルを生成。

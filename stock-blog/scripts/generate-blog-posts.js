@@ -20,6 +20,11 @@ const symbolToSector = Object.fromEntries(
   stocksData.map(s => [s.Symbol_YF, s['GICS Sector']])
 );
 
+if (!fs.existsSync(INPUT_DIR)) {
+  console.warn(`Warning: INPUT_DIR '${INPUT_DIR}' not found. Skipping blog post regeneration.`);
+  process.exit(0);
+}
+
 const files = fs.readdirSync(INPUT_DIR).filter(f => f.endsWith('.html'));
 const now = new Date().toISOString();
 

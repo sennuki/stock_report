@@ -36,7 +36,6 @@ jobs:
       - name: Create output directories
         run: |
           mkdir -p stock-blog/public/reports
-          mkdir -p stock-blog/src/data/blog
           echo "[]" > stock-blog/src/data/stocks.json
 
       - name: Run Python report generator
@@ -66,11 +65,6 @@ jobs:
         run: |
           cd stock-blog
           pnpm install --frozen-lockfile
-
-      - name: Regenerate blog posts (Markdown)
-        run: |
-          cd stock-blog
-          node scripts/generate-blog-posts.js
 
       - name: Build Astro site
         run: |
