@@ -36,6 +36,7 @@ jobs:
       - name: Create output directories
         run: |
           mkdir -p stock-blog/public/reports
+          mkdir -p stock-blog/src/data
           echo "[]" > stock-blog/src/data/stocks.json
 
       - name: Run Python report generator
