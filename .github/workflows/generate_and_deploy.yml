@@ -72,5 +72,14 @@ jobs:
           cd stock-blog
           pnpm exec astro build
 
+      - name: Upload generated reports and data
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-reports
+          path: |
+            stock-blog/public/reports/
+            stock-blog/src/data/
+          retention-days: 7
+
       - name: Success Message
         run: echo "Build completed successfully without deploying to Pages."
