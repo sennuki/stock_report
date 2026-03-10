@@ -148,6 +148,26 @@ if (reportData?.analyst_ratings) {
         <section id="risk-return" class="mt-12">
           <h2 class="text-2xl font-bold mb-4 border-b pb-2">🎯 {symbol}のリスク・リターン分析</h2>
           <ChartJs chartData={reportData.charts.risk_return} id="chart-risk-return" height={550} />
+          <div class="text-xs text-gray-500 mt-4 space-y-3">
+            <p>※過去1年間の日次リターンデータに基づき、以下の式で年率換算しています：</p>
+            <div class="flex flex-col gap-3 pl-4 py-3 border-l-2 border-skin-line/30 bg-skin-fill/5">
+              <div class="flex items-center gap-4">
+                <span class="font-bold w-24 shrink-0 text-gray-600 dark:text-gray-400">X軸 (リスク)</span>
+                <span class="text-base font-serif tracking-wider">
+                  <span class="italic font-bold">σ</span><sub>annual</sub> = <span class="italic font-bold">σ</span><sub>daily</sub> × &radic;<span class="border-t border-current pt-[1px]">252</span>
+                </span>
+              </div>
+              <div class="flex items-center gap-4">
+                <span class="font-bold w-24 shrink-0 text-gray-600 dark:text-gray-400">Y軸 (リターン)</span>
+                <span class="text-base font-serif tracking-wider">
+                  <span class="italic font-bold">R</span><sub>annual</sub> = <span class="italic font-bold">μ</span><sub>daily</sub> × 252
+                </span>
+              </div>
+            </div>
+            <div class="pt-2">
+              ※ ここで <span class="italic font-bold font-serif">σ</span><sub>daily</sub> は日次リターンの標準偏差、<span class="italic font-bold font-serif">μ</span><sub>daily</sub> は日次リターンの平均、252は米国の年間市場営業日数を表します。
+            </div>
+          </div>
         </section>
 
         <section id="peers" class="mt-12">
@@ -362,9 +382,10 @@ if (reportData?.analyst_ratings) {
                       </div>
                       <div class="flex justify-between items-center py-2 border-b border-skin-line/30">
                         <span class="text-sm opacity-70">前年同期比 (YoY)</span>
-                        <span class="font-bold text-green-600">+{((reportData.consensus.earnings?.["0q"]?.growth || 0) * 100).toFixed(1)}%</span>
-                      </div>
-                      <div class="flex justify-between items-center py-2">
+                        <span class={`font-bold ${(reportData.consensus.earnings?.["0q"]?.growth || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                          {((reportData.consensus.earnings?.["0q"]?.growth || 0) * 100).toFixed(1)}%
+                        </span>
+                      </div>                      <div class="flex justify-between items-center py-2">
                         <span class="text-sm opacity-70">アナリスト数</span>
                         <span class="text-sm">{reportData.consensus.earnings?.["0q"]?.numberOfAnalysts || '---'}人</span>
                       </div>
@@ -391,9 +412,10 @@ if (reportData?.analyst_ratings) {
                       </div>
                       <div class="flex justify-between items-center py-2 border-b border-skin-line/30">
                         <span class="text-sm opacity-70">前年同期比 (YoY)</span>
-                        <span class="font-bold text-green-600">+{((reportData.consensus.revenue?.["0q"]?.growth || 0) * 100).toFixed(1)}%</span>
-                      </div>
-                      <div class="flex justify-between items-center py-2">
+                        <span class={`font-bold ${(reportData.consensus.revenue?.["0q"]?.growth || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                          {((reportData.consensus.revenue?.["0q"]?.growth || 0) * 100).toFixed(1)}%
+                        </span>
+                      </div>                      <div class="flex justify-between items-center py-2">
                         <span class="text-sm opacity-70">アナリスト数</span>
                         <span class="text-sm">{reportData.consensus.revenue?.["0q"]?.numberOfAnalysts || '---'}人</span>
                       </div>
@@ -433,9 +455,12 @@ if (reportData?.analyst_ratings) {
 
           <div id="dividend-history" class="scroll-mt-20 my-24">
             <ChartJs chartData={reportData.charts.dps} id="chart-dps" title="1株あたり配当金" />
-            <p class="text-sm text-gray-500 mt-24 block relative z-10">※「権利落日別」タブでは、当時の株価に基づいた予想配当利回り（年換算）も表示しています。</p>
-          </div>
-        </section>
+            <div class="text-sm text-gray-500 mt-24 block relative z-10 space-y-1">
+              <p>※「権利落日別」タブでは、当時の株価に基づいた予想配当利回り（年換算）も表示しています。</p>
+              <p>※「年間配当」タブの予想部分は、過去の配当実績から推定しています。</p>
+              <p>※配当利回りは、各年（または各権利落日）の年初時点の株価を基準に算出しています。</p>
+            </div>
+          </div>        </section>
 
         <hr class="my-12 border-skin-line" />
 
@@ -586,22 +611,22 @@ if (reportData?.analyst_ratings) {
                           </td>
                           <td class="px-4 py-3 text-right whitespace-nowrap">
                             <div class="flex items-center justify-end gap-1.5">
-                              {change.priorPriceTarget && (
+                              {change.priorPriceTarget > 0 && (
                                 <span class="text-xs opacity-50">${change.priorPriceTarget}</span>
                               )}
-                              {change.priorPriceTarget && change.currentPriceTarget && (
+                              {change.priorPriceTarget > 0 && change.currentPriceTarget > 0 && (
                                 <span class="text-xs opacity-30">→</span>
                               )}
-                              {change.currentPriceTarget ? (
+                              {change.currentPriceTarget > 0 ? (
                                 <span class={`font-bold ${
-                                  change.priorPriceTarget 
+                                  change.priorPriceTarget > 0
                                   ? (change.currentPriceTarget > change.priorPriceTarget ? 'text-green-600' : change.currentPriceTarget < change.priorPriceTarget ? 'text-red-600' : '')
                                   : ''
                                 }`}>
                                   ${change.currentPriceTarget}
                                 </span>
                               ) : (
-                                !change.priorPriceTarget && <span class="opacity-30">---</span>
+                                !(change.priorPriceTarget > 0) && <span class="opacity-30">---</span>
                               )}
                             </div>
                           </td>
