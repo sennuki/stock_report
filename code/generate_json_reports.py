@@ -77,21 +77,21 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols
         # Direct match or normalized match
         return (ticker in original_list) or (normalize_ticker(ticker) in normalized_set)
 
-    for index, row in tqdm(df_sp500.iterrows(), total=len(df_sp500), desc="Generating reports"):
-        ticker_display = row['Symbol']
-        chart_target_symbol = row['Symbol_YF']
-        current_sector = row['GICS Sector']
-        current_sub_industry = row['GICS Sub-Industry']
-        exchange = row['Exchange']
+    ticker_display = row['Symbol']
+    chart_target_symbol = row['Symbol_YF']
+    current_sector = row['GICS Sector']
+    current_sub_industry = row['GICS Sub-Industry']
+    exchange = row['Exchange']
 
-        # Check availability
-        is_available_monex = is_available(ticker_display, monex_symbols, monex_norm)
-        is_available_rakuten = is_available(ticker_display, rakuten_symbols, rakuten_norm)
-        is_available_sbi = is_available(ticker_display, sbi_symbols, sbi_norm)
-        is_available_mufg = is_available(ticker_display, mufg_symbols, mufg_norm)
-        is_available_matsui = is_available(ticker_display, matsui_symbols, matsui_norm)
-        is_available_dmm = is_available(ticker_display, dmm_symbols, dmm_norm)
-        is_available_paypay = is_available(ticker_display, paypay_symbols, paypay_norm)
+    # Check availability
+    is_available_monex = is_available(ticker_display, monex_symbols, monex_norm)
+    is_available_rakuten = is_available(ticker_display, rakuten_symbols, rakuten_norm)
+    is_available_sbi = is_available(ticker_display, sbi_symbols, sbi_norm)
+    is_available_mufg = is_available(ticker_display, mufg_symbols, mufg_norm)
+    is_available_matsui = is_available(ticker_display, matsui_symbols, matsui_norm)
+    is_available_dmm = is_available(ticker_display, dmm_symbols, dmm_norm)
+    is_available_paypay = is_available(ticker_display, paypay_symbols, paypay_norm)
+
     # TradingView symbol
     tv_ticker = ticker_display.replace("-", ".")
     full_symbol = f"{exchange}:{tv_ticker}"

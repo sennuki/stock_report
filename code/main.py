@@ -134,8 +134,6 @@ if __name__ == "__main__":
             # カラムの型合わせや並び順を調整
             df_missing = df_missing.select(df_sp500.columns)
             df_sp500 = pl.concat([df_sp500, df_missing])
-        # JSONリストのエクスポートは risk_return 計算後に行うため削除
-        # export_stocks_json(df_sp500)
 
         # 2. リスク指標計算 (全銘柄)
         try:
@@ -144,12 +142,19 @@ if __name__ == "__main__":
             
             # stocks.json 用に Daily_Change と Earnings_Date を結合
             if not df_metrics.is_empty():
-                # Symbol 列で外部結合
+                # Note: df_metrics.Symbol は実際には Symbol_YF (ハイフン形式)
                 df_sp500 = df_sp500.join(
-                    df_metrics.select(["Symbol", "Daily_Change", "Earnings_Date"]), 
-                    on="Symbol", 
-                    how="left"
+                    df_metrics.select([pl.col("Symbol").alias("Symbol_YF"), "Daily_Change", "Earnings_Date"]), 
+                    on="Symbol_YF", 
+                    how="left",
+                    suffix="_new"
                 )
+                
+                # 新しい Daily_Change で更新
+                df_sp500 = df_sp500.with_columns([
+                    pl.coalesce([pl.col("Daily_Change_new"), pl.col("Daily_Change")]).alias("Daily_Change")
+                ]).drop("Daily_Change_new")
+                
                 # 結合後、再度 JSON を更新
                 export_stocks_json(df_sp500)
         except Exception as e:
