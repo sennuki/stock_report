@@ -58,21 +58,40 @@ def fig_to_dict(fig):
 def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols=None, rakuten_symbols=None, sbi_symbols=None, mufg_symbols=None, matsui_symbols=None, dmm_symbols=None, paypay_symbols=None):
     # Add a small random delay to mimic human behavior and avoid rate limits
     time.sleep(random.uniform(0.5, 1.5))
-    
-    ticker_display = row['Symbol']
-    chart_target_symbol = row['Symbol_YF']
-    current_sector = row['GICS Sector']
-    current_sub_industry = row['GICS Sub-Industry']
-    exchange = row['Exchange']
-    
-    # Check availability
-    is_available_monex = ticker_display in monex_symbols if monex_symbols else False
-    is_available_rakuten = ticker_display in rakuten_symbols if rakuten_symbols else False
-    is_available_sbi = ticker_display in sbi_symbols if sbi_symbols else False
-    is_available_mufg = ticker_display in mufg_symbols if mufg_symbols else False
-    is_available_matsui = ticker_display in matsui_symbols if matsui_symbols else False
-    is_available_dmm = ticker_display in dmm_symbols if dmm_symbols else False
-    is_available_paypay = ticker_display in paypay_symbols if paypay_symbols else False
+    def normalize_ticker(t):
+        if not t: return ""
+        return t.replace(".", "").replace("-", "").upper()
+
+    # Pre-calculate normalized symbol lists for faster matching
+    monex_norm = {normalize_ticker(s) for s in monex_symbols} if monex_symbols else set()
+    rakuten_norm = {normalize_ticker(s) for s in rakuten_symbols} if rakuten_symbols else set()
+    sbi_norm = {normalize_ticker(s) for s in sbi_symbols} if sbi_symbols else set()
+    mufg_norm = {normalize_ticker(s) for s in mufg_symbols} if mufg_symbols else set()
+    matsui_norm = {normalize_ticker(s) for s in matsui_symbols} if matsui_symbols else set()
+    dmm_norm = {normalize_ticker(s) for s in dmm_symbols} if dmm_symbols else set()
+    paypay_norm = {normalize_ticker(s) for s in paypay_symbols} if paypay_symbols else set()
+
+    # Define a helper for checking availability
+    def is_available(ticker, original_list, normalized_set):
+        if not original_list: return False
+        # Direct match or normalized match
+        return (ticker in original_list) or (normalize_ticker(ticker) in normalized_set)
+
+    for index, row in tqdm(df_sp500.iterrows(), total=len(df_sp500), desc="Generating reports"):
+        ticker_display = row['Symbol']
+        chart_target_symbol = row['Symbol_YF']
+        current_sector = row['GICS Sector']
+        current_sub_industry = row['GICS Sub-Industry']
+        exchange = row['Exchange']
+
+        # Check availability
+        is_available_monex = is_available(ticker_display, monex_symbols, monex_norm)
+        is_available_rakuten = is_available(ticker_display, rakuten_symbols, rakuten_norm)
+        is_available_sbi = is_available(ticker_display, sbi_symbols, sbi_norm)
+        is_available_mufg = is_available(ticker_display, mufg_symbols, mufg_norm)
+        is_available_matsui = is_available(ticker_display, matsui_symbols, matsui_norm)
+        is_available_dmm = is_available(ticker_display, dmm_symbols, dmm_norm)
+        is_available_paypay = is_available(ticker_display, paypay_symbols, paypay_norm)
     # TradingView symbol
     tv_ticker = ticker_display.replace("-", ".")
     full_symbol = f"{exchange}:{tv_ticker}"

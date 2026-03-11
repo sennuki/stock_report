@@ -134,13 +134,24 @@ if __name__ == "__main__":
             # カラムの型合わせや並び順を調整
             df_missing = df_missing.select(df_sp500.columns)
             df_sp500 = pl.concat([df_sp500, df_missing])
-        # JSONリストのエクスポート (レポート生成前でもOK)
-        export_stocks_json(df_sp500)
+        # JSONリストのエクスポートは risk_return 計算後に行うため削除
+        # export_stocks_json(df_sp500)
 
         # 2. リスク指標計算 (全銘柄)
         try:
             df_metrics = risk_return.calculate_market_metrics_parallel(df_sp500['Symbol_YF'].to_list())
             utils.log_event("SUCCESS", "SYSTEM", "Calculated risk metrics")
+            
+            # stocks.json 用に Daily_Change と Earnings_Date を結合
+            if not df_metrics.is_empty():
+                # Symbol 列で外部結合
+                df_sp500 = df_sp500.join(
+                    df_metrics.select(["Symbol", "Daily_Change", "Earnings_Date"]), 
+                    on="Symbol", 
+                    how="left"
+                )
+                # 結合後、再度 JSON を更新
+                export_stocks_json(df_sp500)
         except Exception as e:
             utils.log_event("ERROR", "SYSTEM", f"Failed to calculate risk metrics: {e}")
             df_metrics = pl.DataFrame()

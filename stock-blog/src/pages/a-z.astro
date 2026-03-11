@@ -1,0 +1,62 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Main from "@/layouts/Main.astro";
+import stocks from "@/data/stocks.json";
+
+// Sort stocks by Symbol
+const sortedStocks = [...stocks].sort((a, b) => a.Symbol.localeCompare(b.Symbol));
+
+// Group stocks by the first letter of their Symbol
+const groups = sortedStocks.reduce((acc, stock) => {
+  const firstLetter = stock.Symbol[0].toUpperCase();
+  if (!acc[firstLetter]) {
+    acc[firstLetter] = [];
+  }
+  acc[firstLetter].push(stock);
+  return acc;
+}, {} as Record<string, typeof stocks>);
+
+const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+const availableLetters = Object.keys(groups).sort();
+---
+
+<Layout title="A-Z | Stock Reports">
+  <Main pageTitle="A-Z 銘柄一覧" pageDesc="全銘柄をアルファベット順に表示しています。">
+    <div class="flex flex-wrap justify-start gap-1 sm:gap-2 mb-10 text-sm sm:text-base">
+      {alphabet.map(letter => (
+        <a 
+          href={`#${letter}`} 
+          class={`min-w-[2rem] sm:min-w-[2.5rem] h-8 sm:h-10 flex items-center justify-center border rounded hover:bg-accent hover:text-white transition-colors ${!groups[letter] ? 'opacity-30 cursor-not-allowed' : ''}`}
+          onclick={!groups[letter] ? 'return false;' : ''}
+        >
+          {letter}
+        </a>
+      ))}
+    </div>
+
+    <div class="space-y-8">
+      {availableLetters.map(letter => (
+        <section id={letter} class="border-b pb-4">
+          <h2 class="text-2xl font-bold mb-4 border-l-4 border-accent pl-3">{letter}</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {groups[letter].map(stock => (
+              <a 
+                href={`/report/${stock.Symbol}`} 
+                class="block p-3 border rounded hover:border-accent hover:shadow-sm transition-all"
+              >
+                <div class="font-bold text-accent">{stock.Symbol}</div>
+                <div class="text-sm opacity-80 truncate" title={stock.Security}>{stock.Security}</div>
+              </a>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+  </Main>
+</Layout>
+
+<style>
+  section {
+    scroll-margin-top: 2rem;
+  }
+</style>

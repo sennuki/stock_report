@@ -1,0 +1,4529 @@
+[
+  {
+    "Symbol": "MMM",
+    "Security": "3M",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Industrial Conglomerates",
+    "Symbol_YF": "MMM",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.023873903581085567
+  },
+  {
+    "Symbol": "AOS",
+    "Security": "A. O. Smith",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Building Products",
+    "Symbol_YF": "AOS",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.009083167754754479
+  },
+  {
+    "Symbol": "ABT",
+    "Security": "Abbott Laboratories",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Equipment",
+    "Symbol_YF": "ABT",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.01864181091877504
+  },
+  {
+    "Symbol": "ABBV",
+    "Security": "AbbVie",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Biotechnology",
+    "Symbol_YF": "ABBV",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0019344910969443735
+  },
+  {
+    "Symbol": "ACN",
+    "Security": "Accenture",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "IT Consulting & Other Services",
+    "Symbol_YF": "ACN",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.036922048146732986
+  },
+  {
+    "Symbol": "ADBE",
+    "Security": "Adobe Inc.",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Application Software",
+    "Symbol_YF": "ADBE",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.0258816031723552
+  },
+  {
+    "Symbol": "AMD",
+    "Security": "Advanced Micro Devices",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Semiconductors",
+    "Symbol_YF": "AMD",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.0027136372607064483
+  },
+  {
+    "Symbol": "AES",
+    "Security": "AES Corporation",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Independent Power Producers & Energy Traders",
+    "Symbol_YF": "AES",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.0014094432699084814
+  },
+  {
+    "Symbol": "AFL",
+    "Security": "Aflac",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Life & Health Insurance",
+    "Symbol_YF": "AFL",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.0010891268832818146
+  },
+  {
+    "Symbol": "A",
+    "Security": "Agilent Technologies",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Life Sciences Tools & Services",
+    "Symbol_YF": "A",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.010373799725651525
+  },
+  {
+    "Symbol": "APD",
+    "Security": "Air Products",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Industrial Gases",
+    "Symbol_YF": "APD",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.002623906705539458
+  },
+  {
+    "Symbol": "ABNB",
+    "Security": "Airbnb",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Hotels, Resorts & Cruise Lines",
+    "Symbol_YF": "ABNB",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.011863015742744187
+  },
+  {
+    "Symbol": "AKAM",
+    "Security": "Akamai Technologies",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Internet Services & Infrastructure",
+    "Symbol_YF": "AKAM",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.023406130643423763
+  },
+  {
+    "Symbol": "ALB",
+    "Security": "Albemarle Corporation",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Specialty Chemicals",
+    "Symbol_YF": "ALB",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.017868726779501097
+  },
+  {
+    "Symbol": "ARE",
+    "Security": "Alexandria Real Estate Equities",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Office REITs",
+    "Symbol_YF": "ARE",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0025400547088707025
+  },
+  {
+    "Symbol": "ALGN",
+    "Security": "Align Technology",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Supplies",
+    "Symbol_YF": "ALGN",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.032105112824907196
+  },
+  {
+    "Symbol": "ALLE",
+    "Security": "Allegion",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Building Products",
+    "Symbol_YF": "ALLE",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.017907069631207546
+  },
+  {
+    "Symbol": "LNT",
+    "Security": "Alliant Energy",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Electric Utilities",
+    "Symbol_YF": "LNT",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.007959782153330446
+  },
+  {
+    "Symbol": "ALL",
+    "Security": "Allstate",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Property & Casualty Insurance",
+    "Symbol_YF": "ALL",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0009148249795367987
+  },
+  {
+    "Symbol": "GOOGL",
+    "Security": "Alphabet Inc. (Class A)",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Interactive Media & Services",
+    "Symbol_YF": "GOOGL",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.0022196109152631113
+  },
+  {
+    "Symbol": "GOOG",
+    "Security": "Alphabet Inc. (Class C)",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Interactive Media & Services",
+    "Symbol_YF": "GOOG",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.0030064376981144927
+  },
+  {
+    "Symbol": "MO",
+    "Security": "Altria",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Tobacco",
+    "Symbol_YF": "MO",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.0014916467780428746
+  },
+  {
+    "Symbol": "AMZN",
+    "Security": "Amazon",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Broadline Retail",
+    "Symbol_YF": "AMZN",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.003934610520399098
+  },
+  {
+    "Symbol": "AMCR",
+    "Security": "Amcor",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Paper & Plastic Packaging Products & Materials",
+    "Symbol_YF": "AMCR",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.004728132387706755
+  },
+  {
+    "Symbol": "AEE",
+    "Security": "Ameren",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Multi-Utilities",
+    "Symbol_YF": "AEE",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.00018114301240826033
+  },
+  {
+    "Symbol": "AEP",
+    "Security": "American Electric Power",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Electric Utilities",
+    "Symbol_YF": "AEP",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.0034127104504776927
+  },
+  {
+    "Symbol": "AXP",
+    "Security": "American Express",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Consumer Finance",
+    "Symbol_YF": "AXP",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.007302377365904834
+  },
+  {
+    "Symbol": "AIG",
+    "Security": "American International Group",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Multi-line Insurance",
+    "Symbol_YF": "AIG",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.005539809327492819
+  },
+  {
+    "Symbol": "AMT",
+    "Security": "American Tower",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Telecom Tower REITs",
+    "Symbol_YF": "AMT",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0027861123017572965
+  },
+  {
+    "Symbol": "AWK",
+    "Security": "American Water Works",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Water Utilities",
+    "Symbol_YF": "AWK",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.03550424744064464
+  },
+  {
+    "Symbol": "AMP",
+    "Security": "Ameriprise Financial",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Asset Management & Custody Banks",
+    "Symbol_YF": "AMP",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.011528126896073488
+  },
+  {
+    "Symbol": "AME",
+    "Security": "Ametek",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Electrical Components & Equipment",
+    "Symbol_YF": "AME",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.005464966454880785
+  },
+  {
+    "Symbol": "AMGN",
+    "Security": "Amgen",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Biotechnology",
+    "Symbol_YF": "AMGN",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.004085205719288061
+  },
+  {
+    "Symbol": "APH",
+    "Security": "Amphenol",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Electronic Components",
+    "Symbol_YF": "APH",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.004997795090401344
+  },
+  {
+    "Symbol": "ADI",
+    "Security": "Analog Devices",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Semiconductors",
+    "Symbol_YF": "ADI",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.0028150511400956407
+  },
+  {
+    "Symbol": "AON",
+    "Security": "Aon plc",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Insurance Brokers",
+    "Symbol_YF": "AON",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.03569282538156471
+  },
+  {
+    "Symbol": "APA",
+    "Security": "APA Corporation",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Exploration & Production",
+    "Symbol_YF": "APA",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.02362687941086232
+  },
+  {
+    "Symbol": "APO",
+    "Security": "Apollo Global Management",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Asset Management & Custody Banks",
+    "Symbol_YF": "APO",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.000277418161642326
+  },
+  {
+    "Symbol": "AAPL",
+    "Security": "Apple Inc.",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
+    "Symbol_YF": "AAPL",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.0036555333230721436
+  },
+  {
+    "Symbol": "AMAT",
+    "Security": "Applied Materials",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Semiconductor Materials & Equipment",
+    "Symbol_YF": "AMAT",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.020475600401250953
+  },
+  {
+    "Symbol": "APP",
+    "Security": "AppLovin",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Application Software",
+    "Symbol_YF": "APP",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.0770256945652805
+  },
+  {
+    "Symbol": "APTV",
+    "Security": "Aptiv",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Automotive Parts & Equipment",
+    "Symbol_YF": "APTV",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.010981468771448143
+  },
+  {
+    "Symbol": "ACGL",
+    "Security": "Arch Capital Group",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Property & Casualty Insurance",
+    "Symbol_YF": "ACGL",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.005961096005019799
+  },
+  {
+    "Symbol": "ADM",
+    "Security": "Archer Daniels Midland",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Agricultural Products & Services",
+    "Symbol_YF": "ADM",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.021643109540636026
+  },
+  {
+    "Symbol": "ARES",
+    "Security": "Ares Management",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Asset Management & Custody Banks",
+    "Symbol_YF": "ARES",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0015617822691776527
+  },
+  {
+    "Symbol": "ANET",
+    "Security": "Arista Networks",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Communications Equipment",
+    "Symbol_YF": "ANET",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.017861048334183987
+  },
+  {
+    "Symbol": "AJG",
+    "Security": "Arthur J. Gallagher & Co.",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Insurance Brokers",
+    "Symbol_YF": "AJG",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.027826246670952348
+  },
+  {
+    "Symbol": "AIZ",
+    "Security": "Assurant",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Multi-line Insurance",
+    "Symbol_YF": "AIZ",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.00013656848909728746
+  },
+  {
+    "Symbol": "T",
+    "Security": "AT&T",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Integrated Telecommunication Services",
+    "Symbol_YF": "T",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.006538321830730102
+  },
+  {
+    "Symbol": "ATO",
+    "Security": "Atmos Energy",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Gas Utilities",
+    "Symbol_YF": "ATO",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.009717123731375574
+  },
+  {
+    "Symbol": "ADSK",
+    "Security": "Autodesk",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Application Software",
+    "Symbol_YF": "ADSK",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.026462128475551315
+  },
+  {
+    "Symbol": "ADP",
+    "Security": "Automatic Data Processing",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Human Resource & Employment Services",
+    "Symbol_YF": "ADP",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.025421449067431795
+  },
+  {
+    "Symbol": "AZO",
+    "Security": "AutoZone",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Automotive Retail",
+    "Symbol_YF": "AZO",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.014523454262282624
+  },
+  {
+    "Symbol": "AVB",
+    "Security": "AvalonBay Communities",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Multi-Family Residential REITs",
+    "Symbol_YF": "AVB",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.012789315828193194
+  },
+  {
+    "Symbol": "AVY",
+    "Security": "Avery Dennison",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Paper & Plastic Packaging Products & Materials",
+    "Symbol_YF": "AVY",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.012296707655692116
+  },
+  {
+    "Symbol": "AXON",
+    "Security": "Axon Enterprise",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Aerospace & Defense",
+    "Symbol_YF": "AXON",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.05203377097270404
+  },
+  {
+    "Symbol": "BKR",
+    "Security": "Baker Hughes",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Equipment & Services",
+    "Symbol_YF": "BKR",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.012645590682196306
+  },
+  {
+    "Symbol": "BALL",
+    "Security": "Ball Corporation",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Metal, Glass & Plastic Containers",
+    "Symbol_YF": "BALL",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.005930437570123376
+  },
+  {
+    "Symbol": "BAC",
+    "Security": "Bank of America",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Diversified Banks",
+    "Symbol_YF": "BAC",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.013778705636743292
+  },
+  {
+    "Symbol": "BAX",
+    "Security": "Baxter International",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Equipment",
+    "Symbol_YF": "BAX",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.025125628140703477
+  },
+  {
+    "Symbol": "BDX",
+    "Security": "Becton Dickinson",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Equipment",
+    "Symbol_YF": "BDX",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0032236481965817235
+  },
+  {
+    "Symbol": "BRK.B",
+    "Security": "Berkshire Hathaway",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Multi-Sector Holdings",
+    "Symbol_YF": "BRK-B",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.006154465004022531
+  },
+  {
+    "Symbol": "BBY",
+    "Security": "Best Buy",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Computer & Electronics Retail",
+    "Symbol_YF": "BBY",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0175864160097028
+  },
+  {
+    "Symbol": "TECH",
+    "Security": "Bio-Techne",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Life Sciences Tools & Services",
+    "Symbol_YF": "TECH",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.0373610351740477
+  },
+  {
+    "Symbol": "BIIB",
+    "Security": "Biogen",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Biotechnology",
+    "Symbol_YF": "BIIB",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.0009031024224393726
+  },
+  {
+    "Symbol": "BLK",
+    "Security": "BlackRock",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Asset Management & Custody Banks",
+    "Symbol_YF": "BLK",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.010118307976651723
+  },
+  {
+    "Symbol": "BX",
+    "Security": "Blackstone Inc.",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Asset Management & Custody Banks",
+    "Symbol_YF": "BX",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.006235878897424418
+  },
+  {
+    "Symbol": "XYZ",
+    "Security": "Block, Inc.",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Transaction & Payment Processing Services",
+    "Symbol_YF": "XYZ",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.0009154714678057378
+  },
+  {
+    "Symbol": "BK",
+    "Security": "BNY Mellon",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Asset Management & Custody Banks",
+    "Symbol_YF": "BK",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.0027801911381408117
+  },
+  {
+    "Symbol": "BA",
+    "Security": "Boeing",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Aerospace & Defense",
+    "Symbol_YF": "BA",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.03217777777777782
+  },
+  {
+    "Symbol": "BKNG",
+    "Security": "Booking Holdings",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Hotels, Resorts & Cruise Lines",
+    "Symbol_YF": "BKNG",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.015520110613440517
+  },
+  {
+    "Symbol": "BSX",
+    "Security": "Boston Scientific",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Equipment",
+    "Symbol_YF": "BSX",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.026981919332406283
+  },
+  {
+    "Symbol": "BMY",
+    "Security": "Bristol Myers Squibb",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Pharmaceuticals",
+    "Symbol_YF": "BMY",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.008246742536698003
+  },
+  {
+    "Symbol": "AVGO",
+    "Security": "Broadcom",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Semiconductors",
+    "Symbol_YF": "AVGO",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.009168474331164182
+  },
+  {
+    "Symbol": "BR",
+    "Security": "Broadridge Financial Solutions",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Data Processing & Outsourced Services",
+    "Symbol_YF": "BR",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.012591926353102988
+  },
+  {
+    "Symbol": "BRO",
+    "Security": "Brown & Brown",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Insurance Brokers",
+    "Symbol_YF": "BRO",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.03462837837837849
+  },
+  {
+    "Symbol": "BF.B",
+    "Security": "Brown–Forman",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Distillers & Vintners",
+    "Symbol_YF": "BF-B",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.020900321543408342
+  },
+  {
+    "Symbol": "BLDR",
+    "Security": "Builders FirstSource",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Building Products",
+    "Symbol_YF": "BLDR",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.013375460768825655
+  },
+  {
+    "Symbol": "BG",
+    "Security": "Bunge Global",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Agricultural Products & Services",
+    "Symbol_YF": "BG",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.008081488340769372
+  },
+  {
+    "Symbol": "BXP",
+    "Security": "BXP, Inc.",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Office REITs",
+    "Symbol_YF": "BXP",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.018292682926829285
+  },
+  {
+    "Symbol": "CHRW",
+    "Security": "C.H. Robinson",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Air Freight & Logistics",
+    "Symbol_YF": "CHRW",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.033417610201165134
+  },
+  {
+    "Symbol": "CDNS",
+    "Security": "Cadence Design Systems",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Application Software",
+    "Symbol_YF": "CDNS",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.015970474752558264
+  },
+  {
+    "Symbol": "CPT",
+    "Security": "Camden Property Trust",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Multi-Family Residential REITs",
+    "Symbol_YF": "CPT",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.014270763961564075
+  },
+  {
+    "Symbol": "CPB",
+    "Security": "Campbell's Company (The)",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Packaged Foods & Meats",
+    "Symbol_YF": "CPB",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.024120205614867513
+  },
+  {
+    "Symbol": "COF",
+    "Security": "Capital One",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Consumer Finance",
+    "Symbol_YF": "COF",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.004630377429602032
+  },
+  {
+    "Symbol": "CAH",
+    "Security": "Cardinal Health",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Distributors",
+    "Symbol_YF": "CAH",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.023573870793593705
+  },
+  {
+    "Symbol": "CCL",
+    "Security": "Carnival",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Hotels, Resorts & Cruise Lines",
+    "Symbol_YF": "CCL",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0068207654414550855
+  },
+  {
+    "Symbol": "CARR",
+    "Security": "Carrier Global",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Building Products",
+    "Symbol_YF": "CARR",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.004938692098092628
+  },
+  {
+    "Symbol": "CVNA",
+    "Security": "Carvana",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Automotive Retail",
+    "Symbol_YF": "CVNA",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.02891001035764336
+  },
+  {
+    "Symbol": "CAT",
+    "Security": "Caterpillar Inc.",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Construction Machinery & Heavy Transportation Equipment",
+    "Symbol_YF": "CAT",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.0168269912885558
+  },
+  {
+    "Symbol": "CBOE",
+    "Security": "Cboe Global Markets",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Financial Exchanges & Data",
+    "Symbol_YF": "CBOE",
+    "Exchange": "BTS",
+    "Daily_Change": -0.04572192513368986
+  },
+  {
+    "Symbol": "CBRE",
+    "Security": "CBRE Group",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Real Estate Services",
+    "Symbol_YF": "CBRE",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.017160800350518434
+  },
+  {
+    "Symbol": "CDW",
+    "Security": "CDW Corporation",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Technology Distributors",
+    "Symbol_YF": "CDW",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.01730992214676155
+  },
+  {
+    "Symbol": "COR",
+    "Security": "Cencora",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Distributors",
+    "Symbol_YF": "COR",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.026561636263128838
+  },
+  {
+    "Symbol": "CNC",
+    "Security": "Centene Corporation",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Managed Health Care",
+    "Symbol_YF": "CNC",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.159741458910434
+  },
+  {
+    "Symbol": "CNP",
+    "Security": "CenterPoint Energy",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Multi-Utilities",
+    "Symbol_YF": "CNP",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.007359705611775536
+  },
+  {
+    "Symbol": "CF",
+    "Security": "CF Industries",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Fertilizers & Agricultural Chemicals",
+    "Symbol_YF": "CF",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.00891570605187328
+  },
+  {
+    "Symbol": "CRL",
+    "Security": "Charles River Laboratories",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Life Sciences Tools & Services",
+    "Symbol_YF": "CRL",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.05435335329679645
+  },
+  {
+    "Symbol": "SCHW",
+    "Security": "Charles Schwab Corporation",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Investment Banking & Brokerage",
+    "Symbol_YF": "SCHW",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.012820512820512754
+  },
+  {
+    "Symbol": "CHTR",
+    "Security": "Charter Communications",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Cable & Satellite",
+    "Symbol_YF": "CHTR",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.015618688568735647
+  },
+  {
+    "Symbol": "CVX",
+    "Security": "Chevron Corporation",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Integrated Oil & Gas",
+    "Symbol_YF": "CVX",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.01662795608108111
+  },
+  {
+    "Symbol": "CMG",
+    "Security": "Chipotle Mexican Grill",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Restaurants",
+    "Symbol_YF": "CMG",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.01615188438651177
+  },
+  {
+    "Symbol": "CB",
+    "Security": "Chubb Limited",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Property & Casualty Insurance",
+    "Symbol_YF": "CB",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.0025893958076449813
+  },
+  {
+    "Symbol": "CHD",
+    "Security": "Church & Dwight",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Household Products",
+    "Symbol_YF": "CHD",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.010953545232273883
+  },
+  {
+    "Symbol": "CIEN",
+    "Security": "Ciena",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Communications Equipment",
+    "Symbol_YF": "CIEN",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.05908206190745273
+  },
+  {
+    "Symbol": "CI",
+    "Security": "Cigna",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Services",
+    "Symbol_YF": "CI",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.026774456723281267
+  },
+  {
+    "Symbol": "CINF",
+    "Security": "Cincinnati Financial",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Property & Casualty Insurance",
+    "Symbol_YF": "CINF",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.008633357825128562
+  },
+  {
+    "Symbol": "CTAS",
+    "Security": "Cintas",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Diversified Support Services",
+    "Symbol_YF": "CTAS",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.022363898988892808
+  },
+  {
+    "Symbol": "CSCO",
+    "Security": "Cisco",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Communications Equipment",
+    "Symbol_YF": "CSCO",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.019551239994751467
+  },
+  {
+    "Symbol": "C",
+    "Security": "Citigroup",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Diversified Banks",
+    "Symbol_YF": "C",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.022328548644338076
+  },
+  {
+    "Symbol": "CFG",
+    "Security": "Citizens Financial Group",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Regional Banks",
+    "Symbol_YF": "CFG",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.009946835877207997
+  },
+  {
+    "Symbol": "CLX",
+    "Security": "Clorox",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Household Products",
+    "Symbol_YF": "CLX",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.021691208888105176
+  },
+  {
+    "Symbol": "CME",
+    "Security": "CME Group",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Financial Exchanges & Data",
+    "Symbol_YF": "CME",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.01700680272108847
+  },
+  {
+    "Symbol": "CMS",
+    "Security": "CMS Energy",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Multi-Utilities",
+    "Symbol_YF": "CMS",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.010486794407042829
+  },
+  {
+    "Symbol": "KO",
+    "Security": "Coca-Cola Company (The)",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Soft Drinks & Non-alcoholic Beverages",
+    "Symbol_YF": "KO",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.0010282776349614176
+  },
+  {
+    "Symbol": "CTSH",
+    "Security": "Cognizant",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "IT Consulting & Other Services",
+    "Symbol_YF": "CTSH",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.025831399845321092
+  },
+  {
+    "Symbol": "COIN",
+    "Security": "Coinbase",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Financial Exchanges & Data",
+    "Symbol_YF": "COIN",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.01636718554482197
+  },
+  {
+    "Symbol": "CL",
+    "Security": "Colgate-Palmolive",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Household Products",
+    "Symbol_YF": "CL",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.005483870967741991
+  },
+  {
+    "Symbol": "CMCSA",
+    "Security": "Comcast",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Cable & Satellite",
+    "Symbol_YF": "CMCSA",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.0009664948453608614
+  },
+  {
+    "Symbol": "FIX",
+    "Security": "Comfort Systems USA",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Construction & Engineering",
+    "Symbol_YF": "FIX",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.00817545904983955
+  },
+  {
+    "Symbol": "CAG",
+    "Security": "Conagra Brands",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Packaged Foods & Meats",
+    "Symbol_YF": "CAG",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.03108252947481253
+  },
+  {
+    "Symbol": "COP",
+    "Security": "ConocoPhillips",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Exploration & Production",
+    "Symbol_YF": "COP",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.02460907459625733
+  },
+  {
+    "Symbol": "ED",
+    "Security": "Consolidated Edison",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Multi-Utilities",
+    "Symbol_YF": "ED",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.004472271914132379
+  },
+  {
+    "Symbol": "STZ",
+    "Security": "Constellation Brands",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Distillers & Vintners",
+    "Symbol_YF": "STZ",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.007585929108485469
+  },
+  {
+    "Symbol": "CEG",
+    "Security": "Constellation Energy",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Electric Utilities",
+    "Symbol_YF": "CEG",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.01826681940617367
+  },
+  {
+    "Symbol": "COO",
+    "Security": "Cooper Companies (The)",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Supplies",
+    "Symbol_YF": "COO",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.018596676338696872
+  },
+  {
+    "Symbol": "CPRT",
+    "Security": "Copart",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Diversified Support Services",
+    "Symbol_YF": "CPRT",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.033537396859196114
+  },
+  {
+    "Symbol": "GLW",
+    "Security": "Corning Inc.",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Electronic Components",
+    "Symbol_YF": "GLW",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.05555986051917851
+  },
+  {
+    "Symbol": "CPAY",
+    "Security": "Corpay",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Transaction & Payment Processing Services",
+    "Symbol_YF": "CPAY",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.010687960687960569
+  },
+  {
+    "Symbol": "CTVA",
+    "Security": "Corteva",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Fertilizers & Agricultural Chemicals",
+    "Symbol_YF": "CTVA",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.025415070242656386
+  },
+  {
+    "Symbol": "CSGP",
+    "Security": "CoStar Group",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Real Estate Services",
+    "Symbol_YF": "CSGP",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.04316398182569193
+  },
+  {
+    "Symbol": "COST",
+    "Security": "Costco",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Consumer Staples Merchandise Retail",
+    "Symbol_YF": "COST",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.007898139858748574
+  },
+  {
+    "Symbol": "CTRA",
+    "Security": "Coterra",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Exploration & Production",
+    "Symbol_YF": "CTRA",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.02469531751122513
+  },
+  {
+    "Symbol": "CRH",
+    "Security": "CRH plc",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Construction Materials",
+    "Symbol_YF": "CRH",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0016907758782640674
+  },
+  {
+    "Symbol": "CRWD",
+    "Security": "CrowdStrike",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Systems Software",
+    "Symbol_YF": "CRWD",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.005067606477322435
+  },
+  {
+    "Symbol": "CCI",
+    "Security": "Crown Castle",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Telecom Tower REITs",
+    "Symbol_YF": "CCI",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.013484899141870142
+  },
+  {
+    "Symbol": "CSX",
+    "Security": "CSX Corporation",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Rail Transportation",
+    "Symbol_YF": "CSX",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.007635467980295447
+  },
+  {
+    "Symbol": "CMI",
+    "Security": "Cummins",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Construction Machinery & Heavy Transportation Equipment",
+    "Symbol_YF": "CMI",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.015485559533979136
+  },
+  {
+    "Symbol": "CVS",
+    "Security": "CVS Health",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Services",
+    "Symbol_YF": "CVS",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.024789164324048197
+  },
+  {
+    "Symbol": "DHR",
+    "Security": "Danaher Corporation",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Life Sciences Tools & Services",
+    "Symbol_YF": "DHR",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.018008048289738492
+  },
+  {
+    "Symbol": "DRI",
+    "Security": "Darden Restaurants",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Restaurants",
+    "Symbol_YF": "DRI",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.009075580242015536
+  },
+  {
+    "Symbol": "DDOG",
+    "Security": "Datadog",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Application Software",
+    "Symbol_YF": "DDOG",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.04262601120099568
+  },
+  {
+    "Symbol": "DVA",
+    "Security": "DaVita",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Services",
+    "Symbol_YF": "DVA",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.006620346093340265
+  },
+  {
+    "Symbol": "DECK",
+    "Security": "Deckers Brands",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Footwear",
+    "Symbol_YF": "DECK",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.009010736196319133
+  },
+  {
+    "Symbol": "DE",
+    "Security": "Deere & Company",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Agricultural & Farm Machinery",
+    "Symbol_YF": "DE",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.011276439580970158
+  },
+  {
+    "Symbol": "DELL",
+    "Security": "Dell Technologies",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
+    "Symbol_YF": "DELL",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.01849703091939103
+  },
+  {
+    "Symbol": "DAL",
+    "Security": "Delta Air Lines",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Passenger Airlines",
+    "Symbol_YF": "DAL",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.021624298448332704
+  },
+  {
+    "Symbol": "DVN",
+    "Security": "Devon Energy",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Exploration & Production",
+    "Symbol_YF": "DVN",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.02498884426595264
+  },
+  {
+    "Symbol": "DXCM",
+    "Security": "Dexcom",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Equipment",
+    "Symbol_YF": "DXCM",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.013820192027931172
+  },
+  {
+    "Symbol": "FANG",
+    "Security": "Diamondback Energy",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Exploration & Production",
+    "Symbol_YF": "FANG",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.024554303839002565
+  },
+  {
+    "Symbol": "DLR",
+    "Security": "Digital Realty",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Data Center REITs",
+    "Symbol_YF": "DLR",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.0067353186752018256
+  },
+  {
+    "Symbol": "DG",
+    "Security": "Dollar General",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Consumer Staples Merchandise Retail",
+    "Symbol_YF": "DG",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.003298515667949352
+  },
+  {
+    "Symbol": "DLTR",
+    "Security": "Dollar Tree",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Consumer Staples Merchandise Retail",
+    "Symbol_YF": "DLTR",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.008372895986189028
+  },
+  {
+    "Symbol": "D",
+    "Security": "Dominion Energy",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Multi-Utilities",
+    "Symbol_YF": "D",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0028612303290414835
+  },
+  {
+    "Symbol": "DPZ",
+    "Security": "Domino's",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Restaurants",
+    "Symbol_YF": "DPZ",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.03670210207321178
+  },
+  {
+    "Symbol": "DASH",
+    "Security": "DoorDash",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Specialized Consumer Services",
+    "Symbol_YF": "DASH",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.03771447986862221
+  },
+  {
+    "Symbol": "DOV",
+    "Security": "Dover Corporation",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
+    "Symbol_YF": "DOV",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0035071090047393795
+  },
+  {
+    "Symbol": "DOW",
+    "Security": "Dow Inc.",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Commodity Chemicals",
+    "Symbol_YF": "DOW",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.012241329058583552
+  },
+  {
+    "Symbol": "DHI",
+    "Security": "D. R. Horton",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Homebuilding",
+    "Symbol_YF": "DHI",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.016317963301509898
+  },
+  {
+    "Symbol": "DTE",
+    "Security": "DTE Energy",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Multi-Utilities",
+    "Symbol_YF": "DTE",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.008055853920515688
+  },
+  {
+    "Symbol": "DUK",
+    "Security": "Duke Energy",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Electric Utilities",
+    "Symbol_YF": "DUK",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.010604211168752018
+  },
+  {
+    "Symbol": "DD",
+    "Security": "DuPont",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Specialty Chemicals",
+    "Symbol_YF": "DD",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.016136162687886757
+  },
+  {
+    "Symbol": "ETN",
+    "Security": "Eaton Corporation",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Electrical Components & Equipment",
+    "Symbol_YF": "ETN",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.023499730702724212
+  },
+  {
+    "Symbol": "EBAY",
+    "Security": "eBay Inc.",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Broadline Retail",
+    "Symbol_YF": "EBAY",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.022064363362393685
+  },
+  {
+    "Symbol": "ECL",
+    "Security": "Ecolab",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Specialty Chemicals",
+    "Symbol_YF": "ECL",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0016674945008161046
+  },
+  {
+    "Symbol": "EIX",
+    "Security": "Edison International",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Electric Utilities",
+    "Symbol_YF": "EIX",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.004948395306093515
+  },
+  {
+    "Symbol": "EW",
+    "Security": "Edwards Lifesciences",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Equipment",
+    "Symbol_YF": "EW",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.018039401851412246
+  },
+  {
+    "Symbol": "EA",
+    "Security": "Electronic Arts",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Interactive Home Entertainment",
+    "Symbol_YF": "EA",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.004014653485220971
+  },
+  {
+    "Symbol": "ELV",
+    "Security": "Elevance Health",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Managed Health Care",
+    "Symbol_YF": "ELV",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.013117339258834583
+  },
+  {
+    "Symbol": "EME",
+    "Security": "Emcor",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Construction & Engineering",
+    "Symbol_YF": "EME",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.005839984426708259
+  },
+  {
+    "Symbol": "EMR",
+    "Security": "Emerson Electric",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Electrical Components & Equipment",
+    "Symbol_YF": "EMR",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.007227891156462657
+  },
+  {
+    "Symbol": "ETR",
+    "Security": "Entergy",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Electric Utilities",
+    "Symbol_YF": "ETR",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.0010511227902532195
+  },
+  {
+    "Symbol": "EOG",
+    "Security": "EOG Resources",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Exploration & Production",
+    "Symbol_YF": "EOG",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.02870813397129177
+  },
+  {
+    "Symbol": "EPAM",
+    "Security": "EPAM Systems",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "IT Consulting & Other Services",
+    "Symbol_YF": "EPAM",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.027895528510870946
+  },
+  {
+    "Symbol": "EQT",
+    "Security": "EQT Corporation",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Exploration & Production",
+    "Symbol_YF": "EQT",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.006427767957576709
+  },
+  {
+    "Symbol": "EFX",
+    "Security": "Equifax",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Research & Consulting Services",
+    "Symbol_YF": "EFX",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.04237329553785257
+  },
+  {
+    "Symbol": "EQIX",
+    "Security": "Equinix",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Data Center REITs",
+    "Symbol_YF": "EQIX",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.011810648633203248
+  },
+  {
+    "Symbol": "EQR",
+    "Security": "Equity Residential",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Multi-Family Residential REITs",
+    "Symbol_YF": "EQR",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.01125763911225479
+  },
+  {
+    "Symbol": "ERIE",
+    "Security": "Erie Indemnity",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Insurance Brokers",
+    "Symbol_YF": "ERIE",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.045646561839943624
+  },
+  {
+    "Symbol": "ESS",
+    "Security": "Essex Property Trust",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Multi-Family Residential REITs",
+    "Symbol_YF": "ESS",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.004112164173259228
+  },
+  {
+    "Symbol": "EL",
+    "Security": "Estée Lauder Companies (The)",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Personal Care Products",
+    "Symbol_YF": "EL",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.017704847241714356
+  },
+  {
+    "Symbol": "EG",
+    "Security": "Everest Group",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Reinsurance",
+    "Symbol_YF": "EG",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.001676573693034633
+  },
+  {
+    "Symbol": "EVRG",
+    "Security": "Evergy",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Electric Utilities",
+    "Symbol_YF": "EVRG",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.006126038697155279
+  },
+  {
+    "Symbol": "ES",
+    "Security": "Eversource Energy",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Electric Utilities",
+    "Symbol_YF": "ES",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0032498307379823276
+  },
+  {
+    "Symbol": "EXC",
+    "Security": "Exelon",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Electric Utilities",
+    "Symbol_YF": "EXC",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.0026455026455026974
+  },
+  {
+    "Symbol": "EXE",
+    "Security": "Expand Energy",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Exploration & Production",
+    "Symbol_YF": "EXE",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.029665337906739617
+  },
+  {
+    "Symbol": "EXPE",
+    "Security": "Expedia Group",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Hotels, Resorts & Cruise Lines",
+    "Symbol_YF": "EXPE",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.04090419806243271
+  },
+  {
+    "Symbol": "EXPD",
+    "Security": "Expeditors International",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Air Freight & Logistics",
+    "Symbol_YF": "EXPD",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.02664555218947951
+  },
+  {
+    "Symbol": "EXR",
+    "Security": "Extra Space Storage",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Self-Storage REITs",
+    "Symbol_YF": "EXR",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.00266593752136178
+  },
+  {
+    "Symbol": "XOM",
+    "Security": "ExxonMobil",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Integrated Oil & Gas",
+    "Symbol_YF": "XOM",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.015354958787556517
+  },
+  {
+    "Symbol": "FFIV",
+    "Security": "F5, Inc.",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Communications Equipment",
+    "Symbol_YF": "FFIV",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.0028388182104931215
+  },
+  {
+    "Symbol": "FDS",
+    "Security": "FactSet",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Financial Exchanges & Data",
+    "Symbol_YF": "FDS",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.04085233441910967
+  },
+  {
+    "Symbol": "FICO",
+    "Security": "Fair Isaac",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Application Software",
+    "Symbol_YF": "FICO",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.10827782403552591
+  },
+  {
+    "Symbol": "FAST",
+    "Security": "Fastenal",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Trading Companies & Distributors",
+    "Symbol_YF": "FAST",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.010683760683760684
+  },
+  {
+    "Symbol": "FRT",
+    "Security": "Federal Realty Investment Trust",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Retail REITs",
+    "Symbol_YF": "FRT",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.002440397972592368
+  },
+  {
+    "Symbol": "FDX",
+    "Security": "FedEx",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Air Freight & Logistics",
+    "Symbol_YF": "FDX",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0045139850456937
+  },
+  {
+    "Symbol": "FIS",
+    "Security": "Fidelity National Information Services",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Transaction & Payment Processing Services",
+    "Symbol_YF": "FIS",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.012700273544353236
+  },
+  {
+    "Symbol": "FITB",
+    "Security": "Fifth Third Bancorp",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Regional Banks",
+    "Symbol_YF": "FITB",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.008301404853128852
+  },
+  {
+    "Symbol": "FSLR",
+    "Security": "First Solar",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Semiconductors",
+    "Symbol_YF": "FSLR",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.012386119357150251
+  },
+  {
+    "Symbol": "FE",
+    "Security": "FirstEnergy",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Electric Utilities",
+    "Symbol_YF": "FE",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.005886970172684542
+  },
+  {
+    "Symbol": "FISV",
+    "Security": "Fiserv",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Transaction & Payment Processing Services",
+    "Symbol_YF": "FISV",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.030021210637950668
+  },
+  {
+    "Symbol": "F",
+    "Security": "Ford Motor Company",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Automobile Manufacturers",
+    "Symbol_YF": "F",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.0041017227235439465
+  },
+  {
+    "Symbol": "FTNT",
+    "Security": "Fortinet",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Systems Software",
+    "Symbol_YF": "FTNT",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.004653382651234943
+  },
+  {
+    "Symbol": "FTV",
+    "Security": "Fortive",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
+    "Symbol_YF": "FTV",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.00940550133096719
+  },
+  {
+    "Symbol": "FOXA",
+    "Security": "Fox Corporation (Class A)",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Broadcasting",
+    "Symbol_YF": "FOXA",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.01856226797165038
+  },
+  {
+    "Symbol": "FOX",
+    "Security": "Fox Corporation (Class B)",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Broadcasting",
+    "Symbol_YF": "FOX",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.017764618800888247
+  },
+  {
+    "Symbol": "BEN",
+    "Security": "Franklin Resources",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Asset Management & Custody Banks",
+    "Symbol_YF": "BEN",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.021722265321955092
+  },
+  {
+    "Symbol": "FCX",
+    "Security": "Freeport-McMoRan",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Copper",
+    "Symbol_YF": "FCX",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.03157546701934198
+  },
+  {
+    "Symbol": "GRMN",
+    "Security": "Garmin",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Consumer Electronics",
+    "Symbol_YF": "GRMN",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.005316737419115493
+  },
+  {
+    "Symbol": "IT",
+    "Security": "Gartner",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "IT Consulting & Other Services",
+    "Symbol_YF": "IT",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.044053128192799954
+  },
+  {
+    "Symbol": "GE",
+    "Security": "GE Aerospace",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Aerospace & Defense",
+    "Symbol_YF": "GE",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.014257757897679541
+  },
+  {
+    "Symbol": "GEHC",
+    "Security": "GE HealthCare",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Equipment",
+    "Symbol_YF": "GEHC",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.0383445722596852
+  },
+  {
+    "Symbol": "GEV",
+    "Security": "GE Vernova",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Heavy Electrical Equipment",
+    "Symbol_YF": "GEV",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.010962534634381427
+  },
+  {
+    "Symbol": "GEN",
+    "Security": "Gen Digital",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Systems Software",
+    "Symbol_YF": "GEN",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.034146341463414616
+  },
+  {
+    "Symbol": "GNRC",
+    "Security": "Generac",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Electrical Components & Equipment",
+    "Symbol_YF": "GNRC",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.017382067500362097
+  },
+  {
+    "Symbol": "GD",
+    "Security": "General Dynamics",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Aerospace & Defense",
+    "Symbol_YF": "GD",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.017652909000497385
+  },
+  {
+    "Symbol": "GIS",
+    "Security": "General Mills",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Packaged Foods & Meats",
+    "Symbol_YF": "GIS",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.025806451612903167
+  },
+  {
+    "Symbol": "GM",
+    "Security": "General Motors",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Automobile Manufacturers",
+    "Symbol_YF": "GM",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.0032132815637971497
+  },
+  {
+    "Symbol": "GPC",
+    "Security": "Genuine Parts Company",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Distributors",
+    "Symbol_YF": "GPC",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.025751072961373477
+  },
+  {
+    "Symbol": "GILD",
+    "Security": "Gilead Sciences",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Biotechnology",
+    "Symbol_YF": "GILD",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.013162381504467073
+  },
+  {
+    "Symbol": "GPN",
+    "Security": "Global Payments",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Transaction & Payment Processing Services",
+    "Symbol_YF": "GPN",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.016844919786096136
+  },
+  {
+    "Symbol": "GL",
+    "Security": "Globe Life",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Life & Health Insurance",
+    "Symbol_YF": "GL",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.006337581860432404
+  },
+  {
+    "Symbol": "GDDY",
+    "Security": "GoDaddy",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Internet Services & Infrastructure",
+    "Symbol_YF": "GDDY",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.016141345839240963
+  },
+  {
+    "Symbol": "GS",
+    "Security": "Goldman Sachs",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Investment Banking & Brokerage",
+    "Symbol_YF": "GS",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.0021393459370455067
+  },
+  {
+    "Symbol": "HAL",
+    "Security": "Halliburton",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Equipment & Services",
+    "Symbol_YF": "HAL",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.019913419913420053
+  },
+  {
+    "Symbol": "HIG",
+    "Security": "Hartford (The)",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Property & Casualty Insurance",
+    "Symbol_YF": "HIG",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.005074302283435946
+  },
+  {
+    "Symbol": "HAS",
+    "Security": "Hasbro",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Leisure Products",
+    "Symbol_YF": "HAS",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.007412821048235623
+  },
+  {
+    "Symbol": "HCA",
+    "Security": "HCA Healthcare",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Facilities",
+    "Symbol_YF": "HCA",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.01373984187258087
+  },
+  {
+    "Symbol": "DOC",
+    "Security": "Healthpeak Properties",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Health Care REITs",
+    "Symbol_YF": "DOC",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0011481056257177454
+  },
+  {
+    "Symbol": "HSIC",
+    "Security": "Henry Schein",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Distributors",
+    "Symbol_YF": "HSIC",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.02317541613316246
+  },
+  {
+    "Symbol": "HSY",
+    "Security": "Hershey Company (The)",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Packaged Foods & Meats",
+    "Symbol_YF": "HSY",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.016967411796391062
+  },
+  {
+    "Symbol": "HPE",
+    "Security": "Hewlett Packard Enterprise",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
+    "Symbol_YF": "HPE",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.032553874369555126
+  },
+  {
+    "Symbol": "HLT",
+    "Security": "Hilton Worldwide",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Hotels, Resorts & Cruise Lines",
+    "Symbol_YF": "HLT",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.016773215580307043
+  },
+  {
+    "Symbol": "HOLX",
+    "Security": "Hologic",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Equipment",
+    "Symbol_YF": "HOLX",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.0006614631565021452
+  },
+  {
+    "Symbol": "HD",
+    "Security": "Home Depot (The)",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Home Improvement Retail",
+    "Symbol_YF": "HD",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.010153863559226086
+  },
+  {
+    "Symbol": "HON",
+    "Security": "Honeywell",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Industrial Conglomerates",
+    "Symbol_YF": "HON",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.012710972684035567
+  },
+  {
+    "Symbol": "HRL",
+    "Security": "Hormel Foods",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Packaged Foods & Meats",
+    "Symbol_YF": "HRL",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.022613065326633132
+  },
+  {
+    "Symbol": "HST",
+    "Security": "Host Hotels & Resorts",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Hotel & Resort REITs",
+    "Symbol_YF": "HST",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.004697286012526089
+  },
+  {
+    "Symbol": "HWM",
+    "Security": "Howmet Aerospace",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Aerospace & Defense",
+    "Symbol_YF": "HWM",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0009050129849688745
+  },
+  {
+    "Symbol": "HPQ",
+    "Security": "HP Inc.",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
+    "Symbol_YF": "HPQ",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.00739566825145275
+  },
+  {
+    "Symbol": "HUBB",
+    "Security": "Hubbell Incorporated",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
+    "Symbol_YF": "HUBB",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0198868295883221
+  },
+  {
+    "Symbol": "HUM",
+    "Security": "Humana",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Managed Health Care",
+    "Symbol_YF": "HUM",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.02750238055228811
+  },
+  {
+    "Symbol": "HBAN",
+    "Security": "Huntington Bancshares",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Regional Banks",
+    "Symbol_YF": "HBAN",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.008064516129032306
+  },
+  {
+    "Symbol": "HII",
+    "Security": "Huntington Ingalls Industries",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Aerospace & Defense",
+    "Symbol_YF": "HII",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.028097211229573055
+  },
+  {
+    "Symbol": "IBM",
+    "Security": "IBM",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "IT Consulting & Other Services",
+    "Symbol_YF": "IBM",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.012355425729286005
+  },
+  {
+    "Symbol": "IEX",
+    "Security": "IDEX Corporation",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
+    "Symbol_YF": "IEX",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.009159919028340093
+  },
+  {
+    "Symbol": "IDXX",
+    "Security": "Idexx Laboratories",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Equipment",
+    "Symbol_YF": "IDXX",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.01900237529691215
+  },
+  {
+    "Symbol": "ITW",
+    "Security": "Illinois Tool Works",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
+    "Symbol_YF": "ITW",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.011895292501265326
+  },
+  {
+    "Symbol": "INCY",
+    "Security": "Incyte",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Biotechnology",
+    "Symbol_YF": "INCY",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.011122554067971148
+  },
+  {
+    "Symbol": "IR",
+    "Security": "Ingersoll Rand",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
+    "Symbol_YF": "IR",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.002769443803369431
+  },
+  {
+    "Symbol": "PODD",
+    "Security": "Insulet Corporation",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Equipment",
+    "Symbol_YF": "PODD",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.008902570929361787
+  },
+  {
+    "Symbol": "INTC",
+    "Security": "Intel",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Semiconductors",
+    "Symbol_YF": "INTC",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.026327336551118977
+  },
+  {
+    "Symbol": "IBKR",
+    "Security": "Interactive Brokers",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Investment Banking & Brokerage",
+    "Symbol_YF": "IBKR",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.014965180026670695
+  },
+  {
+    "Symbol": "ICE",
+    "Security": "Intercontinental Exchange",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Financial Exchanges & Data",
+    "Symbol_YF": "ICE",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.03395657418576613
+  },
+  {
+    "Symbol": "IFF",
+    "Security": "International Flavors & Fragrances",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Specialty Chemicals",
+    "Symbol_YF": "IFF",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0042372881355932515
+  },
+  {
+    "Symbol": "IP",
+    "Security": "International Paper",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Paper & Plastic Packaging Products & Materials",
+    "Symbol_YF": "IP",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.01823391508205269
+  },
+  {
+    "Symbol": "INTU",
+    "Security": "Intuit",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Application Software",
+    "Symbol_YF": "INTU",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.04163236008191362
+  },
+  {
+    "Symbol": "ISRG",
+    "Security": "Intuitive Surgical",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Equipment",
+    "Symbol_YF": "ISRG",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.015621201069778708
+  },
+  {
+    "Symbol": "IVZ",
+    "Security": "Invesco",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Asset Management & Custody Banks",
+    "Symbol_YF": "IVZ",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.003768844221105522
+  },
+  {
+    "Symbol": "INVH",
+    "Security": "Invitation Homes",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Single-Family Residential REITs",
+    "Symbol_YF": "INVH",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.008471313053523253
+  },
+  {
+    "Symbol": "IQV",
+    "Security": "IQVIA",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Life Sciences Tools & Services",
+    "Symbol_YF": "IQV",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.04267712125455057
+  },
+  {
+    "Symbol": "IRM",
+    "Security": "Iron Mountain",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Other Specialized REITs",
+    "Symbol_YF": "IRM",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.005880156804181402
+  },
+  {
+    "Symbol": "JBHT",
+    "Security": "J.B. Hunt",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Cargo Ground Transportation",
+    "Symbol_YF": "JBHT",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.0074036604432999795
+  },
+  {
+    "Symbol": "JBL",
+    "Security": "Jabil",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Electronic Manufacturing Services",
+    "Symbol_YF": "JBL",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.01491150084862199
+  },
+  {
+    "Symbol": "JKHY",
+    "Security": "Jack Henry & Associates",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Transaction & Payment Processing Services",
+    "Symbol_YF": "JKHY",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.0033218719039570673
+  },
+  {
+    "Symbol": "J",
+    "Security": "Jacobs Solutions",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Construction & Engineering",
+    "Symbol_YF": "J",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.021014331328432348
+  },
+  {
+    "Symbol": "JNJ",
+    "Security": "Johnson & Johnson",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Pharmaceuticals",
+    "Symbol_YF": "JNJ",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.004616843233439155
+  },
+  {
+    "Symbol": "JCI",
+    "Security": "Johnson Controls",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Building Products",
+    "Symbol_YF": "JCI",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.00638665564655492
+  },
+  {
+    "Symbol": "JPM",
+    "Security": "JPMorgan Chase",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Diversified Banks",
+    "Symbol_YF": "JPM",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.004104580573951427
+  },
+  {
+    "Symbol": "KVUE",
+    "Security": "Kenvue",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Personal Care Products",
+    "Symbol_YF": "KVUE",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.011013215859030798
+  },
+  {
+    "Symbol": "KDP",
+    "Security": "Keurig Dr Pepper",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Soft Drinks & Non-alcoholic Beverages",
+    "Symbol_YF": "KDP",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.005321035828307986
+  },
+  {
+    "Symbol": "KEY",
+    "Security": "KeyCorp",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Regional Banks",
+    "Symbol_YF": "KEY",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.003555104113763346
+  },
+  {
+    "Symbol": "KEYS",
+    "Security": "Keysight Technologies",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Electronic Equipment & Instruments",
+    "Symbol_YF": "KEYS",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.012481384298986025
+  },
+  {
+    "Symbol": "KMB",
+    "Security": "Kimberly-Clark",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Household Products",
+    "Symbol_YF": "KMB",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.011084103062712694
+  },
+  {
+    "Symbol": "KIM",
+    "Security": "Kimco Realty",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Retail REITs",
+    "Symbol_YF": "KIM",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.001724137931034446
+  },
+  {
+    "Symbol": "KMI",
+    "Security": "Kinder Morgan",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Storage & Transportation",
+    "Symbol_YF": "KMI",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0102102102102101
+  },
+  {
+    "Symbol": "KKR",
+    "Security": "KKR & Co.",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Asset Management & Custody Banks",
+    "Symbol_YF": "KKR",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.01077633604574449
+  },
+  {
+    "Symbol": "KLAC",
+    "Security": "KLA Corporation",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Semiconductor Materials & Equipment",
+    "Symbol_YF": "KLAC",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.01668182772374232
+  },
+  {
+    "Symbol": "KHC",
+    "Security": "Kraft Heinz",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Packaged Foods & Meats",
+    "Symbol_YF": "KHC",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.03191489361702132
+  },
+  {
+    "Symbol": "KR",
+    "Security": "Kroger",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Food Retail",
+    "Symbol_YF": "KR",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.015401390213984048
+  },
+  {
+    "Symbol": "LHX",
+    "Security": "L3Harris",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Aerospace & Defense",
+    "Symbol_YF": "LHX",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.02569627754134559
+  },
+  {
+    "Symbol": "LH",
+    "Security": "Labcorp",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Services",
+    "Symbol_YF": "LH",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.017945250539088575
+  },
+  {
+    "Symbol": "LRCX",
+    "Security": "Lam Research",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Semiconductor Materials & Equipment",
+    "Symbol_YF": "LRCX",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.019322756334359384
+  },
+  {
+    "Symbol": "LW",
+    "Security": "Lamb Weston",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Packaged Foods & Meats",
+    "Symbol_YF": "LW",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.02775956284153012
+  },
+  {
+    "Symbol": "LVS",
+    "Security": "Las Vegas Sands",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Casinos & Gaming",
+    "Symbol_YF": "LVS",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.00741977369690235
+  },
+  {
+    "Symbol": "LDOS",
+    "Security": "Leidos",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Diversified Support Services",
+    "Symbol_YF": "LDOS",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.03915561991756712
+  },
+  {
+    "Symbol": "LEN",
+    "Security": "Lennar",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Homebuilding",
+    "Symbol_YF": "LEN",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.012207324394636771
+  },
+  {
+    "Symbol": "LII",
+    "Security": "Lennox International",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Building Products",
+    "Symbol_YF": "LII",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.00986536675951722
+  },
+  {
+    "Symbol": "LLY",
+    "Security": "Lilly (Eli)",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Pharmaceuticals",
+    "Symbol_YF": "LLY",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.006981425837225641
+  },
+  {
+    "Symbol": "LIN",
+    "Security": "Linde plc",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Industrial Gases",
+    "Symbol_YF": "LIN",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.011744758281295245
+  },
+  {
+    "Symbol": "LYV",
+    "Security": "Live Nation Entertainment",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Movies & Entertainment",
+    "Symbol_YF": "LYV",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0016284680337756948
+  },
+  {
+    "Symbol": "LMT",
+    "Security": "Lockheed Martin",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Aerospace & Defense",
+    "Symbol_YF": "LMT",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.01946849356320101
+  },
+  {
+    "Symbol": "L",
+    "Security": "Loews Corporation",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Multi-line Insurance",
+    "Symbol_YF": "L",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.0005499541704858137
+  },
+  {
+    "Symbol": "LOW",
+    "Security": "Lowe's",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Home Improvement Retail",
+    "Symbol_YF": "LOW",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.0035568699544401517
+  },
+  {
+    "Symbol": "LULU",
+    "Security": "Lululemon Athletica",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Apparel, Accessories & Luxury Goods",
+    "Symbol_YF": "LULU",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.019615928369462677
+  },
+  {
+    "Symbol": "LYB",
+    "Security": "LyondellBasell",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Specialty Chemicals",
+    "Symbol_YF": "LYB",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.018108350793175604
+  },
+  {
+    "Symbol": "MTB",
+    "Security": "M&T Bank",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Regional Banks",
+    "Symbol_YF": "MTB",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.021757883638454864
+  },
+  {
+    "Symbol": "MPC",
+    "Security": "Marathon Petroleum",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Refining & Marketing",
+    "Symbol_YF": "MPC",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0021789522484932725
+  },
+  {
+    "Symbol": "MAR",
+    "Security": "Marriott International",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Hotels, Resorts & Cruise Lines",
+    "Symbol_YF": "MAR",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.008696709846135174
+  },
+  {
+    "Symbol": "MRSH",
+    "Security": "Marsh McLennan",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Insurance Brokers",
+    "Symbol_YF": "MRSH",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.03317219536589431
+  },
+  {
+    "Symbol": "MLM",
+    "Security": "Martin Marietta Materials",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Construction Materials",
+    "Symbol_YF": "MLM",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.008130346764187321
+  },
+  {
+    "Symbol": "MAS",
+    "Security": "Masco",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Building Products",
+    "Symbol_YF": "MAS",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.011986301369862952
+  },
+  {
+    "Symbol": "MA",
+    "Security": "Mastercard",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Transaction & Payment Processing Services",
+    "Symbol_YF": "MA",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.005794638028277834
+  },
+  {
+    "Symbol": "MTCH",
+    "Security": "Match Group",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Interactive Media & Services",
+    "Symbol_YF": "MTCH",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.008678881388621008
+  },
+  {
+    "Symbol": "MKC",
+    "Security": "McCormick & Company",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Packaged Foods & Meats",
+    "Symbol_YF": "MKC",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.012309130570271208
+  },
+  {
+    "Symbol": "MCD",
+    "Security": "McDonald's",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Restaurants",
+    "Symbol_YF": "MCD",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.008645707376058081
+  },
+  {
+    "Symbol": "MCK",
+    "Security": "McKesson Corporation",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Distributors",
+    "Symbol_YF": "MCK",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.014296934703235028
+  },
+  {
+    "Symbol": "MDT",
+    "Security": "Medtronic",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Equipment",
+    "Symbol_YF": "MDT",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.015874753667615534
+  },
+  {
+    "Symbol": "MRK",
+    "Security": "Merck & Co.",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Pharmaceuticals",
+    "Symbol_YF": "MRK",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0001707796089146616
+  },
+  {
+    "Symbol": "META",
+    "Security": "Meta Platforms",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Interactive Media & Services",
+    "Symbol_YF": "META",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.010318355241817241
+  },
+  {
+    "Symbol": "MET",
+    "Security": "MetLife",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Life & Health Insurance",
+    "Symbol_YF": "MET",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0024021478027412987
+  },
+  {
+    "Symbol": "MTD",
+    "Security": "Mettler Toledo",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Life Sciences Tools & Services",
+    "Symbol_YF": "MTD",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.013526933734843167
+  },
+  {
+    "Symbol": "MGM",
+    "Security": "MGM Resorts",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Casinos & Gaming",
+    "Symbol_YF": "MGM",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.01795735129068464
+  },
+  {
+    "Symbol": "MCHP",
+    "Security": "Microchip Technology",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Semiconductors",
+    "Symbol_YF": "MCHP",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.005076923076923051
+  },
+  {
+    "Symbol": "MU",
+    "Security": "Micron Technology",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Semiconductors",
+    "Symbol_YF": "MU",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.03542073358676672
+  },
+  {
+    "Symbol": "MSFT",
+    "Security": "Microsoft",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Systems Software",
+    "Symbol_YF": "MSFT",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.008915268312938214
+  },
+  {
+    "Symbol": "MAA",
+    "Security": "Mid-America Apartment Communities",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Multi-Family Residential REITs",
+    "Symbol_YF": "MAA",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.015211139700317778
+  },
+  {
+    "Symbol": "MRNA",
+    "Security": "Moderna",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Biotechnology",
+    "Symbol_YF": "MRNA",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.013634732687477665
+  },
+  {
+    "Symbol": "MOH",
+    "Security": "Molina Healthcare",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Managed Health Care",
+    "Symbol_YF": "MOH",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.03225364651099095
+  },
+  {
+    "Symbol": "TAP",
+    "Security": "Molson Coors Beverage Company",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Brewers",
+    "Symbol_YF": "TAP",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0030428167789611077
+  },
+  {
+    "Symbol": "MDLZ",
+    "Security": "Mondelez International",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Packaged Foods & Meats",
+    "Symbol_YF": "MDLZ",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.027333677153171795
+  },
+  {
+    "Symbol": "MPWR",
+    "Security": "Monolithic Power Systems",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Semiconductors",
+    "Symbol_YF": "MPWR",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.005819209039548082
+  },
+  {
+    "Symbol": "MNST",
+    "Security": "Monster Beverage",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Soft Drinks & Non-alcoholic Beverages",
+    "Symbol_YF": "MNST",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.012875536480686808
+  },
+  {
+    "Symbol": "MCO",
+    "Security": "Moody's Corporation",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Financial Exchanges & Data",
+    "Symbol_YF": "MCO",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.022606929045365102
+  },
+  {
+    "Symbol": "MS",
+    "Security": "Morgan Stanley",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Investment Banking & Brokerage",
+    "Symbol_YF": "MS",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.001869741352446316
+  },
+  {
+    "Symbol": "MOS",
+    "Security": "Mosaic Company (The)",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Fertilizers & Agricultural Chemicals",
+    "Symbol_YF": "MOS",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.016344725111441354
+  },
+  {
+    "Symbol": "MSI",
+    "Security": "Motorola Solutions",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Communications Equipment",
+    "Symbol_YF": "MSI",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.013274239678623762
+  },
+  {
+    "Symbol": "MSCI",
+    "Security": "MSCI Inc.",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Financial Exchanges & Data",
+    "Symbol_YF": "MSCI",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.025336191775482284
+  },
+  {
+    "Symbol": "NDAQ",
+    "Security": "Nasdaq, Inc.",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Financial Exchanges & Data",
+    "Symbol_YF": "NDAQ",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.005110732538330527
+  },
+  {
+    "Symbol": "NTAP",
+    "Security": "NetApp",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
+    "Symbol_YF": "NTAP",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.03677566842262203
+  },
+  {
+    "Symbol": "NFLX",
+    "Security": "Netflix",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Movies & Entertainment",
+    "Symbol_YF": "NFLX",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.014035801464605325
+  },
+  {
+    "Symbol": "NEM",
+    "Security": "Newmont",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Gold",
+    "Symbol_YF": "NEM",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.01658686730506166
+  },
+  {
+    "Symbol": "NWSA",
+    "Security": "News Corp (Class A)",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Publishing",
+    "Symbol_YF": "NWSA",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.02078239608801948
+  },
+  {
+    "Symbol": "NWS",
+    "Security": "News Corp (Class B)",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Publishing",
+    "Symbol_YF": "NWS",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.017683146878383325
+  },
+  {
+    "Symbol": "NEE",
+    "Security": "NextEra Energy",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Multi-Utilities",
+    "Symbol_YF": "NEE",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0051081404195196045
+  },
+  {
+    "Symbol": "NKE",
+    "Security": "Nike, Inc.",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Apparel, Accessories & Luxury Goods",
+    "Symbol_YF": "NKE",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.007960375022112203
+  },
+  {
+    "Symbol": "NI",
+    "Security": "NiSource",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Multi-Utilities",
+    "Symbol_YF": "NI",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.009780990856899869
+  },
+  {
+    "Symbol": "NDSN",
+    "Security": "Nordson Corporation",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
+    "Symbol_YF": "NDSN",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.003572875612361304
+  },
+  {
+    "Symbol": "NSC",
+    "Security": "Norfolk Southern",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Rail Transportation",
+    "Symbol_YF": "NSC",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.013027808087821967
+  },
+  {
+    "Symbol": "NTRS",
+    "Security": "Northern Trust",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Asset Management & Custody Banks",
+    "Symbol_YF": "NTRS",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.0031067119427787503
+  },
+  {
+    "Symbol": "NOC",
+    "Security": "Northrop Grumman",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Aerospace & Defense",
+    "Symbol_YF": "NOC",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.016538657103861713
+  },
+  {
+    "Symbol": "NCLH",
+    "Security": "Norwegian Cruise Line Holdings",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Hotels, Resorts & Cruise Lines",
+    "Symbol_YF": "NCLH",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.017382906808305138
+  },
+  {
+    "Symbol": "NRG",
+    "Security": "NRG Energy",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Independent Power Producers & Energy Traders",
+    "Symbol_YF": "NRG",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0017372281559643664
+  },
+  {
+    "Symbol": "NUE",
+    "Security": "Nucor",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Steel",
+    "Symbol_YF": "NUE",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.005664719419366307
+  },
+  {
+    "Symbol": "NVDA",
+    "Security": "Nvidia",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Semiconductors",
+    "Symbol_YF": "NVDA",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.011606898439638677
+  },
+  {
+    "Symbol": "NVR",
+    "Security": "NVR, Inc.",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Homebuilding",
+    "Symbol_YF": "NVR",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.012920490742910023
+  },
+  {
+    "Symbol": "NXPI",
+    "Security": "NXP Semiconductors",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Semiconductors",
+    "Symbol_YF": "NXPI",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.010816077953714975
+  },
+  {
+    "Symbol": "ORLY",
+    "Security": "O’Reilly Automotive",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Automotive Retail",
+    "Symbol_YF": "ORLY",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.001056970721910943
+  },
+  {
+    "Symbol": "OXY",
+    "Security": "Occidental Petroleum",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Exploration & Production",
+    "Symbol_YF": "OXY",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.029948867786705635
+  },
+  {
+    "Symbol": "ODFL",
+    "Security": "Old Dominion",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Cargo Ground Transportation",
+    "Symbol_YF": "ODFL",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.011155055268228317
+  },
+  {
+    "Symbol": "OMC",
+    "Security": "Omnicom Group",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Advertising",
+    "Symbol_YF": "OMC",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.03583759971425159
+  },
+  {
+    "Symbol": "ON",
+    "Security": "ON Semiconductor",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Semiconductors",
+    "Symbol_YF": "ON",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.006078001013000279
+  },
+  {
+    "Symbol": "OKE",
+    "Security": "Oneok",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Storage & Transportation",
+    "Symbol_YF": "OKE",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.014890646812470766
+  },
+  {
+    "Symbol": "ORCL",
+    "Security": "Oracle Corporation",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Application Software",
+    "Symbol_YF": "ORCL",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.014251781472684064
+  },
+  {
+    "Symbol": "OTIS",
+    "Security": "Otis Worldwide",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
+    "Symbol_YF": "OTIS",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.016900765102203837
+  },
+  {
+    "Symbol": "PCAR",
+    "Security": "Paccar",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Construction Machinery & Heavy Transportation Equipment",
+    "Symbol_YF": "PCAR",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.013673655423883366
+  },
+  {
+    "Symbol": "PKG",
+    "Security": "Packaging Corporation of America",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Paper & Plastic Packaging Products & Materials",
+    "Symbol_YF": "PKG",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.006642728904847478
+  },
+  {
+    "Symbol": "PLTR",
+    "Security": "Palantir Technologies",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Application Software",
+    "Symbol_YF": "PLTR",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.033817042766732856
+  },
+  {
+    "Symbol": "PANW",
+    "Security": "Palo Alto Networks",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Systems Software",
+    "Symbol_YF": "PANW",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.0029073288915809703
+  },
+  {
+    "Symbol": "PSKY",
+    "Security": "Paramount Skydance Corporation",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Movies & Entertainment",
+    "Symbol_YF": "PSKY",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.07685433422698834
+  },
+  {
+    "Symbol": "PH",
+    "Security": "Parker Hannifin",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
+    "Symbol_YF": "PH",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.019545791003786894
+  },
+  {
+    "Symbol": "PAYX",
+    "Security": "Paychex",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Human Resource & Employment Services",
+    "Symbol_YF": "PAYX",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.032349949135300024
+  },
+  {
+    "Symbol": "PAYC",
+    "Security": "Paycom",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Human Resource & Employment Services",
+    "Symbol_YF": "PAYC",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0458589511754069
+  },
+  {
+    "Symbol": "PYPL",
+    "Security": "PayPal",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Transaction & Payment Processing Services",
+    "Symbol_YF": "PYPL",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.0246967071057191
+  },
+  {
+    "Symbol": "PNR",
+    "Security": "Pentair",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
+    "Symbol_YF": "PNR",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.022125813449023927
+  },
+  {
+    "Symbol": "PEP",
+    "Security": "PepsiCo",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Soft Drinks & Non-alcoholic Beverages",
+    "Symbol_YF": "PEP",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.004643100352875627
+  },
+  {
+    "Symbol": "PFE",
+    "Security": "Pfizer",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Pharmaceuticals",
+    "Symbol_YF": "PFE",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.01305483028720632
+  },
+  {
+    "Symbol": "PCG",
+    "Security": "PG&E Corporation",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Multi-Utilities",
+    "Symbol_YF": "PCG",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.002751788662630553
+  },
+  {
+    "Symbol": "PM",
+    "Security": "Philip Morris International",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Tobacco",
+    "Symbol_YF": "PM",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.002193362193362167
+  },
+  {
+    "Symbol": "PSX",
+    "Security": "Phillips 66",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Refining & Marketing",
+    "Symbol_YF": "PSX",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.003067484662576687
+  },
+  {
+    "Symbol": "PNW",
+    "Security": "Pinnacle West Capital",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Multi-Utilities",
+    "Symbol_YF": "PNW",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.003159557661927403
+  },
+  {
+    "Symbol": "PNC",
+    "Security": "PNC Financial Services",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Diversified Banks",
+    "Symbol_YF": "PNC",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.005113470341871934
+  },
+  {
+    "Symbol": "POOL",
+    "Security": "Pool Corporation",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Distributors",
+    "Symbol_YF": "POOL",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.026291254894648584
+  },
+  {
+    "Symbol": "PPG",
+    "Security": "PPG Industries",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Specialty Chemicals",
+    "Symbol_YF": "PPG",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0221709006928407
+  },
+  {
+    "Symbol": "PPL",
+    "Security": "PPL Corporation",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Electric Utilities",
+    "Symbol_YF": "PPL",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.004865220249835507
+  },
+  {
+    "Symbol": "PFG",
+    "Security": "Principal Financial Group",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Life & Health Insurance",
+    "Symbol_YF": "PFG",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.009711952323143092
+  },
+  {
+    "Symbol": "PG",
+    "Security": "Procter & Gamble",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Personal Care Products",
+    "Symbol_YF": "PG",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.005089550315680918
+  },
+  {
+    "Symbol": "PGR",
+    "Security": "Progressive Corporation",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Property & Casualty Insurance",
+    "Symbol_YF": "PGR",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.0007736943907156508
+  },
+  {
+    "Symbol": "PLD",
+    "Security": "Prologis",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Industrial REITs",
+    "Symbol_YF": "PLD",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.007473177950425385
+  },
+  {
+    "Symbol": "PRU",
+    "Security": "Prudential Financial",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Life & Health Insurance",
+    "Symbol_YF": "PRU",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.004795163139789512
+  },
+  {
+    "Symbol": "PEG",
+    "Security": "Public Service Enterprise Group",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Electric Utilities",
+    "Symbol_YF": "PEG",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0011994722322179263
+  },
+  {
+    "Symbol": "PTC",
+    "Security": "PTC Inc.",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Application Software",
+    "Symbol_YF": "PTC",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.02386488801860224
+  },
+  {
+    "Symbol": "PSA",
+    "Security": "Public Storage",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Self-Storage REITs",
+    "Symbol_YF": "PSA",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0015987992691203637
+  },
+  {
+    "Symbol": "PHM",
+    "Security": "PulteGroup",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Homebuilding",
+    "Symbol_YF": "PHM",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.017921995894520735
+  },
+  {
+    "Symbol": "PWR",
+    "Security": "Quanta Services",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Construction & Engineering",
+    "Symbol_YF": "PWR",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.007024153228645886
+  },
+  {
+    "Symbol": "QCOM",
+    "Security": "Qualcomm",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Semiconductors",
+    "Symbol_YF": "QCOM",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.021070161465498696
+  },
+  {
+    "Symbol": "DGX",
+    "Security": "Quest Diagnostics",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Services",
+    "Symbol_YF": "DGX",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0033733505308066614
+  },
+  {
+    "Symbol": "Q",
+    "Security": "Qnity Electronics",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Semiconductor Materials & Equipment",
+    "Symbol_YF": "Q",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.002450765864332614
+  },
+  {
+    "Symbol": "RL",
+    "Security": "Ralph Lauren Corporation",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Apparel, Accessories & Luxury Goods",
+    "Symbol_YF": "RL",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.005957224224107902
+  },
+  {
+    "Symbol": "RJF",
+    "Security": "Raymond James Financial",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Investment Banking & Brokerage",
+    "Symbol_YF": "RJF",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.016866194854157097
+  },
+  {
+    "Symbol": "RTX",
+    "Security": "RTX Corporation",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Aerospace & Defense",
+    "Symbol_YF": "RTX",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.005906929837199202
+  },
+  {
+    "Symbol": "O",
+    "Security": "Realty Income",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Retail REITs",
+    "Symbol_YF": "O",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0009239297813366535
+  },
+  {
+    "Symbol": "REG",
+    "Security": "Regency Centers",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Retail REITs",
+    "Symbol_YF": "REG",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.0008947973923048369
+  },
+  {
+    "Symbol": "REGN",
+    "Security": "Regeneron Pharmaceuticals",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Biotechnology",
+    "Symbol_YF": "REGN",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.012244114636642848
+  },
+  {
+    "Symbol": "RF",
+    "Security": "Regions Financial Corporation",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Regional Banks",
+    "Symbol_YF": "RF",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.007418397626112733
+  },
+  {
+    "Symbol": "RSG",
+    "Security": "Republic Services",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Environmental & Facilities Services",
+    "Symbol_YF": "RSG",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.028721647692708723
+  },
+  {
+    "Symbol": "RMD",
+    "Security": "ResMed",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Equipment",
+    "Symbol_YF": "RMD",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.023010319060609626
+  },
+  {
+    "Symbol": "RVTY",
+    "Security": "Revvity",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Equipment",
+    "Symbol_YF": "RVTY",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.019650417978503986
+  },
+  {
+    "Symbol": "HOOD",
+    "Security": "Robinhood Markets",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Investment Banking & Brokerage",
+    "Symbol_YF": "HOOD",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.010333963453055995
+  },
+  {
+    "Symbol": "ROK",
+    "Security": "Rockwell Automation",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Electrical Components & Equipment",
+    "Symbol_YF": "ROK",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.003940886699507437
+  },
+  {
+    "Symbol": "ROL",
+    "Security": "Rollins, Inc.",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Environmental & Facilities Services",
+    "Symbol_YF": "ROL",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.02240750390828555
+  },
+  {
+    "Symbol": "ROP",
+    "Security": "Roper Technologies",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Electronic Equipment & Instruments",
+    "Symbol_YF": "ROP",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.02531262050349804
+  },
+  {
+    "Symbol": "ROST",
+    "Security": "Ross Stores",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Apparel Retail",
+    "Symbol_YF": "ROST",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.0036766438840443137
+  },
+  {
+    "Symbol": "RCL",
+    "Security": "Royal Caribbean Group",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Hotels, Resorts & Cruise Lines",
+    "Symbol_YF": "RCL",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.018998451213216448
+  },
+  {
+    "Symbol": "SPGI",
+    "Security": "S&P Global",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Financial Exchanges & Data",
+    "Symbol_YF": "SPGI",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.02209845490477896
+  },
+  {
+    "Symbol": "CRM",
+    "Security": "Salesforce",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Application Software",
+    "Symbol_YF": "CRM",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.01951808441068462
+  },
+  {
+    "Symbol": "SNDK",
+    "Security": "Sandisk",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
+    "Symbol_YF": "SNDK",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.05122891648123922
+  },
+  {
+    "Symbol": "SBAC",
+    "Security": "SBA Communications",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Telecom Tower REITs",
+    "Symbol_YF": "SBAC",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.011381615883223693
+  },
+  {
+    "Symbol": "SLB",
+    "Security": "Schlumberger",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Equipment & Services",
+    "Symbol_YF": "SLB",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.01949565585929226
+  },
+  {
+    "Symbol": "STX",
+    "Security": "Seagate Technology",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
+    "Symbol_YF": "STX",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.02660753880266085
+  },
+  {
+    "Symbol": "SRE",
+    "Security": "Sempra",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Multi-Utilities",
+    "Symbol_YF": "SRE",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.005774783445620856
+  },
+  {
+    "Symbol": "NOW",
+    "Security": "ServiceNow",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Systems Software",
+    "Symbol_YF": "NOW",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.04363159189699013
+  },
+  {
+    "Symbol": "SHW",
+    "Security": "Sherwin-Williams",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Specialty Chemicals",
+    "Symbol_YF": "SHW",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.009208158368326315
+  },
+  {
+    "Symbol": "SPG",
+    "Security": "Simon Property Group",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Retail REITs",
+    "Symbol_YF": "SPG",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.007553900225567842
+  },
+  {
+    "Symbol": "SWKS",
+    "Security": "Skyworks Solutions",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Semiconductors",
+    "Symbol_YF": "SWKS",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.006331403762662833
+  },
+  {
+    "Symbol": "SJM",
+    "Security": "J.M. Smucker Company (The)",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Packaged Foods & Meats",
+    "Symbol_YF": "SJM",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.004497063142437545
+  },
+  {
+    "Symbol": "SW",
+    "Security": "Smurfit Westrock",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Paper & Plastic Packaging Products & Materials",
+    "Symbol_YF": "SW",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.015443098123069578
+  },
+  {
+    "Symbol": "SNA",
+    "Security": "Snap-on",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
+    "Symbol_YF": "SNA",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.009556441898439363
+  },
+  {
+    "Symbol": "SOLV",
+    "Security": "Solventum",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Technology",
+    "Symbol_YF": "SOLV",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.01457725947521866
+  },
+  {
+    "Symbol": "SO",
+    "Security": "Southern Company",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Electric Utilities",
+    "Symbol_YF": "SO",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.01007712082262215
+  },
+  {
+    "Symbol": "LUV",
+    "Security": "Southwest Airlines",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Passenger Airlines",
+    "Symbol_YF": "LUV",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.004880316058563813
+  },
+  {
+    "Symbol": "SWK",
+    "Security": "Stanley Black & Decker",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
+    "Symbol_YF": "SWK",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.00882470918572016
+  },
+  {
+    "Symbol": "SBUX",
+    "Security": "Starbucks",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Restaurants",
+    "Symbol_YF": "SBUX",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.010023053021950487
+  },
+  {
+    "Symbol": "STT",
+    "Security": "State Street Corporation",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Asset Management & Custody Banks",
+    "Symbol_YF": "STT",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.005084884769949892
+  },
+  {
+    "Symbol": "STLD",
+    "Security": "Steel Dynamics",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Steel",
+    "Symbol_YF": "STLD",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.0009322219785041451
+  },
+  {
+    "Symbol": "STE",
+    "Security": "Steris",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Equipment",
+    "Symbol_YF": "STE",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.02476725803618473
+  },
+  {
+    "Symbol": "SYK",
+    "Security": "Stryker Corporation",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Equipment",
+    "Symbol_YF": "SYK",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.019867730651508632
+  },
+  {
+    "Symbol": "SMCI",
+    "Security": "Supermicro",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
+    "Symbol_YF": "SMCI",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.005941213258286469
+  },
+  {
+    "Symbol": "SYF",
+    "Security": "Synchrony Financial",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Consumer Finance",
+    "Symbol_YF": "SYF",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0247318235995234
+  },
+  {
+    "Symbol": "SNPS",
+    "Security": "Synopsys",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Application Software",
+    "Symbol_YF": "SNPS",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.010452403824161863
+  },
+  {
+    "Symbol": "SYY",
+    "Security": "Sysco",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Food Distributors",
+    "Symbol_YF": "SYY",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.004840613931522982
+  },
+  {
+    "Symbol": "TMUS",
+    "Security": "T-Mobile US",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Wireless Telecommunication Services",
+    "Symbol_YF": "TMUS",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.005885057471264373
+  },
+  {
+    "Symbol": "TROW",
+    "Security": "T. Rowe Price",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Asset Management & Custody Banks",
+    "Symbol_YF": "TROW",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.015571507454445022
+  },
+  {
+    "Symbol": "TTWO",
+    "Security": "Take-Two Interactive",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Interactive Home Entertainment",
+    "Symbol_YF": "TTWO",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.025858454083771992
+  },
+  {
+    "Symbol": "TPR",
+    "Security": "Tapestry, Inc.",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Apparel, Accessories & Luxury Goods",
+    "Symbol_YF": "TPR",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.019037800687285295
+  },
+  {
+    "Symbol": "TRGP",
+    "Security": "Targa Resources",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Storage & Transportation",
+    "Symbol_YF": "TRGP",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.009670273494078598
+  },
+  {
+    "Symbol": "TGT",
+    "Security": "Target Corporation",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Consumer Staples Merchandise Retail",
+    "Symbol_YF": "TGT",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.004994173464291612
+  },
+  {
+    "Symbol": "TEL",
+    "Security": "TE Connectivity",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Electronic Manufacturing Services",
+    "Symbol_YF": "TEL",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.015952288595810805
+  },
+  {
+    "Symbol": "TDY",
+    "Security": "Teledyne Technologies",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Electronic Equipment & Instruments",
+    "Symbol_YF": "TDY",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.001880561416383846
+  },
+  {
+    "Symbol": "TER",
+    "Security": "Teradyne",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Semiconductor Materials & Equipment",
+    "Symbol_YF": "TER",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.014606665767102902
+  },
+  {
+    "Symbol": "TSLA",
+    "Security": "Tesla, Inc.",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Automobile Manufacturers",
+    "Symbol_YF": "TSLA",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.001392093909902696
+  },
+  {
+    "Symbol": "TXN",
+    "Security": "Texas Instruments",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Semiconductors",
+    "Symbol_YF": "TXN",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.0064220183486239524
+  },
+  {
+    "Symbol": "TPL",
+    "Security": "Texas Pacific Land Corporation",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Exploration & Production",
+    "Symbol_YF": "TPL",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.03525445080494261
+  },
+  {
+    "Symbol": "TXT",
+    "Security": "Textron",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Aerospace & Defense",
+    "Symbol_YF": "TXT",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.01731463777352874
+  },
+  {
+    "Symbol": "TMO",
+    "Security": "Thermo Fisher Scientific",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Life Sciences Tools & Services",
+    "Symbol_YF": "TMO",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.01939329764495959
+  },
+  {
+    "Symbol": "TJX",
+    "Security": "TJX Companies",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Apparel Retail",
+    "Symbol_YF": "TJX",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.008789680030352947
+  },
+  {
+    "Symbol": "TKO",
+    "Security": "TKO Group Holdings",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Movies & Entertainment",
+    "Symbol_YF": "TKO",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.007399421767040816
+  },
+  {
+    "Symbol": "TTD",
+    "Security": "Trade Desk (The)",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Advertising",
+    "Symbol_YF": "TTD",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.03151260504201676
+  },
+  {
+    "Symbol": "TSCO",
+    "Security": "Tractor Supply",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Other Specialty Retail",
+    "Symbol_YF": "TSCO",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.006512729425695644
+  },
+  {
+    "Symbol": "TT",
+    "Security": "Trane Technologies",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Building Products",
+    "Symbol_YF": "TT",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.014385291916167746
+  },
+  {
+    "Symbol": "TDG",
+    "Security": "TransDigm Group",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Aerospace & Defense",
+    "Symbol_YF": "TDG",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.007527798862222592
+  },
+  {
+    "Symbol": "TRV",
+    "Security": "Travelers Companies (The)",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Property & Casualty Insurance",
+    "Symbol_YF": "TRV",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.0011585951206594814
+  },
+  {
+    "Symbol": "TRMB",
+    "Security": "Trimble Inc.",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Electronic Equipment & Instruments",
+    "Symbol_YF": "TRMB",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.02072391767210799
+  },
+  {
+    "Symbol": "TFC",
+    "Security": "Truist Financial",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Diversified Banks",
+    "Symbol_YF": "TFC",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0021390374331551106
+  },
+  {
+    "Symbol": "TYL",
+    "Security": "Tyler Technologies",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Application Software",
+    "Symbol_YF": "TYL",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.03568803593303393
+  },
+  {
+    "Symbol": "TSN",
+    "Security": "Tyson Foods",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Packaged Foods & Meats",
+    "Symbol_YF": "TSN",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.01777270503831724
+  },
+  {
+    "Symbol": "USB",
+    "Security": "U.S. Bancorp",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Diversified Banks",
+    "Symbol_YF": "USB",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.003452906196048335
+  },
+  {
+    "Symbol": "UBER",
+    "Security": "Uber",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Passenger Ground Transportation",
+    "Symbol_YF": "UBER",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.020043336944745447
+  },
+  {
+    "Symbol": "UDR",
+    "Security": "UDR, Inc.",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Multi-Family Residential REITs",
+    "Symbol_YF": "UDR",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.01155603332437516
+  },
+  {
+    "Symbol": "ULTA",
+    "Security": "Ulta Beauty",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Other Specialty Retail",
+    "Symbol_YF": "ULTA",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.0078010650555884135
+  },
+  {
+    "Symbol": "UNP",
+    "Security": "Union Pacific Corporation",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Rail Transportation",
+    "Symbol_YF": "UNP",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0134064114191081
+  },
+  {
+    "Symbol": "UAL",
+    "Security": "United Airlines Holdings",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Passenger Airlines",
+    "Symbol_YF": "UAL",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.03618281845112147
+  },
+  {
+    "Symbol": "UPS",
+    "Security": "United Parcel Service",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Air Freight & Logistics",
+    "Symbol_YF": "UPS",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.00980588353011811
+  },
+  {
+    "Symbol": "URI",
+    "Security": "United Rentals",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Trading Companies & Distributors",
+    "Symbol_YF": "URI",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.05469854267193058
+  },
+  {
+    "Symbol": "UNH",
+    "Security": "UnitedHealth Group",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Managed Health Care",
+    "Symbol_YF": "UNH",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.009923905039099628
+  },
+  {
+    "Symbol": "UHS",
+    "Security": "Universal Health Services",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Facilities",
+    "Symbol_YF": "UHS",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.020994069175457934
+  },
+  {
+    "Symbol": "VLO",
+    "Security": "Valero Energy",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Refining & Marketing",
+    "Symbol_YF": "VLO",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.0049548506598750715
+  },
+  {
+    "Symbol": "VTR",
+    "Security": "Ventas",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Health Care REITs",
+    "Symbol_YF": "VTR",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.001507945713954245
+  },
+  {
+    "Symbol": "VLTO",
+    "Security": "Veralto",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Environmental & Facilities Services",
+    "Symbol_YF": "VLTO",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.024133531788220242
+  },
+  {
+    "Symbol": "VRSN",
+    "Security": "Verisign",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Internet Services & Infrastructure",
+    "Symbol_YF": "VRSN",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.015554088621173289
+  },
+  {
+    "Symbol": "VRSK",
+    "Security": "Verisk Analytics",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Research & Consulting Services",
+    "Symbol_YF": "VRSK",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.03623739775537381
+  },
+  {
+    "Symbol": "VZ",
+    "Security": "Verizon",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Integrated Telecommunication Services",
+    "Symbol_YF": "VZ",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.005153617443012844
+  },
+  {
+    "Symbol": "VRTX",
+    "Security": "Vertex Pharmaceuticals",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Biotechnology",
+    "Symbol_YF": "VRTX",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.08310369518519324
+  },
+  {
+    "Symbol": "VTRS",
+    "Security": "Viatris",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Pharmaceuticals",
+    "Symbol_YF": "VTRS",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.009845288326301023
+  },
+  {
+    "Symbol": "VICI",
+    "Security": "Vici Properties",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Hotel & Resort REITs",
+    "Symbol_YF": "VICI",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.006440677966101738
+  },
+  {
+    "Symbol": "V",
+    "Security": "Visa Inc.",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Transaction & Payment Processing Services",
+    "Symbol_YF": "V",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.004873880431686617
+  },
+  {
+    "Symbol": "VST",
+    "Security": "Vistra Corp.",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Electric Utilities",
+    "Symbol_YF": "VST",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.004767143381004774
+  },
+  {
+    "Symbol": "VMC",
+    "Security": "Vulcan Materials Company",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Construction Materials",
+    "Symbol_YF": "VMC",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.008493420333175315
+  },
+  {
+    "Symbol": "WRB",
+    "Security": "W. R. Berkley Corporation",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Property & Casualty Insurance",
+    "Symbol_YF": "WRB",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.005568581477139441
+  },
+  {
+    "Symbol": "GWW",
+    "Security": "W. W. Grainger",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
+    "Symbol_YF": "GWW",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.007962126102861955
+  },
+  {
+    "Symbol": "WAB",
+    "Security": "Wabtec",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Construction Machinery & Heavy Transportation Equipment",
+    "Symbol_YF": "WAB",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0010121457489878543
+  },
+  {
+    "Symbol": "WMT",
+    "Security": "Walmart",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Consumer Staples Merchandise Retail",
+    "Symbol_YF": "WMT",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.006273122084606732
+  },
+  {
+    "Symbol": "DIS",
+    "Security": "Walt Disney Company (The)",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Movies & Entertainment",
+    "Symbol_YF": "DIS",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0033444816053512043
+  },
+  {
+    "Symbol": "WBD",
+    "Security": "Warner Bros. Discovery",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Broadcasting",
+    "Symbol_YF": "WBD",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.0003603603603604167
+  },
+  {
+    "Symbol": "WM",
+    "Security": "Waste Management",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Environmental & Facilities Services",
+    "Symbol_YF": "WM",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.04450123727232161
+  },
+  {
+    "Symbol": "WAT",
+    "Security": "Waters Corporation",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Life Sciences Tools & Services",
+    "Symbol_YF": "WAT",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.01975987175712376
+  },
+  {
+    "Symbol": "WEC",
+    "Security": "WEC Energy Group",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Electric Utilities",
+    "Symbol_YF": "WEC",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.009429881477636503
+  },
+  {
+    "Symbol": "WFC",
+    "Security": "Wells Fargo",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Diversified Banks",
+    "Symbol_YF": "WFC",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0067233286819738825
+  },
+  {
+    "Symbol": "WELL",
+    "Security": "Welltower",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Health Care REITs",
+    "Symbol_YF": "WELL",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.00019260400616328988
+  },
+  {
+    "Symbol": "WST",
+    "Security": "West Pharmaceutical Services",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Supplies",
+    "Symbol_YF": "WST",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.05736515359187289
+  },
+  {
+    "Symbol": "WDC",
+    "Security": "Western Digital",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
+    "Symbol_YF": "WDC",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.015874227276196386
+  },
+  {
+    "Symbol": "WY",
+    "Security": "Weyerhaeuser",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Timber REITs",
+    "Symbol_YF": "WY",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.002475247524752423
+  },
+  {
+    "Symbol": "WSM",
+    "Security": "Williams-Sonoma, Inc.",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Homefurnishing Retail",
+    "Symbol_YF": "WSM",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.0004779607010088953
+  },
+  {
+    "Symbol": "WMB",
+    "Security": "Williams Companies",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Storage & Transportation",
+    "Symbol_YF": "WMB",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.00901885761136918
+  },
+  {
+    "Symbol": "WTW",
+    "Security": "Willis Towers Watson",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Insurance Brokers",
+    "Symbol_YF": "WTW",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.01835952081990031
+  },
+  {
+    "Symbol": "WDAY",
+    "Security": "Workday, Inc.",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Application Software",
+    "Symbol_YF": "WDAY",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.03813959767787213
+  },
+  {
+    "Symbol": "WYNN",
+    "Security": "Wynn Resorts",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Casinos & Gaming",
+    "Symbol_YF": "WYNN",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.011520283576211123
+  },
+  {
+    "Symbol": "XEL",
+    "Security": "Xcel Energy",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Multi-Utilities",
+    "Symbol_YF": "XEL",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.0026796589524969413
+  },
+  {
+    "Symbol": "XYL",
+    "Security": "Xylem Inc.",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
+    "Symbol_YF": "XYL",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.006557642487046651
+  },
+  {
+    "Symbol": "YUM",
+    "Security": "Yum! Brands",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Restaurants",
+    "Symbol_YF": "YUM",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.004066312167657214
+  },
+  {
+    "Symbol": "ZBRA",
+    "Security": "Zebra Technologies",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Electronic Equipment & Instruments",
+    "Symbol_YF": "ZBRA",
+    "Exchange": "NASDAQ",
+    "Daily_Change": -0.006127794929366649
+  },
+  {
+    "Symbol": "ZBH",
+    "Security": "Zimmer Biomet",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Equipment",
+    "Symbol_YF": "ZBH",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.01693825042881645
+  },
+  {
+    "Symbol": "ZTS",
+    "Security": "Zoetis",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Pharmaceuticals",
+    "Symbol_YF": "ZTS",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.015282772147760743
+  }
+]

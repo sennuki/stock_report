@@ -11,13 +11,28 @@ import PeerLinks from "@/components/report/PeerLinks.astro";
 
 export async function getStaticPaths() {
   // Use stocks.json as the source of truth for symbols
-  return (stocks as any[]).map((stock: any) => ({
-    params: { symbol: stock.Symbol_YF },
-  }));
+  const paths = (stocks as any[]).flatMap((stock: any) => {
+    const symbols = [stock.Symbol_YF];
+    // Also allow the original Symbol format (with dots) if different
+    if (stock.Symbol !== stock.Symbol_YF) {
+      symbols.push(stock.Symbol);
+    }
+    return symbols.map(s => ({ params: { symbol: s } }));
+  });
+  return paths;
 }
 
 const { symbol } = Astro.params;
-const jsonPath = path.join(process.cwd(), "public", "reports", `${symbol}.json`);
+let jsonPath = path.join(process.cwd(), "public", "reports", `${symbol}.json`);
+
+// Handle dots in symbols (e.g., BRK.B -> BRK-B)
+if (!fs.existsSync(jsonPath) && symbol?.includes(".")) {
+  const normalizedSymbol = symbol.replace(/\./g, "-");
+  const fallbackPath = path.join(process.cwd(), "public", "reports", `${normalizedSymbol}.json`);
+  if (fs.existsSync(fallbackPath)) {
+    jsonPath = fallbackPath;
+  }
+}
 
 let reportData: any = null;
 let lastUpdated: string = "";

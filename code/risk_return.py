@@ -64,6 +64,23 @@ def process_single_stock(symbol):
         # 最新の日付を取得
         last_date = hist['Date'][-1]
         
+        # 決算日の取得 (直近の過去の決算日を探す)
+        try:
+            # yfinance 1.1.0+ では earnings_dates が取得可能
+            earnings_df = ticker.earnings_dates
+            if earnings_df is not None and not earnings_df.empty:
+                # インデックスを日付として扱い、現在時刻より前の最新のものを探す
+                past_earnings = earnings_df[earnings_df.index <= datetime.now()]
+                if not past_earnings.empty:
+                    recent_earnings_date = past_earnings.index.max()
+                    results['Earnings_Date'] = recent_earnings_date.strftime('%Y-%m-%d')
+                else:
+                    results['Earnings_Date'] = None
+            else:
+                results['Earnings_Date'] = None
+        except Exception:
+            results['Earnings_Date'] = None
+        
         for p in PERIOD_CONFIGS:
             key = p['key']
             is_valid_period = True
