@@ -8,11 +8,15 @@ import shutil
 
 # Configuration
 REPO = "sennuki/stock_report"
-TOKEN = "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"
+TOKEN = os.getenv("GITHUB_TOKEN")
 ARTIFACT_NAME = "generated-reports"
 BRANCH = "feature/workflow-test-no-deploy"
 # Root of the project (parent of stock-blog)
 BASE_DIR = "/home/linux/gemini/stock_report"
+
+if not TOKEN:
+    print("Error: GITHUB_TOKEN environment variable not set.")
+    sys.exit(1)
 
 class GitHubRedirectHandler(urllib.request.HTTPRedirectHandler):
     def redirect_request(self, req, fp, code, msg, headers, newurl):
