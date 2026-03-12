@@ -5,6 +5,10 @@ import io
 import os
 import sys
 import shutil
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Configuration
 REPO = "sennuki/stock_report"

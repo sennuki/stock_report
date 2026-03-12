@@ -6,7 +6,8 @@
     "GICS Sub-Industry": "Industrial Conglomerates",
     "Symbol_YF": "MMM",
     "Exchange": "NYSE",
-    "Daily_Change": 0.023873903581085567
+    "Daily_Change": -0.0005153097008353462,
+    "Earnings_Date": null
   },
   {
     "Symbol": "AOS",
@@ -15,7 +16,8 @@
     "GICS Sub-Industry": "Building Products",
     "Symbol_YF": "AOS",
     "Exchange": "NYSE",
-    "Daily_Change": -0.009083167754754479
+    "Daily_Change": -0.024491536693596105,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ABT",
@@ -24,7 +26,8 @@
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "ABT",
     "Exchange": "NYSE",
-    "Daily_Change": -0.01864181091877504
+    "Daily_Change": -0.002713731736555047,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ABBV",
@@ -33,7 +36,8 @@
     "GICS Sub-Industry": "Biotechnology",
     "Symbol_YF": "ABBV",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0019344910969443735
+    "Daily_Change": 0.002951403837530761,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ACN",
@@ -42,7 +46,8 @@
     "GICS Sub-Industry": "IT Consulting & Other Services",
     "Symbol_YF": "ACN",
     "Exchange": "NYSE",
-    "Daily_Change": -0.036922048146732986
+    "Daily_Change": -0.0007439823024386819,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ADBE",
@@ -51,7 +56,8 @@
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "ADBE",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.0258816031723552
+    "Daily_Change": -0.005161245238734352,
+    "Earnings_Date": null
   },
   {
     "Symbol": "AMD",
@@ -60,7 +66,8 @@
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "AMD",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.0027136372607064483
+    "Daily_Change": 0.007872883615372793,
+    "Earnings_Date": null
   },
   {
     "Symbol": "AES",
@@ -69,7 +76,8 @@
     "GICS Sub-Industry": "Independent Power Producers & Energy Traders",
     "Symbol_YF": "AES",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0014094432699084814
+    "Daily_Change": 0.0014074246330518282,
+    "Earnings_Date": null
   },
   {
     "Symbol": "AFL",
@@ -78,7 +86,8 @@
     "GICS Sub-Industry": "Life & Health Insurance",
     "Symbol_YF": "AFL",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0010891268832818146
+    "Daily_Change": -0.008794208466594112,
+    "Earnings_Date": null
   },
   {
     "Symbol": "A",
@@ -87,7 +96,8 @@
     "GICS Sub-Industry": "Life Sciences Tools & Services",
     "Symbol_YF": "A",
     "Exchange": "NYSE",
-    "Daily_Change": -0.010373799725651525
+    "Daily_Change": -8.66510976697993e-05,
+    "Earnings_Date": null
   },
   {
     "Symbol": "APD",
@@ -96,7 +106,8 @@
     "GICS Sub-Industry": "Industrial Gases",
     "Symbol_YF": "APD",
     "Exchange": "NYSE",
-    "Daily_Change": 0.002623906705539458
+    "Daily_Change": 0.00934140509534414,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ABNB",
@@ -105,7 +116,8 @@
     "GICS Sub-Industry": "Hotels, Resorts & Cruise Lines",
     "Symbol_YF": "ABNB",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.011863015742744187
+    "Daily_Change": 0.007173036323843943,
+    "Earnings_Date": null
   },
   {
     "Symbol": "AKAM",
@@ -114,7 +126,8 @@
     "GICS Sub-Industry": "Internet Services & Infrastructure",
     "Symbol_YF": "AKAM",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.023406130643423763
+    "Daily_Change": 0.018851686322517942,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ALB",
@@ -123,7 +136,8 @@
     "GICS Sub-Industry": "Specialty Chemicals",
     "Symbol_YF": "ALB",
     "Exchange": "NYSE",
-    "Daily_Change": -0.017868726779501097
+    "Daily_Change": 0.00876670333088549,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ARE",
@@ -132,7 +146,8 @@
     "GICS Sub-Industry": "Office REITs",
     "Symbol_YF": "ARE",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0025400547088707025
+    "Daily_Change": -0.01723802313940847,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ALGN",
@@ -141,7 +156,8 @@
     "GICS Sub-Industry": "Health Care Supplies",
     "Symbol_YF": "ALGN",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.032105112824907196
+    "Daily_Change": 0.03175355672184675,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ALLE",
@@ -150,7 +166,8 @@
     "GICS Sub-Industry": "Building Products",
     "Symbol_YF": "ALLE",
     "Exchange": "NYSE",
-    "Daily_Change": -0.017907069631207546
+    "Daily_Change": -0.006032667233867913,
+    "Earnings_Date": null
   },
   {
     "Symbol": "LNT",
@@ -159,7 +176,8 @@
     "GICS Sub-Industry": "Electric Utilities",
     "Symbol_YF": "LNT",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.007959782153330446
+    "Daily_Change": -0.0032376598250200964,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ALL",
@@ -168,7 +186,8 @@
     "GICS Sub-Industry": "Property & Casualty Insurance",
     "Symbol_YF": "ALL",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0009148249795367987
+    "Daily_Change": -0.009204836925828313,
+    "Earnings_Date": null
   },
   {
     "Symbol": "GOOGL",
@@ -177,7 +196,8 @@
     "GICS Sub-Industry": "Interactive Media & Services",
     "Symbol_YF": "GOOGL",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.0022196109152631113
+    "Daily_Change": 0.005406473475480333,
+    "Earnings_Date": null
   },
   {
     "Symbol": "GOOG",
@@ -186,7 +206,8 @@
     "GICS Sub-Industry": "Interactive Media & Services",
     "Symbol_YF": "GOOG",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.0030064376981144927
+    "Daily_Change": 0.004854594818066788,
+    "Earnings_Date": null
   },
   {
     "Symbol": "MO",
@@ -195,7 +216,8 @@
     "GICS Sub-Industry": "Tobacco",
     "Symbol_YF": "MO",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0014916467780428746
+    "Daily_Change": -0.01191544621731343,
+    "Earnings_Date": null
   },
   {
     "Symbol": "AMZN",
@@ -204,7 +226,8 @@
     "GICS Sub-Industry": "Broadline Retail",
     "Symbol_YF": "AMZN",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.003934610520399098
+    "Daily_Change": -0.007838417021498354,
+    "Earnings_Date": null
   },
   {
     "Symbol": "AMCR",
@@ -213,7 +236,8 @@
     "GICS Sub-Industry": "Paper & Plastic Packaging Products & Materials",
     "Symbol_YF": "AMCR",
     "Exchange": "NYSE",
-    "Daily_Change": -0.004728132387706755
+    "Daily_Change": 0.00950122423697444,
+    "Earnings_Date": null
   },
   {
     "Symbol": "AEE",
@@ -222,7 +246,8 @@
     "GICS Sub-Industry": "Multi-Utilities",
     "Symbol_YF": "AEE",
     "Exchange": "NYSE",
-    "Daily_Change": -0.00018114301240826033
+    "Daily_Change": -0.009421151565155887,
+    "Earnings_Date": null
   },
   {
     "Symbol": "AEP",
@@ -231,7 +256,8 @@
     "GICS Sub-Industry": "Electric Utilities",
     "Symbol_YF": "AEP",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.0034127104504776927
+    "Daily_Change": -0.007935931306270462,
+    "Earnings_Date": null
   },
   {
     "Symbol": "AXP",
@@ -240,7 +266,8 @@
     "GICS Sub-Industry": "Consumer Finance",
     "Symbol_YF": "AXP",
     "Exchange": "NYSE",
-    "Daily_Change": -0.007302377365904834
+    "Daily_Change": 0.009368287630117484,
+    "Earnings_Date": null
   },
   {
     "Symbol": "AIG",
@@ -249,7 +276,8 @@
     "GICS Sub-Industry": "Multi-line Insurance",
     "Symbol_YF": "AIG",
     "Exchange": "NYSE",
-    "Daily_Change": 0.005539809327492819
+    "Daily_Change": -0.0010250074045690346,
+    "Earnings_Date": null
   },
   {
     "Symbol": "AMT",
@@ -258,7 +286,8 @@
     "GICS Sub-Industry": "Telecom Tower REITs",
     "Symbol_YF": "AMT",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0027861123017572965
+    "Daily_Change": -0.01756925155522908,
+    "Earnings_Date": null
   },
   {
     "Symbol": "AWK",
@@ -267,7 +296,8 @@
     "GICS Sub-Industry": "Water Utilities",
     "Symbol_YF": "AWK",
     "Exchange": "NYSE",
-    "Daily_Change": -0.03550424744064464
+    "Daily_Change": 0.011291779895752281,
+    "Earnings_Date": null
   },
   {
     "Symbol": "AMP",
@@ -276,7 +306,8 @@
     "GICS Sub-Industry": "Asset Management & Custody Banks",
     "Symbol_YF": "AMP",
     "Exchange": "NYSE",
-    "Daily_Change": -0.011528126896073488
+    "Daily_Change": -0.011991409103799705,
+    "Earnings_Date": null
   },
   {
     "Symbol": "AME",
@@ -285,7 +316,8 @@
     "GICS Sub-Industry": "Electrical Components & Equipment",
     "Symbol_YF": "AME",
     "Exchange": "NYSE",
-    "Daily_Change": 0.005464966454880785
+    "Daily_Change": -0.008837825775647795,
+    "Earnings_Date": null
   },
   {
     "Symbol": "AMGN",
@@ -294,7 +326,8 @@
     "GICS Sub-Industry": "Biotechnology",
     "Symbol_YF": "AMGN",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.004085205719288061
+    "Daily_Change": 0.00588664202586715,
+    "Earnings_Date": null
   },
   {
     "Symbol": "APH",
@@ -303,7 +336,8 @@
     "GICS Sub-Industry": "Electronic Components",
     "Symbol_YF": "APH",
     "Exchange": "NYSE",
-    "Daily_Change": 0.004997795090401344
+    "Daily_Change": -0.016089016517856096,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ADI",
@@ -312,7 +346,8 @@
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "ADI",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.0028150511400956407
+    "Daily_Change": 0.0012860439297673557,
+    "Earnings_Date": null
   },
   {
     "Symbol": "AON",
@@ -321,7 +356,8 @@
     "GICS Sub-Industry": "Insurance Brokers",
     "Symbol_YF": "AON",
     "Exchange": "NYSE",
-    "Daily_Change": -0.03569282538156471
+    "Daily_Change": -0.012649544076156267,
+    "Earnings_Date": null
   },
   {
     "Symbol": "APA",
@@ -330,7 +366,8 @@
     "GICS Sub-Industry": "Oil & Gas Exploration & Production",
     "Symbol_YF": "APA",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.02362687941086232
+    "Daily_Change": 0.036140840254815065,
+    "Earnings_Date": null
   },
   {
     "Symbol": "APO",
@@ -339,7 +376,8 @@
     "GICS Sub-Industry": "Asset Management & Custody Banks",
     "Symbol_YF": "APO",
     "Exchange": "NYSE",
-    "Daily_Change": 0.000277418161642326
+    "Daily_Change": -0.019136541831046256,
+    "Earnings_Date": null
   },
   {
     "Symbol": "AAPL",
@@ -348,7 +386,8 @@
     "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
     "Symbol_YF": "AAPL",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.0036555333230721436
+    "Daily_Change": -7.66361795074388e-05,
+    "Earnings_Date": null
   },
   {
     "Symbol": "AMAT",
@@ -357,7 +396,8 @@
     "GICS Sub-Industry": "Semiconductor Materials & Equipment",
     "Symbol_YF": "AMAT",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.020475600401250953
+    "Daily_Change": 0.015005210963740656,
+    "Earnings_Date": null
   },
   {
     "Symbol": "APP",
@@ -366,7 +406,8 @@
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "APP",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.0770256945652805
+    "Daily_Change": -0.03338989495443235,
+    "Earnings_Date": null
   },
   {
     "Symbol": "APTV",
@@ -375,7 +416,8 @@
     "GICS Sub-Industry": "Automotive Parts & Equipment",
     "Symbol_YF": "APTV",
     "Exchange": "NYSE",
-    "Daily_Change": -0.010981468771448143
+    "Daily_Change": -0.02401114897511981,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ACGL",
@@ -384,7 +426,8 @@
     "GICS Sub-Industry": "Property & Casualty Insurance",
     "Symbol_YF": "ACGL",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.005961096005019799
+    "Daily_Change": -0.014346656074295501,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ADM",
@@ -393,7 +436,8 @@
     "GICS Sub-Industry": "Agricultural Products & Services",
     "Symbol_YF": "ADM",
     "Exchange": "NYSE",
-    "Daily_Change": 0.021643109540636026
+    "Daily_Change": 0.020752305145877677,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ARES",
@@ -402,7 +446,8 @@
     "GICS Sub-Industry": "Asset Management & Custody Banks",
     "Symbol_YF": "ARES",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0015617822691776527
+    "Daily_Change": -0.04803092754918337,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ANET",
@@ -411,7 +456,8 @@
     "GICS Sub-Industry": "Communications Equipment",
     "Symbol_YF": "ANET",
     "Exchange": "NYSE",
-    "Daily_Change": 0.017861048334183987
+    "Daily_Change": -0.009955589731125309,
+    "Earnings_Date": null
   },
   {
     "Symbol": "AJG",
@@ -420,7 +466,8 @@
     "GICS Sub-Industry": "Insurance Brokers",
     "Symbol_YF": "AJG",
     "Exchange": "NYSE",
-    "Daily_Change": -0.027826246670952348
+    "Daily_Change": -0.008879675382453487,
+    "Earnings_Date": null
   },
   {
     "Symbol": "AIZ",
@@ -429,7 +476,8 @@
     "GICS Sub-Industry": "Multi-line Insurance",
     "Symbol_YF": "AIZ",
     "Exchange": "NYSE",
-    "Daily_Change": 0.00013656848909728746
+    "Daily_Change": -0.013654984258860742,
+    "Earnings_Date": null
   },
   {
     "Symbol": "T",
@@ -438,7 +486,8 @@
     "GICS Sub-Industry": "Integrated Telecommunication Services",
     "Symbol_YF": "T",
     "Exchange": "NYSE",
-    "Daily_Change": 0.006538321830730102
+    "Daily_Change": -0.019848403292396347,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ATO",
@@ -447,7 +496,8 @@
     "GICS Sub-Industry": "Gas Utilities",
     "Symbol_YF": "ATO",
     "Exchange": "NYSE",
-    "Daily_Change": -0.009717123731375574
+    "Daily_Change": 0.004688184686577623,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ADSK",
@@ -456,7 +506,8 @@
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "ADSK",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.026462128475551315
+    "Daily_Change": -0.007957471829396824,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ADP",
@@ -465,7 +516,8 @@
     "GICS Sub-Industry": "Human Resource & Employment Services",
     "Symbol_YF": "ADP",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.025421449067431795
+    "Daily_Change": -0.020103948177537422,
+    "Earnings_Date": null
   },
   {
     "Symbol": "AZO",
@@ -474,7 +526,8 @@
     "GICS Sub-Industry": "Automotive Retail",
     "Symbol_YF": "AZO",
     "Exchange": "NYSE",
-    "Daily_Change": 0.014523454262282624
+    "Daily_Change": -0.0036500334364711635,
+    "Earnings_Date": null
   },
   {
     "Symbol": "AVB",
@@ -483,7 +536,8 @@
     "GICS Sub-Industry": "Multi-Family Residential REITs",
     "Symbol_YF": "AVB",
     "Exchange": "NYSE",
-    "Daily_Change": -0.012789315828193194
+    "Daily_Change": -0.015075893780632926,
+    "Earnings_Date": null
   },
   {
     "Symbol": "AVY",
@@ -492,7 +546,8 @@
     "GICS Sub-Industry": "Paper & Plastic Packaging Products & Materials",
     "Symbol_YF": "AVY",
     "Exchange": "NYSE",
-    "Daily_Change": -0.012296707655692116
+    "Daily_Change": 0.001491649468065316,
+    "Earnings_Date": null
   },
   {
     "Symbol": "AXON",
@@ -501,7 +556,8 @@
     "GICS Sub-Industry": "Aerospace & Defense",
     "Symbol_YF": "AXON",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.05203377097270404
+    "Daily_Change": -0.023397482997866644,
+    "Earnings_Date": null
   },
   {
     "Symbol": "BKR",
@@ -510,7 +566,8 @@
     "GICS Sub-Industry": "Oil & Gas Equipment & Services",
     "Symbol_YF": "BKR",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.012645590682196306
+    "Daily_Change": -0.006235236449837278,
+    "Earnings_Date": null
   },
   {
     "Symbol": "BALL",
@@ -519,7 +576,8 @@
     "GICS Sub-Industry": "Metal, Glass & Plastic Containers",
     "Symbol_YF": "BALL",
     "Exchange": "NYSE",
-    "Daily_Change": -0.005930437570123376
+    "Daily_Change": -0.008223188204872492,
+    "Earnings_Date": null
   },
   {
     "Symbol": "BAC",
@@ -528,7 +586,8 @@
     "GICS Sub-Industry": "Diversified Banks",
     "Symbol_YF": "BAC",
     "Exchange": "NYSE",
-    "Daily_Change": 0.013778705636743292
+    "Daily_Change": -0.0008237420592278867,
+    "Earnings_Date": null
   },
   {
     "Symbol": "BAX",
@@ -537,7 +596,8 @@
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "BAX",
     "Exchange": "NYSE",
-    "Daily_Change": -0.025125628140703477
+    "Daily_Change": 0.033791533993411456,
+    "Earnings_Date": null
   },
   {
     "Symbol": "BDX",
@@ -546,7 +606,8 @@
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "BDX",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0032236481965817235
+    "Daily_Change": -0.004332479208643544,
+    "Earnings_Date": null
   },
   {
     "Symbol": "BRK.B",
@@ -555,7 +616,8 @@
     "GICS Sub-Industry": "Multi-Sector Holdings",
     "Symbol_YF": "BRK-B",
     "Exchange": "NYSE",
-    "Daily_Change": -0.006154465004022531
+    "Daily_Change": -0.0011535340335153577,
+    "Earnings_Date": null
   },
   {
     "Symbol": "BBY",
@@ -564,7 +626,8 @@
     "GICS Sub-Industry": "Computer & Electronics Retail",
     "Symbol_YF": "BBY",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0175864160097028
+    "Daily_Change": -0.025462985311296944,
+    "Earnings_Date": null
   },
   {
     "Symbol": "TECH",
@@ -573,7 +636,8 @@
     "GICS Sub-Industry": "Life Sciences Tools & Services",
     "Symbol_YF": "TECH",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.0373610351740477
+    "Daily_Change": 0.015145763757718046,
+    "Earnings_Date": null
   },
   {
     "Symbol": "BIIB",
@@ -582,7 +646,8 @@
     "GICS Sub-Industry": "Biotechnology",
     "Symbol_YF": "BIIB",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.0009031024224393726
+    "Daily_Change": 0.010986635662626325,
+    "Earnings_Date": null
   },
   {
     "Symbol": "BLK",
@@ -591,7 +656,8 @@
     "GICS Sub-Industry": "Asset Management & Custody Banks",
     "Symbol_YF": "BLK",
     "Exchange": "NYSE",
-    "Daily_Change": 0.010118307976651723
+    "Daily_Change": -0.016736274692530726,
+    "Earnings_Date": null
   },
   {
     "Symbol": "BX",
@@ -600,7 +666,8 @@
     "GICS Sub-Industry": "Asset Management & Custody Banks",
     "Symbol_YF": "BX",
     "Exchange": "NYSE",
-    "Daily_Change": -0.006235878897424418
+    "Daily_Change": -0.024645317452129122,
+    "Earnings_Date": null
   },
   {
     "Symbol": "XYZ",
@@ -609,7 +676,8 @@
     "GICS Sub-Industry": "Transaction & Payment Processing Services",
     "Symbol_YF": "XYZ",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0009154714678057378
+    "Daily_Change": -0.014786604318074582,
+    "Earnings_Date": null
   },
   {
     "Symbol": "BK",
@@ -618,7 +686,8 @@
     "GICS Sub-Industry": "Asset Management & Custody Banks",
     "Symbol_YF": "BK",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0027801911381408117
+    "Daily_Change": 0.014728856390626063,
+    "Earnings_Date": null
   },
   {
     "Symbol": "BA",
@@ -627,7 +696,8 @@
     "GICS Sub-Industry": "Aerospace & Defense",
     "Symbol_YF": "BA",
     "Exchange": "NYSE",
-    "Daily_Change": -0.03217777777777782
+    "Daily_Change": -0.016807441658919668,
+    "Earnings_Date": null
   },
   {
     "Symbol": "BKNG",
@@ -636,7 +706,8 @@
     "GICS Sub-Industry": "Hotels, Resorts & Cruise Lines",
     "Symbol_YF": "BKNG",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.015520110613440517
+    "Daily_Change": -0.011288356303230565,
+    "Earnings_Date": null
   },
   {
     "Symbol": "BSX",
@@ -645,7 +716,8 @@
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "BSX",
     "Exchange": "NYSE",
-    "Daily_Change": -0.026981919332406283
+    "Daily_Change": -0.004717007366684344,
+    "Earnings_Date": null
   },
   {
     "Symbol": "BMY",
@@ -654,7 +726,8 @@
     "GICS Sub-Industry": "Pharmaceuticals",
     "Symbol_YF": "BMY",
     "Exchange": "NYSE",
-    "Daily_Change": -0.008246742536698003
+    "Daily_Change": -0.0024946203760912063,
+    "Earnings_Date": null
   },
   {
     "Symbol": "AVGO",
@@ -663,7 +736,8 @@
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "AVGO",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.009168474331164182
+    "Daily_Change": -0.002948156015044459,
+    "Earnings_Date": null
   },
   {
     "Symbol": "BR",
@@ -672,7 +746,8 @@
     "GICS Sub-Industry": "Data Processing & Outsourced Services",
     "Symbol_YF": "BR",
     "Exchange": "NYSE",
-    "Daily_Change": -0.012591926353102988
+    "Daily_Change": -0.018807317546977415,
+    "Earnings_Date": null
   },
   {
     "Symbol": "BRO",
@@ -681,7 +756,8 @@
     "GICS Sub-Industry": "Insurance Brokers",
     "Symbol_YF": "BRO",
     "Exchange": "NYSE",
-    "Daily_Change": -0.03462837837837849
+    "Daily_Change": -0.0029163687998933797,
+    "Earnings_Date": null
   },
   {
     "Symbol": "BF.B",
@@ -690,7 +766,8 @@
     "GICS Sub-Industry": "Distillers & Vintners",
     "Symbol_YF": "BF-B",
     "Exchange": "NYSE",
-    "Daily_Change": 0.020900321543408342
+    "Daily_Change": -0.046456705625890084,
+    "Earnings_Date": null
   },
   {
     "Symbol": "BLDR",
@@ -699,7 +776,8 @@
     "GICS Sub-Industry": "Building Products",
     "Symbol_YF": "BLDR",
     "Exchange": "NYSE",
-    "Daily_Change": -0.013375460768825655
+    "Daily_Change": -0.027433813903203277,
+    "Earnings_Date": null
   },
   {
     "Symbol": "BG",
@@ -708,7 +786,8 @@
     "GICS Sub-Industry": "Agricultural Products & Services",
     "Symbol_YF": "BG",
     "Exchange": "NYSE",
-    "Daily_Change": 0.008081488340769372
+    "Daily_Change": 0.024801680339900836,
+    "Earnings_Date": null
   },
   {
     "Symbol": "BXP",
@@ -717,7 +796,8 @@
     "GICS Sub-Industry": "Office REITs",
     "Symbol_YF": "BXP",
     "Exchange": "NYSE",
-    "Daily_Change": 0.018292682926829285
+    "Daily_Change": -0.024139167926275833,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CHRW",
@@ -726,7 +806,8 @@
     "GICS Sub-Industry": "Air Freight & Logistics",
     "Symbol_YF": "CHRW",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.033417610201165134
+    "Daily_Change": -0.00045491772305827227,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CDNS",
@@ -735,7 +816,8 @@
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "CDNS",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.015970474752558264
+    "Daily_Change": 0.002966330566471537,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CPT",
@@ -744,7 +826,8 @@
     "GICS Sub-Industry": "Multi-Family Residential REITs",
     "Symbol_YF": "CPT",
     "Exchange": "NYSE",
-    "Daily_Change": -0.014270763961564075
+    "Daily_Change": -0.017083334253779538,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CPB",
@@ -753,7 +836,8 @@
     "GICS Sub-Industry": "Packaged Foods & Meats",
     "Symbol_YF": "CPB",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.024120205614867513
+    "Daily_Change": -0.07050242097254994,
+    "Earnings_Date": null
   },
   {
     "Symbol": "COF",
@@ -762,7 +846,8 @@
     "GICS Sub-Industry": "Consumer Finance",
     "Symbol_YF": "COF",
     "Exchange": "NYSE",
-    "Daily_Change": -0.004630377429602032
+    "Daily_Change": -0.01541618932223143,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CAH",
@@ -771,7 +856,8 @@
     "GICS Sub-Industry": "Health Care Distributors",
     "Symbol_YF": "CAH",
     "Exchange": "NYSE",
-    "Daily_Change": -0.023573870793593705
+    "Daily_Change": -0.0074640396576671165,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CCL",
@@ -780,7 +866,8 @@
     "GICS Sub-Industry": "Hotels, Resorts & Cruise Lines",
     "Symbol_YF": "CCL",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0068207654414550855
+    "Daily_Change": -0.009156801964954851,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CARR",
@@ -789,7 +876,8 @@
     "GICS Sub-Industry": "Building Products",
     "Symbol_YF": "CARR",
     "Exchange": "NYSE",
-    "Daily_Change": -0.004938692098092628
+    "Daily_Change": 0.004449740204950371,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CVNA",
@@ -798,7 +886,8 @@
     "GICS Sub-Industry": "Automotive Retail",
     "Symbol_YF": "CVNA",
     "Exchange": "NYSE",
-    "Daily_Change": -0.02891001035764336
+    "Daily_Change": -0.029143201516831963,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CAT",
@@ -807,7 +896,8 @@
     "GICS Sub-Industry": "Construction Machinery & Heavy Transportation Equipment",
     "Symbol_YF": "CAT",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0168269912885558
+    "Daily_Change": -0.012683437396339748,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CBOE",
@@ -816,7 +906,8 @@
     "GICS Sub-Industry": "Financial Exchanges & Data",
     "Symbol_YF": "CBOE",
     "Exchange": "BTS",
-    "Daily_Change": -0.04572192513368986
+    "Daily_Change": -0.005323581788170675,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CBRE",
@@ -825,7 +916,8 @@
     "GICS Sub-Industry": "Real Estate Services",
     "Symbol_YF": "CBRE",
     "Exchange": "NYSE",
-    "Daily_Change": -0.017160800350518434
+    "Daily_Change": -0.015602874670228072,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CDW",
@@ -834,7 +926,8 @@
     "GICS Sub-Industry": "Technology Distributors",
     "Symbol_YF": "CDW",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.01730992214676155
+    "Daily_Change": 0.002191336981767837,
+    "Earnings_Date": null
   },
   {
     "Symbol": "COR",
@@ -843,7 +936,8 @@
     "GICS Sub-Industry": "Health Care Distributors",
     "Symbol_YF": "COR",
     "Exchange": "NYSE",
-    "Daily_Change": -0.026561636263128838
+    "Daily_Change": -0.005366463089059268,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CNC",
@@ -852,7 +946,8 @@
     "GICS Sub-Industry": "Managed Health Care",
     "Symbol_YF": "CNC",
     "Exchange": "NYSE",
-    "Daily_Change": -0.159741458910434
+    "Daily_Change": -0.014835189365127507,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CNP",
@@ -861,7 +956,8 @@
     "GICS Sub-Industry": "Multi-Utilities",
     "Symbol_YF": "CNP",
     "Exchange": "NYSE",
-    "Daily_Change": -0.007359705611775536
+    "Daily_Change": -0.00486559511619757,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CF",
@@ -870,7 +966,8 @@
     "GICS Sub-Industry": "Fertilizers & Agricultural Chemicals",
     "Symbol_YF": "CF",
     "Exchange": "NYSE",
-    "Daily_Change": -0.00891570605187328
+    "Daily_Change": 0.0915946744401217,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CRL",
@@ -879,7 +976,8 @@
     "GICS Sub-Industry": "Life Sciences Tools & Services",
     "Symbol_YF": "CRL",
     "Exchange": "NYSE",
-    "Daily_Change": -0.05435335329679645
+    "Daily_Change": 0.00920122238065196,
+    "Earnings_Date": null
   },
   {
     "Symbol": "SCHW",
@@ -888,7 +986,8 @@
     "GICS Sub-Industry": "Investment Banking & Brokerage",
     "Symbol_YF": "SCHW",
     "Exchange": "NYSE",
-    "Daily_Change": -0.012820512820512754
+    "Daily_Change": -0.005366534397621745,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CHTR",
@@ -897,7 +996,8 @@
     "GICS Sub-Industry": "Cable & Satellite",
     "Symbol_YF": "CHTR",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.015618688568735647
+    "Daily_Change": 0.022933473475149003,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CVX",
@@ -906,7 +1006,8 @@
     "GICS Sub-Industry": "Integrated Oil & Gas",
     "Symbol_YF": "CVX",
     "Exchange": "NYSE",
-    "Daily_Change": -0.01662795608108111
+    "Daily_Change": 0.02952386171141385,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CMG",
@@ -915,7 +1016,8 @@
     "GICS Sub-Industry": "Restaurants",
     "Symbol_YF": "CMG",
     "Exchange": "NYSE",
-    "Daily_Change": -0.01615188438651177
+    "Daily_Change": -0.025057681912270757,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CB",
@@ -924,7 +1026,8 @@
     "GICS Sub-Industry": "Property & Casualty Insurance",
     "Symbol_YF": "CB",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0025893958076449813
+    "Daily_Change": -0.007625078536507372,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CHD",
@@ -933,7 +1036,8 @@
     "GICS Sub-Industry": "Household Products",
     "Symbol_YF": "CHD",
     "Exchange": "NYSE",
-    "Daily_Change": -0.010953545232273883
+    "Daily_Change": -0.014436854782207674,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CIEN",
@@ -942,7 +1046,8 @@
     "GICS Sub-Industry": "Communications Equipment",
     "Symbol_YF": "CIEN",
     "Exchange": "NYSE",
-    "Daily_Change": 0.05908206190745273
+    "Daily_Change": 0.007677338652862715,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CI",
@@ -951,7 +1056,8 @@
     "GICS Sub-Industry": "Health Care Services",
     "Symbol_YF": "CI",
     "Exchange": "NYSE",
-    "Daily_Change": -0.026774456723281267
+    "Daily_Change": -0.005982347620840608,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CINF",
@@ -960,7 +1066,8 @@
     "GICS Sub-Industry": "Property & Casualty Insurance",
     "Symbol_YF": "CINF",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.008633357825128562
+    "Daily_Change": -0.004431468138604608,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CTAS",
@@ -969,7 +1076,8 @@
     "GICS Sub-Industry": "Diversified Support Services",
     "Symbol_YF": "CTAS",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.022363898988892808
+    "Daily_Change": 0.010495198550057426,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CSCO",
@@ -978,7 +1086,8 @@
     "GICS Sub-Industry": "Communications Equipment",
     "Symbol_YF": "CSCO",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.019551239994751467
+    "Daily_Change": 0.005148024988280975,
+    "Earnings_Date": null
   },
   {
     "Symbol": "C",
@@ -987,7 +1096,8 @@
     "GICS Sub-Industry": "Diversified Banks",
     "Symbol_YF": "C",
     "Exchange": "NYSE",
-    "Daily_Change": 0.022328548644338076
+    "Daily_Change": 0.0020189154651613157,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CFG",
@@ -996,7 +1106,8 @@
     "GICS Sub-Industry": "Regional Banks",
     "Symbol_YF": "CFG",
     "Exchange": "NYSE",
-    "Daily_Change": 0.009946835877207997
+    "Daily_Change": -0.006452726643804825,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CLX",
@@ -1005,7 +1116,8 @@
     "GICS Sub-Industry": "Household Products",
     "Symbol_YF": "CLX",
     "Exchange": "NYSE",
-    "Daily_Change": 0.021691208888105176
+    "Daily_Change": -0.03210495497129742,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CME",
@@ -1014,7 +1126,8 @@
     "GICS Sub-Industry": "Financial Exchanges & Data",
     "Symbol_YF": "CME",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.01700680272108847
+    "Daily_Change": -0.00982571587650273,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CMS",
@@ -1023,7 +1136,8 @@
     "GICS Sub-Industry": "Multi-Utilities",
     "Symbol_YF": "CMS",
     "Exchange": "NYSE",
-    "Daily_Change": -0.010486794407042829
+    "Daily_Change": -0.007719533755453899,
+    "Earnings_Date": null
   },
   {
     "Symbol": "KO",
@@ -1032,7 +1146,8 @@
     "GICS Sub-Industry": "Soft Drinks & Non-alcoholic Beverages",
     "Symbol_YF": "KO",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0010282776349614176
+    "Daily_Change": -0.0032100668825977403,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CTSH",
@@ -1041,7 +1156,8 @@
     "GICS Sub-Industry": "IT Consulting & Other Services",
     "Symbol_YF": "CTSH",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.025831399845321092
+    "Daily_Change": -0.008732919038713241,
+    "Earnings_Date": null
   },
   {
     "Symbol": "COIN",
@@ -1050,7 +1166,8 @@
     "GICS Sub-Industry": "Financial Exchanges & Data",
     "Symbol_YF": "COIN",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.01636718554482197
+    "Daily_Change": 0.010736823552202845,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CL",
@@ -1059,7 +1176,8 @@
     "GICS Sub-Industry": "Household Products",
     "Symbol_YF": "CL",
     "Exchange": "NYSE",
-    "Daily_Change": -0.005483870967741991
+    "Daily_Change": -0.03113847248282974,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CMCSA",
@@ -1068,7 +1186,8 @@
     "GICS Sub-Industry": "Cable & Satellite",
     "Symbol_YF": "CMCSA",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.0009664948453608614
+    "Daily_Change": -0.016092694075027374,
+    "Earnings_Date": null
   },
   {
     "Symbol": "FIX",
@@ -1077,7 +1196,8 @@
     "GICS Sub-Industry": "Construction & Engineering",
     "Symbol_YF": "FIX",
     "Exchange": "NYSE",
-    "Daily_Change": 0.00817545904983955
+    "Daily_Change": 0.01712894527074806,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CAG",
@@ -1086,7 +1206,8 @@
     "GICS Sub-Industry": "Packaged Foods & Meats",
     "Symbol_YF": "CAG",
     "Exchange": "NYSE",
-    "Daily_Change": -0.03108252947481253
+    "Daily_Change": -0.06084072932032665,
+    "Earnings_Date": null
   },
   {
     "Symbol": "COP",
@@ -1095,7 +1216,8 @@
     "GICS Sub-Industry": "Oil & Gas Exploration & Production",
     "Symbol_YF": "COP",
     "Exchange": "NYSE",
-    "Daily_Change": -0.02460907459625733
+    "Daily_Change": 0.025229936179764708,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ED",
@@ -1104,7 +1226,8 @@
     "GICS Sub-Industry": "Multi-Utilities",
     "Symbol_YF": "ED",
     "Exchange": "NYSE",
-    "Daily_Change": -0.004472271914132379
+    "Daily_Change": 0.003953232703930009,
+    "Earnings_Date": null
   },
   {
     "Symbol": "STZ",
@@ -1113,7 +1236,8 @@
     "GICS Sub-Industry": "Distillers & Vintners",
     "Symbol_YF": "STZ",
     "Exchange": "NYSE",
-    "Daily_Change": 0.007585929108485469
+    "Daily_Change": -0.0008660778679133145,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CEG",
@@ -1122,7 +1246,8 @@
     "GICS Sub-Industry": "Electric Utilities",
     "Symbol_YF": "CEG",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.01826681940617367
+    "Daily_Change": -0.05172031311580251,
+    "Earnings_Date": null
   },
   {
     "Symbol": "COO",
@@ -1131,7 +1256,8 @@
     "GICS Sub-Industry": "Health Care Supplies",
     "Symbol_YF": "COO",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.018596676338696872
+    "Daily_Change": -0.008869824346554336,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CPRT",
@@ -1140,7 +1266,8 @@
     "GICS Sub-Industry": "Diversified Support Services",
     "Symbol_YF": "CPRT",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.033537396859196114
+    "Daily_Change": -0.02093093107921259,
+    "Earnings_Date": null
   },
   {
     "Symbol": "GLW",
@@ -1149,7 +1276,8 @@
     "GICS Sub-Industry": "Electronic Components",
     "Symbol_YF": "GLW",
     "Exchange": "NYSE",
-    "Daily_Change": 0.05555986051917851
+    "Daily_Change": -0.03274120300910218,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CPAY",
@@ -1158,7 +1286,8 @@
     "GICS Sub-Industry": "Transaction & Payment Processing Services",
     "Symbol_YF": "CPAY",
     "Exchange": "NYSE",
-    "Daily_Change": 0.010687960687960569
+    "Daily_Change": 0.004284683723237419,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CTVA",
@@ -1167,7 +1296,8 @@
     "GICS Sub-Industry": "Fertilizers & Agricultural Chemicals",
     "Symbol_YF": "CTVA",
     "Exchange": "NYSE",
-    "Daily_Change": -0.025415070242656386
+    "Daily_Change": 0.03040230335537403,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CSGP",
@@ -1176,7 +1306,8 @@
     "GICS Sub-Industry": "Real Estate Services",
     "Symbol_YF": "CSGP",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.04316398182569193
+    "Daily_Change": -0.02136847915691653,
+    "Earnings_Date": null
   },
   {
     "Symbol": "COST",
@@ -1185,7 +1316,8 @@
     "GICS Sub-Industry": "Consumer Staples Merchandise Retail",
     "Symbol_YF": "COST",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.007898139858748574
+    "Daily_Change": -0.005143584019970691,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CTRA",
@@ -1194,7 +1326,8 @@
     "GICS Sub-Industry": "Oil & Gas Exploration & Production",
     "Symbol_YF": "CTRA",
     "Exchange": "NYSE",
-    "Daily_Change": -0.02469531751122513
+    "Daily_Change": 0.0384233132458379,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CRH",
@@ -1203,7 +1336,8 @@
     "GICS Sub-Industry": "Construction Materials",
     "Symbol_YF": "CRH",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0016907758782640674
+    "Daily_Change": -0.02145275503842981,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CRWD",
@@ -1212,7 +1346,8 @@
     "GICS Sub-Industry": "Systems Software",
     "Symbol_YF": "CRWD",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.005067606477322435
+    "Daily_Change": 0.013063535357286762,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CCI",
@@ -1221,7 +1356,8 @@
     "GICS Sub-Industry": "Telecom Tower REITs",
     "Symbol_YF": "CCI",
     "Exchange": "NYSE",
-    "Daily_Change": -0.013484899141870142
+    "Daily_Change": -0.010844996846798356,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CSX",
@@ -1230,7 +1366,8 @@
     "GICS Sub-Industry": "Rail Transportation",
     "Symbol_YF": "CSX",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.007635467980295447
+    "Daily_Change": -0.013933016302865517,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CMI",
@@ -1239,7 +1376,8 @@
     "GICS Sub-Industry": "Construction Machinery & Heavy Transportation Equipment",
     "Symbol_YF": "CMI",
     "Exchange": "NYSE",
-    "Daily_Change": 0.015485559533979136
+    "Daily_Change": -0.00459989479899562,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CVS",
@@ -1248,7 +1386,8 @@
     "GICS Sub-Industry": "Health Care Services",
     "Symbol_YF": "CVS",
     "Exchange": "NYSE",
-    "Daily_Change": -0.024789164324048197
+    "Daily_Change": -0.00786161525838926,
+    "Earnings_Date": null
   },
   {
     "Symbol": "DHR",
@@ -1257,7 +1396,8 @@
     "GICS Sub-Industry": "Life Sciences Tools & Services",
     "Symbol_YF": "DHR",
     "Exchange": "NYSE",
-    "Daily_Change": -0.018008048289738492
+    "Daily_Change": -0.0008196069107103693,
+    "Earnings_Date": null
   },
   {
     "Symbol": "DRI",
@@ -1266,7 +1406,8 @@
     "GICS Sub-Industry": "Restaurants",
     "Symbol_YF": "DRI",
     "Exchange": "NYSE",
-    "Daily_Change": 0.009075580242015536
+    "Daily_Change": -0.00014743588301420138,
+    "Earnings_Date": null
   },
   {
     "Symbol": "DDOG",
@@ -1275,7 +1416,8 @@
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "DDOG",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.04262601120099568
+    "Daily_Change": 0.0358303214747121,
+    "Earnings_Date": null
   },
   {
     "Symbol": "DVA",
@@ -1284,7 +1426,8 @@
     "GICS Sub-Industry": "Health Care Services",
     "Symbol_YF": "DVA",
     "Exchange": "NYSE",
-    "Daily_Change": -0.006620346093340265
+    "Daily_Change": 0.021511015778221888,
+    "Earnings_Date": null
   },
   {
     "Symbol": "DECK",
@@ -1293,7 +1436,8 @@
     "GICS Sub-Industry": "Footwear",
     "Symbol_YF": "DECK",
     "Exchange": "NYSE",
-    "Daily_Change": 0.009010736196319133
+    "Daily_Change": -0.02413073212976001,
+    "Earnings_Date": null
   },
   {
     "Symbol": "DE",
@@ -1302,7 +1446,8 @@
     "GICS Sub-Industry": "Agricultural & Farm Machinery",
     "Symbol_YF": "DE",
     "Exchange": "NYSE",
-    "Daily_Change": -0.011276439580970158
+    "Daily_Change": 0.002227033657483933,
+    "Earnings_Date": null
   },
   {
     "Symbol": "DELL",
@@ -1311,7 +1456,8 @@
     "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
     "Symbol_YF": "DELL",
     "Exchange": "NYSE",
-    "Daily_Change": -0.01849703091939103
+    "Daily_Change": 0.024826091722298108,
+    "Earnings_Date": null
   },
   {
     "Symbol": "DAL",
@@ -1320,7 +1466,8 @@
     "GICS Sub-Industry": "Passenger Airlines",
     "Symbol_YF": "DAL",
     "Exchange": "NYSE",
-    "Daily_Change": -0.021624298448332704
+    "Daily_Change": -0.0021933704591056025,
+    "Earnings_Date": null
   },
   {
     "Symbol": "DVN",
@@ -1329,7 +1476,8 @@
     "GICS Sub-Industry": "Oil & Gas Exploration & Production",
     "Symbol_YF": "DVN",
     "Exchange": "NYSE",
-    "Daily_Change": -0.02498884426595264
+    "Daily_Change": 0.03798626586798372,
+    "Earnings_Date": null
   },
   {
     "Symbol": "DXCM",
@@ -1338,7 +1486,8 @@
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "DXCM",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.013820192027931172
+    "Daily_Change": -0.021832177857289244,
+    "Earnings_Date": null
   },
   {
     "Symbol": "FANG",
@@ -1347,7 +1496,8 @@
     "GICS Sub-Industry": "Oil & Gas Exploration & Production",
     "Symbol_YF": "FANG",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.024554303839002565
+    "Daily_Change": -0.009698916717480823,
+    "Earnings_Date": null
   },
   {
     "Symbol": "DLR",
@@ -1356,7 +1506,8 @@
     "GICS Sub-Industry": "Data Center REITs",
     "Symbol_YF": "DLR",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0067353186752018256
+    "Daily_Change": -0.0014928910292477558,
+    "Earnings_Date": null
   },
   {
     "Symbol": "DG",
@@ -1365,7 +1516,8 @@
     "GICS Sub-Industry": "Consumer Staples Merchandise Retail",
     "Symbol_YF": "DG",
     "Exchange": "NYSE",
-    "Daily_Change": 0.003298515667949352
+    "Daily_Change": -0.007945230562392979,
+    "Earnings_Date": null
   },
   {
     "Symbol": "DLTR",
@@ -1374,7 +1526,8 @@
     "GICS Sub-Industry": "Consumer Staples Merchandise Retail",
     "Symbol_YF": "DLTR",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.008372895986189028
+    "Daily_Change": -0.030559833112055637,
+    "Earnings_Date": null
   },
   {
     "Symbol": "D",
@@ -1383,7 +1536,8 @@
     "GICS Sub-Industry": "Multi-Utilities",
     "Symbol_YF": "D",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0028612303290414835
+    "Daily_Change": -0.008289502017508445,
+    "Earnings_Date": null
   },
   {
     "Symbol": "DPZ",
@@ -1392,7 +1546,8 @@
     "GICS Sub-Industry": "Restaurants",
     "Symbol_YF": "DPZ",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.03670210207321178
+    "Daily_Change": -0.018051484737515066,
+    "Earnings_Date": null
   },
   {
     "Symbol": "DASH",
@@ -1401,7 +1556,8 @@
     "GICS Sub-Industry": "Specialized Consumer Services",
     "Symbol_YF": "DASH",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.03771447986862221
+    "Daily_Change": -0.002648131393148244,
+    "Earnings_Date": null
   },
   {
     "Symbol": "DOV",
@@ -1410,7 +1566,8 @@
     "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
     "Symbol_YF": "DOV",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0035071090047393795
+    "Daily_Change": 0.0003804900273222755,
+    "Earnings_Date": null
   },
   {
     "Symbol": "DOW",
@@ -1419,7 +1576,8 @@
     "GICS Sub-Industry": "Commodity Chemicals",
     "Symbol_YF": "DOW",
     "Exchange": "NYSE",
-    "Daily_Change": -0.012241329058583552
+    "Daily_Change": 0.014163456797905462,
+    "Earnings_Date": null
   },
   {
     "Symbol": "DHI",
@@ -1428,7 +1586,8 @@
     "GICS Sub-Industry": "Homebuilding",
     "Symbol_YF": "DHI",
     "Exchange": "NYSE",
-    "Daily_Change": -0.016317963301509898
+    "Daily_Change": -0.017965312722204543,
+    "Earnings_Date": null
   },
   {
     "Symbol": "DTE",
@@ -1437,7 +1596,8 @@
     "GICS Sub-Industry": "Multi-Utilities",
     "Symbol_YF": "DTE",
     "Exchange": "NYSE",
-    "Daily_Change": -0.008055853920515688
+    "Daily_Change": -0.008391921226808338,
+    "Earnings_Date": null
   },
   {
     "Symbol": "DUK",
@@ -1446,7 +1606,8 @@
     "GICS Sub-Industry": "Electric Utilities",
     "Symbol_YF": "DUK",
     "Exchange": "NYSE",
-    "Daily_Change": -0.010604211168752018
+    "Daily_Change": 0.00262160792266339,
+    "Earnings_Date": null
   },
   {
     "Symbol": "DD",
@@ -1455,7 +1616,8 @@
     "GICS Sub-Industry": "Specialty Chemicals",
     "Symbol_YF": "DD",
     "Exchange": "NYSE",
-    "Daily_Change": 0.016136162687886757
+    "Daily_Change": 0.00043507629394328655,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ETN",
@@ -1464,7 +1626,8 @@
     "GICS Sub-Industry": "Electrical Components & Equipment",
     "Symbol_YF": "ETN",
     "Exchange": "NYSE",
-    "Daily_Change": 0.023499730702724212
+    "Daily_Change": -0.014595881707490035,
+    "Earnings_Date": null
   },
   {
     "Symbol": "EBAY",
@@ -1473,7 +1636,8 @@
     "GICS Sub-Industry": "Broadline Retail",
     "Symbol_YF": "EBAY",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.022064363362393685
+    "Daily_Change": 0.00902487001228126,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ECL",
@@ -1482,7 +1646,8 @@
     "GICS Sub-Industry": "Specialty Chemicals",
     "Symbol_YF": "ECL",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0016674945008161046
+    "Daily_Change": -0.015601174241816248,
+    "Earnings_Date": null
   },
   {
     "Symbol": "EIX",
@@ -1491,7 +1656,8 @@
     "GICS Sub-Industry": "Electric Utilities",
     "Symbol_YF": "EIX",
     "Exchange": "NYSE",
-    "Daily_Change": 0.004948395306093515
+    "Daily_Change": 0.00633085166924665,
+    "Earnings_Date": null
   },
   {
     "Symbol": "EW",
@@ -1500,7 +1666,8 @@
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "EW",
     "Exchange": "NYSE",
-    "Daily_Change": 0.018039401851412246
+    "Daily_Change": -0.008043861637041468,
+    "Earnings_Date": null
   },
   {
     "Symbol": "EA",
@@ -1509,7 +1676,8 @@
     "GICS Sub-Industry": "Interactive Home Entertainment",
     "Symbol_YF": "EA",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.004014653485220971
+    "Daily_Change": -0.0007497833247456411,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ELV",
@@ -1518,7 +1686,8 @@
     "GICS Sub-Industry": "Managed Health Care",
     "Symbol_YF": "ELV",
     "Exchange": "NYSE",
-    "Daily_Change": 0.013117339258834583
+    "Daily_Change": 0.025152172256122245,
+    "Earnings_Date": null
   },
   {
     "Symbol": "EME",
@@ -1527,7 +1696,8 @@
     "GICS Sub-Industry": "Construction & Engineering",
     "Symbol_YF": "EME",
     "Exchange": "NYSE",
-    "Daily_Change": 0.005839984426708259
+    "Daily_Change": -0.004423694580208437,
+    "Earnings_Date": null
   },
   {
     "Symbol": "EMR",
@@ -1536,7 +1706,8 @@
     "GICS Sub-Industry": "Electrical Components & Equipment",
     "Symbol_YF": "EMR",
     "Exchange": "NYSE",
-    "Daily_Change": -0.007227891156462657
+    "Daily_Change": -0.003783003256297327,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ETR",
@@ -1545,7 +1716,8 @@
     "GICS Sub-Industry": "Electric Utilities",
     "Symbol_YF": "ETR",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0010511227902532195
+    "Daily_Change": -0.008972913537972879,
+    "Earnings_Date": null
   },
   {
     "Symbol": "EOG",
@@ -1554,7 +1726,8 @@
     "GICS Sub-Industry": "Oil & Gas Exploration & Production",
     "Symbol_YF": "EOG",
     "Exchange": "NYSE",
-    "Daily_Change": -0.02870813397129177
+    "Daily_Change": 0.03612475673810542,
+    "Earnings_Date": null
   },
   {
     "Symbol": "EPAM",
@@ -1563,7 +1736,8 @@
     "GICS Sub-Industry": "IT Consulting & Other Services",
     "Symbol_YF": "EPAM",
     "Exchange": "NYSE",
-    "Daily_Change": -0.027895528510870946
+    "Daily_Change": -0.0014066462128623722,
+    "Earnings_Date": null
   },
   {
     "Symbol": "EQT",
@@ -1572,7 +1746,8 @@
     "GICS Sub-Industry": "Oil & Gas Exploration & Production",
     "Symbol_YF": "EQT",
     "Exchange": "NYSE",
-    "Daily_Change": -0.006427767957576709
+    "Daily_Change": 0.03234675627965907,
+    "Earnings_Date": null
   },
   {
     "Symbol": "EFX",
@@ -1581,7 +1756,8 @@
     "GICS Sub-Industry": "Research & Consulting Services",
     "Symbol_YF": "EFX",
     "Exchange": "NYSE",
-    "Daily_Change": -0.04237329553785257
+    "Daily_Change": -0.02240481440721233,
+    "Earnings_Date": null
   },
   {
     "Symbol": "EQIX",
@@ -1590,7 +1766,8 @@
     "GICS Sub-Industry": "Data Center REITs",
     "Symbol_YF": "EQIX",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.011810648633203248
+    "Daily_Change": 0.018157650819052885,
+    "Earnings_Date": null
   },
   {
     "Symbol": "EQR",
@@ -1599,7 +1776,8 @@
     "GICS Sub-Industry": "Multi-Family Residential REITs",
     "Symbol_YF": "EQR",
     "Exchange": "NYSE",
-    "Daily_Change": -0.01125763911225479
+    "Daily_Change": -0.021470392073073913,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ERIE",
@@ -1608,7 +1786,8 @@
     "GICS Sub-Industry": "Insurance Brokers",
     "Symbol_YF": "ERIE",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.045646561839943624
+    "Daily_Change": -0.0052871368329798964,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ESS",
@@ -1617,7 +1796,8 @@
     "GICS Sub-Industry": "Multi-Family Residential REITs",
     "Symbol_YF": "ESS",
     "Exchange": "NYSE",
-    "Daily_Change": -0.004112164173259228
+    "Daily_Change": -0.01600531744420647,
+    "Earnings_Date": null
   },
   {
     "Symbol": "EL",
@@ -1626,7 +1806,8 @@
     "GICS Sub-Industry": "Personal Care Products",
     "Symbol_YF": "EL",
     "Exchange": "NYSE",
-    "Daily_Change": 0.017704847241714356
+    "Daily_Change": -0.02895932772625016,
+    "Earnings_Date": null
   },
   {
     "Symbol": "EG",
@@ -1635,7 +1816,8 @@
     "GICS Sub-Industry": "Reinsurance",
     "Symbol_YF": "EG",
     "Exchange": "NYSE",
-    "Daily_Change": -0.001676573693034633
+    "Daily_Change": -0.0183816458432729,
+    "Earnings_Date": null
   },
   {
     "Symbol": "EVRG",
@@ -1644,7 +1826,8 @@
     "GICS Sub-Industry": "Electric Utilities",
     "Symbol_YF": "EVRG",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.006126038697155279
+    "Daily_Change": -0.011107087253994397,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ES",
@@ -1653,7 +1836,8 @@
     "GICS Sub-Industry": "Electric Utilities",
     "Symbol_YF": "ES",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0032498307379823276
+    "Daily_Change": 0.004483111375063353,
+    "Earnings_Date": null
   },
   {
     "Symbol": "EXC",
@@ -1662,7 +1846,8 @@
     "GICS Sub-Industry": "Electric Utilities",
     "Symbol_YF": "EXC",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.0026455026455026974
+    "Daily_Change": -0.0034686426192065693,
+    "Earnings_Date": null
   },
   {
     "Symbol": "EXE",
@@ -1671,7 +1856,8 @@
     "GICS Sub-Industry": "Oil & Gas Exploration & Production",
     "Symbol_YF": "EXE",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.029665337906739617
+    "Daily_Change": 0.03735553387321487,
+    "Earnings_Date": null
   },
   {
     "Symbol": "EXPE",
@@ -1680,7 +1866,8 @@
     "GICS Sub-Industry": "Hotels, Resorts & Cruise Lines",
     "Symbol_YF": "EXPE",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.04090419806243271
+    "Daily_Change": -0.005654828360032591,
+    "Earnings_Date": null
   },
   {
     "Symbol": "EXPD",
@@ -1689,7 +1876,8 @@
     "GICS Sub-Industry": "Air Freight & Logistics",
     "Symbol_YF": "EXPD",
     "Exchange": "NYSE",
-    "Daily_Change": -0.02664555218947951
+    "Daily_Change": -0.003961219338867095,
+    "Earnings_Date": null
   },
   {
     "Symbol": "EXR",
@@ -1698,7 +1886,8 @@
     "GICS Sub-Industry": "Self-Storage REITs",
     "Symbol_YF": "EXR",
     "Exchange": "NYSE",
-    "Daily_Change": 0.00266593752136178
+    "Daily_Change": -0.035178542820941204,
+    "Earnings_Date": null
   },
   {
     "Symbol": "XOM",
@@ -1707,7 +1896,8 @@
     "GICS Sub-Industry": "Integrated Oil & Gas",
     "Symbol_YF": "XOM",
     "Exchange": "NYSE",
-    "Daily_Change": -0.015354958787556517
+    "Daily_Change": 0.02329033169864217,
+    "Earnings_Date": null
   },
   {
     "Symbol": "FFIV",
@@ -1716,7 +1906,8 @@
     "GICS Sub-Industry": "Communications Equipment",
     "Symbol_YF": "FFIV",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.0028388182104931215
+    "Daily_Change": 0.011812309331804362,
+    "Earnings_Date": null
   },
   {
     "Symbol": "FDS",
@@ -1725,7 +1916,8 @@
     "GICS Sub-Industry": "Financial Exchanges & Data",
     "Symbol_YF": "FDS",
     "Exchange": "NYSE",
-    "Daily_Change": -0.04085233441910967
+    "Daily_Change": -0.030517434971654177,
+    "Earnings_Date": null
   },
   {
     "Symbol": "FICO",
@@ -1734,7 +1926,8 @@
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "FICO",
     "Exchange": "NYSE",
-    "Daily_Change": -0.10827782403552591
+    "Daily_Change": -0.0933120971615649,
+    "Earnings_Date": null
   },
   {
     "Symbol": "FAST",
@@ -1743,7 +1936,8 @@
     "GICS Sub-Industry": "Trading Companies & Distributors",
     "Symbol_YF": "FAST",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.010683760683760684
+    "Daily_Change": 0.006263518797106466,
+    "Earnings_Date": null
   },
   {
     "Symbol": "FRT",
@@ -1752,7 +1946,8 @@
     "GICS Sub-Industry": "Retail REITs",
     "Symbol_YF": "FRT",
     "Exchange": "NYSE",
-    "Daily_Change": 0.002440397972592368
+    "Daily_Change": 0.0018726305480091068,
+    "Earnings_Date": null
   },
   {
     "Symbol": "FDX",
@@ -1761,7 +1956,8 @@
     "GICS Sub-Industry": "Air Freight & Logistics",
     "Symbol_YF": "FDX",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0045139850456937
+    "Daily_Change": 0.005341234098017397,
+    "Earnings_Date": null
   },
   {
     "Symbol": "FIS",
@@ -1770,7 +1966,8 @@
     "GICS Sub-Industry": "Transaction & Payment Processing Services",
     "Symbol_YF": "FIS",
     "Exchange": "NYSE",
-    "Daily_Change": -0.012700273544353236
+    "Daily_Change": -0.0073223617815791715,
+    "Earnings_Date": null
   },
   {
     "Symbol": "FITB",
@@ -1779,7 +1976,8 @@
     "GICS Sub-Industry": "Regional Banks",
     "Symbol_YF": "FITB",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.008301404853128852
+    "Daily_Change": -0.03283963885567598,
+    "Earnings_Date": null
   },
   {
     "Symbol": "FSLR",
@@ -1788,7 +1986,8 @@
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "FSLR",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.012386119357150251
+    "Daily_Change": 0.012386233116493447,
+    "Earnings_Date": null
   },
   {
     "Symbol": "FE",
@@ -1797,7 +1996,8 @@
     "GICS Sub-Industry": "Electric Utilities",
     "Symbol_YF": "FE",
     "Exchange": "NYSE",
-    "Daily_Change": -0.005886970172684542
+    "Daily_Change": -0.00019736126260004073,
+    "Earnings_Date": null
   },
   {
     "Symbol": "FISV",
@@ -1806,7 +2006,8 @@
     "GICS Sub-Industry": "Transaction & Payment Processing Services",
     "Symbol_YF": "FISV",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.030021210637950668
+    "Daily_Change": -0.01597982759878574,
+    "Earnings_Date": null
   },
   {
     "Symbol": "F",
@@ -1815,7 +2016,8 @@
     "GICS Sub-Industry": "Automobile Manufacturers",
     "Symbol_YF": "F",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0041017227235439465
+    "Daily_Change": -0.01062092458103388,
+    "Earnings_Date": null
   },
   {
     "Symbol": "FTNT",
@@ -1824,7 +2026,8 @@
     "GICS Sub-Industry": "Systems Software",
     "Symbol_YF": "FTNT",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.004653382651234943
+    "Daily_Change": -0.008550993080809427,
+    "Earnings_Date": null
   },
   {
     "Symbol": "FTV",
@@ -1833,7 +2036,8 @@
     "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
     "Symbol_YF": "FTV",
     "Exchange": "NYSE",
-    "Daily_Change": -0.00940550133096719
+    "Daily_Change": 0.0087782458105644,
+    "Earnings_Date": null
   },
   {
     "Symbol": "FOXA",
@@ -1842,7 +2046,8 @@
     "GICS Sub-Industry": "Broadcasting",
     "Symbol_YF": "FOXA",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.01856226797165038
+    "Daily_Change": -0.007737289616920045,
+    "Earnings_Date": null
   },
   {
     "Symbol": "FOX",
@@ -1851,7 +2056,8 @@
     "GICS Sub-Industry": "Broadcasting",
     "Symbol_YF": "FOX",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.017764618800888247
+    "Daily_Change": -0.005840266816073242,
+    "Earnings_Date": null
   },
   {
     "Symbol": "BEN",
@@ -1860,7 +2066,8 @@
     "GICS Sub-Industry": "Asset Management & Custody Banks",
     "Symbol_YF": "BEN",
     "Exchange": "NYSE",
-    "Daily_Change": -0.021722265321955092
+    "Daily_Change": -0.009912767914613702,
+    "Earnings_Date": null
   },
   {
     "Symbol": "FCX",
@@ -1869,7 +2076,8 @@
     "GICS Sub-Industry": "Copper",
     "Symbol_YF": "FCX",
     "Exchange": "NYSE",
-    "Daily_Change": 0.03157546701934198
+    "Daily_Change": -0.013782060726311005,
+    "Earnings_Date": null
   },
   {
     "Symbol": "GRMN",
@@ -1878,7 +2086,8 @@
     "GICS Sub-Industry": "Consumer Electronics",
     "Symbol_YF": "GRMN",
     "Exchange": "NYSE",
-    "Daily_Change": -0.005316737419115493
+    "Daily_Change": -0.021753543049904095,
+    "Earnings_Date": null
   },
   {
     "Symbol": "IT",
@@ -1887,7 +2096,8 @@
     "GICS Sub-Industry": "IT Consulting & Other Services",
     "Symbol_YF": "IT",
     "Exchange": "NYSE",
-    "Daily_Change": -0.044053128192799954
+    "Daily_Change": 0.008361636184262784,
+    "Earnings_Date": null
   },
   {
     "Symbol": "GE",
@@ -1896,7 +2106,8 @@
     "GICS Sub-Industry": "Aerospace & Defense",
     "Symbol_YF": "GE",
     "Exchange": "NYSE",
-    "Daily_Change": 0.014257757897679541
+    "Daily_Change": -0.004195746549318107,
+    "Earnings_Date": null
   },
   {
     "Symbol": "GEHC",
@@ -1905,7 +2116,8 @@
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "GEHC",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.0383445722596852
+    "Daily_Change": -0.0010999838768336954,
+    "Earnings_Date": null
   },
   {
     "Symbol": "GEV",
@@ -1914,7 +2126,8 @@
     "GICS Sub-Industry": "Heavy Electrical Equipment",
     "Symbol_YF": "GEV",
     "Exchange": "NYSE",
-    "Daily_Change": 0.010962534634381427
+    "Daily_Change": 0.01006912784094029,
+    "Earnings_Date": null
   },
   {
     "Symbol": "GEN",
@@ -1923,7 +2136,8 @@
     "GICS Sub-Industry": "Systems Software",
     "Symbol_YF": "GEN",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.034146341463414616
+    "Daily_Change": -0.024793429683335474,
+    "Earnings_Date": null
   },
   {
     "Symbol": "GNRC",
@@ -1932,7 +2146,8 @@
     "GICS Sub-Industry": "Electrical Components & Equipment",
     "Symbol_YF": "GNRC",
     "Exchange": "NYSE",
-    "Daily_Change": 0.017382067500362097
+    "Daily_Change": 0.009064535819193312,
+    "Earnings_Date": null
   },
   {
     "Symbol": "GD",
@@ -1941,7 +2156,8 @@
     "GICS Sub-Industry": "Aerospace & Defense",
     "Symbol_YF": "GD",
     "Exchange": "NYSE",
-    "Daily_Change": -0.017652909000497385
+    "Daily_Change": -0.004893248551125205,
+    "Earnings_Date": null
   },
   {
     "Symbol": "GIS",
@@ -1950,7 +2166,8 @@
     "GICS Sub-Industry": "Packaged Foods & Meats",
     "Symbol_YF": "GIS",
     "Exchange": "NYSE",
-    "Daily_Change": -0.025806451612903167
+    "Daily_Change": -0.03831596449047264,
+    "Earnings_Date": null
   },
   {
     "Symbol": "GM",
@@ -1959,7 +2176,8 @@
     "GICS Sub-Industry": "Automobile Manufacturers",
     "Symbol_YF": "GM",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0032132815637971497
+    "Daily_Change": -0.0018684023632489838,
+    "Earnings_Date": null
   },
   {
     "Symbol": "GPC",
@@ -1968,7 +2186,8 @@
     "GICS Sub-Industry": "Distributors",
     "Symbol_YF": "GPC",
     "Exchange": "NYSE",
-    "Daily_Change": -0.025751072961373477
+    "Daily_Change": 0.0022026235846741315,
+    "Earnings_Date": null
   },
   {
     "Symbol": "GILD",
@@ -1977,7 +2196,8 @@
     "GICS Sub-Industry": "Biotechnology",
     "Symbol_YF": "GILD",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.013162381504467073
+    "Daily_Change": -0.017232078625903705,
+    "Earnings_Date": null
   },
   {
     "Symbol": "GPN",
@@ -1986,7 +2206,8 @@
     "GICS Sub-Industry": "Transaction & Payment Processing Services",
     "Symbol_YF": "GPN",
     "Exchange": "NYSE",
-    "Daily_Change": -0.016844919786096136
+    "Daily_Change": -0.00938268198009448,
+    "Earnings_Date": null
   },
   {
     "Symbol": "GL",
@@ -1995,7 +2216,8 @@
     "GICS Sub-Industry": "Life & Health Insurance",
     "Symbol_YF": "GL",
     "Exchange": "NYSE",
-    "Daily_Change": 0.006337581860432404
+    "Daily_Change": -0.01343501588233724,
+    "Earnings_Date": null
   },
   {
     "Symbol": "GDDY",
@@ -2004,7 +2226,8 @@
     "GICS Sub-Industry": "Internet Services & Infrastructure",
     "Symbol_YF": "GDDY",
     "Exchange": "NYSE",
-    "Daily_Change": -0.016141345839240963
+    "Daily_Change": -0.040682831240345385,
+    "Earnings_Date": null
   },
   {
     "Symbol": "GS",
@@ -2013,7 +2236,8 @@
     "GICS Sub-Industry": "Investment Banking & Brokerage",
     "Symbol_YF": "GS",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0021393459370455067
+    "Daily_Change": -0.01205309101881153,
+    "Earnings_Date": null
   },
   {
     "Symbol": "HAL",
@@ -2022,7 +2246,8 @@
     "GICS Sub-Industry": "Oil & Gas Equipment & Services",
     "Symbol_YF": "HAL",
     "Exchange": "NYSE",
-    "Daily_Change": 0.019913419913420053
+    "Daily_Change": 0.01669496746011434,
+    "Earnings_Date": null
   },
   {
     "Symbol": "HIG",
@@ -2031,7 +2256,8 @@
     "GICS Sub-Industry": "Property & Casualty Insurance",
     "Symbol_YF": "HIG",
     "Exchange": "NYSE",
-    "Daily_Change": -0.005074302283435946
+    "Daily_Change": -0.01668483268584927,
+    "Earnings_Date": null
   },
   {
     "Symbol": "HAS",
@@ -2040,7 +2266,8 @@
     "GICS Sub-Industry": "Leisure Products",
     "Symbol_YF": "HAS",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.007412821048235623
+    "Daily_Change": -0.008414884341283596,
+    "Earnings_Date": null
   },
   {
     "Symbol": "HCA",
@@ -2049,7 +2276,8 @@
     "GICS Sub-Industry": "Health Care Facilities",
     "Symbol_YF": "HCA",
     "Exchange": "NYSE",
-    "Daily_Change": -0.01373984187258087
+    "Daily_Change": -0.0006695657721791675,
+    "Earnings_Date": null
   },
   {
     "Symbol": "DOC",
@@ -2058,7 +2286,8 @@
     "GICS Sub-Industry": "Health Care REITs",
     "Symbol_YF": "DOC",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0011481056257177454
+    "Daily_Change": -0.01896551327246114,
+    "Earnings_Date": null
   },
   {
     "Symbol": "HSIC",
@@ -2067,7 +2296,8 @@
     "GICS Sub-Industry": "Health Care Distributors",
     "Symbol_YF": "HSIC",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.02317541613316246
+    "Daily_Change": 0.0027526423116075102,
+    "Earnings_Date": null
   },
   {
     "Symbol": "HSY",
@@ -2076,7 +2306,8 @@
     "GICS Sub-Industry": "Packaged Foods & Meats",
     "Symbol_YF": "HSY",
     "Exchange": "NYSE",
-    "Daily_Change": -0.016967411796391062
+    "Daily_Change": -0.005251113682577055,
+    "Earnings_Date": null
   },
   {
     "Symbol": "HPE",
@@ -2085,7 +2316,8 @@
     "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
     "Symbol_YF": "HPE",
     "Exchange": "NYSE",
-    "Daily_Change": -0.032553874369555126
+    "Daily_Change": 0.015639806527959335,
+    "Earnings_Date": null
   },
   {
     "Symbol": "HLT",
@@ -2094,7 +2326,8 @@
     "GICS Sub-Industry": "Hotels, Resorts & Cruise Lines",
     "Symbol_YF": "HLT",
     "Exchange": "NYSE",
-    "Daily_Change": -0.016773215580307043
+    "Daily_Change": -0.00509430920852107,
+    "Earnings_Date": null
   },
   {
     "Symbol": "HOLX",
@@ -2103,7 +2336,8 @@
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "HOLX",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.0006614631565021452
+    "Daily_Change": -0.001720906166831243,
+    "Earnings_Date": null
   },
   {
     "Symbol": "HD",
@@ -2112,7 +2346,8 @@
     "GICS Sub-Industry": "Home Improvement Retail",
     "Symbol_YF": "HD",
     "Exchange": "NYSE",
-    "Daily_Change": 0.010153863559226086
+    "Daily_Change": -0.017667640113197446,
+    "Earnings_Date": null
   },
   {
     "Symbol": "HON",
@@ -2121,7 +2356,8 @@
     "GICS Sub-Industry": "Industrial Conglomerates",
     "Symbol_YF": "HON",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.012710972684035567
+    "Daily_Change": -0.004862633165609895,
+    "Earnings_Date": null
   },
   {
     "Symbol": "HRL",
@@ -2130,7 +2366,8 @@
     "GICS Sub-Industry": "Packaged Foods & Meats",
     "Symbol_YF": "HRL",
     "Exchange": "NYSE",
-    "Daily_Change": -0.022613065326633132
+    "Daily_Change": -0.01328189648310738,
+    "Earnings_Date": null
   },
   {
     "Symbol": "HST",
@@ -2139,7 +2376,8 @@
     "GICS Sub-Industry": "Hotel & Resort REITs",
     "Symbol_YF": "HST",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.004697286012526089
+    "Daily_Change": -0.003116855373630276,
+    "Earnings_Date": null
   },
   {
     "Symbol": "HWM",
@@ -2148,7 +2386,8 @@
     "GICS Sub-Industry": "Aerospace & Defense",
     "Symbol_YF": "HWM",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0009050129849688745
+    "Daily_Change": -0.008900829951672589,
+    "Earnings_Date": null
   },
   {
     "Symbol": "HPQ",
@@ -2157,7 +2396,8 @@
     "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
     "Symbol_YF": "HPQ",
     "Exchange": "NYSE",
-    "Daily_Change": -0.00739566825145275
+    "Daily_Change": -0.0016226387923523682,
+    "Earnings_Date": null
   },
   {
     "Symbol": "HUBB",
@@ -2166,7 +2406,8 @@
     "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
     "Symbol_YF": "HUBB",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0198868295883221
+    "Daily_Change": -0.00018825322836093296,
+    "Earnings_Date": null
   },
   {
     "Symbol": "HUM",
@@ -2175,7 +2416,8 @@
     "GICS Sub-Industry": "Managed Health Care",
     "Symbol_YF": "HUM",
     "Exchange": "NYSE",
-    "Daily_Change": -0.02750238055228811
+    "Daily_Change": -0.015378402511433985,
+    "Earnings_Date": null
   },
   {
     "Symbol": "HBAN",
@@ -2184,7 +2426,8 @@
     "GICS Sub-Industry": "Regional Banks",
     "Symbol_YF": "HBAN",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.008064516129032306
+    "Daily_Change": -0.021888644953428606,
+    "Earnings_Date": null
   },
   {
     "Symbol": "HII",
@@ -2193,7 +2436,8 @@
     "GICS Sub-Industry": "Aerospace & Defense",
     "Symbol_YF": "HII",
     "Exchange": "NYSE",
-    "Daily_Change": -0.028097211229573055
+    "Daily_Change": -0.00912552386643986,
+    "Earnings_Date": null
   },
   {
     "Symbol": "IBM",
@@ -2202,7 +2446,8 @@
     "GICS Sub-Industry": "IT Consulting & Other Services",
     "Symbol_YF": "IBM",
     "Exchange": "NYSE",
-    "Daily_Change": -0.012355425729286005
+    "Daily_Change": -0.005315754785280111,
+    "Earnings_Date": null
   },
   {
     "Symbol": "IEX",
@@ -2211,7 +2456,8 @@
     "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
     "Symbol_YF": "IEX",
     "Exchange": "NYSE",
-    "Daily_Change": -0.009159919028340093
+    "Daily_Change": -0.006690829988840564,
+    "Earnings_Date": null
   },
   {
     "Symbol": "IDXX",
@@ -2220,7 +2466,8 @@
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "IDXX",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.01900237529691215
+    "Daily_Change": 0.002788751796605595,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ITW",
@@ -2229,7 +2476,8 @@
     "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
     "Symbol_YF": "ITW",
     "Exchange": "NYSE",
-    "Daily_Change": -0.011895292501265326
+    "Daily_Change": -0.006476707804555739,
+    "Earnings_Date": null
   },
   {
     "Symbol": "INCY",
@@ -2238,7 +2486,8 @@
     "GICS Sub-Industry": "Biotechnology",
     "Symbol_YF": "INCY",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.011122554067971148
+    "Daily_Change": -0.014163643287892535,
+    "Earnings_Date": null
   },
   {
     "Symbol": "IR",
@@ -2247,7 +2496,8 @@
     "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
     "Symbol_YF": "IR",
     "Exchange": "NYSE",
-    "Daily_Change": -0.002769443803369431
+    "Daily_Change": -0.01446424469433954,
+    "Earnings_Date": null
   },
   {
     "Symbol": "PODD",
@@ -2256,7 +2506,8 @@
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "PODD",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.008902570929361787
+    "Daily_Change": 0.002434527441577522,
+    "Earnings_Date": null
   },
   {
     "Symbol": "INTC",
@@ -2265,7 +2516,8 @@
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "INTC",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.026327336551118977
+    "Daily_Change": 0.02565200500754459,
+    "Earnings_Date": null
   },
   {
     "Symbol": "IBKR",
@@ -2274,7 +2526,8 @@
     "GICS Sub-Industry": "Investment Banking & Brokerage",
     "Symbol_YF": "IBKR",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.014965180026670695
+    "Daily_Change": -0.0016058483263001824,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ICE",
@@ -2283,7 +2536,8 @@
     "GICS Sub-Industry": "Financial Exchanges & Data",
     "Symbol_YF": "ICE",
     "Exchange": "NYSE",
-    "Daily_Change": -0.03395657418576613
+    "Daily_Change": -0.01966656635134503,
+    "Earnings_Date": null
   },
   {
     "Symbol": "IFF",
@@ -2292,7 +2546,8 @@
     "GICS Sub-Industry": "Specialty Chemicals",
     "Symbol_YF": "IFF",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0042372881355932515
+    "Daily_Change": -0.056691796018157645,
+    "Earnings_Date": null
   },
   {
     "Symbol": "IP",
@@ -2301,7 +2556,8 @@
     "GICS Sub-Industry": "Paper & Plastic Packaging Products & Materials",
     "Symbol_YF": "IP",
     "Exchange": "NYSE",
-    "Daily_Change": 0.01823391508205269
+    "Daily_Change": -0.011000263583967107,
+    "Earnings_Date": null
   },
   {
     "Symbol": "INTU",
@@ -2310,7 +2566,8 @@
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "INTU",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.04163236008191362
+    "Daily_Change": -0.029738957235324638,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ISRG",
@@ -2319,7 +2576,8 @@
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "ISRG",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.015621201069778708
+    "Daily_Change": 0.014448881188603279,
+    "Earnings_Date": null
   },
   {
     "Symbol": "IVZ",
@@ -2328,7 +2586,8 @@
     "GICS Sub-Industry": "Asset Management & Custody Banks",
     "Symbol_YF": "IVZ",
     "Exchange": "NYSE",
-    "Daily_Change": 0.003768844221105522
+    "Daily_Change": -0.0008343158526457361,
+    "Earnings_Date": null
   },
   {
     "Symbol": "INVH",
@@ -2337,7 +2596,8 @@
     "GICS Sub-Industry": "Single-Family Residential REITs",
     "Symbol_YF": "INVH",
     "Exchange": "NYSE",
-    "Daily_Change": -0.008471313053523253
+    "Daily_Change": -0.02097090934086772,
+    "Earnings_Date": null
   },
   {
     "Symbol": "IQV",
@@ -2346,7 +2606,8 @@
     "GICS Sub-Industry": "Life Sciences Tools & Services",
     "Symbol_YF": "IQV",
     "Exchange": "NYSE",
-    "Daily_Change": -0.04267712125455057
+    "Daily_Change": 0.0038027799866953136,
+    "Earnings_Date": null
   },
   {
     "Symbol": "IRM",
@@ -2355,7 +2616,8 @@
     "GICS Sub-Industry": "Other Specialized REITs",
     "Symbol_YF": "IRM",
     "Exchange": "NYSE",
-    "Daily_Change": 0.005880156804181402
+    "Daily_Change": -0.0016702265081434604,
+    "Earnings_Date": null
   },
   {
     "Symbol": "JBHT",
@@ -2364,7 +2626,8 @@
     "GICS Sub-Industry": "Cargo Ground Transportation",
     "Symbol_YF": "JBHT",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.0074036604432999795
+    "Daily_Change": -0.02543435412520308,
+    "Earnings_Date": null
   },
   {
     "Symbol": "JBL",
@@ -2373,7 +2636,8 @@
     "GICS Sub-Industry": "Electronic Manufacturing Services",
     "Symbol_YF": "JBL",
     "Exchange": "NYSE",
-    "Daily_Change": 0.01491150084862199
+    "Daily_Change": 0.01716111057983643,
+    "Earnings_Date": null
   },
   {
     "Symbol": "JKHY",
@@ -2382,7 +2646,8 @@
     "GICS Sub-Industry": "Transaction & Payment Processing Services",
     "Symbol_YF": "JKHY",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.0033218719039570673
+    "Daily_Change": -0.02344760651061874,
+    "Earnings_Date": null
   },
   {
     "Symbol": "J",
@@ -2391,7 +2656,8 @@
     "GICS Sub-Industry": "Construction & Engineering",
     "Symbol_YF": "J",
     "Exchange": "NYSE",
-    "Daily_Change": -0.021014331328432348
+    "Daily_Change": 0.008115953837532316,
+    "Earnings_Date": null
   },
   {
     "Symbol": "JNJ",
@@ -2400,7 +2666,8 @@
     "GICS Sub-Industry": "Pharmaceuticals",
     "Symbol_YF": "JNJ",
     "Exchange": "NYSE",
-    "Daily_Change": 0.004616843233439155
+    "Daily_Change": -0.002954335894580059,
+    "Earnings_Date": null
   },
   {
     "Symbol": "JCI",
@@ -2409,7 +2676,8 @@
     "GICS Sub-Industry": "Building Products",
     "Symbol_YF": "JCI",
     "Exchange": "NYSE",
-    "Daily_Change": 0.00638665564655492
+    "Daily_Change": 0.007839353685372297,
+    "Earnings_Date": null
   },
   {
     "Symbol": "JPM",
@@ -2418,7 +2686,8 @@
     "GICS Sub-Industry": "Diversified Banks",
     "Symbol_YF": "JPM",
     "Exchange": "NYSE",
-    "Daily_Change": -0.004104580573951427
+    "Daily_Change": -0.0041908424016010816,
+    "Earnings_Date": null
   },
   {
     "Symbol": "KVUE",
@@ -2427,7 +2696,8 @@
     "GICS Sub-Industry": "Personal Care Products",
     "Symbol_YF": "KVUE",
     "Exchange": "NYSE",
-    "Daily_Change": -0.011013215859030798
+    "Daily_Change": -0.017260550208512724,
+    "Earnings_Date": null
   },
   {
     "Symbol": "KDP",
@@ -2436,7 +2706,8 @@
     "GICS Sub-Industry": "Soft Drinks & Non-alcoholic Beverages",
     "Symbol_YF": "KDP",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.005321035828307986
+    "Daily_Change": -0.0139087476556074,
+    "Earnings_Date": null
   },
   {
     "Symbol": "KEY",
@@ -2445,7 +2716,8 @@
     "GICS Sub-Industry": "Regional Banks",
     "Symbol_YF": "KEY",
     "Exchange": "NYSE",
-    "Daily_Change": 0.003555104113763346
+    "Daily_Change": -0.005566832443189052,
+    "Earnings_Date": null
   },
   {
     "Symbol": "KEYS",
@@ -2454,7 +2726,8 @@
     "GICS Sub-Industry": "Electronic Equipment & Instruments",
     "Symbol_YF": "KEYS",
     "Exchange": "NYSE",
-    "Daily_Change": 0.012481384298986025
+    "Daily_Change": -0.0044827300588089125,
+    "Earnings_Date": null
   },
   {
     "Symbol": "KMB",
@@ -2463,7 +2736,8 @@
     "GICS Sub-Industry": "Household Products",
     "Symbol_YF": "KMB",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.011084103062712694
+    "Daily_Change": -0.016419213292474203,
+    "Earnings_Date": null
   },
   {
     "Symbol": "KIM",
@@ -2472,7 +2746,8 @@
     "GICS Sub-Industry": "Retail REITs",
     "Symbol_YF": "KIM",
     "Exchange": "NYSE",
-    "Daily_Change": -0.001724137931034446
+    "Daily_Change": 0.00043178881466846643,
+    "Earnings_Date": null
   },
   {
     "Symbol": "KMI",
@@ -2481,7 +2756,8 @@
     "GICS Sub-Industry": "Oil & Gas Storage & Transportation",
     "Symbol_YF": "KMI",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0102102102102101
+    "Daily_Change": 0.0036408601309265245,
+    "Earnings_Date": null
   },
   {
     "Symbol": "KKR",
@@ -2490,7 +2766,8 @@
     "GICS Sub-Industry": "Asset Management & Custody Banks",
     "Symbol_YF": "KKR",
     "Exchange": "NYSE",
-    "Daily_Change": -0.01077633604574449
+    "Daily_Change": -0.031458446641348996,
+    "Earnings_Date": null
   },
   {
     "Symbol": "KLAC",
@@ -2499,7 +2776,8 @@
     "GICS Sub-Industry": "Semiconductor Materials & Equipment",
     "Symbol_YF": "KLAC",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.01668182772374232
+    "Daily_Change": 0.008300452241733742,
+    "Earnings_Date": null
   },
   {
     "Symbol": "KHC",
@@ -2508,7 +2786,8 @@
     "GICS Sub-Industry": "Packaged Foods & Meats",
     "Symbol_YF": "KHC",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.03191489361702132
+    "Daily_Change": -0.021978041467339598,
+    "Earnings_Date": null
   },
   {
     "Symbol": "KR",
@@ -2517,7 +2796,8 @@
     "GICS Sub-Industry": "Food Retail",
     "Symbol_YF": "KR",
     "Exchange": "NYSE",
-    "Daily_Change": -0.015401390213984048
+    "Daily_Change": -0.0006920739734456085,
+    "Earnings_Date": null
   },
   {
     "Symbol": "LHX",
@@ -2526,7 +2806,8 @@
     "GICS Sub-Industry": "Aerospace & Defense",
     "Symbol_YF": "LHX",
     "Exchange": "NYSE",
-    "Daily_Change": -0.02569627754134559
+    "Daily_Change": 0.007022029570800789,
+    "Earnings_Date": null
   },
   {
     "Symbol": "LH",
@@ -2535,7 +2816,8 @@
     "GICS Sub-Industry": "Health Care Services",
     "Symbol_YF": "LH",
     "Exchange": "NYSE",
-    "Daily_Change": -0.017945250539088575
+    "Daily_Change": 0.006401195171431096,
+    "Earnings_Date": null
   },
   {
     "Symbol": "LRCX",
@@ -2544,7 +2826,8 @@
     "GICS Sub-Industry": "Semiconductor Materials & Equipment",
     "Symbol_YF": "LRCX",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.019322756334359384
+    "Daily_Change": 0.016912138000766096,
+    "Earnings_Date": null
   },
   {
     "Symbol": "LW",
@@ -2553,7 +2836,8 @@
     "GICS Sub-Industry": "Packaged Foods & Meats",
     "Symbol_YF": "LW",
     "Exchange": "NYSE",
-    "Daily_Change": -0.02775956284153012
+    "Daily_Change": -0.023381315787555323,
+    "Earnings_Date": null
   },
   {
     "Symbol": "LVS",
@@ -2562,7 +2846,8 @@
     "GICS Sub-Industry": "Casinos & Gaming",
     "Symbol_YF": "LVS",
     "Exchange": "NYSE",
-    "Daily_Change": 0.00741977369690235
+    "Daily_Change": 0.008653975218586503,
+    "Earnings_Date": null
   },
   {
     "Symbol": "LDOS",
@@ -2571,7 +2856,8 @@
     "GICS Sub-Industry": "Diversified Support Services",
     "Symbol_YF": "LDOS",
     "Exchange": "NYSE",
-    "Daily_Change": -0.03915561991756712
+    "Daily_Change": 0.0049852219450246624,
+    "Earnings_Date": null
   },
   {
     "Symbol": "LEN",
@@ -2580,7 +2866,8 @@
     "GICS Sub-Industry": "Homebuilding",
     "Symbol_YF": "LEN",
     "Exchange": "NYSE",
-    "Daily_Change": -0.012207324394636771
+    "Daily_Change": -0.02177878342071999,
+    "Earnings_Date": null
   },
   {
     "Symbol": "LII",
@@ -2589,7 +2876,8 @@
     "GICS Sub-Industry": "Building Products",
     "Symbol_YF": "LII",
     "Exchange": "NYSE",
-    "Daily_Change": -0.00986536675951722
+    "Daily_Change": -0.006251673858145545,
+    "Earnings_Date": null
   },
   {
     "Symbol": "LLY",
@@ -2598,7 +2886,8 @@
     "GICS Sub-Industry": "Pharmaceuticals",
     "Symbol_YF": "LLY",
     "Exchange": "NYSE",
-    "Daily_Change": -0.006981425837225641
+    "Daily_Change": -0.001507913084618799,
+    "Earnings_Date": null
   },
   {
     "Symbol": "LIN",
@@ -2607,7 +2896,8 @@
     "GICS Sub-Industry": "Industrial Gases",
     "Symbol_YF": "LIN",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.011744758281295245
+    "Daily_Change": 0.010937547749785071,
+    "Earnings_Date": null
   },
   {
     "Symbol": "LYV",
@@ -2616,7 +2906,8 @@
     "GICS Sub-Industry": "Movies & Entertainment",
     "Symbol_YF": "LYV",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0016284680337756948
+    "Daily_Change": 0.0018123787468748197,
+    "Earnings_Date": null
   },
   {
     "Symbol": "LMT",
@@ -2625,7 +2916,8 @@
     "GICS Sub-Industry": "Aerospace & Defense",
     "Symbol_YF": "LMT",
     "Exchange": "NYSE",
-    "Daily_Change": -0.01946849356320101
+    "Daily_Change": -0.0026872640255649984,
+    "Earnings_Date": null
   },
   {
     "Symbol": "L",
@@ -2634,7 +2926,8 @@
     "GICS Sub-Industry": "Multi-line Insurance",
     "Symbol_YF": "L",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0005499541704858137
+    "Daily_Change": -0.0034811732325399675,
+    "Earnings_Date": null
   },
   {
     "Symbol": "LOW",
@@ -2643,7 +2936,8 @@
     "GICS Sub-Industry": "Home Improvement Retail",
     "Symbol_YF": "LOW",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0035568699544401517
+    "Daily_Change": -0.01684519022443381,
+    "Earnings_Date": null
   },
   {
     "Symbol": "LULU",
@@ -2652,7 +2946,8 @@
     "GICS Sub-Industry": "Apparel, Accessories & Luxury Goods",
     "Symbol_YF": "LULU",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.019615928369462677
+    "Daily_Change": -0.021871054195979227,
+    "Earnings_Date": null
   },
   {
     "Symbol": "LYB",
@@ -2661,7 +2956,8 @@
     "GICS Sub-Industry": "Specialty Chemicals",
     "Symbol_YF": "LYB",
     "Exchange": "NYSE",
-    "Daily_Change": -0.018108350793175604
+    "Daily_Change": 0.026825211398531612,
+    "Earnings_Date": null
   },
   {
     "Symbol": "MTB",
@@ -2670,7 +2966,8 @@
     "GICS Sub-Industry": "Regional Banks",
     "Symbol_YF": "MTB",
     "Exchange": "NYSE",
-    "Daily_Change": -0.021757883638454864
+    "Daily_Change": -0.004458105159163258,
+    "Earnings_Date": null
   },
   {
     "Symbol": "MPC",
@@ -2679,7 +2976,8 @@
     "GICS Sub-Industry": "Oil & Gas Refining & Marketing",
     "Symbol_YF": "MPC",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0021789522484932725
+    "Daily_Change": 0.05347772147984238,
+    "Earnings_Date": null
   },
   {
     "Symbol": "MAR",
@@ -2688,7 +2986,8 @@
     "GICS Sub-Industry": "Hotels, Resorts & Cruise Lines",
     "Symbol_YF": "MAR",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.008696709846135174
+    "Daily_Change": 0.001165659149731595,
+    "Earnings_Date": null
   },
   {
     "Symbol": "MRSH",
@@ -2697,7 +2996,8 @@
     "GICS Sub-Industry": "Insurance Brokers",
     "Symbol_YF": "MRSH",
     "Exchange": "NYSE",
-    "Daily_Change": -0.03317219536589431
+    "Daily_Change": -0.00017240677756824712,
+    "Earnings_Date": null
   },
   {
     "Symbol": "MLM",
@@ -2706,7 +3006,8 @@
     "GICS Sub-Industry": "Construction Materials",
     "Symbol_YF": "MLM",
     "Exchange": "NYSE",
-    "Daily_Change": -0.008130346764187321
+    "Daily_Change": -0.016377442689750336,
+    "Earnings_Date": null
   },
   {
     "Symbol": "MAS",
@@ -2715,7 +3016,8 @@
     "GICS Sub-Industry": "Building Products",
     "Symbol_YF": "MAS",
     "Exchange": "NYSE",
-    "Daily_Change": -0.011986301369862952
+    "Daily_Change": -0.015440358017775876,
+    "Earnings_Date": null
   },
   {
     "Symbol": "MA",
@@ -2724,7 +3026,8 @@
     "GICS Sub-Industry": "Transaction & Payment Processing Services",
     "Symbol_YF": "MA",
     "Exchange": "NYSE",
-    "Daily_Change": -0.005794638028277834
+    "Daily_Change": -0.020826801587824843,
+    "Earnings_Date": null
   },
   {
     "Symbol": "MTCH",
@@ -2733,7 +3036,8 @@
     "GICS Sub-Industry": "Interactive Media & Services",
     "Symbol_YF": "MTCH",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.008678881388621008
+    "Daily_Change": -0.007782093707221492,
+    "Earnings_Date": null
   },
   {
     "Symbol": "MKC",
@@ -2742,7 +3046,8 @@
     "GICS Sub-Industry": "Packaged Foods & Meats",
     "Symbol_YF": "MKC",
     "Exchange": "NYSE",
-    "Daily_Change": -0.012309130570271208
+    "Daily_Change": -0.054582727840153174,
+    "Earnings_Date": null
   },
   {
     "Symbol": "MCD",
@@ -2751,7 +3056,8 @@
     "GICS Sub-Industry": "Restaurants",
     "Symbol_YF": "MCD",
     "Exchange": "NYSE",
-    "Daily_Change": -0.008645707376058081
+    "Daily_Change": -0.008324726980557676,
+    "Earnings_Date": null
   },
   {
     "Symbol": "MCK",
@@ -2760,7 +3066,8 @@
     "GICS Sub-Industry": "Health Care Distributors",
     "Symbol_YF": "MCK",
     "Exchange": "NYSE",
-    "Daily_Change": -0.014296934703235028
+    "Daily_Change": 0.006029972941687631,
+    "Earnings_Date": null
   },
   {
     "Symbol": "MDT",
@@ -2769,7 +3076,8 @@
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "MDT",
     "Exchange": "NYSE",
-    "Daily_Change": -0.015874753667615534
+    "Daily_Change": -0.010234711037847195,
+    "Earnings_Date": null
   },
   {
     "Symbol": "MRK",
@@ -2778,7 +3086,8 @@
     "GICS Sub-Industry": "Pharmaceuticals",
     "Symbol_YF": "MRK",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0001707796089146616
+    "Daily_Change": -0.0075155630791765545,
+    "Earnings_Date": null
   },
   {
     "Symbol": "META",
@@ -2787,7 +3096,8 @@
     "GICS Sub-Industry": "Interactive Media & Services",
     "Symbol_YF": "META",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.010318355241817241
+    "Daily_Change": 0.0012077881855117115,
+    "Earnings_Date": null
   },
   {
     "Symbol": "MET",
@@ -2796,7 +3106,8 @@
     "GICS Sub-Industry": "Life & Health Insurance",
     "Symbol_YF": "MET",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0024021478027412987
+    "Daily_Change": -0.009065147358084343,
+    "Earnings_Date": null
   },
   {
     "Symbol": "MTD",
@@ -2805,7 +3116,8 @@
     "GICS Sub-Industry": "Life Sciences Tools & Services",
     "Symbol_YF": "MTD",
     "Exchange": "NYSE",
-    "Daily_Change": -0.013526933734843167
+    "Daily_Change": -0.002273166036558559,
+    "Earnings_Date": null
   },
   {
     "Symbol": "MGM",
@@ -2814,7 +3126,8 @@
     "GICS Sub-Industry": "Casinos & Gaming",
     "Symbol_YF": "MGM",
     "Exchange": "NYSE",
-    "Daily_Change": -0.01795735129068464
+    "Daily_Change": 0.036857169015066964,
+    "Earnings_Date": null
   },
   {
     "Symbol": "MCHP",
@@ -2823,7 +3136,8 @@
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "MCHP",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.005076923076923051
+    "Daily_Change": 0.007041161358945427,
+    "Earnings_Date": null
   },
   {
     "Symbol": "MU",
@@ -2832,7 +3146,8 @@
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "MU",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.03542073358676672
+    "Daily_Change": 0.038649543935896355,
+    "Earnings_Date": null
   },
   {
     "Symbol": "MSFT",
@@ -2841,7 +3156,8 @@
     "GICS Sub-Industry": "Systems Software",
     "Symbol_YF": "MSFT",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.008915268312938214
+    "Daily_Change": -0.002168781697636512,
+    "Earnings_Date": null
   },
   {
     "Symbol": "MAA",
@@ -2850,7 +3166,8 @@
     "GICS Sub-Industry": "Multi-Family Residential REITs",
     "Symbol_YF": "MAA",
     "Exchange": "NYSE",
-    "Daily_Change": -0.015211139700317778
+    "Daily_Change": -0.01698306793930724,
+    "Earnings_Date": null
   },
   {
     "Symbol": "MRNA",
@@ -2859,7 +3176,8 @@
     "GICS Sub-Industry": "Biotechnology",
     "Symbol_YF": "MRNA",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.013634732687477665
+    "Daily_Change": 0.018006578514178872,
+    "Earnings_Date": null
   },
   {
     "Symbol": "MOH",
@@ -2868,7 +3186,8 @@
     "GICS Sub-Industry": "Managed Health Care",
     "Symbol_YF": "MOH",
     "Exchange": "NYSE",
-    "Daily_Change": -0.03225364651099095
+    "Daily_Change": 0.0387772108939024,
+    "Earnings_Date": null
   },
   {
     "Symbol": "TAP",
@@ -2877,7 +3196,8 @@
     "GICS Sub-Industry": "Brewers",
     "Symbol_YF": "TAP",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0030428167789611077
+    "Daily_Change": -0.01962061766162462,
+    "Earnings_Date": null
   },
   {
     "Symbol": "MDLZ",
@@ -2886,7 +3206,8 @@
     "GICS Sub-Industry": "Packaged Foods & Meats",
     "Symbol_YF": "MDLZ",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.027333677153171795
+    "Daily_Change": -0.021562410413947904,
+    "Earnings_Date": null
   },
   {
     "Symbol": "MPWR",
@@ -2895,7 +3216,8 @@
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "MPWR",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.005819209039548082
+    "Daily_Change": 0.014462711738796203,
+    "Earnings_Date": null
   },
   {
     "Symbol": "MNST",
@@ -2904,7 +3226,8 @@
     "GICS Sub-Industry": "Soft Drinks & Non-alcoholic Beverages",
     "Symbol_YF": "MNST",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.012875536480686808
+    "Daily_Change": 0.01069100035789521,
+    "Earnings_Date": null
   },
   {
     "Symbol": "MCO",
@@ -2913,7 +3236,8 @@
     "GICS Sub-Industry": "Financial Exchanges & Data",
     "Symbol_YF": "MCO",
     "Exchange": "NYSE",
-    "Daily_Change": -0.022606929045365102
+    "Daily_Change": -0.013931004483329918,
+    "Earnings_Date": null
   },
   {
     "Symbol": "MS",
@@ -2922,7 +3246,8 @@
     "GICS Sub-Industry": "Investment Banking & Brokerage",
     "Symbol_YF": "MS",
     "Exchange": "NYSE",
-    "Daily_Change": 0.001869741352446316
+    "Daily_Change": 0.0008709137769731726,
+    "Earnings_Date": null
   },
   {
     "Symbol": "MOS",
@@ -2931,7 +3256,8 @@
     "GICS Sub-Industry": "Fertilizers & Agricultural Chemicals",
     "Symbol_YF": "MOS",
     "Exchange": "NYSE",
-    "Daily_Change": -0.016344725111441354
+    "Daily_Change": 0.10083082033423836,
+    "Earnings_Date": null
   },
   {
     "Symbol": "MSI",
@@ -2940,7 +3266,8 @@
     "GICS Sub-Industry": "Communications Equipment",
     "Symbol_YF": "MSI",
     "Exchange": "NYSE",
-    "Daily_Change": 0.013274239678623762
+    "Daily_Change": -0.0033396992994982363,
+    "Earnings_Date": null
   },
   {
     "Symbol": "MSCI",
@@ -2949,7 +3276,8 @@
     "GICS Sub-Industry": "Financial Exchanges & Data",
     "Symbol_YF": "MSCI",
     "Exchange": "NYSE",
-    "Daily_Change": -0.025336191775482284
+    "Daily_Change": -0.005544323633790384,
+    "Earnings_Date": null
   },
   {
     "Symbol": "NDAQ",
@@ -2958,7 +3286,8 @@
     "GICS Sub-Industry": "Financial Exchanges & Data",
     "Symbol_YF": "NDAQ",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.005110732538330527
+    "Daily_Change": -0.023972585738588546,
+    "Earnings_Date": null
   },
   {
     "Symbol": "NTAP",
@@ -2967,7 +3296,8 @@
     "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
     "Symbol_YF": "NTAP",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.03677566842262203
+    "Daily_Change": 0.0069136120485699,
+    "Earnings_Date": null
   },
   {
     "Symbol": "NFLX",
@@ -2976,7 +3306,8 @@
     "GICS Sub-Industry": "Movies & Entertainment",
     "Symbol_YF": "NFLX",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.014035801464605325
+    "Daily_Change": -0.021147132248082026,
+    "Earnings_Date": null
   },
   {
     "Symbol": "NEM",
@@ -2985,7 +3316,8 @@
     "GICS Sub-Industry": "Gold",
     "Symbol_YF": "NEM",
     "Exchange": "NYSE",
-    "Daily_Change": 0.01658686730506166
+    "Daily_Change": -0.022624074069677483,
+    "Earnings_Date": null
   },
   {
     "Symbol": "NWSA",
@@ -2994,7 +3326,8 @@
     "GICS Sub-Industry": "Publishing",
     "Symbol_YF": "NWSA",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.02078239608801948
+    "Daily_Change": 0.012954427997868998,
+    "Earnings_Date": null
   },
   {
     "Symbol": "NWS",
@@ -3003,7 +3336,8 @@
     "GICS Sub-Industry": "Publishing",
     "Symbol_YF": "NWS",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.017683146878383325
+    "Daily_Change": 0.011430729553847788,
+    "Earnings_Date": null
   },
   {
     "Symbol": "NEE",
@@ -3012,7 +3346,8 @@
     "GICS Sub-Industry": "Multi-Utilities",
     "Symbol_YF": "NEE",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0051081404195196045
+    "Daily_Change": 0.0013109323288380693,
+    "Earnings_Date": null
   },
   {
     "Symbol": "NKE",
@@ -3021,7 +3356,8 @@
     "GICS Sub-Industry": "Apparel, Accessories & Luxury Goods",
     "Symbol_YF": "NKE",
     "Exchange": "NYSE",
-    "Daily_Change": -0.007960375022112203
+    "Daily_Change": -0.006776053061838635,
+    "Earnings_Date": null
   },
   {
     "Symbol": "NI",
@@ -3030,7 +3366,8 @@
     "GICS Sub-Industry": "Multi-Utilities",
     "Symbol_YF": "NI",
     "Exchange": "NYSE",
-    "Daily_Change": -0.009780990856899869
+    "Daily_Change": -0.006656675441753742,
+    "Earnings_Date": null
   },
   {
     "Symbol": "NDSN",
@@ -3039,7 +3376,8 @@
     "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
     "Symbol_YF": "NDSN",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.003572875612361304
+    "Daily_Change": 0.004514464599955488,
+    "Earnings_Date": null
   },
   {
     "Symbol": "NSC",
@@ -3048,7 +3386,8 @@
     "GICS Sub-Industry": "Rail Transportation",
     "Symbol_YF": "NSC",
     "Exchange": "NYSE",
-    "Daily_Change": -0.013027808087821967
+    "Daily_Change": -0.0031156578317786056,
+    "Earnings_Date": null
   },
   {
     "Symbol": "NTRS",
@@ -3057,7 +3396,8 @@
     "GICS Sub-Industry": "Asset Management & Custody Banks",
     "Symbol_YF": "NTRS",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.0031067119427787503
+    "Daily_Change": 0.021162474701849246,
+    "Earnings_Date": null
   },
   {
     "Symbol": "NOC",
@@ -3066,7 +3406,8 @@
     "GICS Sub-Industry": "Aerospace & Defense",
     "Symbol_YF": "NOC",
     "Exchange": "NYSE",
-    "Daily_Change": -0.016538657103861713
+    "Daily_Change": -0.0024490296889729804,
+    "Earnings_Date": null
   },
   {
     "Symbol": "NCLH",
@@ -3075,7 +3416,8 @@
     "GICS Sub-Industry": "Hotels, Resorts & Cruise Lines",
     "Symbol_YF": "NCLH",
     "Exchange": "NYSE",
-    "Daily_Change": -0.017382906808305138
+    "Daily_Change": 0.004914023567330483,
+    "Earnings_Date": null
   },
   {
     "Symbol": "NRG",
@@ -3084,7 +3426,8 @@
     "GICS Sub-Industry": "Independent Power Producers & Energy Traders",
     "Symbol_YF": "NRG",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0017372281559643664
+    "Daily_Change": -0.04202377873132237,
+    "Earnings_Date": null
   },
   {
     "Symbol": "NUE",
@@ -3093,7 +3436,8 @@
     "GICS Sub-Industry": "Steel",
     "Symbol_YF": "NUE",
     "Exchange": "NYSE",
-    "Daily_Change": 0.005664719419366307
+    "Daily_Change": 0.008097194989838217,
+    "Earnings_Date": null
   },
   {
     "Symbol": "NVDA",
@@ -3102,7 +3446,8 @@
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "NVDA",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.011606898439638677
+    "Daily_Change": 0.00687372237792639,
+    "Earnings_Date": null
   },
   {
     "Symbol": "NVR",
@@ -3111,7 +3456,8 @@
     "GICS Sub-Industry": "Homebuilding",
     "Symbol_YF": "NVR",
     "Exchange": "NYSE",
-    "Daily_Change": -0.012920490742910023
+    "Daily_Change": -0.02540527420091857,
+    "Earnings_Date": null
   },
   {
     "Symbol": "NXPI",
@@ -3120,7 +3466,8 @@
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "NXPI",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.010816077953714975
+    "Daily_Change": -0.015564220465491148,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ORLY",
@@ -3129,7 +3476,8 @@
     "GICS Sub-Industry": "Automotive Retail",
     "Symbol_YF": "ORLY",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.001056970721910943
+    "Daily_Change": -0.003378731896500266,
+    "Earnings_Date": null
   },
   {
     "Symbol": "OXY",
@@ -3138,7 +3486,8 @@
     "GICS Sub-Industry": "Oil & Gas Exploration & Production",
     "Symbol_YF": "OXY",
     "Exchange": "NYSE",
-    "Daily_Change": -0.029948867786705635
+    "Daily_Change": 0.046310296472790946,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ODFL",
@@ -3147,7 +3496,8 @@
     "GICS Sub-Industry": "Cargo Ground Transportation",
     "Symbol_YF": "ODFL",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.011155055268228317
+    "Daily_Change": -0.03199674575150865,
+    "Earnings_Date": null
   },
   {
     "Symbol": "OMC",
@@ -3156,7 +3506,8 @@
     "GICS Sub-Industry": "Advertising",
     "Symbol_YF": "OMC",
     "Exchange": "NYSE",
-    "Daily_Change": -0.03583759971425159
+    "Daily_Change": -0.0014966668262070939,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ON",
@@ -3165,7 +3516,8 @@
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "ON",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.006078001013000279
+    "Daily_Change": -0.005873443081471345,
+    "Earnings_Date": null
   },
   {
     "Symbol": "OKE",
@@ -3174,7 +3526,8 @@
     "GICS Sub-Industry": "Oil & Gas Storage & Transportation",
     "Symbol_YF": "OKE",
     "Exchange": "NYSE",
-    "Daily_Change": -0.014890646812470766
+    "Daily_Change": 0.012753918601352155,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ORCL",
@@ -3183,7 +3536,8 @@
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "ORCL",
     "Exchange": "NYSE",
-    "Daily_Change": -0.014251781472684064
+    "Daily_Change": 0.0918340145998224,
+    "Earnings_Date": null
   },
   {
     "Symbol": "OTIS",
@@ -3192,7 +3546,8 @@
     "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
     "Symbol_YF": "OTIS",
     "Exchange": "NYSE",
-    "Daily_Change": -0.016900765102203837
+    "Daily_Change": -0.017307444850171765,
+    "Earnings_Date": null
   },
   {
     "Symbol": "PCAR",
@@ -3201,7 +3556,8 @@
     "GICS Sub-Industry": "Construction Machinery & Heavy Transportation Equipment",
     "Symbol_YF": "PCAR",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.013673655423883366
+    "Daily_Change": -0.007561703258851543,
+    "Earnings_Date": null
   },
   {
     "Symbol": "PKG",
@@ -3210,7 +3566,8 @@
     "GICS Sub-Industry": "Paper & Plastic Packaging Products & Materials",
     "Symbol_YF": "PKG",
     "Exchange": "NYSE",
-    "Daily_Change": -0.006642728904847478
+    "Daily_Change": 0.0056930890346037774,
+    "Earnings_Date": null
   },
   {
     "Symbol": "PLTR",
@@ -3219,7 +3576,8 @@
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "PLTR",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.033817042766732856
+    "Daily_Change": 0.003043580228429545,
+    "Earnings_Date": null
   },
   {
     "Symbol": "PANW",
@@ -3228,7 +3586,8 @@
     "GICS Sub-Industry": "Systems Software",
     "Symbol_YF": "PANW",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.0029073288915809703
+    "Daily_Change": -0.003925650127342417,
+    "Earnings_Date": null
   },
   {
     "Symbol": "PSKY",
@@ -3237,7 +3596,8 @@
     "GICS Sub-Industry": "Movies & Entertainment",
     "Symbol_YF": "PSKY",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.07685433422698834
+    "Daily_Change": -0.03775414774474025,
+    "Earnings_Date": null
   },
   {
     "Symbol": "PH",
@@ -3246,7 +3606,8 @@
     "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
     "Symbol_YF": "PH",
     "Exchange": "NYSE",
-    "Daily_Change": 0.019545791003786894
+    "Daily_Change": -0.010427334070164194,
+    "Earnings_Date": null
   },
   {
     "Symbol": "PAYX",
@@ -3255,7 +3616,8 @@
     "GICS Sub-Industry": "Human Resource & Employment Services",
     "Symbol_YF": "PAYX",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.032349949135300024
+    "Daily_Change": -0.011774629039550533,
+    "Earnings_Date": null
   },
   {
     "Symbol": "PAYC",
@@ -3264,7 +3626,8 @@
     "GICS Sub-Industry": "Human Resource & Employment Services",
     "Symbol_YF": "PAYC",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0458589511754069
+    "Daily_Change": -0.011977877243502319,
+    "Earnings_Date": null
   },
   {
     "Symbol": "PYPL",
@@ -3273,7 +3636,8 @@
     "GICS Sub-Industry": "Transaction & Payment Processing Services",
     "Symbol_YF": "PYPL",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.0246967071057191
+    "Daily_Change": 0.012216775465751908,
+    "Earnings_Date": null
   },
   {
     "Symbol": "PNR",
@@ -3282,7 +3646,8 @@
     "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
     "Symbol_YF": "PNR",
     "Exchange": "NYSE",
-    "Daily_Change": -0.022125813449023927
+    "Daily_Change": 0.007874878611734576,
+    "Earnings_Date": null
   },
   {
     "Symbol": "PEP",
@@ -3291,7 +3656,8 @@
     "GICS Sub-Industry": "Soft Drinks & Non-alcoholic Beverages",
     "Symbol_YF": "PEP",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.004643100352875627
+    "Daily_Change": -0.003918428209949854,
+    "Earnings_Date": null
   },
   {
     "Symbol": "PFE",
@@ -3300,7 +3666,8 @@
     "GICS Sub-Industry": "Pharmaceuticals",
     "Symbol_YF": "PFE",
     "Exchange": "NYSE",
-    "Daily_Change": 0.01305483028720632
+    "Daily_Change": 0.005154616731773549,
+    "Earnings_Date": null
   },
   {
     "Symbol": "PCG",
@@ -3309,7 +3676,8 @@
     "GICS Sub-Industry": "Multi-Utilities",
     "Symbol_YF": "PCG",
     "Exchange": "NYSE",
-    "Daily_Change": 0.002751788662630553
+    "Daily_Change": -0.004390775341435831,
+    "Earnings_Date": null
   },
   {
     "Symbol": "PM",
@@ -3318,7 +3686,8 @@
     "GICS Sub-Industry": "Tobacco",
     "Symbol_YF": "PM",
     "Exchange": "NYSE",
-    "Daily_Change": -0.002193362193362167
+    "Daily_Change": -0.034881696937685315,
+    "Earnings_Date": null
   },
   {
     "Symbol": "PSX",
@@ -3327,7 +3696,8 @@
     "GICS Sub-Industry": "Oil & Gas Refining & Marketing",
     "Symbol_YF": "PSX",
     "Exchange": "NYSE",
-    "Daily_Change": -0.003067484662576687
+    "Daily_Change": 0.043076923076923075,
+    "Earnings_Date": null
   },
   {
     "Symbol": "PNW",
@@ -3336,7 +3706,8 @@
     "GICS Sub-Industry": "Multi-Utilities",
     "Symbol_YF": "PNW",
     "Exchange": "NYSE",
-    "Daily_Change": -0.003159557661927403
+    "Daily_Change": -0.0034667044106077302,
+    "Earnings_Date": null
   },
   {
     "Symbol": "PNC",
@@ -3345,7 +3716,8 @@
     "GICS Sub-Industry": "Diversified Banks",
     "Symbol_YF": "PNC",
     "Exchange": "NYSE",
-    "Daily_Change": 0.005113470341871934
+    "Daily_Change": -0.0036338970018797165,
+    "Earnings_Date": null
   },
   {
     "Symbol": "POOL",
@@ -3354,7 +3726,8 @@
     "GICS Sub-Industry": "Distributors",
     "Symbol_YF": "POOL",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.026291254894648584
+    "Daily_Change": 0.009574875302794328,
+    "Earnings_Date": null
   },
   {
     "Symbol": "PPG",
@@ -3363,7 +3736,8 @@
     "GICS Sub-Industry": "Specialty Chemicals",
     "Symbol_YF": "PPG",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0221709006928407
+    "Daily_Change": -0.016721744625241036,
+    "Earnings_Date": null
   },
   {
     "Symbol": "PPL",
@@ -3372,7 +3746,8 @@
     "GICS Sub-Industry": "Electric Utilities",
     "Symbol_YF": "PPL",
     "Exchange": "NYSE",
-    "Daily_Change": -0.004865220249835507
+    "Daily_Change": -0.005285432403090913,
+    "Earnings_Date": null
   },
   {
     "Symbol": "PFG",
@@ -3381,7 +3756,8 @@
     "GICS Sub-Industry": "Life & Health Insurance",
     "Symbol_YF": "PFG",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.009711952323143092
+    "Daily_Change": -0.008208741194517989,
+    "Earnings_Date": null
   },
   {
     "Symbol": "PG",
@@ -3390,7 +3766,8 @@
     "GICS Sub-Industry": "Personal Care Products",
     "Symbol_YF": "PG",
     "Exchange": "NYSE",
-    "Daily_Change": 0.005089550315680918
+    "Daily_Change": -0.017242402905791522,
+    "Earnings_Date": null
   },
   {
     "Symbol": "PGR",
@@ -3399,7 +3776,8 @@
     "GICS Sub-Industry": "Property & Casualty Insurance",
     "Symbol_YF": "PGR",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0007736943907156508
+    "Daily_Change": -0.027734853628507628,
+    "Earnings_Date": null
   },
   {
     "Symbol": "PLD",
@@ -3408,7 +3786,8 @@
     "GICS Sub-Industry": "Industrial REITs",
     "Symbol_YF": "PLD",
     "Exchange": "NYSE",
-    "Daily_Change": 0.007473177950425385
+    "Daily_Change": -0.01292604082174225,
+    "Earnings_Date": null
   },
   {
     "Symbol": "PRU",
@@ -3417,7 +3796,8 @@
     "GICS Sub-Industry": "Life & Health Insurance",
     "Symbol_YF": "PRU",
     "Exchange": "NYSE",
-    "Daily_Change": -0.004795163139789512
+    "Daily_Change": -0.005551469283755934,
+    "Earnings_Date": null
   },
   {
     "Symbol": "PEG",
@@ -3426,7 +3806,8 @@
     "GICS Sub-Industry": "Electric Utilities",
     "Symbol_YF": "PEG",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0011994722322179263
+    "Daily_Change": -0.01152875132909702,
+    "Earnings_Date": null
   },
   {
     "Symbol": "PTC",
@@ -3435,7 +3816,8 @@
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "PTC",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.02386488801860224
+    "Daily_Change": -0.0024448306118542767,
+    "Earnings_Date": null
   },
   {
     "Symbol": "PSA",
@@ -3444,7 +3826,8 @@
     "GICS Sub-Industry": "Self-Storage REITs",
     "Symbol_YF": "PSA",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0015987992691203637
+    "Daily_Change": -0.019869887141107524,
+    "Earnings_Date": null
   },
   {
     "Symbol": "PHM",
@@ -3453,7 +3836,8 @@
     "GICS Sub-Industry": "Homebuilding",
     "Symbol_YF": "PHM",
     "Exchange": "NYSE",
-    "Daily_Change": -0.017921995894520735
+    "Daily_Change": -0.008119640977460442,
+    "Earnings_Date": null
   },
   {
     "Symbol": "PWR",
@@ -3462,7 +3846,8 @@
     "GICS Sub-Industry": "Construction & Engineering",
     "Symbol_YF": "PWR",
     "Exchange": "NYSE",
-    "Daily_Change": -0.007024153228645886
+    "Daily_Change": 0.006488847192442267,
+    "Earnings_Date": null
   },
   {
     "Symbol": "QCOM",
@@ -3471,7 +3856,8 @@
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "QCOM",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.021070161465498696
+    "Daily_Change": -0.007988179404087843,
+    "Earnings_Date": null
   },
   {
     "Symbol": "DGX",
@@ -3480,7 +3866,8 @@
     "GICS Sub-Industry": "Health Care Services",
     "Symbol_YF": "DGX",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0033733505308066614
+    "Daily_Change": -0.0016923660936784862,
+    "Earnings_Date": null
   },
   {
     "Symbol": "Q",
@@ -3489,7 +3876,8 @@
     "GICS Sub-Industry": "Semiconductor Materials & Equipment",
     "Symbol_YF": "Q",
     "Exchange": "NYSE",
-    "Daily_Change": -0.002450765864332614
+    "Daily_Change": 0.02018070893856828,
+    "Earnings_Date": null
   },
   {
     "Symbol": "RL",
@@ -3498,7 +3886,8 @@
     "GICS Sub-Industry": "Apparel, Accessories & Luxury Goods",
     "Symbol_YF": "RL",
     "Exchange": "NYSE",
-    "Daily_Change": 0.005957224224107902
+    "Daily_Change": -0.020856807177523928,
+    "Earnings_Date": null
   },
   {
     "Symbol": "RJF",
@@ -3507,7 +3896,8 @@
     "GICS Sub-Industry": "Investment Banking & Brokerage",
     "Symbol_YF": "RJF",
     "Exchange": "NYSE",
-    "Daily_Change": -0.016866194854157097
+    "Daily_Change": -0.002152799157317356,
+    "Earnings_Date": null
   },
   {
     "Symbol": "RTX",
@@ -3516,7 +3906,8 @@
     "GICS Sub-Industry": "Aerospace & Defense",
     "Symbol_YF": "RTX",
     "Exchange": "NYSE",
-    "Daily_Change": -0.005906929837199202
+    "Daily_Change": 0.0012560121103185387,
+    "Earnings_Date": null
   },
   {
     "Symbol": "O",
@@ -3525,7 +3916,8 @@
     "GICS Sub-Industry": "Retail REITs",
     "Symbol_YF": "O",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0009239297813366535
+    "Daily_Change": -0.002620193836958844,
+    "Earnings_Date": null
   },
   {
     "Symbol": "REG",
@@ -3534,7 +3926,8 @@
     "GICS Sub-Industry": "Retail REITs",
     "Symbol_YF": "REG",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.0008947973923048369
+    "Daily_Change": 0.003423444716931794,
+    "Earnings_Date": null
   },
   {
     "Symbol": "REGN",
@@ -3543,7 +3936,8 @@
     "GICS Sub-Industry": "Biotechnology",
     "Symbol_YF": "REGN",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.012244114636642848
+    "Daily_Change": 0.0034065305076947158,
+    "Earnings_Date": null
   },
   {
     "Symbol": "RF",
@@ -3552,7 +3946,8 @@
     "GICS Sub-Industry": "Regional Banks",
     "Symbol_YF": "RF",
     "Exchange": "NYSE",
-    "Daily_Change": -0.007418397626112733
+    "Daily_Change": -0.020553106864908327,
+    "Earnings_Date": null
   },
   {
     "Symbol": "RSG",
@@ -3561,7 +3956,8 @@
     "GICS Sub-Industry": "Environmental & Facilities Services",
     "Symbol_YF": "RSG",
     "Exchange": "NYSE",
-    "Daily_Change": -0.028721647692708723
+    "Daily_Change": 0.0011631302655382913,
+    "Earnings_Date": null
   },
   {
     "Symbol": "RMD",
@@ -3570,7 +3966,8 @@
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "RMD",
     "Exchange": "NYSE",
-    "Daily_Change": -0.023010319060609626
+    "Daily_Change": -0.02816562136973921,
+    "Earnings_Date": null
   },
   {
     "Symbol": "RVTY",
@@ -3579,7 +3976,8 @@
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "RVTY",
     "Exchange": "NYSE",
-    "Daily_Change": -0.019650417978503986
+    "Daily_Change": -0.007419776032076238,
+    "Earnings_Date": null
   },
   {
     "Symbol": "HOOD",
@@ -3588,7 +3986,8 @@
     "GICS Sub-Industry": "Investment Banking & Brokerage",
     "Symbol_YF": "HOOD",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.010333963453055995
+    "Daily_Change": 0.0020374845867380466,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ROK",
@@ -3597,7 +3996,8 @@
     "GICS Sub-Industry": "Electrical Components & Equipment",
     "Symbol_YF": "ROK",
     "Exchange": "NYSE",
-    "Daily_Change": -0.003940886699507437
+    "Daily_Change": -0.002192122619197381,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ROL",
@@ -3606,7 +4006,8 @@
     "GICS Sub-Industry": "Environmental & Facilities Services",
     "Symbol_YF": "ROL",
     "Exchange": "NYSE",
-    "Daily_Change": -0.02240750390828555
+    "Daily_Change": -0.0035536061226028003,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ROP",
@@ -3615,7 +4016,8 @@
     "GICS Sub-Industry": "Electronic Equipment & Instruments",
     "Symbol_YF": "ROP",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.02531262050349804
+    "Daily_Change": -0.00457793862022979,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ROST",
@@ -3624,7 +4026,8 @@
     "GICS Sub-Industry": "Apparel Retail",
     "Symbol_YF": "ROST",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.0036766438840443137
+    "Daily_Change": -0.0002817712894261239,
+    "Earnings_Date": null
   },
   {
     "Symbol": "RCL",
@@ -3633,7 +4036,8 @@
     "GICS Sub-Industry": "Hotels, Resorts & Cruise Lines",
     "Symbol_YF": "RCL",
     "Exchange": "NYSE",
-    "Daily_Change": -0.018998451213216448
+    "Daily_Change": 0.005227485670828362,
+    "Earnings_Date": null
   },
   {
     "Symbol": "SPGI",
@@ -3642,7 +4046,8 @@
     "GICS Sub-Industry": "Financial Exchanges & Data",
     "Symbol_YF": "SPGI",
     "Exchange": "NYSE",
-    "Daily_Change": -0.02209845490477896
+    "Daily_Change": -0.01488152432021927,
+    "Earnings_Date": null
   },
   {
     "Symbol": "CRM",
@@ -3651,7 +4056,8 @@
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "CRM",
     "Exchange": "NYSE",
-    "Daily_Change": -0.01951808441068462
+    "Daily_Change": -0.004001840668214544,
+    "Earnings_Date": null
   },
   {
     "Symbol": "SNDK",
@@ -3660,7 +4066,8 @@
     "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
     "Symbol_YF": "SNDK",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.05122891648123922
+    "Daily_Change": 0.05904114973982963,
+    "Earnings_Date": null
   },
   {
     "Symbol": "SBAC",
@@ -3669,7 +4076,8 @@
     "GICS Sub-Industry": "Telecom Tower REITs",
     "Symbol_YF": "SBAC",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.011381615883223693
+    "Daily_Change": -0.026535877494215328,
+    "Earnings_Date": null
   },
   {
     "Symbol": "SLB",
@@ -3678,7 +4086,8 @@
     "GICS Sub-Industry": "Oil & Gas Equipment & Services",
     "Symbol_YF": "SLB",
     "Exchange": "NYSE",
-    "Daily_Change": 0.01949565585929226
+    "Daily_Change": 0.001247091204169319,
+    "Earnings_Date": null
   },
   {
     "Symbol": "STX",
@@ -3687,7 +4096,8 @@
     "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
     "Symbol_YF": "STX",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.02660753880266085
+    "Daily_Change": 0.004371679300594842,
+    "Earnings_Date": null
   },
   {
     "Symbol": "SRE",
@@ -3696,7 +4106,8 @@
     "GICS Sub-Industry": "Multi-Utilities",
     "Symbol_YF": "SRE",
     "Exchange": "NYSE",
-    "Daily_Change": -0.005774783445620856
+    "Daily_Change": -0.0019361116791692338,
+    "Earnings_Date": null
   },
   {
     "Symbol": "NOW",
@@ -3705,7 +4116,8 @@
     "GICS Sub-Industry": "Systems Software",
     "Symbol_YF": "NOW",
     "Exchange": "NYSE",
-    "Daily_Change": -0.04363159189699013
+    "Daily_Change": -0.008404110726388232,
+    "Earnings_Date": null
   },
   {
     "Symbol": "SHW",
@@ -3714,7 +4126,8 @@
     "GICS Sub-Industry": "Specialty Chemicals",
     "Symbol_YF": "SHW",
     "Exchange": "NYSE",
-    "Daily_Change": -0.009208158368326315
+    "Daily_Change": -0.0229770128248111,
+    "Earnings_Date": null
   },
   {
     "Symbol": "SPG",
@@ -3723,7 +4136,8 @@
     "GICS Sub-Industry": "Retail REITs",
     "Symbol_YF": "SPG",
     "Exchange": "NYSE",
-    "Daily_Change": 0.007553900225567842
+    "Daily_Change": -0.013068202581926515,
+    "Earnings_Date": null
   },
   {
     "Symbol": "SWKS",
@@ -3732,7 +4146,8 @@
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "SWKS",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.006331403762662833
+    "Daily_Change": 0.007646061653229922,
+    "Earnings_Date": null
   },
   {
     "Symbol": "SJM",
@@ -3741,7 +4156,8 @@
     "GICS Sub-Industry": "Packaged Foods & Meats",
     "Symbol_YF": "SJM",
     "Exchange": "NYSE",
-    "Daily_Change": -0.004497063142437545
+    "Daily_Change": -0.00783625393708264,
+    "Earnings_Date": null
   },
   {
     "Symbol": "SW",
@@ -3750,7 +4166,8 @@
     "GICS Sub-Industry": "Paper & Plastic Packaging Products & Materials",
     "Symbol_YF": "SW",
     "Exchange": "NYSE",
-    "Daily_Change": 0.015443098123069578
+    "Daily_Change": -0.012634555318686527,
+    "Earnings_Date": null
   },
   {
     "Symbol": "SNA",
@@ -3759,7 +4176,8 @@
     "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
     "Symbol_YF": "SNA",
     "Exchange": "NYSE",
-    "Daily_Change": -0.009556441898439363
+    "Daily_Change": -0.0006216513144003379,
+    "Earnings_Date": null
   },
   {
     "Symbol": "SOLV",
@@ -3768,7 +4186,8 @@
     "GICS Sub-Industry": "Health Care Technology",
     "Symbol_YF": "SOLV",
     "Exchange": "NYSE",
-    "Daily_Change": -0.01457725947521866
+    "Daily_Change": 0.00029592119693013923,
+    "Earnings_Date": null
   },
   {
     "Symbol": "SO",
@@ -3777,7 +4196,8 @@
     "GICS Sub-Industry": "Electric Utilities",
     "Symbol_YF": "SO",
     "Exchange": "NYSE",
-    "Daily_Change": -0.01007712082262215
+    "Daily_Change": -0.00010381746322266365,
+    "Earnings_Date": null
   },
   {
     "Symbol": "LUV",
@@ -3786,7 +4206,8 @@
     "GICS Sub-Industry": "Passenger Airlines",
     "Symbol_YF": "LUV",
     "Exchange": "NYSE",
-    "Daily_Change": -0.004880316058563813
+    "Daily_Change": -0.022652994573009583,
+    "Earnings_Date": null
   },
   {
     "Symbol": "SWK",
@@ -3795,7 +4216,8 @@
     "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
     "Symbol_YF": "SWK",
     "Exchange": "NYSE",
-    "Daily_Change": -0.00882470918572016
+    "Daily_Change": -0.005261019885313101,
+    "Earnings_Date": null
   },
   {
     "Symbol": "SBUX",
@@ -3804,7 +4226,8 @@
     "GICS Sub-Industry": "Restaurants",
     "Symbol_YF": "SBUX",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.010023053021950487
+    "Daily_Change": 0.0066488619694316945,
+    "Earnings_Date": null
   },
   {
     "Symbol": "STT",
@@ -3813,7 +4236,8 @@
     "GICS Sub-Industry": "Asset Management & Custody Banks",
     "Symbol_YF": "STT",
     "Exchange": "NYSE",
-    "Daily_Change": 0.005084884769949892
+    "Daily_Change": 0.028151749182618254,
+    "Earnings_Date": null
   },
   {
     "Symbol": "STLD",
@@ -3822,7 +4246,8 @@
     "GICS Sub-Industry": "Steel",
     "Symbol_YF": "STLD",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.0009322219785041451
+    "Daily_Change": 0.011361721486860474,
+    "Earnings_Date": null
   },
   {
     "Symbol": "STE",
@@ -3831,7 +4256,8 @@
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "STE",
     "Exchange": "NYSE",
-    "Daily_Change": -0.02476725803618473
+    "Daily_Change": -0.0023865218611627474,
+    "Earnings_Date": null
   },
   {
     "Symbol": "SYK",
@@ -3840,7 +4266,8 @@
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "SYK",
     "Exchange": "NYSE",
-    "Daily_Change": -0.019867730651508632
+    "Daily_Change": -0.03588455412298742,
+    "Earnings_Date": null
   },
   {
     "Symbol": "SMCI",
@@ -3849,7 +4276,8 @@
     "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
     "Symbol_YF": "SMCI",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.005941213258286469
+    "Daily_Change": 0.0,
+    "Earnings_Date": null
   },
   {
     "Symbol": "SYF",
@@ -3858,7 +4286,8 @@
     "GICS Sub-Industry": "Consumer Finance",
     "Symbol_YF": "SYF",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0247318235995234
+    "Daily_Change": -0.0038191262373436373,
+    "Earnings_Date": null
   },
   {
     "Symbol": "SNPS",
@@ -3867,7 +4296,8 @@
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "SNPS",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.010452403824161863
+    "Daily_Change": 0.000762780756961503,
+    "Earnings_Date": null
   },
   {
     "Symbol": "SYY",
@@ -3876,7 +4306,8 @@
     "GICS Sub-Industry": "Food Distributors",
     "Symbol_YF": "SYY",
     "Exchange": "NYSE",
-    "Daily_Change": -0.004840613931522982
+    "Daily_Change": 0.0032031870937691406,
+    "Earnings_Date": null
   },
   {
     "Symbol": "TMUS",
@@ -3885,7 +4316,8 @@
     "GICS Sub-Industry": "Wireless Telecommunication Services",
     "Symbol_YF": "TMUS",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.005885057471264373
+    "Daily_Change": -0.024408064574849737,
+    "Earnings_Date": null
   },
   {
     "Symbol": "TROW",
@@ -3894,7 +4326,8 @@
     "GICS Sub-Industry": "Asset Management & Custody Banks",
     "Symbol_YF": "TROW",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.015571507454445022
+    "Daily_Change": 0.002131505976073794,
+    "Earnings_Date": null
   },
   {
     "Symbol": "TTWO",
@@ -3903,7 +4336,8 @@
     "GICS Sub-Industry": "Interactive Home Entertainment",
     "Symbol_YF": "TTWO",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.025858454083771992
+    "Daily_Change": 0.009613518697307533,
+    "Earnings_Date": null
   },
   {
     "Symbol": "TPR",
@@ -3912,7 +4346,8 @@
     "GICS Sub-Industry": "Apparel, Accessories & Luxury Goods",
     "Symbol_YF": "TPR",
     "Exchange": "NYSE",
-    "Daily_Change": 0.019037800687285295
+    "Daily_Change": -0.019221730770833823,
+    "Earnings_Date": null
   },
   {
     "Symbol": "TRGP",
@@ -3921,7 +4356,8 @@
     "GICS Sub-Industry": "Oil & Gas Storage & Transportation",
     "Symbol_YF": "TRGP",
     "Exchange": "NYSE",
-    "Daily_Change": -0.009670273494078598
+    "Daily_Change": 0.017421615823509234,
+    "Earnings_Date": null
   },
   {
     "Symbol": "TGT",
@@ -3930,7 +4366,8 @@
     "GICS Sub-Industry": "Consumer Staples Merchandise Retail",
     "Symbol_YF": "TGT",
     "Exchange": "NYSE",
-    "Daily_Change": 0.004994173464291612
+    "Daily_Change": -0.01623322112929069,
+    "Earnings_Date": null
   },
   {
     "Symbol": "TEL",
@@ -3939,7 +4376,8 @@
     "GICS Sub-Industry": "Electronic Manufacturing Services",
     "Symbol_YF": "TEL",
     "Exchange": "NYSE",
-    "Daily_Change": -0.015952288595810805
+    "Daily_Change": 0.010790847372935713,
+    "Earnings_Date": null
   },
   {
     "Symbol": "TDY",
@@ -3948,7 +4386,8 @@
     "GICS Sub-Industry": "Electronic Equipment & Instruments",
     "Symbol_YF": "TDY",
     "Exchange": "NYSE",
-    "Daily_Change": 0.001880561416383846
+    "Daily_Change": 0.00012210943632104667,
+    "Earnings_Date": null
   },
   {
     "Symbol": "TER",
@@ -3957,7 +4396,8 @@
     "GICS Sub-Industry": "Semiconductor Materials & Equipment",
     "Symbol_YF": "TER",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.014606665767102902
+    "Daily_Change": 0.004056259817357204,
+    "Earnings_Date": null
   },
   {
     "Symbol": "TSLA",
@@ -3966,7 +4406,8 @@
     "GICS Sub-Industry": "Automobile Manufacturers",
     "Symbol_YF": "TSLA",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.001392093909902696
+    "Daily_Change": 0.021490875913524658,
+    "Earnings_Date": null
   },
   {
     "Symbol": "TXN",
@@ -3975,7 +4416,8 @@
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "TXN",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.0064220183486239524
+    "Daily_Change": 0.006127779874086016,
+    "Earnings_Date": null
   },
   {
     "Symbol": "TPL",
@@ -3984,7 +4426,8 @@
     "GICS Sub-Industry": "Oil & Gas Exploration & Production",
     "Symbol_YF": "TPL",
     "Exchange": "NYSE",
-    "Daily_Change": -0.03525445080494261
+    "Daily_Change": 0.007815514340378232,
+    "Earnings_Date": null
   },
   {
     "Symbol": "TXT",
@@ -3993,7 +4436,8 @@
     "GICS Sub-Industry": "Aerospace & Defense",
     "Symbol_YF": "TXT",
     "Exchange": "NYSE",
-    "Daily_Change": -0.01731463777352874
+    "Daily_Change": 0.008215268503796678,
+    "Earnings_Date": null
   },
   {
     "Symbol": "TMO",
@@ -4002,7 +4446,8 @@
     "GICS Sub-Industry": "Life Sciences Tools & Services",
     "Symbol_YF": "TMO",
     "Exchange": "NYSE",
-    "Daily_Change": -0.01939329764495959
+    "Daily_Change": -0.008718575965112026,
+    "Earnings_Date": null
   },
   {
     "Symbol": "TJX",
@@ -4011,7 +4456,8 @@
     "GICS Sub-Industry": "Apparel Retail",
     "Symbol_YF": "TJX",
     "Exchange": "NYSE",
-    "Daily_Change": 0.008789680030352947
+    "Daily_Change": -0.010342844036293593,
+    "Earnings_Date": null
   },
   {
     "Symbol": "TKO",
@@ -4020,7 +4466,8 @@
     "GICS Sub-Industry": "Movies & Entertainment",
     "Symbol_YF": "TKO",
     "Exchange": "NYSE",
-    "Daily_Change": 0.007399421767040816
+    "Daily_Change": -0.017268231443422204,
+    "Earnings_Date": null
   },
   {
     "Symbol": "TTD",
@@ -4029,7 +4476,8 @@
     "GICS Sub-Industry": "Advertising",
     "Symbol_YF": "TTD",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.03151260504201676
+    "Daily_Change": -0.013738219915505697,
+    "Earnings_Date": null
   },
   {
     "Symbol": "TSCO",
@@ -4038,7 +4486,8 @@
     "GICS Sub-Industry": "Other Specialty Retail",
     "Symbol_YF": "TSCO",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.006512729425695644
+    "Daily_Change": -0.01728245787142773,
+    "Earnings_Date": null
   },
   {
     "Symbol": "TT",
@@ -4047,7 +4496,8 @@
     "GICS Sub-Industry": "Building Products",
     "Symbol_YF": "TT",
     "Exchange": "NYSE",
-    "Daily_Change": 0.014385291916167746
+    "Daily_Change": -0.0028823759109373993,
+    "Earnings_Date": null
   },
   {
     "Symbol": "TDG",
@@ -4056,7 +4506,8 @@
     "GICS Sub-Industry": "Aerospace & Defense",
     "Symbol_YF": "TDG",
     "Exchange": "NYSE",
-    "Daily_Change": -0.007527798862222592
+    "Daily_Change": -0.007860926991694703,
+    "Earnings_Date": null
   },
   {
     "Symbol": "TRV",
@@ -4065,7 +4516,8 @@
     "GICS Sub-Industry": "Property & Casualty Insurance",
     "Symbol_YF": "TRV",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0011585951206594814
+    "Daily_Change": -0.010051608650911965,
+    "Earnings_Date": null
   },
   {
     "Symbol": "TRMB",
@@ -4074,7 +4526,8 @@
     "GICS Sub-Industry": "Electronic Equipment & Instruments",
     "Symbol_YF": "TRMB",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.02072391767210799
+    "Daily_Change": -0.020147839291040234,
+    "Earnings_Date": null
   },
   {
     "Symbol": "TFC",
@@ -4083,7 +4536,8 @@
     "GICS Sub-Industry": "Diversified Banks",
     "Symbol_YF": "TFC",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0021390374331551106
+    "Daily_Change": -0.021436226522849176,
+    "Earnings_Date": null
   },
   {
     "Symbol": "TYL",
@@ -4092,7 +4546,8 @@
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "TYL",
     "Exchange": "NYSE",
-    "Daily_Change": -0.03568803593303393
+    "Daily_Change": -0.016711786002024855,
+    "Earnings_Date": null
   },
   {
     "Symbol": "TSN",
@@ -4101,7 +4556,8 @@
     "GICS Sub-Industry": "Packaged Foods & Meats",
     "Symbol_YF": "TSN",
     "Exchange": "NYSE",
-    "Daily_Change": -0.01777270503831724
+    "Daily_Change": -0.007138119076937008,
+    "Earnings_Date": null
   },
   {
     "Symbol": "USB",
@@ -4110,7 +4566,8 @@
     "GICS Sub-Industry": "Diversified Banks",
     "Symbol_YF": "USB",
     "Exchange": "NYSE",
-    "Daily_Change": -0.003452906196048335
+    "Daily_Change": 0.005389774305771001,
+    "Earnings_Date": null
   },
   {
     "Symbol": "UBER",
@@ -4119,7 +4576,8 @@
     "GICS Sub-Industry": "Passenger Ground Transportation",
     "Symbol_YF": "UBER",
     "Exchange": "NYSE",
-    "Daily_Change": -0.020043336944745447
+    "Daily_Change": 0.03606965987197885,
+    "Earnings_Date": null
   },
   {
     "Symbol": "UDR",
@@ -4128,7 +4586,8 @@
     "GICS Sub-Industry": "Multi-Family Residential REITs",
     "Symbol_YF": "UDR",
     "Exchange": "NYSE",
-    "Daily_Change": -0.01155603332437516
+    "Daily_Change": -0.019575786566125155,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ULTA",
@@ -4137,7 +4596,8 @@
     "GICS Sub-Industry": "Other Specialty Retail",
     "Symbol_YF": "ULTA",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.0078010650555884135
+    "Daily_Change": 0.008374216443723893,
+    "Earnings_Date": null
   },
   {
     "Symbol": "UNP",
@@ -4146,7 +4606,8 @@
     "GICS Sub-Industry": "Rail Transportation",
     "Symbol_YF": "UNP",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0134064114191081
+    "Daily_Change": 0.0035969540479393438,
+    "Earnings_Date": null
   },
   {
     "Symbol": "UAL",
@@ -4155,7 +4616,8 @@
     "GICS Sub-Industry": "Passenger Airlines",
     "Symbol_YF": "UAL",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.03618281845112147
+    "Daily_Change": -0.004610298309331168,
+    "Earnings_Date": null
   },
   {
     "Symbol": "UPS",
@@ -4164,7 +4626,8 @@
     "GICS Sub-Industry": "Air Freight & Logistics",
     "Symbol_YF": "UPS",
     "Exchange": "NYSE",
-    "Daily_Change": 0.00980588353011811
+    "Daily_Change": -0.001189012280664353,
+    "Earnings_Date": null
   },
   {
     "Symbol": "URI",
@@ -4173,7 +4636,8 @@
     "GICS Sub-Industry": "Trading Companies & Distributors",
     "Symbol_YF": "URI",
     "Exchange": "NYSE",
-    "Daily_Change": -0.05469854267193058
+    "Daily_Change": 0.00616149915861187,
+    "Earnings_Date": null
   },
   {
     "Symbol": "UNH",
@@ -4182,7 +4646,8 @@
     "GICS Sub-Industry": "Managed Health Care",
     "Symbol_YF": "UNH",
     "Exchange": "NYSE",
-    "Daily_Change": -0.009923905039099628
+    "Daily_Change": 0.010306735495692313,
+    "Earnings_Date": null
   },
   {
     "Symbol": "UHS",
@@ -4191,7 +4656,8 @@
     "GICS Sub-Industry": "Health Care Facilities",
     "Symbol_YF": "UHS",
     "Exchange": "NYSE",
-    "Daily_Change": -0.020994069175457934
+    "Daily_Change": -0.0015546737148480544,
+    "Earnings_Date": null
   },
   {
     "Symbol": "VLO",
@@ -4200,7 +4666,8 @@
     "GICS Sub-Industry": "Oil & Gas Refining & Marketing",
     "Symbol_YF": "VLO",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0049548506598750715
+    "Daily_Change": 0.06464841260293548,
+    "Earnings_Date": null
   },
   {
     "Symbol": "VTR",
@@ -4209,7 +4676,8 @@
     "GICS Sub-Industry": "Health Care REITs",
     "Symbol_YF": "VTR",
     "Exchange": "NYSE",
-    "Daily_Change": -0.001507945713954245
+    "Daily_Change": -0.003136666667257543,
+    "Earnings_Date": null
   },
   {
     "Symbol": "VLTO",
@@ -4218,7 +4686,8 @@
     "GICS Sub-Industry": "Environmental & Facilities Services",
     "Symbol_YF": "VLTO",
     "Exchange": "NYSE",
-    "Daily_Change": -0.024133531788220242
+    "Daily_Change": -0.00457564184286074,
+    "Earnings_Date": null
   },
   {
     "Symbol": "VRSN",
@@ -4227,7 +4696,8 @@
     "GICS Sub-Industry": "Internet Services & Infrastructure",
     "Symbol_YF": "VRSN",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.015554088621173289
+    "Daily_Change": -0.01206992529837644,
+    "Earnings_Date": null
   },
   {
     "Symbol": "VRSK",
@@ -4236,7 +4706,8 @@
     "GICS Sub-Industry": "Research & Consulting Services",
     "Symbol_YF": "VRSK",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.03623739775537381
+    "Daily_Change": 0.0023191612168661944,
+    "Earnings_Date": null
   },
   {
     "Symbol": "VZ",
@@ -4245,7 +4716,8 @@
     "GICS Sub-Industry": "Integrated Telecommunication Services",
     "Symbol_YF": "VZ",
     "Exchange": "NYSE",
-    "Daily_Change": 0.005153617443012844
+    "Daily_Change": -0.0005915752285245178,
+    "Earnings_Date": null
   },
   {
     "Symbol": "VRTX",
@@ -4254,7 +4726,8 @@
     "GICS Sub-Industry": "Biotechnology",
     "Symbol_YF": "VRTX",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.08310369518519324
+    "Daily_Change": -0.013602597035618757,
+    "Earnings_Date": null
   },
   {
     "Symbol": "VTRS",
@@ -4263,7 +4736,8 @@
     "GICS Sub-Industry": "Pharmaceuticals",
     "Symbol_YF": "VTRS",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.009845288326301023
+    "Daily_Change": -0.007812475658614395,
+    "Earnings_Date": null
   },
   {
     "Symbol": "VICI",
@@ -4272,7 +4746,8 @@
     "GICS Sub-Industry": "Hotel & Resort REITs",
     "Symbol_YF": "VICI",
     "Exchange": "NYSE",
-    "Daily_Change": -0.006440677966101738
+    "Daily_Change": -0.030365042847667004,
+    "Earnings_Date": null
   },
   {
     "Symbol": "V",
@@ -4281,7 +4756,8 @@
     "GICS Sub-Industry": "Transaction & Payment Processing Services",
     "Symbol_YF": "V",
     "Exchange": "NYSE",
-    "Daily_Change": -0.004873880431686617
+    "Daily_Change": -0.017396563140029127,
+    "Earnings_Date": null
   },
   {
     "Symbol": "VST",
@@ -4290,7 +4766,8 @@
     "GICS Sub-Industry": "Electric Utilities",
     "Symbol_YF": "VST",
     "Exchange": "NYSE",
-    "Daily_Change": 0.004767143381004774
+    "Daily_Change": -0.03187342110045574,
+    "Earnings_Date": null
   },
   {
     "Symbol": "VMC",
@@ -4299,7 +4776,8 @@
     "GICS Sub-Industry": "Construction Materials",
     "Symbol_YF": "VMC",
     "Exchange": "NYSE",
-    "Daily_Change": -0.008493420333175315
+    "Daily_Change": -0.01985291873707491,
+    "Earnings_Date": null
   },
   {
     "Symbol": "WRB",
@@ -4308,7 +4786,8 @@
     "GICS Sub-Industry": "Property & Casualty Insurance",
     "Symbol_YF": "WRB",
     "Exchange": "NYSE",
-    "Daily_Change": -0.005568581477139441
+    "Daily_Change": 0.0,
+    "Earnings_Date": null
   },
   {
     "Symbol": "GWW",
@@ -4317,7 +4796,8 @@
     "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
     "Symbol_YF": "GWW",
     "Exchange": "NYSE",
-    "Daily_Change": -0.007962126102861955
+    "Daily_Change": 0.0036966429230499173,
+    "Earnings_Date": null
   },
   {
     "Symbol": "WAB",
@@ -4326,7 +4806,8 @@
     "GICS Sub-Industry": "Construction Machinery & Heavy Transportation Equipment",
     "Symbol_YF": "WAB",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0010121457489878543
+    "Daily_Change": -0.0031610892777988856,
+    "Earnings_Date": null
   },
   {
     "Symbol": "WMT",
@@ -4335,7 +4816,8 @@
     "GICS Sub-Industry": "Consumer Staples Merchandise Retail",
     "Symbol_YF": "WMT",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.006273122084606732
+    "Daily_Change": -0.013027532345199119,
+    "Earnings_Date": null
   },
   {
     "Symbol": "DIS",
@@ -4344,7 +4826,8 @@
     "GICS Sub-Industry": "Movies & Entertainment",
     "Symbol_YF": "DIS",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0033444816053512043
+    "Daily_Change": -0.004243982495765317,
+    "Earnings_Date": null
   },
   {
     "Symbol": "WBD",
@@ -4353,7 +4836,8 @@
     "GICS Sub-Industry": "Broadcasting",
     "Symbol_YF": "WBD",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.0003603603603604167
+    "Daily_Change": 0.001801125239492148,
+    "Earnings_Date": null
   },
   {
     "Symbol": "WM",
@@ -4362,7 +4846,8 @@
     "GICS Sub-Industry": "Environmental & Facilities Services",
     "Symbol_YF": "WM",
     "Exchange": "NYSE",
-    "Daily_Change": -0.04450123727232161
+    "Daily_Change": 0.004075769471135953,
+    "Earnings_Date": null
   },
   {
     "Symbol": "WAT",
@@ -4371,7 +4856,8 @@
     "GICS Sub-Industry": "Life Sciences Tools & Services",
     "Symbol_YF": "WAT",
     "Exchange": "NYSE",
-    "Daily_Change": -0.01975987175712376
+    "Daily_Change": -0.006975257163273878,
+    "Earnings_Date": null
   },
   {
     "Symbol": "WEC",
@@ -4380,7 +4866,8 @@
     "GICS Sub-Industry": "Electric Utilities",
     "Symbol_YF": "WEC",
     "Exchange": "NYSE",
-    "Daily_Change": -0.009429881477636503
+    "Daily_Change": -0.010480322692071506,
+    "Earnings_Date": null
   },
   {
     "Symbol": "WFC",
@@ -4389,7 +4876,8 @@
     "GICS Sub-Industry": "Diversified Banks",
     "Symbol_YF": "WFC",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0067233286819738825
+    "Daily_Change": -0.018135450102105266,
+    "Earnings_Date": null
   },
   {
     "Symbol": "WELL",
@@ -4398,7 +4886,8 @@
     "GICS Sub-Industry": "Health Care REITs",
     "Symbol_YF": "WELL",
     "Exchange": "NYSE",
-    "Daily_Change": 0.00019260400616328988
+    "Daily_Change": -0.011505870285014373,
+    "Earnings_Date": null
   },
   {
     "Symbol": "WST",
@@ -4407,7 +4896,8 @@
     "GICS Sub-Industry": "Health Care Supplies",
     "Symbol_YF": "WST",
     "Exchange": "NYSE",
-    "Daily_Change": -0.05736515359187289
+    "Daily_Change": 0.01890261358394386,
+    "Earnings_Date": null
   },
   {
     "Symbol": "WDC",
@@ -4416,7 +4906,8 @@
     "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
     "Symbol_YF": "WDC",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.015874227276196386
+    "Daily_Change": 0.009728781932291602,
+    "Earnings_Date": null
   },
   {
     "Symbol": "WY",
@@ -4425,7 +4916,8 @@
     "GICS Sub-Industry": "Timber REITs",
     "Symbol_YF": "WY",
     "Exchange": "NYSE",
-    "Daily_Change": -0.002475247524752423
+    "Daily_Change": -0.03928869937756384,
+    "Earnings_Date": null
   },
   {
     "Symbol": "WSM",
@@ -4434,7 +4926,8 @@
     "GICS Sub-Industry": "Homefurnishing Retail",
     "Symbol_YF": "WSM",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0004779607010088953
+    "Daily_Change": -0.01390729404785731,
+    "Earnings_Date": null
   },
   {
     "Symbol": "WMB",
@@ -4443,7 +4936,8 @@
     "GICS Sub-Industry": "Oil & Gas Storage & Transportation",
     "Symbol_YF": "WMB",
     "Exchange": "NYSE",
-    "Daily_Change": 0.00901885761136918
+    "Daily_Change": 0.007584035966438928,
+    "Earnings_Date": null
   },
   {
     "Symbol": "WTW",
@@ -4452,7 +4946,8 @@
     "GICS Sub-Industry": "Insurance Brokers",
     "Symbol_YF": "WTW",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.01835952081990031
+    "Daily_Change": 0.002212487413583118,
+    "Earnings_Date": null
   },
   {
     "Symbol": "WDAY",
@@ -4461,7 +4956,8 @@
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "WDAY",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.03813959767787213
+    "Daily_Change": -0.032633932037405396,
+    "Earnings_Date": null
   },
   {
     "Symbol": "WYNN",
@@ -4470,7 +4966,8 @@
     "GICS Sub-Industry": "Casinos & Gaming",
     "Symbol_YF": "WYNN",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.011520283576211123
+    "Daily_Change": -0.025893152683615115,
+    "Earnings_Date": null
   },
   {
     "Symbol": "XEL",
@@ -4479,7 +4976,8 @@
     "GICS Sub-Industry": "Multi-Utilities",
     "Symbol_YF": "XEL",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.0026796589524969413
+    "Daily_Change": -0.010747402087647658,
+    "Earnings_Date": null
   },
   {
     "Symbol": "XYL",
@@ -4488,7 +4986,8 @@
     "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
     "Symbol_YF": "XYL",
     "Exchange": "NYSE",
-    "Daily_Change": -0.006557642487046651
+    "Daily_Change": -0.0029337512267744435,
+    "Earnings_Date": null
   },
   {
     "Symbol": "YUM",
@@ -4497,7 +4996,8 @@
     "GICS Sub-Industry": "Restaurants",
     "Symbol_YF": "YUM",
     "Exchange": "NYSE",
-    "Daily_Change": -0.004066312167657214
+    "Daily_Change": -0.016331601096524206,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ZBRA",
@@ -4506,7 +5006,8 @@
     "GICS Sub-Industry": "Electronic Equipment & Instruments",
     "Symbol_YF": "ZBRA",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.006127794929366649
+    "Daily_Change": 0.005647841772240078,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ZBH",
@@ -4515,7 +5016,8 @@
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "ZBH",
     "Exchange": "NYSE",
-    "Daily_Change": -0.01693825042881645
+    "Daily_Change": 0.022137475204466947,
+    "Earnings_Date": null
   },
   {
     "Symbol": "ZTS",
@@ -4524,6 +5026,7 @@
     "GICS Sub-Industry": "Pharmaceuticals",
     "Symbol_YF": "ZTS",
     "Exchange": "NYSE",
-    "Daily_Change": -0.015282772147760743
+    "Daily_Change": -0.00580958553118766,
+    "Earnings_Date": null
   }
 ]

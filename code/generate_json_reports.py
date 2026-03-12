@@ -4,6 +4,8 @@ import os
 import json
 import polars as pl
 import numpy as np
+import time
+from yfinance.exceptions import YFRateLimitError
 import base64
 from tqdm import tqdm
 import plotly.io as pio
@@ -145,6 +147,7 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols
         # --- Add Earnings Surprise ---
         try:
             # yfinance property access can sometimes raise KeyError internally for specific tickers
+            # or YFRateLimitError if we hit rate limits
             ed = getattr(ticker_obj, 'earnings_dates', None)
             if ed is not None and not ed.empty:
                 # Ensure it's a DataFrame and has required columns
@@ -172,6 +175,9 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols
                 else:
                     missing = [col for col in required_cols if col not in ed.columns]
                     # print(f"Skipping earnings surprise for {ticker_display}: Missing columns {missing}")
+        except YFRateLimitError:
+            print(f"Rate limited while fetching earnings for {ticker_display}. Skipping...")
+            time.sleep(1) # Short sleep to avoid being blocked more
         except Exception as es_err:
             # Silently log to console, don't stop execution
             print(f"Error fetching earnings surprise for {ticker_display}: {es_err}")
