@@ -150,6 +150,9 @@ if __name__ == "__main__":
 
         # 2. リスク指標計算 (全銘柄)
         try:
+            # 並列度を抑えてレート制限を回避 (特に Earnings_Date の取得用)
+            import os
+            os.environ["MAX_WORKERS"] = "3"
             df_metrics = risk_return.calculate_market_metrics_parallel(df_sp500['Symbol_YF'].to_list())
             utils.log_event("SUCCESS", "SYSTEM", "Calculated risk metrics")
         except Exception as e:
@@ -159,6 +162,7 @@ if __name__ == "__main__":
         # 3. レポート作成 (JSON)
         try:
             # generate_json_reports.py はデフォルトで ../stock-blog/public/reports に出力する
+            # レート制限を考慮し、内部で max_workers=1 を使用中
             generate_json_reports.export_json_reports(df_sp500, df_metrics)
             utils.log_event("SUCCESS", "SYSTEM", "Generated all JSON reports")
         except Exception as e:

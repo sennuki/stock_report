@@ -9,6 +9,9 @@ import polars as pl
 import numpy as np
 import plotly.graph_objects as go
 import plotly.io as pio
+import pytz
+import time
+from yfinance.exceptions import YFRateLimitError
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm
@@ -63,6 +66,36 @@ def process_single_stock(symbol):
 
         # 最新の日付を取得
         last_date = hist['Date'][-1]
+        
+        # 決算日の取得 (直近の過去の決算日を探す)
+        try:
+            # yfinance 1.1.0+ では earnings_dates が取得可能
+            earnings_df = ticker.earnings_dates
+            if earnings_df is not None and not earnings_df.empty:
+                # タイムゾーンの有無を確認
+                now = datetime.now()
+                if earnings_df.index.tzinfo is not None:
+                    # インデックスがタイムゾーン付きの場合、now もタイムゾーン付きにする（UTCベース）
+                    now = datetime.now(pytz.timezone('UTC'))
+                    # インデックスも比較のためにタイムゾーンを調整
+                    earnings_df.index = earnings_df.index.tz_convert('UTC')
+                
+                # インデックスを日付として扱い、現在時刻より前の最新のものを探す
+                past_earnings = earnings_df[earnings_df.index <= now]
+                if not past_earnings.empty:
+                    recent_earnings_date = past_earnings.index.max()
+                    results['Earnings_Date'] = recent_earnings_date.strftime('%Y-%m-%d')
+                else:
+                    results['Earnings_Date'] = None
+            else:
+                results['Earnings_Date'] = None
+        except YFRateLimitError:
+            # print(f"Rate limited for {symbol}")
+            results['Earnings_Date'] = None
+            time.sleep(1)
+        except Exception as e:
+            # print(f"Earnings Date Fetch Error for {symbol}: {e}")
+            results['Earnings_Date'] = None
         
         for p in PERIOD_CONFIGS:
             key = p['key']
