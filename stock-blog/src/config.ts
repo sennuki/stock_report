@@ -14,7 +14,7 @@ export const SITE = {
   editPost: {
     enabled: true,
     text: "ページを編集",
-    url: "https://github.com/satnaing/astro-paper/edit/main/",
+    url: "https://github.com/sennuki/stock_report/edit/main/stock-blog/",
   },
   dynamicOgImage: true,
   dir: "ltr", // "rtl" | "auto"

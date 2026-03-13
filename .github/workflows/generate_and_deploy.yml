@@ -6,24 +6,20 @@ on:
     # 米国市場は月〜金なので、データ更新は火〜土（UTC）
     - cron: '0 22 * * 2-6'
   push:
-    branches: [ main, feature/workflow-test-no-deploy ]
+    branches: [ main ]
   workflow_dispatch: # 手動実行用
+
+# 同時実行を制限
+concurrency:
+  group: "deploy"
+  cancel-in-progress: false
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
-
-# 同時実行を制限（デプロイの競合を防ぐ）
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
+  deployments: write
 
 jobs:
   build-and-deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -79,46 +75,16 @@ jobs:
           cd stock-blog
           pnpm install --frozen-lockfile
 
-      # 1. 本番用ビルド (mainブランチのみ)
-      - name: Build Production Site
-        if: github.ref == 'refs/heads/main'
+      - name: Build Astro Site
         env:
           ASTRO_BASE: "/"
         run: |
           cd stock-blog
-          pnpm exec astro build --outDir dist-prod
+          pnpm exec astro build
 
-      # 2. テスト用ビルド (全てのブランチ)
-      - name: Build Test Site
-        env:
-          ASTRO_BASE: "/test"
-        run: |
-          cd stock-blog
-          pnpm exec astro build --outDir dist-test
-
-      # 3. 公開用ディレクトリの作成
-      - name: Prepare Deployment Directory
-        run: |
-          mkdir -p deploy-root
-          # テスト版を /test サブディレクトリに配置
-          cp -r stock-blog/dist-test deploy-root/test
-          
-          # mainブランチの場合、本番版をルートに配置
-          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
-            cp -r stock-blog/dist-prod/* deploy-root/
-          else
-            # main以外の場合は、ルートにリダイレクトHTMLかプレースホルダーを置くなどの配慮
-            echo "<html><body><h1>This is a test branch. Visit <a href='./test/'>/test/</a></h1></body></html>" > deploy-root/index.html
-          fi
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
         with:
-          path: './deploy-root'
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy stock-blog/dist --project-name=stock-report --branch=${{ github.head_ref || github.ref_name }}
