@@ -1,8 +1,12 @@
-name: Generate Stock Reports (TEST - No Deploy)
+name: Generate and Deploy Stock Reports
 
 on:
+  schedule:
+    # 毎日 22:00 UTC (ニューヨーク時間 17:00 / 日本時間 07:00) に実行
+    # 米国市場は月〜金なので、データ更新は火〜土（UTC）
+    - cron: '0 22 * * 2-6'
   push:
-    branches: [ feature/workflow-test-no-deploy ] # このブランチのみで実行
+    branches: [ main, feature/workflow-test-no-deploy ]
   workflow_dispatch: # 手動実行用
 
 permissions:
@@ -10,8 +14,16 @@ permissions:
   pages: write
   id-token: write
 
+# 同時実行を制限（デプロイの競合を防ぐ）
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
 jobs:
-  build-only:
+  build-and-deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -67,19 +79,46 @@ jobs:
           cd stock-blog
           pnpm install --frozen-lockfile
 
-      - name: Build Astro site
+      # 1. 本番用ビルド (mainブランチのみ)
+      - name: Build Production Site
+        if: github.ref == 'refs/heads/main'
+        env:
+          ASTRO_BASE: "/"
         run: |
           cd stock-blog
-          pnpm exec astro build
+          pnpm exec astro build --outDir dist-prod
 
-      - name: Upload generated reports and data
-        uses: actions/upload-artifact@v4
+      # 2. テスト用ビルド (全てのブランチ)
+      - name: Build Test Site
+        env:
+          ASTRO_BASE: "/test"
+        run: |
+          cd stock-blog
+          pnpm exec astro build --outDir dist-test
+
+      # 3. 公開用ディレクトリの作成
+      - name: Prepare Deployment Directory
+        run: |
+          mkdir -p deploy-root
+          # テスト版を /test サブディレクトリに配置
+          cp -r stock-blog/dist-test deploy-root/test
+          
+          # mainブランチの場合、本番版をルートに配置
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            cp -r stock-blog/dist-prod/* deploy-root/
+          else
+            # main以外の場合は、ルートにリダイレクトHTMLかプレースホルダーを置くなどの配慮
+            echo "<html><body><h1>This is a test branch. Visit <a href='./test/'>/test/</a></h1></body></html>" > deploy-root/index.html
+          fi
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          name: generated-reports
-          path: |
-            stock-blog/public/reports/
-            stock-blog/src/data/
-          retention-days: 7
+          path: './deploy-root'
 
-      - name: Success Message
-        run: echo "Build completed successfully without deploying to Pages."
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
