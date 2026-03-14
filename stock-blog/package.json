@@ -11,9 +11,11 @@
     "astro": "astro",
     "format:check": "prettier --check .",
     "format": "prettier --write .",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "generate-types": "wrangler types"
   },
   "dependencies": {
+    "@astrojs/cloudflare": "^12.1.1",
     "@astrojs/rss": "^4.0.15",
     "@astrojs/sitemap": "^3.7.0",
     "@resvg/resvg-js": "^2.6.2",
@@ -26,7 +28,8 @@
     "remark-toc": "^9.0.0",
     "satori": "^0.18.3",
     "sharp": "^0.34.5",
-    "tailwindcss": "^4.1.18"
+    "tailwindcss": "^4.1.18",
+    "wrangler": "^3.101.0"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.6",
