@@ -137,7 +137,12 @@ if __name__ == "__main__":
         
         if missing_rows:
             df_missing = pl.DataFrame(missing_rows)
-            # カラムの型合わせや並び順を調整
+            # Ensure all columns from df_sp500 exist in df_missing
+            for col in df_sp500.columns:
+                if col not in df_missing.columns:
+                    df_missing = df_missing.with_columns(pl.lit(None).alias(col))
+            
+            # Match column order and types
             df_missing = df_missing.select(df_sp500.columns)
             df_sp500 = pl.concat([df_sp500, df_missing])
         # JSONリストのエクスポート (レポート生成前でもOK)
