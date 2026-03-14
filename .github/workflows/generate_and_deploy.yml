@@ -49,6 +49,9 @@ jobs:
 
       - name: Run Python report generator
         run: PYTHONPATH=code python code/main.py
+        env:
+          TEST_MODE: true
+          PYTHON_MAX_WORKERS: 4
 
       - name: Upload run log
         if: always()

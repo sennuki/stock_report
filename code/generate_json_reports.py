@@ -337,7 +337,8 @@ def export_json_reports(df_info, df_metrics, output_dir="../stock-blog/public/re
     print(f"PayPay証券 取扱銘柄数: {len(paypay_symbols)}")
 
     rows = df_info.to_dicts()
-    max_workers = 1 
+    # Increase max_workers to 4 for parallel processing in GitHub Actions
+    max_workers = int(os.environ.get("PYTHON_MAX_WORKERS", 4)) 
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
         futures = {executor.submit(generate_json_for_ticker, row, df_info, df_metrics, output_dir, monex_symbols, rakuten_symbols, sbi_symbols, mufg_symbols, matsui_symbols, dmm_symbols, paypay_symbols): row['Symbol'] for row in rows}

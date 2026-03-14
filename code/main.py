@@ -98,6 +98,12 @@ if __name__ == "__main__":
     # 1. データ準備
     try:
         df_sp500 = market_data.fetch_sp500_companies_optimized()
+        
+        # TEST_MODEなら銘柄数を制限する
+        if os.environ.get("TEST_MODE") == "true":
+            print("TEST_MODE is active: limiting to 10 stocks.")
+            df_sp500 = df_sp500.head(10)
+            
         if not df_sp500.is_empty():
             utils.log_event("SUCCESS", "SYSTEM", f"Fetched {len(df_sp500)} companies")
     except Exception as e:
