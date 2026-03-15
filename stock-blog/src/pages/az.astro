@@ -1,0 +1,113 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import Main from "@/layouts/Main.astro";
+import stocksData from "@/data/stocks.json";
+
+// アルファベット順（A-Z）にソート
+const sortedStocks = [...stocksData].sort((a, b) => a.Symbol.localeCompare(b.Symbol));
+
+// 各アルファベットごとのグループ分け
+const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+const groupedStocks = alphabet.reduce((acc, letter) => {
+  acc[letter] = sortedStocks.filter(s => s.Symbol.startsWith(letter));
+  return acc;
+}, {});
+
+// 有効なアルファベットのみ（銘柄が存在するもの）
+const activeLetters = alphabet.filter(letter => groupedStocks[letter].length > 0);
+
+const isRecentEarnings = (stock: any) => {
+  return stock.Is_Recent_Actual === true;
+};
+
+const formatChange = (change?: number) => {
+  if (change === undefined || change === null) return null;
+  const val = (change * 100).toFixed(2);
+  const color = change >= 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400";
+  const prefix = change >= 0 ? "+" : "";
+  return { val, color, prefix };
+};
+
+const base = import.meta.env.BASE_URL.endsWith("/")
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+---
+
+<Layout title="A-Z 銘柄一覧 | アメリカ株インサイト">
+  <Header />
+  <Main pageTitle="A-Z 銘柄一覧" pageDesc="S&P 500構成銘柄をアルファベット順に表示しています。">
+    
+    <!-- アルファベットナビゲーション (index.astroのセクタータグ風) -->
+    <nav class="mb-12 flex flex-wrap gap-2">
+      {activeLetters.map(letter => (
+        <a 
+          href={`#${letter}`} 
+          class="px-4 py-2 bg-skin-card border border-skin-line rounded-full text-sm font-bold hover:text-skin-accent hover:border-skin-accent transition-all hover:shadow-sm"
+        >
+          {letter}
+        </a>
+      ))}
+    </nav>
+
+    <!-- 銘柄リスト -->
+    <div class="space-y-16">
+      {activeLetters.map(letter => (
+        <section id={letter} class="scroll-mt-24">
+          <h2 class="text-2xl font-bold mb-6 border-l-4 border-skin-accent pl-4 flex items-baseline">
+            <span class="mr-4">{letter}</span>
+          </h2>
+
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {groupedStocks[letter].map(stock => {
+              const change = formatChange(stock.Daily_Change);
+              return (
+                <a 
+                  href={`${base}report/${stock.Symbol_YF}/`} 
+                  class="group block p-4 border border-skin-line rounded-lg hover:border-skin-accent hover:shadow-lg transition-all bg-skin-card relative overflow-hidden"
+                >
+                  {isRecentEarnings(stock) && (
+                    <div class="absolute top-0 right-0 bg-amber-500 text-white text-[8px] font-black px-1.5 py-0.5 rounded-bl-lg uppercase tracking-tighter animate-pulse shadow-sm">
+                      決算
+                    </div>
+                  )}
+                  <div class="flex justify-between items-start mb-1">
+                    <div class="text-lg font-bold text-skin-accent group-hover:underline decoration-dashed underline-offset-4">{stock.Symbol}</div>
+                    {change && (
+                      <div class={`text-xs font-bold ${change.color} pt-1`}>
+                        {change.prefix}{change.val}%
+                      </div>
+                    )}
+                  </div>
+                  <div class="text-sm opacity-90 truncate" title={stock.Security}>{stock.Security}</div>
+                  <div class="mt-2 text-[10px] opacity-60 uppercase tracking-tighter truncate">
+                    {stock["GICS Sector"]}
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        </section>
+      ))}
+    </div>
+
+    <!-- トップに戻るボタン (index.astro風の丸み) -->
+    <div class="mt-20 text-center">
+      <a href="#" class="px-6 py-2 bg-skin-card border border-skin-line rounded-full text-sm font-bold hover:text-skin-accent hover:border-skin-accent transition-all inline-flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
+        </svg>
+        ページトップへ戻る
+      </a>
+    </div>
+
+  </Main>
+  <Footer />
+</Layout>
+
+<style>
+  html {
+    scroll-behavior: smooth;
+  }
+</style>
