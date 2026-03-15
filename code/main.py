@@ -199,7 +199,7 @@ if __name__ == "__main__":
                 row["Actual_Earnings_Date"] = actual_date
                 updated_rows.append(row)
             
-            df_sp500_updated = pl.DataFrame(updated_rows)
+            df_sp500_updated = pl.from_dicts(updated_rows, infer_schema_length=None)
             export_stocks_json(df_sp500_updated)
             # --- 反映完了 ---
 
