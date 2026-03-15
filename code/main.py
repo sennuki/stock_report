@@ -61,7 +61,7 @@ def copy_reports_to_astro():
     if os.path.exists(source_dir):
         file_count = 0
         for filename in os.listdir(source_dir):
-            if filename.endswith(".html"):
+            if filename.endswith(".html") or filename.endswith(".json"):
                 src_file = os.path.join(source_dir, filename)
                 dest_file = os.path.join(dest_dir, filename)
                 shutil.copy2(src_file, dest_file)
