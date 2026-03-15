@@ -93,7 +93,7 @@ const base = import.meta.env.BASE_URL.endsWith("/")
         </span>
       </div>
       <h1 class="my-4 text-3xl font-bold sm:my-8 sm:text-6xl text-center tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-skin-accent to-green-500">
-        S&P 500 インサイト：<br class="sm:hidden" />米国株 500 銘柄を深掘り
+        アメリカ株インサイト：<br class="sm:hidden" />S&P500銘柄深堀り
       </h1>
 
       {formattedAvgChange && (
@@ -104,14 +104,11 @@ const base = import.meta.env.BASE_URL.endsWith("/")
               {formattedAvgChange.prefix === '+' ? '▲' : '▼'} {formattedAvgChange.val}%
             </span>
           </div>
-          <p class="mt-3 text-xs opacity-50 font-medium tracking-widest uppercase">Computed from all constituent stocks in real-time</p>
         </div>
       )}
 
       <p class="mb-10 mt-4 text-center opacity-90 max-w-3xl mx-auto px-4 text-lg sm:text-xl leading-relaxed font-medium">
         市場が閉まるたび、全500銘柄のファンダメンタルズを全自動で解析。<br class="hidden sm:block" />
-        PER・配当利回り・財務指標の最新推移を、データで読み解く。<br class="hidden sm:block" />
-        <span class="text-skin-accent underline decoration-2 underline-offset-8">プロの視点を、あなたの投資判断へ。</span>
       </p>
     </section>
 
