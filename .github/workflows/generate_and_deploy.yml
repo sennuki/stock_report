@@ -61,9 +61,10 @@ jobs:
         with:
           name: stock-reports-json
           path: |
-            stock-blog/public/output_reports_full/*.json
+            stock-blog/public/output_reports_full/
             stock-blog/src/data/stocks.json
           retention-days: 5
+          if-no-files-found: error
 
       - name: Upload run log
         if: always()
