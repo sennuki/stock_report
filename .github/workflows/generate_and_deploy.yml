@@ -56,6 +56,15 @@ jobs:
           TEST_MODE: false
           PYTHON_MAX_WORKERS: 4
 
+      - name: Upload JSON Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: stock-reports-json
+          path: |
+            stock-blog/public/output_reports_full/*.json
+            stock-blog/src/data/stocks.json
+          retention-days: 5
+
       - name: Upload run log
         if: always()
         uses: actions/upload-artifact@v4
