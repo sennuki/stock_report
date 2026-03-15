@@ -20,7 +20,7 @@ except ImportError:
 
 def get_monex_available_symbols():
     """
-    マネックス証券の米国株取扱銘柄リストを取得し、シンボルのセットを返します。
+    マネックス証券の米国株取扱銘柄リストを取得し、{シンボル: 日本語名} の辞書を返します。
     """
     url = "https://mst.monex.co.jp/pc/pdfroot/public/50/99/Monex_US_LIST.csv"
     csv_path = "Monex_US_LIST.csv"
@@ -47,24 +47,23 @@ def get_monex_available_symbols():
                     f.write(resp.content)
             except Exception as e:
                 print(f"Error fetching Monex list: {e}")
-                return set()
+                return {}
         else:
             print("curl-cffi is not installed. Skipping Monex list fetch.")
-            return set()
+            return {}
 
-    symbols = set()
+    mapping = {}
     lines = content.splitlines()
     for line in lines:
         parts = line.split(",")
-        if len(parts) >= 1:
+        if len(parts) >= 3:
             symbol = parts[0].strip()
+            ja_name = parts[2].strip()
             # シンボルが英数字（一部記号含む）であることを確認
             if symbol and any(c.isalnum() for c in symbol):
-                # ハイフンやドットの表記揺れを考慮して、比較用には正規化が必要かもしれないが
-                # マネックスのリストは A, AAPL のような形式
-                symbols.add(symbol)
+                mapping[symbol] = ja_name
     
-    return symbols
+    return mapping
 
 def get_rakuten_available_symbols():
     """
@@ -365,9 +364,14 @@ def fetch_sp500_companies_optimized():
             pl.col('Symbol').str.replace(r"-", ".", literal=False).alias('Symbol')
         ])
 
+        # マネックスの日本語名マッピングを取得
+        monex_mapping = get_monex_available_symbols()
+
         symbols = df['Symbol_YF'].to_list()
         ex_map = {}
         change_map = {}
+        ja_name_map = {}
+        
         print(f"{len(symbols)} 銘柄の市場情報を取得中... (並列処理)")
         # Rate limit回避のため並列数を抑える
         # GitHub Actions では 1、ローカルでも 1 をデフォルトにする
@@ -380,10 +384,19 @@ def fetch_sp500_companies_optimized():
                 s, e, c = f.result()
                 ex_map[s] = e
                 change_map[s] = c
+                
+                # 日本語名の紐付け (Yahoo Finance 用シンボル A -> A, BRK-B -> BRK.B など考慮)
+                display_symbol = s.replace("-", ".")
+                ja_name = monex_mapping.get(display_symbol)
+                if not ja_name:
+                    ja_name = monex_mapping.get(s)
+                
+                ja_name_map[s] = ja_name
 
         return df.with_columns([
             pl.col('Symbol_YF').map_elements(lambda s: ex_map.get(s, "NYSE"), return_dtype=pl.Utf8).alias('Exchange'),
-            pl.col('Symbol_YF').map_elements(lambda s: change_map.get(s), return_dtype=pl.Float64).alias('Daily_Change')
+            pl.col('Symbol_YF').map_elements(lambda s: change_map.get(s), return_dtype=pl.Float64).alias('Daily_Change'),
+            pl.col('Symbol_YF').map_elements(lambda s: ja_name_map.get(s), return_dtype=pl.Utf8).alias('Security_JA')
         ])
     except Exception as e:
         print(f"Failed to fetch S&P 500 list: {e}")

@@ -18,8 +18,8 @@ const groupedStocks = alphabet.reduce((acc, letter) => {
 // 有効なアルファベットのみ（銘柄が存在するもの）
 const activeLetters = alphabet.filter(letter => groupedStocks[letter].length > 0);
 
-const isRecentEarnings = (stock: any) => {
-  return stock.Is_Recent_Actual === true;
+const isRecentEarnings = (stock?: any) => {
+  return stock?.Is_Recent_Actual === true;
 };
 
 const formatChange = (change?: number) => {
@@ -80,7 +80,7 @@ const base = import.meta.env.BASE_URL.endsWith("/")
                       </div>
                     )}
                   </div>
-                  <div class="text-sm opacity-90 truncate" title={stock.Security}>{stock.Security}</div>
+                  <div class="text-sm opacity-90 truncate" title={stock.Security_JA || stock.Security}>{stock.Security_JA || stock.Security}</div>
                   <div class="mt-2 text-[10px] opacity-60 uppercase tracking-tighter truncate">
                     {stock["GICS Sector"]}
                   </div>

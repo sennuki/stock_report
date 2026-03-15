@@ -8,6 +8,7 @@ import dayjs from "dayjs";
 interface Stock {
   Symbol_YF: string;
   Security: string;
+  Security_JA?: string;
   "GICS Sector": string;
   "GICS Sub-Industry": string;
   Earnings_Date?: string;
@@ -18,8 +19,8 @@ const stocks: Stock[] = stocksData as Stock[];
 
 // Check if earnings was within the last 7 days
 // 実績データ (Actual_Earnings_Date) が直近7日以内かどうかで判定する
-const isRecentEarnings = (stock: Stock) => {
-  return stock.Is_Recent_Actual === true;
+const isRecentEarnings = (stock?: Stock) => {
+  return stock?.Is_Recent_Actual === true;
 };
 
 const sectorTranslations: Record<string, string> = {
@@ -133,7 +134,7 @@ const base = import.meta.env.BASE_URL.endsWith("/")
                           決算
                         </span>
                       )}
-                      <span class="text-sm opacity-80 truncate max-w-[120px] sm:max-w-[180px]">{stock.Security}</span>
+                      <span class="text-sm opacity-80 truncate max-w-[120px] sm:max-w-[180px]">{stock.Security_JA || stock.Security}</span>
                     </div>
                     {change && (
                       <span class={`font-mono font-bold ${change.color}`}>
@@ -168,7 +169,7 @@ const base = import.meta.env.BASE_URL.endsWith("/")
                           決算
                         </span>
                       )}
-                      <span class="text-sm opacity-80 truncate max-w-[120px] sm:max-w-[180px]">{stock.Security}</span>
+                      <span class="text-sm opacity-80 truncate max-w-[120px] sm:max-w-[180px]">{stock.Security_JA || stock.Security}</span>
                     </div>
                     {change && (
                       <span class={`font-mono font-bold ${change.color}`}>
@@ -213,7 +214,7 @@ const base = import.meta.env.BASE_URL.endsWith("/")
                   href={`${base}report/${stock.Symbol_YF}/`} 
                   class="group block p-4 border border-skin-line rounded-lg hover:border-skin-accent hover:shadow-lg transition-all bg-skin-card relative overflow-hidden"
                 >
-                  {isRecentEarnings(stock.Earnings_Date) && (
+                  {isRecentEarnings(stock) && (
                     <div class="absolute top-0 right-0 bg-amber-500 text-white text-[8px] font-black px-1.5 py-0.5 rounded-bl-lg uppercase tracking-tighter animate-pulse shadow-sm">
                       決算
                     </div>
@@ -226,7 +227,7 @@ const base = import.meta.env.BASE_URL.endsWith("/")
                       </div>
                     )}
                   </div>
-                  <div class="text-sm opacity-90 truncate" title={stock.Security}>{stock.Security}</div>
+                  <div class="text-sm opacity-90 truncate" title={stock.Security_JA || stock.Security}>{stock.Security_JA || stock.Security}</div>
                 </a>
               );
             })}

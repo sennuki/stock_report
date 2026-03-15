@@ -93,6 +93,7 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols
         "symbol": ticker_display,
         "symbol_yf": chart_target_symbol,
         "security": row['Security'],
+        "security_ja": row.get('Security_JA'),
         "sector": current_sector,
         "sub_industry": current_sub_industry,
         "exchange": exchange,

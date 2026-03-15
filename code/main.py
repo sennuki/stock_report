@@ -169,7 +169,7 @@ if __name__ == "__main__":
             # --- ここから実績データの存在を stocks.json に反映 ---
             print("実績データの更新情報を stocks.json に反映しています...")
             reports_dir = os.path.join(base_dir, "../stock-blog/public/reports")
-            today = dayjs().format("YYYY-MM-DD") # dayjsを使うためのインポートは不要、標準ライブラリを使う
+            
             from datetime import datetime, timedelta
             now = datetime.now()
             limit_date = now - timedelta(days=7)

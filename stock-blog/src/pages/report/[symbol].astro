@@ -37,8 +37,9 @@ if (fs.existsSync(jsonPath)) {
 }
 
 const stockInfo = (stocks as any[]).find((s: any) => s.Symbol_YF === symbol);
-const title = `${symbol} (${stockInfo?.Security || ''}) 銘柄分析：株価・PER・配当利回り・ファンダメンタル分析`;
-const description = `${symbol} (${stockInfo?.Security || ''}) の最新株価、PER、配当利回り、財務推移などのファンダメンタルデータを網羅。投資判断に役立つ分析レポートを定期的に更新しています。`;
+const displaySecurity = stockInfo?.Security_JA || stockInfo?.Security || '';
+const title = `${symbol} (${displaySecurity}) 銘柄分析：株価・PER・配当利回り・ファンダメンタル分析`;
+const description = `${symbol} (${displaySecurity}) の最新株価、PER、配当利回り、財務推移などのファンダメンタルデータを網羅。投資判断に役立つ分析レポートを定期的に更新しています。`;
 
 const base = import.meta.env.BASE_URL.endsWith("/")
   ? import.meta.env.BASE_URL
@@ -109,7 +110,7 @@ if (reportData?.analyst_ratings) {
         </div>
     ) : (
       <div class="report-content bg-skin-card p-4 sm:p-8 rounded-lg border border-skin-line shadow-sm">
-        <h1 class="text-3xl font-bold mb-2">銘柄分析レポート: {reportData.symbol} ({reportData.security})</h1>
+        <h1 class="text-3xl font-bold mb-2">銘柄分析レポート: {reportData.symbol} ({reportData.security_ja || reportData.security})</h1>
         {lastUpdated && (
           <div class="flex items-center text-sm text-gray-500 mb-6 bg-skin-fill/30 px-3 py-1.5 rounded-md border border-skin-line w-fit">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-skin-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
