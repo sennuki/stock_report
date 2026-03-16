@@ -61,7 +61,7 @@ jobs:
         with:
           name: stock-reports-json
           path: |
-            stock-blog/public/output_reports_full/
+            stock-blog/public/reports/
             stock-blog/src/data/stocks.json
           retention-days: 5
           if-no-files-found: error

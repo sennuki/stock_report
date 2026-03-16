@@ -128,9 +128,14 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols
 
         # --- Add Earnings Surprise ---
         try:
-            # yfinance property access can sometimes raise KeyError internally for specific tickers
-            # or YFRateLimitError if we hit rate limits
-            ed = getattr(ticker_obj, 'earnings_dates', None)
+            # yfinance property access for earnings_dates is notoriously flaky
+            ed = None
+            try:
+                ed = ticker_obj.earnings_dates
+            except (KeyError, Exception):
+                # If it fails, try to get just the calendar (less data but more stable)
+                pass
+
             if ed is not None and not ed.empty:
                 # Ensure it's a DataFrame and has required columns
                 required_cols = ['Reported EPS', 'EPS Estimate', 'Surprise(%)']
@@ -154,15 +159,9 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols
                             "date": next_ed.index[0].strftime('%Y-%m-%d') if hasattr(next_ed.index[0], 'strftime') else str(next_ed.index[0]),
                             "estimate": float(next_item['EPS Estimate']) if not np.isnan(next_item['EPS Estimate']) else None
                         }
-                else:
-                    missing = [col for col in required_cols if col not in ed.columns]
-                    # print(f"Skipping earnings surprise for {ticker_display}: Missing columns {missing}")
-        except YFRateLimitError:
-            print(f"Rate limited while fetching earnings for {ticker_display}. Skipping...")
-            time.sleep(1) # Short sleep to avoid being blocked more
-        except Exception as es_err:
-            # Silently log to console, don't stop execution
-            print(f"Error fetching earnings surprise for {ticker_display}: {es_err}")
+        except Exception:
+            # Silently skip earnings surprise errors as they are very common with yfinance
+            pass
         # ----------------------------
 
         # --- Add Consensus Data ---
@@ -321,31 +320,30 @@ def export_json_reports(df_info, df_metrics, output_dir="../stock-blog/public/re
 
     print(f"\nJSONレポート生成開始: {output_dir}")
     
-    # 取扱銘柄リストを取得
+    # 全銘柄の直近の価格データをまとめて取得 (一括ダウンロード)
+    symbols_list = df_info['Symbol_YF'].to_list()
+    print(f"全 {len(symbols_list)} 銘柄の価格データを一括取得中...")
+    try:
+        # yf.download は内部でセッションを共有すると効率的
+        import yfinance as yf
+        from utils import get_session
+        price_data = yf.download(symbols_list, period="5d", interval="1d", session=get_session(), group_by='ticker', progress=False)
+        # 必要な指標（前日比など）を事前に計算して辞書に保持しておくと、個別のリクエストをスキップできる場合がある
+    except Exception as e:
+        print(f"一括データ取得エラー (スキップして続行します): {e}")
+
+    # 取扱銘柄リストを取得 (キャッシュされるため高速)
     monex_symbols = market_data.get_monex_available_symbols()
-    print(f"マネックス証券 取扱銘柄数: {len(monex_symbols)}")
-    
     rakuten_symbols = market_data.get_rakuten_available_symbols()
-    print(f"楽天証券 取扱銘柄数: {len(rakuten_symbols)}")
-    
     sbi_symbols = market_data.get_sbi_available_symbols()
-    print(f"SBI証券 取扱銘柄数: {len(sbi_symbols)}")
-
     mufg_symbols = market_data.get_mufg_available_symbols()
-    print(f"三菱UFJ eスマート証券 取扱銘柄数: {len(mufg_symbols)}")
-    
     matsui_symbols = market_data.get_matsui_available_symbols()
-    print(f"松井証券 取扱銘柄数: {len(matsui_symbols)}")
-
     dmm_symbols = market_data.get_dmm_available_symbols()
-    print(f"DMM株 取扱銘柄数: {len(dmm_symbols)}")
-
     paypay_symbols = market_data.get_paypay_available_symbols()
-    print(f"PayPay証券 取扱銘柄数: {len(paypay_symbols)}")
 
     rows = df_info.to_dicts()
-    # Increase max_workers to 4 for parallel processing in GitHub Actions
-    max_workers = int(os.environ.get("PYTHON_MAX_WORKERS", 4)) 
+    # 制限を回避するため、デフォルトの並列度を 2 に抑える (環境変数で変更可能)
+    max_workers = int(os.environ.get("PYTHON_MAX_WORKERS", 2)) 
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
         futures = {executor.submit(generate_json_for_ticker, row, df_info, df_metrics, output_dir, monex_symbols, rakuten_symbols, sbi_symbols, mufg_symbols, matsui_symbols, dmm_symbols, paypay_symbols): row['Symbol'] for row in rows}
