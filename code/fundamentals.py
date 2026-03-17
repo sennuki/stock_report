@@ -64,17 +64,13 @@ def get_financial_data(ticker_obj):
 
     def get_attr(obj, names):
         for name in names:
-            try:
-                val = getattr(obj, name, None)
-                if val is not None and not (isinstance(val, pd.DataFrame) and val.empty):
-                    return val
-            except Exception as e:
-                # 404などのエラーが発生した場合はスキップして次の候補を探す
-                print(f"Warning: Could not access {name} for {symbol}: {e}")
-                continue
+            val = utils.safe_get(obj, name)
+            if val is not None and not (isinstance(val, pd.DataFrame) and val.empty):
+                return val
         return None
 
     def extract_and_melt(pandas_df, targets):
+        # ... (rest of function unchanged) ...
         if pandas_df is None or (isinstance(pandas_df, pd.DataFrame) and pandas_df.empty):
             return pl.DataFrame()
         try:
@@ -257,8 +253,8 @@ def get_financial_data(ticker_obj):
             return pl.DataFrame()
 
     data['tp'] = {
-        'annual': process_tp(ticker_obj.cashflow),
-        'quarterly': process_tp(ticker_obj.quarterly_cashflow)
+        'annual': process_tp(utils.safe_get(ticker_obj, 'cashflow')),
+        'quarterly': process_tp(utils.safe_get(ticker_obj, 'quarterly_cashflow'))
     }
 
     # 5. PER Valuation Data
@@ -321,11 +317,11 @@ def get_financial_data(ticker_obj):
 
     # 6. 1株あたり配当金 (DPS)
     try:
-        divs = ticker_obj.dividends
-        if not divs.empty:
+        divs = utils.safe_get(ticker_obj, 'dividends')
+        if divs is not None and not divs.empty:
             df_divs = divs.to_frame().reset_index()
             # 配当利回り計算のために、当時の株価を取得
-            history = ticker_obj.history(start=df_divs['Date'].min(), end=df_divs['Date'].max() + datetime.timedelta(days=5))
+            history = utils.safe_call(ticker_obj, 'history', start=df_divs['Date'].min(), end=df_divs['Date'].max() + datetime.timedelta(days=5))
             
             def get_price(date):
                 if history.empty:

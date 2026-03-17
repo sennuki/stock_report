@@ -11,6 +11,7 @@ import plotly.graph_objects as go
 import plotly.io as pio
 import pytz
 import time
+import utils
 from yfinance.exceptions import YFRateLimitError
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -47,10 +48,10 @@ PERIOD_CONFIGS = [
 def process_single_stock(symbol):
     """1銘柄の各期間のリスク(HV)とリターンを計算"""
     try:
-        ticker = yf.Ticker(symbol)
+        ticker = utils.get_ticker(symbol)
         # 5年以上のデータを取得
-        hist_pd = ticker.history(period="10y")
-        if hist_pd.empty: return None
+        hist_pd = utils.safe_call(ticker, "history", period="10y")
+        if hist_pd is None or hist_pd.empty: return None
 
         hist = pl.from_pandas(hist_pd.reset_index()).select(['Date', 'Close'])
         hist = hist.with_columns(pl.col("Date").dt.replace_time_zone(None))
@@ -70,7 +71,7 @@ def process_single_stock(symbol):
         # 決算日の取得 (直近の過去の決算日を探す)
         try:
             # yfinance 1.1.0+ では earnings_dates が取得可能
-            earnings_df = ticker.earnings_dates
+            earnings_df = utils.safe_get(ticker, 'earnings_dates')
             if earnings_df is not None and not earnings_df.empty:
                 # タイムゾーンの有無を確認
                 now = datetime.now()

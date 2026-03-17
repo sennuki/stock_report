@@ -138,10 +138,8 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols
         # --- Add Earnings Surprise ---
         try:
             # yfinance property access for earnings_dates is notoriously flaky
-            ed = None
-            try:
-                ed = ticker_obj.earnings_dates
-            except (KeyError, Exception):
+            ed = utils.safe_get(ticker_obj, 'earnings_dates')
+            if ed is None:
                 # If it fails, try to get just the calendar (less data but more stable)
                 pass
 
@@ -180,10 +178,10 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols
                 return df.replace({np.nan: None}).to_dict('index')
 
             report_data["consensus"] = {
-                "earnings": df_to_dict_safe(getattr(ticker_obj, 'earnings_estimate', None)),
-                "revenue": df_to_dict_safe(getattr(ticker_obj, 'revenue_estimate', None)),
-                "eps_trend": df_to_dict_safe(getattr(ticker_obj, 'eps_trend', None)),
-                "eps_revisions": df_to_dict_safe(getattr(ticker_obj, 'eps_revisions', None))
+                "earnings": df_to_dict_safe(utils.safe_get(ticker_obj, 'earnings_estimate')),
+                "revenue": df_to_dict_safe(utils.safe_get(ticker_obj, 'revenue_estimate')),
+                "eps_trend": df_to_dict_safe(utils.safe_get(ticker_obj, 'eps_trend')),
+                "eps_revisions": df_to_dict_safe(utils.safe_get(ticker_obj, 'eps_revisions'))
             }
         except Exception as cons_err:
             print(f"Error fetching consensus for {ticker_display}: {cons_err}")
@@ -191,7 +189,7 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols
 
         # --- Add Highlights ---
         try:
-            info = ticker_obj.info
+            info = utils.safe_get(ticker_obj, 'info', default={})
             
             def normalize_ratio(val):
                 if val is None: return None
@@ -225,7 +223,7 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols
         # --- Add Analyst Ratings ---
         try:
             # yfinance 1.1.0+ may output 404 or other errors for some symbols
-            recs = getattr(ticker_obj, 'recommendations_summary', None)
+            recs = utils.safe_get(ticker_obj, 'recommendations_summary')
             analyst_data = {}
             if recs is not None and not recs.empty:
                 # Use current month (period '0m')
@@ -233,8 +231,7 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols
                 if not current_recs.empty:
                     analyst_data = current_recs.to_dict('records')[0]
             
-            # Add target prices from info
-            info = ticker_obj.info
+            # Add target prices from info (already fetched)
             target_keys = [
                 'targetHighPrice', 'targetLowPrice', 'targetMeanPrice', 
                 'targetMedianPrice', 'currentPrice', 'numberOfAnalystOpinions'
@@ -245,7 +242,7 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols
             
             # Add recent rating changes (upgrades/downgrades)
             try:
-                ud = ticker_obj.upgrades_downgrades
+                ud = utils.safe_get(ticker_obj, 'upgrades_downgrades')
                 if ud is not None and not ud.empty:
                     # Take the last 10 changes, convert index to string
                     recent_ud = ud.sort_index(ascending=False).head(10).reset_index()

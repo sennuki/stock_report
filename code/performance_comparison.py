@@ -4,6 +4,7 @@ import polars as pl
 import numpy as np
 import plotly.graph_objects as go
 from datetime import datetime
+import utils
 
 PERIOD_CONFIGS = [
     {"key": "1M", "label": "1ヶ月", "days": 30},
@@ -38,9 +39,9 @@ def generate_performance_chart_fig(target_symbol, sector_etf_symbol):
     last_date = None
     for sym in symbols:
         try:
-            ticker = yf.Ticker(sym)
-            hist = ticker.history(period="10y")
-            if hist.empty: continue
+            ticker = utils.get_ticker(sym)
+            hist = utils.safe_call(ticker, "history", period="10y")
+            if hist is None or hist.empty: continue
             df = pl.from_pandas(hist.reset_index()).select(['Date', 'Close'])
             df = df.with_columns(pl.col("Date").dt.replace_time_zone(None))
             all_data[sym] = df
