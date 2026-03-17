@@ -12,15 +12,23 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
 
 <div 
   class="chartjs-wrapper mt-24 mb-8 bg-transparent" 
-  data-chart={JSON.stringify(chartData)}
-  data-symbol={chartData.symbol}
+  data-chart={JSON.stringify(chartData || {})}
+  data-symbol={chartData?.symbol}
   data-y-axis-position={yAxisPosition}
 >
   {title && <h3 class="text-2xl font-bold mb-8 text-foreground">{title}</h3>}
-  <div class="chart-controls flex justify-center gap-2 mb-8"></div>
-  <div class="chartjs-graph-div w-full relative" style={`height: ${height}px;`}>
-    <canvas id={id}></canvas>
-  </div>
+  {chartData && chartData.error ? (
+    <div class="flex items-center justify-center h-[200px] border border-dashed border-skin-line rounded-lg">
+      <p class="text-skin-base opacity-70 italic">{chartData.error}</p>
+    </div>
+  ) : (
+    <>
+      <div class="chart-controls flex justify-center gap-2 mb-8"></div>
+      <div class="chartjs-graph-div w-full relative" style={`height: ${height}px;`}>
+        <canvas id={id}></canvas>
+      </div>
+    </>
+  )}
 </div>
 
 <script>
@@ -485,25 +493,29 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
       // Use offsetgroup as stack ID if available, otherwise use calculated stack
       const offsetGroup = d.offsetgroup !== undefined ? `group-${d.offsetgroup}` : null;
 
-      if (name.includes('流動資産') || name.includes('固定資産')) s.stack = offsetGroup || 'assets';
+      if (name.includes('資産')) s.stack = offsetGroup || 'assets';
       else if (name.includes('負債') || name.includes('純資産')) s.stack = offsetGroup || 'liabilities';
       else if (name.includes('配当金') || name.includes('自社株買い')) s.stack = offsetGroup || 'payout';
       else if (name.includes('純利益') && !isRatio) s.stack = offsetGroup || (data.some((os: any) => os.name && os.name.includes('営業CF')) ? 'net_income_cf' : 'net_income_is');
-      else if (type === 'bar') s.stack = offsetGroup || name.replace(' (Q)', '').replace(' (年間推移)', ''); 
+      else if (type === 'bar') s.stack = offsetGroup || name.replace(' (Q)', '').replace(' (年間推移)', '');
 
       return s;
-    });
+      });
 
-    const hasBar = allSeries.some((s: any) => s.type === 'bar');
-    const isBarmodeGroup = layout.barmode === 'group';
-    // Allow stacking even in group mode if offsetgroups (custom stacks) are present
-    const hasOffsetGroups = data.some((d: any) => d.offsetgroup !== undefined);
-    const hasStacking = hasBar && !isScatterChart && (!isBarmodeGroup || hasOffsetGroups);
+      const hasBar = allSeries.some((s: any) => s.type === 'bar');
+      const isBarmodeGroup = layout.barmode === 'group';
+      // Allow stacking even in group mode if offsetgroups (custom stacks) are present
+      const hasOffsetGroups = data.some((d: any) => d.offsetgroup !== undefined);
+      const hasStacking = hasBar && !isScatterChart && (!isBarmodeGroup || hasOffsetGroups);
 
-    if (hasStacking) {
+      if (hasStacking) {
       allSeries.sort((a: any, b: any) => {
-        const groupPriority: any = { 'net_income_cf': 5, '売上高': 10, '売上総利益': 20, '営業利益': 30, 'net_income_is': 50, '営業CF': 10, '投資CF': 20, '財務CF': 30, 'フリーCF': 40, 'assets': 10, 'liabilities': 60, 'payout': 70 };
-        const pA = groupPriority[a.stack] || 99;
+        const groupPriority: any = { 
+          'group-0': 10, 'assets': 10,
+          'group-1': 60, 'liabilities': 60,
+          'net_income_cf': 5, '売上高': 10, '売上総利益': 20, '営業利益': 30, 'net_income_is': 50, 
+          '営業CF': 10, '投資CF': 20, '財務CF': 30, 'フリーCF': 40, 'payout': 70 
+        };        const pA = groupPriority[a.stack] || 99;
         const pB = groupPriority[b.stack] || 99;
         if (pA !== pB) return pA - pB;
         if (a.type !== b.type) return a.type === 'bar' ? -1 : 1;

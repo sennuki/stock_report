@@ -434,7 +434,9 @@ if (reportData?.analyst_ratings) {
 
           <div id="dividend-history" class="scroll-mt-20 my-24">
             <ChartJs chartData={reportData.charts.dps} id="chart-dps" title="1株あたり配当金" />
-            <p class="text-sm text-gray-500 mt-24 block relative z-10">※「権利落日別」タブでは、当時の株価に基づいた予想配当利回り（年換算）も表示しています。</p>
+            {(!reportData.charts.dps || !reportData.charts.dps.error) && (
+              <p class="text-sm text-gray-500 mt-24 block relative z-10">※「権利落日別」タブでは、当時の株価に基づいた予想配当利回り（年換算）も表示しています。</p>
+            )}
           </div>
         </section>
 
@@ -587,22 +589,22 @@ if (reportData?.analyst_ratings) {
                           </td>
                           <td class="px-4 py-3 text-right whitespace-nowrap">
                             <div class="flex items-center justify-end gap-1.5">
-                              {change.priorPriceTarget && (
+                              {change.priorPriceTarget && change.priorPriceTarget > 0 && (
                                 <span class="text-xs opacity-50">${change.priorPriceTarget}</span>
                               )}
-                              {change.priorPriceTarget && change.currentPriceTarget && (
+                              {change.priorPriceTarget > 0 && change.currentPriceTarget > 0 && (
                                 <span class="text-xs opacity-30">→</span>
                               )}
-                              {change.currentPriceTarget ? (
+                              {change.currentPriceTarget && change.currentPriceTarget > 0 ? (
                                 <span class={`font-bold ${
-                                  change.priorPriceTarget 
+                                  change.priorPriceTarget && change.priorPriceTarget > 0
                                   ? (change.currentPriceTarget > change.priorPriceTarget ? 'text-green-600' : change.currentPriceTarget < change.priorPriceTarget ? 'text-red-600' : '')
                                   : ''
                                 }`}>
                                   ${change.currentPriceTarget}
                                 </span>
                               ) : (
-                                !change.priorPriceTarget && <span class="opacity-30">---</span>
+                                (!change.priorPriceTarget || change.priorPriceTarget <= 0) && <span class="opacity-30">---</span>
                               )}
                             </div>
                           </td>

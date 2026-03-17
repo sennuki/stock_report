@@ -10,7 +10,7 @@ const sortedStocks = [...stocksData].sort((a, b) => a.Symbol.localeCompare(b.Sym
 
 // 各アルファベットごとのグループ分け
 const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-const groupedStocks = alphabet.reduce((acc, letter) => {
+const groupedStocks = alphabet.reduce<Record<string, any[]>>((acc, letter) => {
   acc[letter] = sortedStocks.filter(s => s.Symbol.startsWith(letter));
   return acc;
 }, {});

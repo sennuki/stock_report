@@ -68,13 +68,22 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols
     exchange = row['Exchange']
     
     # Check availability
-    is_available_monex = ticker_display in monex_symbols if monex_symbols else False
-    is_available_rakuten = ticker_display in rakuten_symbols if rakuten_symbols else False
-    is_available_sbi = ticker_display in sbi_symbols if sbi_symbols else False
-    is_available_mufg = ticker_display in mufg_symbols if mufg_symbols else False
-    is_available_matsui = ticker_display in matsui_symbols if matsui_symbols else False
-    is_available_dmm = ticker_display in dmm_symbols if dmm_symbols else False
-    is_available_paypay = ticker_display in paypay_symbols if paypay_symbols else False
+    def check_availability(target, symbol_list):
+        if not symbol_list: return False
+        if target in symbol_list: return True
+        # Handle variations like BRK-B vs BRKB or BRK.B
+        variations = [target.replace("-", ""), target.replace("-", ".")]
+        for v in variations:
+            if v in symbol_list: return True
+        return False
+
+    is_available_monex = check_availability(ticker_display, monex_symbols)
+    is_available_rakuten = check_availability(ticker_display, rakuten_symbols)
+    is_available_sbi = check_availability(ticker_display, sbi_symbols)
+    is_available_mufg = check_availability(ticker_display, mufg_symbols)
+    is_available_matsui = check_availability(ticker_display, matsui_symbols)
+    is_available_dmm = check_availability(ticker_display, dmm_symbols)
+    is_available_paypay = check_availability(ticker_display, paypay_symbols)
     # TradingView symbol
     tv_ticker = ticker_display.replace("-", ".")
     full_symbol = f"{exchange}:{tv_ticker}"

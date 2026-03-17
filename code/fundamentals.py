@@ -366,16 +366,35 @@ def get_financial_data(ticker_obj):
             df_annual = df_divs.groupby('Year')['Dividends'].sum().reset_index()
             df_annual = df_annual.rename(columns={'Year': 'Date', 'Dividends': 'Value'})
             
-            # 進行中の年度について、推定年間配当に置き換える (直近の配当 * 4)
+            # 進行中の年度について、推定年間配当に置き換える (直近の配当 * 年間配当回数)
             current_year_str = str(datetime.datetime.now().year)
             df_annual['ActualValue'] = df_annual['Value']
             df_annual['EstimatedPart'] = 0.0
             df_annual['IsEstimate'] = False
 
             if current_year_str in df_annual['Date'].values:
+                # 配当頻度の推定 (直近1〜2年のデータから年間回数を割り出す)
+                # 昨年の配当回数、または直近12ヶ月の回数を確認
+                last_year_str = str(datetime.datetime.now().year - 1)
+                div_freq = 4 # デフォルトは四半期
+                
+                if last_year_str in df_annual['Date'].values:
+                    # 昨年の実績回数をカウント
+                    div_freq = len(df_divs[df_divs['Year'] == last_year_str])
+                else:
+                    # 昨年データがない場合は直近12ヶ月
+                    one_year_ago = datetime.datetime.now() - datetime.timedelta(days=365)
+                    # 文字列比較のために変換
+                    one_year_ago_str = one_year_ago.strftime('%Y-%m-%d')
+                    div_freq = len(df_divs[df_divs['Date'] >= one_year_ago_str])
+                
+                # 異常値（0回や極端に多い場合）のガード
+                if div_freq <= 0: div_freq = 4
+                if div_freq > 12: div_freq = 12
+
                 latest_q_div = df_divs.sort_values('Date')['Dividends'].iloc[-1]
                 # 既に支払われた合計よりも推定値の方が大きい場合のみ更新
-                est_total = latest_q_div * 4
+                est_total = latest_q_div * div_freq
                 idx = df_annual[df_annual['Date'] == current_year_str].index[0]
                 actual_paid = df_annual.loc[idx, 'Value']
                 
