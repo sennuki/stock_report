@@ -598,13 +598,15 @@ if (reportData?.analyst_ratings) {
                               {change.currentPriceTarget && change.currentPriceTarget > 0 ? (
                                 <span class={`font-bold ${
                                   change.priorPriceTarget && change.priorPriceTarget > 0
-                                  ? (change.currentPriceTarget > change.priorPriceTarget ? 'text-green-600' : change.currentPriceTarget < change.priorPriceTarget ? 'text-red-600' : '')
+                                  ? (change.currentPriceTarget > change.priorPriceTarget ? 'text-green-600' : change.priorPriceTarget > change.currentPriceTarget ? 'text-red-600' : '')
                                   : ''
                                 }`}>
                                   ${change.currentPriceTarget}
                                 </span>
                               ) : (
-                                (!change.priorPriceTarget || change.priorPriceTarget <= 0) && <span class="opacity-30">---</span>
+                                (!change.priorPriceTarget || !(change.priorPriceTarget > 0)) ? (
+                                  <span class="opacity-30">---</span>
+                                ) : null
                               )}
                             </div>
                           </td>
