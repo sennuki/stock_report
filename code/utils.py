@@ -16,7 +16,6 @@ import random
 import pandas as pd
 import datetime
 from defeatbeta_api.data.ticker import Ticker as DBTicker
-from datetime import datetime
 from yfinance.exceptions import YFRateLimitError
 
 LOG_FILE = "run_log.txt"
@@ -25,7 +24,7 @@ def log_event(category, symbol, message):
     """
     category: "INFO", "SUCCESS", "WARN", "ERROR"
     """
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     log_line = f"[{timestamp}] [{category:7}] [{symbol:6}] {message}\n"
     with open(LOG_FILE, "a", encoding="utf-8") as f:
         f.write(log_line)
@@ -231,11 +230,10 @@ class YFinanceAdapterTicker:
         return pd.DataFrame()
 
 def get_ticker(symbol):
-
-    global _shared_session
-    if _shared_session is None:
-        _shared_session = get_session()
-    return yf.Ticker(symbol, session=_shared_session)
+    """
+    Returns a ticker object. Currently switched to use Defeat Beta API adapter.
+    """
+    return YFinanceAdapterTicker(symbol)
 
 def safe_get(ticker_obj, attr_name, default=None, max_retries=3):
     """
