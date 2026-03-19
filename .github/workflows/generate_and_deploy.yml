@@ -54,7 +54,7 @@ jobs:
         run: PYTHONPATH=code python code/main.py
         env:
           TEST_MODE: false
-          PYTHON_MAX_WORKERS: 4
+          PYTHON_MAX_WORKERS: 1
 
       - name: Upload JSON Reports
         uses: actions/upload-artifact@v4

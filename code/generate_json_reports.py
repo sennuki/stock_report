@@ -26,6 +26,8 @@ import random
 # Force Plotly to use standard JSON output
 pio.json.config.default_engine = 'json'
 
+from decimal import Decimal
+
 def clean_plotly_data(obj):
     """Recursively remove 'bdata' and convert to standard lists."""
     if isinstance(obj, dict):
@@ -39,6 +41,8 @@ def clean_plotly_data(obj):
         return [clean_plotly_data(v) for v in obj]
     elif isinstance(obj, np.ndarray):
         return obj.tolist()
+    elif isinstance(obj, Decimal):
+        return float(obj)
     elif isinstance(obj, (np.generic, datetime.datetime, datetime.date)):
         if hasattr(obj, 'isoformat'):
             return obj.isoformat()
@@ -318,8 +322,10 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols
     output_path = os.path.join(output_dir, f"{chart_target_symbol}.json")
     temp_path = output_path + ".tmp"
     try:
+        # Clean the entire report_data object before serialization
+        cleaned_report_data = clean_plotly_data(report_data)
         with open(temp_path, "w", encoding="utf-8") as f:
-            json.dump(report_data, f, ensure_ascii=False)
+            json.dump(cleaned_report_data, f, ensure_ascii=False)
         os.replace(temp_path, output_path)
     except Exception as write_err:
         print(f"Error writing JSON for {ticker_display}: {write_err}")
