@@ -314,10 +314,17 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols
         "sector": get_peer_list(other_peers)
     }
 
-    # Write to JSON
+    # Write to JSON atomically
     output_path = os.path.join(output_dir, f"{chart_target_symbol}.json")
-    with open(output_path, "w", encoding="utf-8") as f:
-        json.dump(report_data, f, ensure_ascii=False)
+    temp_path = output_path + ".tmp"
+    try:
+        with open(temp_path, "w", encoding="utf-8") as f:
+            json.dump(report_data, f, ensure_ascii=False)
+        os.replace(temp_path, output_path)
+    except Exception as write_err:
+        print(f"Error writing JSON for {ticker_display}: {write_err}")
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
 
 def export_json_reports(df_info, df_metrics, output_dir="../stock-blog/public/reports"):
     base_dir = os.path.dirname(os.path.abspath(__file__))

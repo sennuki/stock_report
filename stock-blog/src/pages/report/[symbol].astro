@@ -24,16 +24,26 @@ let lastUpdated: string = "";
 
 if (fs.existsSync(jsonPath)) {
   const stats = fs.statSync(jsonPath);
-  lastUpdated = new Intl.DateTimeFormat("ja-JP", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  }).format(stats.mtime);
+  if (stats.size > 0) {
+    lastUpdated = new Intl.DateTimeFormat("ja-JP", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }).format(stats.mtime);
 
-  let content = fs.readFileSync(jsonPath, "utf-8");
-  // Fix invalid JSON produced by Python's json.dump (NaN to null)
-  content = content.replace(/\bNaN\b/g, "null");
-  reportData = JSON.parse(content);
+    try {
+      let content = fs.readFileSync(jsonPath, "utf-8");
+      // Fix invalid JSON produced by Python's json.dump (NaN to null)
+      content = content.replace(/\bNaN\b/g, "null");
+      reportData = JSON.parse(content);
+    } catch (e) {
+      console.error(`Error parsing JSON for ${symbol}:`, e);
+      reportData = null;
+    }
+  } else {
+    console.warn(`Empty JSON file found for ${symbol}`);
+    reportData = null;
+  }
 }
 
 const stockInfo = (stocks as any[]).find((s: any) => s.Symbol_YF === symbol);
