@@ -210,24 +210,34 @@ class YFinanceAdapterTicker:
         return div_df['amount']
 
     @property
+    def balancesheet(self):
+        bs = self._db_ticker.annual_balance_sheet()
+        return bs.df().set_index('Breakdown') if bs else pd.DataFrame()
+
+    @property
+    def quarterly_balancesheet(self):
+        bs = self._db_ticker.quarterly_balance_sheet()
+        return bs.df().set_index('Breakdown') if bs else pd.DataFrame()
+
+    @property
+    def income_stmt(self):
+        is_stmt = self._db_ticker.annual_income_statement()
+        return is_stmt.df().set_index('Breakdown') if is_stmt else pd.DataFrame()
+
+    @property
+    def quarterly_income_stmt(self):
+        is_stmt = self._db_ticker.quarterly_income_statement()
+        return is_stmt.df().set_index('Breakdown') if is_stmt else pd.DataFrame()
+
+    @property
     def cashflow(self):
         cf = self._db_ticker.annual_cash_flow()
-        if cf:
-             df = cf.df()
-             if not df.empty:
-                 df = df.set_index('Breakdown')
-                 return df
-        return pd.DataFrame()
+        return cf.df().set_index('Breakdown') if cf else pd.DataFrame()
         
     @property
     def quarterly_cashflow(self):
         cf = self._db_ticker.quarterly_cash_flow()
-        if cf:
-             df = cf.df()
-             if not df.empty:
-                 df = df.set_index('Breakdown')
-                 return df
-        return pd.DataFrame()
+        return cf.df().set_index('Breakdown') if cf else pd.DataFrame()
 
 def get_ticker(symbol):
     """
