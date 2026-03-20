@@ -74,6 +74,12 @@ def get_financial_data(ticker_obj):
         if pandas_df is None or (isinstance(pandas_df, pd.DataFrame) and pandas_df.empty):
             return pl.DataFrame()
         try:
+            # Cast all columns to numeric (float) to avoid Decimal/object issues with Polars
+            # The index (Breakdown/Item) is preserved when using include_index=True
+            pandas_df = pandas_df.copy()
+            for col in pandas_df.columns:
+                pandas_df[col] = pd.to_numeric(pandas_df[col], errors='coerce')
+                
             # Convert to Polars, keeping index
             df = pl.from_pandas(pandas_df, include_index=True)
             # Rename first column to 'Item'
@@ -136,6 +142,11 @@ def get_financial_data(ticker_obj):
         if pandas_df is None or (isinstance(pandas_df, pd.DataFrame) and pandas_df.empty):
             return pl.DataFrame()
         try:
+            # Cast all columns to numeric (float) to avoid Decimal/object issues with Polars
+            pandas_df = pandas_df.copy()
+            for col in pandas_df.columns:
+                pandas_df[col] = pd.to_numeric(pandas_df[col], errors='coerce')
+                
             df = pl.from_pandas(pandas_df, include_index=True)
             df = df.rename({df.columns[0]: 'Item'})
             
@@ -199,6 +210,11 @@ def get_financial_data(ticker_obj):
             if df_source is None or df_source.empty:
                 return pl.DataFrame()
             
+            # Cast all columns to numeric (float) to avoid Decimal/object issues with Polars
+            df_source = df_source.copy()
+            for col in df_source.columns:
+                df_source[col] = pd.to_numeric(df_source[col], errors='coerce')
+                
             df_tp = pl.from_pandas(df_source, include_index=True)
             df_tp = df_tp.rename({df_tp.columns[0]: 'Item'})
             

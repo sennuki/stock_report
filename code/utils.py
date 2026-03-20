@@ -207,7 +207,9 @@ class YFinanceAdapterTicker:
             
         div_df['Date'] = pd.to_datetime(div_df['report_date']).dt.tz_localize('UTC')
         div_df = div_df.set_index('Date')
-        return div_df['amount']
+        series = div_df['amount']
+        series.name = 'Dividends'
+        return series
 
     @property
     def balancesheet(self):
