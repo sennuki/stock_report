@@ -319,40 +319,42 @@ if (reportData?.analyst_ratings) {
         <section id="next-earnings" class="mt-12">
           <h2 class="text-2xl font-bold mb-6 border-b pb-2">🚀 {symbol}の来期業績予想 (コンセンサス)</h2>
           
-          {reportData.next_earnings ? (
+          {(reportData.next_earnings || reportData.consensus) ? (
             <div class="space-y-6">
-              <div class="bg-skin-fill/20 p-6 sm:p-8 rounded-lg border border-skin-line shadow-sm flex flex-col md:flex-row justify-between items-center gap-8">
-                <div class="flex-grow">
-                  <div class="flex items-center gap-3 mb-4">
-                    <div class="p-3 bg-skin-accent/10 rounded-full text-skin-accent">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <h3 class="text-xl font-bold">次回決算発表予定</h3>
-                      <p class="text-gray-500">{reportData.next_earnings.date} (予定)</p>
-                    </div>
-                  </div>
-                  <p class="text-sm opacity-80 leading-relaxed">
-                    市場アナリストによる次回の四半期決算予想（コンセンサス）です。実績がこの予想を上回る（ポジティブサプライズ）か、下回るかが、発表直後の株価に大きく影響します。
-                  </p>
-                </div>
-
-                <div class="flex items-center gap-8 bg-skin-fill/30 p-6 rounded-xl border border-skin-line min-w-[280px] justify-center">
-                  <div class="text-center">
-                    <div class="text-xs opacity-60 uppercase tracking-wider mb-2">市場予想 (EPS)</div>
-                    <div class="text-4xl font-black text-skin-accent">
-                      {reportData.next_earnings.estimate !== null ? `$${reportData.next_earnings.estimate.toFixed(2)}` : '---'}
-                    </div>
-                    {reportData.earnings_surprise && reportData.next_earnings.estimate !== null && reportData.earnings_surprise.actual !== null && (
-                      <div class={`mt-3 inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold ${reportData.next_earnings.estimate > reportData.earnings_surprise.actual ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                        {reportData.next_earnings.estimate > reportData.earnings_surprise.actual ? '↑ 前期比 増益予想' : '↓ 前期比 減益予想'}
+              {reportData.next_earnings && (
+                <div class="bg-skin-fill/20 p-6 sm:p-8 rounded-lg border border-skin-line shadow-sm flex flex-col md:flex-row justify-between items-center gap-8">
+                  <div class="flex-grow">
+                    <div class="flex items-center gap-3 mb-4">
+                      <div class="p-3 bg-skin-accent/10 rounded-full text-skin-accent">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
                       </div>
-                    )}
+                      <div>
+                        <h3 class="text-xl font-bold">次回決算発表予定</h3>
+                        <p class="text-gray-500">{reportData.next_earnings.date} (予定)</p>
+                      </div>
+                    </div>
+                    <p class="text-sm opacity-80 leading-relaxed">
+                      市場アナリストによる次回の四半期決算予想（コンセンサス）です。実績がこの予想を上回る（ポジティブサプライズ）か、下回るかが、発表直後の株価に大きく影響します。
+                    </p>
+                  </div>
+
+                  <div class="flex items-center gap-8 bg-skin-fill/30 p-6 rounded-xl border border-skin-line min-w-[280px] justify-center">
+                    <div class="text-center">
+                      <div class="text-xs opacity-60 uppercase tracking-wider mb-2">市場予想 (EPS)</div>
+                      <div class="text-4xl font-black text-skin-accent">
+                        {reportData.next_earnings.estimate !== null ? `$${reportData.next_earnings.estimate.toFixed(2)}` : '---'}
+                      </div>
+                      {reportData.earnings_surprise && reportData.next_earnings.estimate !== null && reportData.earnings_surprise.actual !== null && (
+                        <div class={`mt-3 inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold ${reportData.next_earnings.estimate > reportData.earnings_surprise.actual ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                          {reportData.next_earnings.estimate > reportData.earnings_surprise.actual ? '↑ 前期比 増益予想' : '↓ 前期比 減益予想'}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
 
               {/* Detailed Consensus Grid */}
               {reportData.consensus && (
@@ -365,15 +367,20 @@ if (reportData?.analyst_ratings) {
                     <div class="space-y-4">
                       <div class="flex justify-between items-center py-2 border-b border-skin-line/30">
                         <span class="text-sm opacity-70">コンセンサス (平均)</span>
-                        <span class="font-bold text-lg text-skin-accent">${reportData.consensus.earnings?.["0q"]?.avg?.toFixed(2) || '---'}</span>
+                        <span class="font-bold text-lg text-skin-accent">{reportData.consensus.earnings?.["0q"]?.avg ? `$${reportData.consensus.earnings["0q"].avg.toFixed(2)}` : '---'}</span>
                       </div>
                       <div class="flex justify-between items-center py-2 border-b border-skin-line/30">
                         <span class="text-sm opacity-70">予想レンジ (Low - High)</span>
-                        <span class="text-sm font-medium">${reportData.consensus.earnings?.["0q"]?.low?.toFixed(2)} - ${reportData.consensus.earnings?.["0q"]?.high?.toFixed(2)}</span>
+                        <span class="text-sm font-medium">
+                          {reportData.consensus.earnings?.["0q"]?.low ? `$${reportData.consensus.earnings["0q"].low.toFixed(2)}` : '---'} - 
+                          {reportData.consensus.earnings?.["0q"]?.high ? `$${reportData.consensus.earnings["0q"].high.toFixed(2)}` : '---'}
+                        </span>
                       </div>
                       <div class="flex justify-between items-center py-2 border-b border-skin-line/30">
                         <span class="text-sm opacity-70">前年同期比 (YoY)</span>
-                        <span class="font-bold text-green-600">+{((reportData.consensus.earnings?.["0q"]?.growth || 0) * 100).toFixed(1)}%</span>
+                        <span class={`font-bold ${(reportData.consensus.earnings?.["0q"]?.growth || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                          {reportData.consensus.earnings?.["0q"]?.growth ? `${(reportData.consensus.earnings["0q"].growth * 100).toFixed(1)}%` : '---'}
+                        </span>
                       </div>
                       <div class="flex justify-between items-center py-2">
                         <span class="text-sm opacity-70">アナリスト数</span>
@@ -397,12 +404,15 @@ if (reportData?.analyst_ratings) {
                       <div class="flex justify-between items-center py-2 border-b border-skin-line/30">
                         <span class="text-sm opacity-70">予想レンジ (Low - High)</span>
                         <span class="text-sm font-medium">
-                          {reportData.consensus.revenue?.["0q"]?.low ? `$${(reportData.consensus.revenue["0q"].low / 1e9).toFixed(1)}B` : '---'} - {reportData.consensus.revenue?.["0q"]?.high ? `$${(reportData.consensus.revenue["0q"].high / 1e9).toFixed(1)}B` : '---'}
+                          {reportData.consensus.revenue?.["0q"]?.low ? `$${(reportData.consensus.revenue["0q"].low / 1e9).toFixed(1)}B` : '---'} - 
+                          {reportData.consensus.revenue?.["0q"]?.high ? `$${(reportData.consensus.revenue["0q"].high / 1e9).toFixed(1)}B` : '---'}
                         </span>
                       </div>
                       <div class="flex justify-between items-center py-2 border-b border-skin-line/30">
                         <span class="text-sm opacity-70">前年同期比 (YoY)</span>
-                        <span class="font-bold text-green-600">+{((reportData.consensus.revenue?.["0q"]?.growth || 0) * 100).toFixed(1)}%</span>
+                        <span class={`font-bold ${(reportData.consensus.revenue?.["0q"]?.growth || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                          {reportData.consensus.revenue?.["0q"]?.growth ? `${(reportData.consensus.revenue["0q"].growth * 100).toFixed(1)}%` : '---'}
+                        </span>
                       </div>
                       <div class="flex justify-between items-center py-2">
                         <span class="text-sm opacity-70">アナリスト数</span>
@@ -414,7 +424,7 @@ if (reportData?.analyst_ratings) {
               )}
             </div>
           ) : (
-            <p class="text-gray-500 italic">次回決算の予想データは現在利用できません。</p>
+            <p class="text-gray-500 italic">来期業績のコンセンサスデータは現在利用できません。</p>
           )}
         </section>
 

@@ -170,6 +170,25 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols
                             "date": next_ed.index[0].strftime('%Y-%m-%d') if hasattr(next_ed.index[0], 'strftime') else str(next_ed.index[0]),
                             "estimate": float(next_item['EPS Estimate']) if not np.isnan(next_item['EPS Estimate']) else None
                         }
+                    
+                    # If next_earnings is still missing or estimate is None, try ticker.calendar and ticker.info
+                    if not report_data.get("next_earnings") or report_data["next_earnings"].get("estimate") is None:
+                        cal = utils.safe_get(ticker_obj, 'calendar')
+                        next_date = None
+                        if cal is not None and not cal.empty:
+                            if 'Earnings Date' in cal.index:
+                                dates = cal.loc['Earnings Date']
+                                if isinstance(dates, (list, pd.Series)) and len(dates) > 0:
+                                    next_date = dates[0].strftime('%Y-%m-%d')
+                                else:
+                                    next_date = dates.strftime('%Y-%m-%d')
+                        
+                        est = info.get("earningsAverage")
+                        if next_date or est:
+                            report_data["next_earnings"] = {
+                                "date": next_date or "未定",
+                                "estimate": est
+                            }
         except Exception:
             # Silently skip earnings surprise errors as they are very common with yfinance
             pass
@@ -181,9 +200,50 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols
                 if df is None or not hasattr(df, 'empty') or df.empty: return None
                 return df.replace({np.nan: None}).to_dict('index')
 
-            report_data["consensus"] = {
-                "earnings": df_to_dict_safe(utils.safe_get(ticker_obj, 'earnings_estimate')),
-                "revenue": df_to_dict_safe(utils.safe_get(ticker_obj, 'revenue_estimate')),
+            # Fetch consensus from ticker.info first (more reliable)
+            info = utils.safe_get(ticker_obj, 'info', default={})
+            
+            # Create a simplified consensus structure
+            consensus = {
+                "earnings": {
+                    "0q": {
+                        "avg": info.get("earningsAverage"),
+                        "low": info.get("earningsLow"),
+                        "high": info.get("earningsHigh"),
+                        "growth": info.get("earningsGrowth"),
+                        "numberOfAnalysts": info.get("numberOfAnalystOpinions")
+                    }
+                },
+                "revenue": {
+                    "0q": {
+                        "avg": info.get("revenueAverage"),
+                        "low": info.get("revenueLow"),
+                        "high": info.get("revenueHigh"),
+                        "growth": info.get("revenueGrowth"),
+                        "numberOfAnalysts": info.get("numberOfAnalystOpinions")
+                    }
+                }
+            }
+
+            # If info fields are missing, try the dedicated properties as fallback
+            e_est = utils.safe_get(ticker_obj, 'earnings_estimate')
+            r_est = utils.safe_get(ticker_obj, 'revenue_estimate')
+            
+            if e_est is not None and not e_est.empty:
+                consensus["earnings_full"] = df_to_dict_safe(e_est)
+                # If we don't have info data, try to extract from 0q row of estimate table
+                if consensus["earnings"]["0q"]["avg"] is None and "0q" in e_est.index:
+                    row = e_est.loc["0q"]
+                    consensus["earnings"]["0q"]["avg"] = float(row['Avg']) if 'Avg' in row else None
+
+            if r_est is not None and not r_est.empty:
+                consensus["revenue_full"] = df_to_dict_safe(r_est)
+                if consensus["revenue"]["0q"]["avg"] is None and "0q" in r_est.index:
+                    row = r_est.loc["0q"]
+                    consensus["revenue"]["0q"]["avg"] = float(row['Avg']) if 'Avg' in row else None
+
+            report_data["consensus"] = consensus
+            report_data["consensus_raw"] = {
                 "eps_trend": df_to_dict_safe(utils.safe_get(ticker_obj, 'eps_trend')),
                 "eps_revisions": df_to_dict_safe(utils.safe_get(ticker_obj, 'eps_revisions'))
             }

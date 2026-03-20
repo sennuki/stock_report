@@ -69,75 +69,6 @@ def get_financial_data(ticker_obj):
                 return val
         return None
 
-    def extract_and_melt(pandas_df, targets):
-        # ... (rest of function unchanged) ...
-        if pandas_df is None or (isinstance(pandas_df, pd.DataFrame) and pandas_df.empty):
-            return pl.DataFrame()
-        try:
-            # Cast all columns to numeric (float) to avoid Decimal/object issues with Polars
-            # The index (Breakdown/Item) is preserved when using include_index=True
-            pandas_df = pandas_df.copy()
-            for col in pandas_df.columns:
-                pandas_df[col] = pd.to_numeric(pandas_df[col], errors='coerce')
-                
-            # Convert to Polars, keeping index
-            df = pl.from_pandas(pandas_df, include_index=True)
-            # Rename first column to 'Item'
-            df = df.rename({df.columns[0]: 'Item'})
-            # Filter
-            df_filtered = df.filter(pl.col('Item').is_in(targets))
-            if df_filtered.is_empty():
-                return pl.DataFrame()
-            return get_melt(df_filtered)
-        except Exception as e:
-            print(f"Error processing data for {symbol}: {e}")
-            return pl.DataFrame()
-
-    # 1. 貸借対照表
-    bs_annual = get_attr(ticker_obj, ['balancesheet', 'balance_sheet'])
-    bs_quarterly = get_attr(ticker_obj, ['quarterly_balancesheet', 'quarterly_balance_sheet'])
-    
-    if (bs_annual is None or bs_annual.empty) and (bs_quarterly is None or bs_quarterly.empty):
-        utils.log_event("WARN", symbol, "Financial data (BS) is empty. GitHub Actions IP might be blocked or data is unavailable.")
-    
-    # 2. 損益計算書
-    is_annual = get_attr(ticker_obj, ['income_stmt', 'incomestmt', 'financials'])
-    is_quarterly = get_attr(ticker_obj, ['quarterly_income_stmt', 'quarterly_incomestmt', 'quarterly_financials'])
-
-    # 3. キャッシュフロー
-    cf_annual = get_attr(ticker_obj, ['cashflow', 'cash_flow'])
-    cf_quarterly = get_attr(ticker_obj, ['quarterly_cashflow', 'quarterly_cash_flow'])
-
-    # Total Liabilities がない場合の補完
-    def ensure_total_liabilities(df_pd):
-        if df_pd is None or df_pd.empty: return df_pd
-        if 'Total Liabilities' not in df_pd.index:
-            for alt in ['Total Liabilities Net Minority Interest', 'Total Liabilities And Equity']:
-                if alt in df_pd.index:
-                    df_pd.loc['Total Liabilities'] = df_pd.loc[alt]
-                    break
-        return df_pd
-
-    target_bs = ['Total Non Current Assets', 'Current Liabilities', 'Total Equity Gross Minority Interest',
-                 'Current Assets', 'Total Non Current Liabilities Net Minority Interest',
-                 'Total Assets', 'Total Liabilities Net Minority Interest', 'Total Liabilities',
-                 'Long Term Debt And Capital Lease Obligation','Employee Benefits', 'Non Current Deferred Liabilities',
-                 'Other Non Current Liabilities']
-
-    data['bs'] = {
-        'annual': extract_and_melt(ensure_total_liabilities(bs_annual), target_bs),
-        'quarterly': extract_and_melt(ensure_total_liabilities(bs_quarterly), target_bs)
-    }
-
-    # 損益計算書
-    is_aliases = {
-        'Total Revenue': ['Total Revenue', 'Revenue', 'Operating Revenue'],
-        'Gross Profit': ['Gross Profit', 'GrossProfit'],
-        'Operating Income': ['Operating Income', 'OperatingIncome', 'Operating Profit'],
-        'Net Income': ['Net Income', 'NetIncome', 'Net Income Common Stockholders'],
-        'Basic EPS': ['Basic EPS', 'BasicEPS', 'Earnings Per Share Basic']
-    }
-
     def extract_with_aliases(pandas_df, alias_dict):
         if pandas_df is None or (isinstance(pandas_df, pd.DataFrame) and pandas_df.empty):
             return pl.DataFrame()
@@ -172,6 +103,48 @@ def get_financial_data(ticker_obj):
         except Exception as e:
             print(f"Error processing aliases for {symbol}: {e}")
             return pl.DataFrame()
+
+    # 1. 貸借対照表
+    bs_annual = get_attr(ticker_obj, ['balancesheet', 'balance_sheet'])
+    bs_quarterly = get_attr(ticker_obj, ['quarterly_balancesheet', 'quarterly_balance_sheet'])
+    
+    if (bs_annual is None or bs_annual.empty) and (bs_quarterly is None or bs_quarterly.empty):
+        utils.log_event("WARN", symbol, "Financial data (BS) is empty. GitHub Actions IP might be blocked or data is unavailable.")
+    
+    # 2. 損益計算書
+    is_annual = get_attr(ticker_obj, ['income_stmt', 'incomestmt', 'financials'])
+    is_quarterly = get_attr(ticker_obj, ['quarterly_income_stmt', 'quarterly_incomestmt', 'quarterly_financials'])
+
+    # 3. キャッシュフロー
+    cf_annual = get_attr(ticker_obj, ['cashflow', 'cash_flow'])
+    cf_quarterly = get_attr(ticker_obj, ['quarterly_cashflow', 'quarterly_cash_flow'])
+
+    # 貸借対照表エイリアス
+    bs_aliases = {
+        'Total Assets': ['Total Assets', 'TotalAssets', 'Total Liabilities And Equity'],
+        'Total Equity Gross Minority Interest': ['Total Equity Gross Minority Interest', 'Stockholders Equity', 'Common Stock Equity', 'Total Equity'],
+        'Total Liabilities Net Minority Interest': ['Total Liabilities Net Minority Interest', 'Total Liabilities', 'TotalLiabilities'],
+        'Current Assets': ['Current Assets', 'CurrentAssets'],
+        'Total Non Current Assets': ['Total Non Current Assets', 'TotalNonCurrentAssets'],
+        'Current Liabilities': ['Current Liabilities', 'CurrentLiabilities'],
+        'Total Non Current Liabilities Net Minority Interest': ['Total Non Current Liabilities Net Minority Interest', 'Total Non Current Liabilities', 'NonCurrentLiabilities', 'Total Non-Current Liabilities Net Minority Interest'],
+        'Long Term Debt And Capital Lease Obligation': ['Long Term Debt And Capital Lease Obligation', 'LongTermDebt', 'Long Term Debt'],
+        'Other Non Current Liabilities': ['Other Non Current Liabilities', 'OtherNonCurrentLiabilities']
+    }
+
+    data['bs'] = {
+        'annual': extract_with_aliases(bs_annual, bs_aliases),
+        'quarterly': extract_with_aliases(bs_quarterly, bs_aliases)
+    }
+
+    # 損益計算書
+    is_aliases = {
+        'Total Revenue': ['Total Revenue', 'Revenue', 'Operating Revenue'],
+        'Gross Profit': ['Gross Profit', 'GrossProfit'],
+        'Operating Income': ['Operating Income', 'OperatingIncome', 'Operating Profit'],
+        'Net Income': ['Net Income', 'NetIncome', 'Net Income Common Stockholders'],
+        'Basic EPS': ['Basic EPS', 'BasicEPS', 'Earnings Per Share Basic']
+    }
 
     df_is_annual = extract_with_aliases(is_annual, is_aliases)
     df_is_quarterly = extract_with_aliases(is_quarterly, is_aliases)
@@ -210,28 +183,23 @@ def get_financial_data(ticker_obj):
             if df_source is None or df_source.empty:
                 return pl.DataFrame()
             
-            # Cast all columns to numeric (float) to avoid Decimal/object issues with Polars
-            df_source = df_source.copy()
-            for col in df_source.columns:
-                df_source[col] = pd.to_numeric(df_source[col], errors='coerce')
-                
-            df_tp = pl.from_pandas(df_source, include_index=True)
-            df_tp = df_tp.rename({df_tp.columns[0]: 'Item'})
+            # Use extract_with_aliases logic locally for TP
+            tp_aliases = {
+                'Net Income From Continuing Operations': ['Net Income From Continuing Operations', 'Net Income', 'NetIncome'],
+                'Repurchase Of Capital Stock': ['Repurchase Of Capital Stock', 'Repurchase Of Common Stock', 'Common Stock Repurchased', 'RepurchaseOfCapitalStock'],
+                'Cash Dividends Paid': ['Cash Dividends Paid', 'Common Stock Dividend Paid', 'CashDividendsPaid', 'DividendsPaid']
+            }
             
-            # 項目名の補完: Net Income From Continuing Operations がない場合は Net Income を使う
-            if 'Net Income From Continuing Operations' not in df_tp['Item'].to_list():
-                if 'Net Income' in df_tp['Item'].to_list():
-                    # Net Income の行をコピーして Item 名を変更
-                    ni_row = df_tp.filter(pl.col('Item') == 'Net Income').with_columns(pl.lit('Net Income From Continuing Operations').alias('Item'))
-                    df_tp = pl.concat([df_tp, ni_row])
-
-            target_tp = ['Net Income From Continuing Operations', 'Repurchase Of Capital Stock', 'Cash Dividends Paid']
-            df_tp = df_tp.filter(pl.col('Item').is_in(target_tp))
-            if not df_tp.is_empty():
-                df_tp_melt = get_melt(df_tp)
-                df_pivot = df_tp_melt.pivot(on='Item', index='Date', values='Value')
+            # Use existing extract_with_aliases if possible, or just mimic its logic
+            # Since extract_with_aliases already exists in this scope, we can use it.
+            df_tp_processed = extract_with_aliases(df_source, tp_aliases)
+            
+            if not df_tp_processed.is_empty():
+                # Item, Date, Value の縦持ちデータを一度横持ち(Pivot)にして計算
+                df_pivot = df_tp_processed.pivot(on='Item', index='Date', values='Value')
                 
-                # 必要な列が不足している場合の補完
+                # 必要な列が不足している場合の補完 (0で埋める)
+                target_tp = list(tp_aliases.keys())
                 for col in target_tp:
                     if col not in df_pivot.columns:
                         df_pivot = df_pivot.with_columns(pl.lit(0.0).alias(col))
@@ -611,6 +579,10 @@ def get_dps_eps_chart_data(data_dict, is_data_dict):
                 visible=False
             ))
 
+    # トレースの可視性制御用ボタン
+    n_a = len([t for t in fig.data if "(年間推移)" in t.name])
+    n_q = len([t for t in fig.data if "(権利落日別)" in t.name])
+
     fig.update_layout(
         height=450, margin=dict(t=50, b=50, l=60, r=60),
         template='plotly_white', showlegend=True,
@@ -619,7 +591,14 @@ def get_dps_eps_chart_data(data_dict, is_data_dict):
         xaxis=dict(type='category', tickangle=0, gridcolor='#F3F4F6'),
         yaxis=dict(title="年間配当額 ($)", side="left", gridcolor="#F3F4F6", rangemode="tozero"),
         yaxis2=dict(title="配当利回り", side="right", overlaying="y", showgrid=False, tickformat=".2%", rangemode="tozero"),
-        hovermode='x unified'
+        hovermode='x unified',
+        updatemenus=[dict(
+            type="buttons", direction="right", x=0.5, y=1.2, xanchor="center", yanchor="top",
+            buttons=[
+                dict(label="年間推移", method="update", args=[{"visible": [True]*n_a + [False]*n_q}]),
+                dict(label="権利落日別", method="update", args=[{"visible": [False]*n_a + [True]*n_q}])
+            ]
+        )]
     )
     
     return fig
@@ -670,8 +649,6 @@ def get_bs_chart_data(data_dict):
         df_plot = join_item(df_plot, 'Total Equity Gross Minority Interest', 'Equity')
         df_plot = join_item(df_plot, 'Total Assets', 'TotalAssets')
         df_plot = join_item(df_plot, 'Total Liabilities Net Minority Interest', 'TotalLiab')
-        if 'TotalLiab' not in df_plot.columns or df_plot['TotalLiab'].sum() == 0:
-             df_plot = join_item(df_plot, 'Total Liabilities', 'TotalLiab')
 
         # 総資産が0のデータを除外
         df_plot = df_plot.filter(pl.col('TotalAssets') > 0)
@@ -932,12 +909,23 @@ def get_tp_chart_data(data_dict):
         min_r = min(ratios)
         y2_range = [min(0, min_r - 0.05), max_r + 0.05]
 
+    # トレースの可視性制御用ボタン
+    n_a = len([t for t in fig.data if "(通年)" in t.name])
+    n_q = len([t for t in fig.data if "(四半期)" in t.name])
+    
     fig.update_layout(
         barmode='group', height=500, margin=dict(t=50, b=80, l=60, r=60), template='plotly_white',
         xaxis=dict(type='category', tickangle=0),
         yaxis=dict(title='金額', showgrid=True, type='linear', automargin=True),
         yaxis2=dict(title='還元性向', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='linear', automargin=True, range=y2_range),
-        legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5)
+        legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5),
+        updatemenus=[dict(
+            type="buttons", direction="right", x=0.5, y=1.1, xanchor="center", yanchor="top",
+            buttons=[
+                dict(label="通年", method="update", args=[{"visible": [True]*n_a + [False]*n_q}]),
+                dict(label="四半期", method="update", args=[{"visible": [False]*n_a + [True]*n_q}])
+            ]
+        )]
     )
     return fig
 
