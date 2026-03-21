@@ -77,6 +77,16 @@ class YFinanceAdapterTicker:
     def __init__(self, symbol):
         self.ticker = symbol
         self._db_ticker = DBTicker(symbol)
+        self._yf_ticker_cached = None
+
+    @property
+    def _yf_ticker(self):
+        if self._yf_ticker_cached is None:
+            global _shared_session
+            if _shared_session is None:
+                _shared_session = get_session()
+            self._yf_ticker_cached = yf.Ticker(self.ticker, session=_shared_session)
+        return self._yf_ticker_cached
 
     def history(self, period="10y", start=None, end=None, **kwargs):
         df = self._db_ticker.price()
@@ -174,10 +184,38 @@ class YFinanceAdapterTicker:
                 equity = qbs_dict.get('Total Equity') or qbs_dict.get("Stockholders' Equity")
                 if debt and equity: info_dict['debtToEquity'] = (debt / equity) * 100
                 
+            # --- Fallback to yf.Ticker.info for analyst-related fields ---
+            # These are typically not in DB cache
+            yf_info = self._yf_ticker.info
+            analyst_keys = [
+                'targetHighPrice', 'targetLowPrice', 'targetMeanPrice', 
+                'targetMedianPrice', 'numberOfAnalystOpinions',
+                'recommendationKey', 'recommendationMean'
+            ]
+            for key in analyst_keys:
+                if key in yf_info:
+                    info_dict[key] = yf_info[key]
+            
         except Exception as e:
             log_event("DEBUG", self.ticker, f"Error fetching extra info: {e}")
             
         return info_dict
+
+    @property
+    def recommendations_summary(self):
+        try:
+            return self._yf_ticker.recommendations_summary
+        except Exception as e:
+            log_event("DEBUG", self.ticker, f"Error in recommendations_summary: {e}")
+            return None
+
+    @property
+    def upgrades_downgrades(self):
+        try:
+            return self._yf_ticker.upgrades_downgrades
+        except Exception as e:
+            log_event("DEBUG", self.ticker, f"Error in upgrades_downgrades: {e}")
+            return None
 
     @property
     def earnings_dates(self):

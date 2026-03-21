@@ -82,17 +82,25 @@ def get_financial_data(ticker_obj):
             df = df.rename({df.columns[0]: 'Item'})
             
             # 各標準名に対して、最初に見つかったエイリアスの名前を標準名に書き換える
+            # 大文字小文字の違いを許容するために、lowercaseで比較する
+            item_list_lower = [str(x).lower() for x in df['Item'].to_list()]
+            
             for standard_name, aliases in alias_dict.items():
                 for alias in aliases:
-                    if alias in df['Item'].to_list() and alias != standard_name:
-                        # 標準名が既に存在する場合は、それを優先する（何もしない）
-                        if standard_name not in df['Item'].to_list():
-                             df = df.with_columns(
-                                 pl.when(pl.col('Item') == alias)
-                                 .then(pl.lit(standard_name))
-                                 .otherwise(pl.col('Item'))
-                                 .alias('Item')
-                             )
+                    alias_lower = alias.lower()
+                    if alias_lower in item_list_lower:
+                        # 見つかった実際のアライアンス名（ケースを保持）を取得
+                        actual_name = df['Item'].to_list()[item_list_lower.index(alias_lower)]
+                        
+                        if actual_name != standard_name:
+                            # 標準名が既に存在する場合は、それを優先する（何もしない）
+                            if standard_name not in df['Item'].to_list():
+                                 df = df.with_columns(
+                                     pl.when(pl.col('Item') == actual_name)
+                                     .then(pl.lit(standard_name))
+                                     .otherwise(pl.col('Item'))
+                                     .alias('Item')
+                                 )
                         break
             
             target_list = list(alias_dict.keys())
@@ -155,9 +163,9 @@ def get_financial_data(ticker_obj):
 
     # キャッシュフロー
     cf_aliases = {
-        'Operating Cash Flow': ['Operating Cash Flow', 'Cash Flow From Operating Activities', 'Net Cash From Operating Activities'],
-        'Investing Cash Flow': ['Investing Cash Flow', 'Cash Flow From Investing Activities', 'Net Cash From Investing Activities'],
-        'Financing Cash Flow': ['Financing Cash Flow', 'Cash Flow From Financing Activities', 'Net Cash From Financing Activities'],
+        'Operating Cash Flow': ['Operating Cash Flow', 'Cash Flow From Operating Activities', 'Net Cash From Operating Activities', 'Cash Flow from Continuing Operating Activities'],
+        'Investing Cash Flow': ['Investing Cash Flow', 'Cash Flow From Investing Activities', 'Net Cash From Investing Activities', 'Cash Flow from Continuing Investing Activities'],
+        'Financing Cash Flow': ['Financing Cash Flow', 'Cash Flow From Financing Activities', 'Net Cash From Financing Activities', 'Cash Flow from Continuing Financing Activities'],
         'Free Cash Flow': ['Free Cash Flow', 'FreeCashFlow']
     }
     df_cf_annual = extract_with_aliases(cf_annual, cf_aliases)
@@ -185,9 +193,9 @@ def get_financial_data(ticker_obj):
             
             # Use extract_with_aliases logic locally for TP
             tp_aliases = {
-                'Net Income From Continuing Operations': ['Net Income From Continuing Operations', 'Net Income', 'NetIncome'],
-                'Repurchase Of Capital Stock': ['Repurchase Of Capital Stock', 'Repurchase Of Common Stock', 'Common Stock Repurchased', 'RepurchaseOfCapitalStock'],
-                'Cash Dividends Paid': ['Cash Dividends Paid', 'Common Stock Dividend Paid', 'CashDividendsPaid', 'DividendsPaid']
+                'Net Income From Continuing Operations': ['Net Income From Continuing Operations', 'Net Income from Continuing Operations', 'Net Income', 'NetIncome'],
+                'Repurchase Of Capital Stock': ['Repurchase Of Capital Stock', 'Repurchase of Capital Stock', 'Repurchase Of Common Stock', 'Repurchase of Common Stock', 'Common Stock Repurchased', 'RepurchaseOfCapitalStock'],
+                'Cash Dividends Paid': ['Cash Dividends Paid', 'Cash dividends paid', 'Common Stock Dividend Paid', 'CashDividendsPaid', 'DividendsPaid']
             }
             
             # Use existing extract_with_aliases if possible, or just mimic its logic
@@ -579,10 +587,6 @@ def get_dps_eps_chart_data(data_dict, is_data_dict):
                 visible=False
             ))
 
-    # トレースの可視性制御用ボタン
-    n_a = len([t for t in fig.data if "(年間推移)" in t.name])
-    n_q = len([t for t in fig.data if "(権利落日別)" in t.name])
-
     fig.update_layout(
         height=450, margin=dict(t=50, b=50, l=60, r=60),
         template='plotly_white', showlegend=True,
@@ -591,14 +595,7 @@ def get_dps_eps_chart_data(data_dict, is_data_dict):
         xaxis=dict(type='category', tickangle=0, gridcolor='#F3F4F6'),
         yaxis=dict(title="年間配当額 ($)", side="left", gridcolor="#F3F4F6", rangemode="tozero"),
         yaxis2=dict(title="配当利回り", side="right", overlaying="y", showgrid=False, tickformat=".2%", rangemode="tozero"),
-        hovermode='x unified',
-        updatemenus=[dict(
-            type="buttons", direction="right", x=0.5, y=1.2, xanchor="center", yanchor="top",
-            buttons=[
-                dict(label="年間推移", method="update", args=[{"visible": [True]*n_a + [False]*n_q}]),
-                dict(label="権利落日別", method="update", args=[{"visible": [False]*n_a + [True]*n_q}])
-            ]
-        )]
+        hovermode='x unified'
     )
     
     return fig
@@ -909,23 +906,12 @@ def get_tp_chart_data(data_dict):
         min_r = min(ratios)
         y2_range = [min(0, min_r - 0.05), max_r + 0.05]
 
-    # トレースの可視性制御用ボタン
-    n_a = len([t for t in fig.data if "(通年)" in t.name])
-    n_q = len([t for t in fig.data if "(四半期)" in t.name])
-    
     fig.update_layout(
         barmode='group', height=500, margin=dict(t=50, b=80, l=60, r=60), template='plotly_white',
         xaxis=dict(type='category', tickangle=0),
         yaxis=dict(title='金額', showgrid=True, type='linear', automargin=True),
         yaxis2=dict(title='還元性向', overlaying='y', side='right', tickformat='.0%', showgrid=False, type='linear', automargin=True, range=y2_range),
-        legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5),
-        updatemenus=[dict(
-            type="buttons", direction="right", x=0.5, y=1.1, xanchor="center", yanchor="top",
-            buttons=[
-                dict(label="通年", method="update", args=[{"visible": [True]*n_a + [False]*n_q}]),
-                dict(label="四半期", method="update", args=[{"visible": [False]*n_a + [True]*n_q}])
-            ]
-        )]
+        legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5)
     )
     return fig
 
