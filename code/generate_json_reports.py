@@ -93,14 +93,14 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols
     tv_ticker = ticker_display.replace("-", ".")
     full_symbol = f"{exchange}:{tv_ticker}"
     
-    # Sector ETF
+    # Sector ETF (SPDR)
     sector_map = {
-        "Communication Services": "VOX", "Consumer Discretionary": "VCR",
-        "Consumer Staples": "VDC", "Energy": "VDE", "Financials": "VFH",
-        "Health Care": "VHT", "Industrials": "VIS", "Information Technology": "VGT",
-        "Materials": "VAW", "Real Estate": "VNQ", "Utilities": "VPU"
+        "Communication Services": "XLC", "Consumer Discretionary": "XLY",
+        "Consumer Staples": "XLP", "Energy": "XLE", "Financials": "XLF",
+        "Health Care": "XLV", "Industrials": "XLI", "Information Technology": "XLK",
+        "Materials": "XLB", "Real Estate": "XLRE", "Utilities": "XLU"
     }
-    sector_etf_ticker = sector_map.get(current_sector, "VOO")
+    sector_etf_ticker = sector_map.get(current_sector, "SPY")
 
     # 1. Financial Data & Charts
     report_data = {

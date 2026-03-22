@@ -91,6 +91,13 @@ class YFinanceAdapterTicker:
     def history(self, period="10y", start=None, end=None, **kwargs):
         df = self._db_ticker.price()
         if df is None or df.empty:
+            # Fallback to yfinance for indices, ETFs, or symbols not in DB
+            try:
+                yf_hist = self._yf_ticker.history(period=period, start=start, end=end, **kwargs)
+                if not yf_hist.empty:
+                    return yf_hist
+            except Exception as e:
+                log_event("DEBUG", self.ticker, f"Error in yfinance history fallback: {e}")
             return pd.DataFrame()
         
         df = df.rename(columns={

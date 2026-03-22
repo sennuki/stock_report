@@ -135,7 +135,8 @@ def process_single_stock(symbol):
 
 def calculate_market_metrics_parallel(symbols):
     """全銘柄 + ETF + 指数の指標を計算"""
-    sector_etfs = ["VOX", "VCR", "VDC", "VDE", "VFH", "VHT", "VIS", "VGT", "VAW", "VNQ", "VPU", "VOO"]
+    # SPDR Sector ETFs + S&P 500 ETF (SPY)
+    sector_etfs = ["XLC", "XLY", "XLP", "XLE", "XLF", "XLV", "XLI", "XLK", "XLB", "XLRE", "XLU", "SPY"]
     target_symbols = list(set(symbols + ['^GSPC'] + sector_etfs))
 
     print(f"\n{len(target_symbols)} 銘柄のリスク・リターンを計算中...")
