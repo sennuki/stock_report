@@ -41,7 +41,6 @@ PERIOD_CONFIGS = [
     {"key": "6M", "label": "6ヶ月", "days": 126},
     {"key": "YTD", "label": "年初来", "days": "YTD"},
     {"key": "1Y", "label": "1年", "days": 252},
-    {"key": "2Y", "label": "2年", "days": 504},
     {"key": "5Y", "label": "5年", "days": 1260},
 ]
 
@@ -318,10 +317,49 @@ def generate_scatter_fig(df_metrics, target_symbol, sector_etf_symbol):
             default_xaxis_range = [pr['min_x'], pr['max_x']]
             default_yaxis_range = [pr['min_y'], pr['max_y']]
 
+    # ---------------------------------------------------------
+    # Updatemenus (切り替えボタン) の作成
+    # ---------------------------------------------------------
+    buttons = []
+    num_periods = len(PERIOD_CONFIGS)
+    traces_per_period = 4  # (Target, Sector, S&P500, Others)
+
+    for i, p in enumerate(PERIOD_CONFIGS):
+        # 可視性の設定: 選択した期間の4つのトレースだけをTrueにする
+        visibility = [False] * (num_periods * traces_per_period)
+        for j in range(traces_per_period):
+            visibility[i * traces_per_period + j] = True
+        
+        pr = period_ranges[i]
+        
+        buttons.append(dict(
+            label=p['label'],
+            method="update",
+            args=[
+                {"visible": visibility},
+                {
+                    "xaxis": dict(title='リスク (ボラティリティ 年率)', tickformat='.0%', gridcolor='#E5E7EB', range=[pr['min_x'], pr['max_x']]),
+                    "yaxis": dict(title='リターン (年率換算)', tickformat='.0%', gridcolor='#E5E7EB', range=[pr['min_y'], pr['max_y']])
+                }
+            ]
+        ))
+
+    # 1Yをデフォルトのアクティブボタンにする
+    default_active = next((i for i, p in enumerate(PERIOD_CONFIGS) if p['key'] == "1Y"), 0)
+
     fig.update_layout(
+        updatemenus=[dict(
+            type="buttons",
+            direction="left",
+            active=default_active,
+            x=0.5, y=1.15,
+            xanchor="center", yanchor="top",
+            buttons=buttons,
+            showactive=True
+        )],
         xaxis=dict(title='リスク (ボラティリティ 年率)', tickformat='.0%', gridcolor='#E5E7EB', range=default_xaxis_range),
         yaxis=dict(title='リターン (年率換算)', tickformat='.0%', gridcolor='#E5E7EB', range=default_yaxis_range),
-        margin=dict(l=60, r=30, t=80, b=40), height=550, template='plotly_white',
+        margin=dict(l=60, r=30, t=100, b=40), height=550, template='plotly_white',
         showlegend=True,
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1.0)
     )
