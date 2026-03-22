@@ -207,6 +207,38 @@ class YFinanceAdapterTicker:
         return info_dict
 
     @property
+    def earnings_estimate(self):
+        try:
+            return self._yf_ticker.earnings_estimate
+        except Exception as e:
+            log_event("DEBUG", self.ticker, f"Error in earnings_estimate: {e}")
+            return None
+
+    @property
+    def revenue_estimate(self):
+        try:
+            return self._yf_ticker.revenue_estimate
+        except Exception as e:
+            log_event("DEBUG", self.ticker, f"Error in revenue_estimate: {e}")
+            return None
+
+    @property
+    def eps_trend(self):
+        try:
+            return self._yf_ticker.eps_trend
+        except Exception as e:
+            log_event("DEBUG", self.ticker, f"Error in eps_trend: {e}")
+            return None
+
+    @property
+    def eps_revisions(self):
+        try:
+            return self._yf_ticker.eps_revisions
+        except Exception as e:
+            log_event("DEBUG", self.ticker, f"Error in eps_revisions: {e}")
+            return None
+
+    @property
     def recommendations_summary(self):
         try:
             return self._yf_ticker.recommendations_summary

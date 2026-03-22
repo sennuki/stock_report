@@ -362,29 +362,36 @@ if (reportData?.analyst_ratings) {
                   {/* EPS Consensus */}
                   <div class="bg-skin-fill/10 p-6 rounded-lg border border-skin-line">
                     <h4 class="font-bold mb-4 flex items-center gap-2">
-                      <span class="text-blue-500">💎</span> 1株あたり利益 (EPS) 予想
+                      <span class="text-blue-500">💎</span> 1株あたり利益 (EPS) 予想 [来期通期]
                     </h4>
                     <div class="space-y-4">
                       <div class="flex justify-between items-center py-2 border-b border-skin-line/30">
                         <span class="text-sm opacity-70">コンセンサス (平均)</span>
-                        <span class="font-bold text-lg text-skin-accent">{reportData.consensus.earnings?.["0q"]?.avg ? `$${reportData.consensus.earnings["0q"].avg.toFixed(2)}` : '---'}</span>
+                        <span class="font-bold text-lg text-skin-accent">
+                          {reportData.consensus.earnings?.["+1y"]?.avg ? `$${reportData.consensus.earnings["+1y"].avg.toFixed(2)}` : 
+                           reportData.consensus.earnings?.["0y"]?.avg ? `$${reportData.consensus.earnings["0y"].avg.toFixed(2)} (今期)` : 
+                           reportData.consensus.earnings?.["0q"]?.avg ? `$${reportData.consensus.earnings["0q"].avg.toFixed(2)} (四半期)` : '---'}
+                        </span>
                       </div>
                       <div class="flex justify-between items-center py-2 border-b border-skin-line/30">
                         <span class="text-sm opacity-70">予想レンジ (Low - High)</span>
                         <span class="text-sm font-medium">
-                          {reportData.consensus.earnings?.["0q"]?.low ? `$${reportData.consensus.earnings["0q"].low.toFixed(2)}` : '---'} - 
-                          {reportData.consensus.earnings?.["0q"]?.high ? `$${reportData.consensus.earnings["0q"].high.toFixed(2)}` : '---'}
+                          {reportData.consensus.earnings?.["+1y"]?.low ? `$${reportData.consensus.earnings["+1y"].low.toFixed(2)}` : 
+                           reportData.consensus.earnings?.["0y"]?.low ? `$${reportData.consensus.earnings["0y"].low.toFixed(2)}` : '---'} - 
+                          {reportData.consensus.earnings?.["+1y"]?.high ? `$${reportData.consensus.earnings["+1y"].high.toFixed(2)}` : 
+                           reportData.consensus.earnings?.["0y"]?.high ? `$${reportData.consensus.earnings["0y"].high.toFixed(2)}` : '---'}
                         </span>
                       </div>
                       <div class="flex justify-between items-center py-2 border-b border-skin-line/30">
-                        <span class="text-sm opacity-70">前年同期比 (YoY)</span>
-                        <span class={`font-bold ${(reportData.consensus.earnings?.["0q"]?.growth || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                          {reportData.consensus.earnings?.["0q"]?.growth ? `${(reportData.consensus.earnings["0q"].growth * 100).toFixed(1)}%` : '---'}
+                        <span class="text-sm opacity-70">前年比成長率 (YoY)</span>
+                        <span class={`font-bold ${(reportData.consensus.earnings?.["+1y"]?.growth || reportData.consensus.earnings?.["0y"]?.growth || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                          {reportData.consensus.earnings?.["+1y"]?.growth ? `${(reportData.consensus.earnings["+1y"].growth * 100).toFixed(1)}%` : 
+                           reportData.consensus.earnings?.["0y"]?.growth ? `${(reportData.consensus.earnings["0y"].growth * 100).toFixed(1)}%` : '---'}
                         </span>
                       </div>
                       <div class="flex justify-between items-center py-2">
                         <span class="text-sm opacity-70">アナリスト数</span>
-                        <span class="text-sm">{reportData.consensus.earnings?.["0q"]?.numberOfAnalysts || '---'}人</span>
+                        <span class="text-sm">{reportData.consensus.earnings?.["+1y"]?.numberOfAnalysts || reportData.consensus.earnings?.["0y"]?.numberOfAnalysts || '---'}人</span>
                       </div>
                     </div>
                   </div>
@@ -392,31 +399,36 @@ if (reportData?.analyst_ratings) {
                   {/* Revenue Consensus */}
                   <div class="bg-skin-fill/10 p-6 rounded-lg border border-skin-line">
                     <h4 class="font-bold mb-4 flex items-center gap-2">
-                      <span class="text-green-500">💰</span> 売上高予想
+                      <span class="text-green-500">💰</span> 売上高予想 [来期通期]
                     </h4>
                     <div class="space-y-4">
                       <div class="flex justify-between items-center py-2 border-b border-skin-line/30">
                         <span class="text-sm opacity-70">コンセンサス (平均)</span>
                         <span class="font-bold text-lg text-skin-accent">
-                          {reportData.consensus.revenue?.["0q"]?.avg ? `$${(reportData.consensus.revenue["0q"].avg / 1e9).toFixed(2)}B` : '---'}
+                          {reportData.consensus.revenue?.["+1y"]?.avg ? `$${(reportData.consensus.revenue["+1y"].avg / 1e9).toFixed(2)}B` : 
+                           reportData.consensus.revenue?.["0y"]?.avg ? `$${(reportData.consensus.revenue["0y"].avg / 1e9).toFixed(2)}B (今期)` : 
+                           reportData.consensus.revenue?.["0q"]?.avg ? `$${(reportData.consensus.revenue["0q"].avg / 1e9).toFixed(2)}B (四半期)` : '---'}
                         </span>
                       </div>
                       <div class="flex justify-between items-center py-2 border-b border-skin-line/30">
                         <span class="text-sm opacity-70">予想レンジ (Low - High)</span>
                         <span class="text-sm font-medium">
-                          {reportData.consensus.revenue?.["0q"]?.low ? `$${(reportData.consensus.revenue["0q"].low / 1e9).toFixed(1)}B` : '---'} - 
-                          {reportData.consensus.revenue?.["0q"]?.high ? `$${(reportData.consensus.revenue["0q"].high / 1e9).toFixed(1)}B` : '---'}
+                          {reportData.consensus.revenue?.["+1y"]?.low ? `$${(reportData.consensus.revenue["+1y"].low / 1e9).toFixed(1)}B` : 
+                           reportData.consensus.revenue?.["0y"]?.low ? `$${(reportData.consensus.revenue["0y"].low / 1e9).toFixed(1)}B` : '---'} - 
+                          {reportData.consensus.revenue?.["+1y"]?.high ? `$${(reportData.consensus.revenue["+1y"].high / 1e9).toFixed(1)}B` : 
+                           reportData.consensus.revenue?.["0y"]?.high ? `$${(reportData.consensus.revenue["0y"].high / 1e9).toFixed(1)}B` : '---'}
                         </span>
                       </div>
                       <div class="flex justify-between items-center py-2 border-b border-skin-line/30">
-                        <span class="text-sm opacity-70">前年同期比 (YoY)</span>
-                        <span class={`font-bold ${(reportData.consensus.revenue?.["0q"]?.growth || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                          {reportData.consensus.revenue?.["0q"]?.growth ? `${(reportData.consensus.revenue["0q"].growth * 100).toFixed(1)}%` : '---'}
+                        <span class="text-sm opacity-70">前年比成長率 (YoY)</span>
+                        <span class={`font-bold ${(reportData.consensus.revenue?.["+1y"]?.growth || reportData.consensus.revenue?.["0y"]?.growth || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                          {reportData.consensus.revenue?.["+1y"]?.growth ? `${(reportData.consensus.revenue["+1y"].growth * 100).toFixed(1)}%` : 
+                           reportData.consensus.revenue?.["0y"]?.growth ? `${(reportData.consensus.revenue["0y"].growth * 100).toFixed(1)}%` : '---'}
                         </span>
                       </div>
                       <div class="flex justify-between items-center py-2">
                         <span class="text-sm opacity-70">アナリスト数</span>
-                        <span class="text-sm">{reportData.consensus.revenue?.["0q"]?.numberOfAnalysts || '---'}人</span>
+                        <span class="text-sm">{reportData.consensus.revenue?.["+1y"]?.numberOfAnalysts || reportData.consensus.revenue?.["0y"]?.numberOfAnalysts || '---'}人</span>
                       </div>
                     </div>
                   </div>
