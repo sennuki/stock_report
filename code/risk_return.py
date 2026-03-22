@@ -41,7 +41,9 @@ PERIOD_CONFIGS = [
     {"key": "6M", "label": "6ヶ月", "days": 126},
     {"key": "YTD", "label": "年初来", "days": "YTD"},
     {"key": "1Y", "label": "1年", "days": 252},
+    {"key": "3Y", "label": "3年", "days": 756},
     {"key": "5Y", "label": "5年", "days": 1260},
+    {"key": "10Y", "label": "10年", "days": 2520},
 ]
 
 def process_single_stock(symbol):
