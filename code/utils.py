@@ -124,80 +124,85 @@ class YFinanceAdapterTicker:
     def info(self):
         info_dict = {}
         
-        # Basic Info
-        info_df = self._db_ticker.info()
-        if info_df is not None and not info_df.empty:
-            base_info = info_df.iloc[0].to_dict()
-            mapping = {
-                'market_capitalization': 'marketCap',
-                'full_time_employees': 'fullTimeEmployees',
-                'web_site': 'website',
-                'company_name': 'shortName'
-            }
-            for k, v in base_info.items():
-                info_dict[mapping.get(k, k)] = v
-                
-        # Fundamentals (Current Price & Market Cap are often dynamic, using last known)
-        price_df = self._db_ticker.price()
-        if not price_df.empty:
-            last_row = price_df.iloc[-1]
-            info_dict['currentPrice'] = last_row['close']
-            if len(price_df) > 1:
-                info_dict['previousClose'] = price_df.iloc[-2]['close']
-                
-        # Additional Metrics via specific methods
+        # 1. Fetch live info from yfinance first (most up-to-date for price and dynamic metrics)
         try:
-            pe_df = self._db_ticker.ttm_pe()
-            if not pe_df.empty: info_dict['trailingPE'] = pe_df.iloc[-1]['ttm_pe']
-            
-            eps_df = self._db_ticker.ttm_eps()
-            if not eps_df.empty: info_dict['trailingEps'] = eps_df.iloc[-1]['tailing_eps']
-            
-            roe_df = self._db_ticker.roe()
-            if not roe_df.empty: info_dict['returnOnEquity'] = roe_df.iloc[-1]['roe']
-            
-            roa_df = self._db_ticker.roa()
-            if not roa_df.empty: info_dict['returnOnAssets'] = roa_df.iloc[-1]['roa']
-            
-            nm_df = self._db_ticker.quarterly_net_margin()
-            if not nm_df.empty: info_dict['profitMargins'] = nm_df.iloc[-1]['net_margin']
-            
-            om_df = self._db_ticker.quarterly_operating_margin()
-            if not om_df.empty: info_dict['operatingMargins'] = om_df.iloc[-1]['operating_margin']
-            
-            divs = self._db_ticker.dividends()
-            if not divs.empty and 'currentPrice' in info_dict:
-                last_year_divs = divs.tail(4)['amount'].sum()
-                info_dict['dividendYield'] = last_year_divs / info_dict['currentPrice']
-                
-            # For Current Ratio & Debt to Equity, we can use quarterly_balance_sheet
-            qbs = self._db_ticker.quarterly_balance_sheet().df()
-            if not qbs.empty and qbs.columns[1] != 'Breakdown':
-                latest_col = qbs.columns[1]
-                qbs_dict = qbs[['Breakdown', latest_col]].set_index('Breakdown').to_dict()[latest_col]
-                
-                ca = qbs_dict.get('Total Current Assets')
-                cl = qbs_dict.get('Total Current Liabilities')
-                if ca and cl: info_dict['currentRatio'] = ca / cl
-                
-                debt = qbs_dict.get('Total Debt')
-                equity = qbs_dict.get('Total Equity') or qbs_dict.get("Stockholders' Equity")
-                if debt and equity: info_dict['debtToEquity'] = (debt / equity) * 100
-                
-            # --- Fallback to yf.Ticker.info for analyst-related fields ---
-            # These are typically not in DB cache
             yf_info = self._yf_ticker.info
-            analyst_keys = [
-                'targetHighPrice', 'targetLowPrice', 'targetMeanPrice', 
-                'targetMedianPrice', 'numberOfAnalystOpinions',
-                'recommendationKey', 'recommendationMean'
-            ]
-            for key in analyst_keys:
-                if key in yf_info:
-                    info_dict[key] = yf_info[key]
-            
+            if isinstance(yf_info, dict):
+                info_dict.update(yf_info)
         except Exception as e:
-            log_event("DEBUG", self.ticker, f"Error fetching extra info: {e}")
+            log_event("DEBUG", self.ticker, f"Error fetching yf_ticker.info: {e}")
+
+        # 2. Merge/Fallback with DB cache for basic profile info if needed
+        try:
+            info_df = self._db_ticker.info()
+            if info_df is not None and not info_df.empty:
+                base_info = info_df.iloc[0].to_dict()
+                mapping = {
+                    'market_capitalization': 'marketCap',
+                    'full_time_employees': 'fullTimeEmployees',
+                    'web_site': 'website',
+                    'company_name': 'shortName'
+                }
+                for k, v in base_info.items():
+                    key = mapping.get(k, k)
+                    # Only overwrite if yfinance didn't provide it or provided None
+                    if info_dict.get(key) is None:
+                        info_dict[key] = v
+        except: pass
+                
+        # 3. Dynamic metrics from DB if still missing
+        try:
+            # If currentPrice is still missing, try DB price cache
+            if info_dict.get('currentPrice') is None:
+                price_df = self._db_ticker.price()
+                if not price_df.empty:
+                    last_row = price_df.iloc[-1]
+                    info_dict['currentPrice'] = last_row['close']
+                    if len(price_df) > 1:
+                        info_dict['previousClose'] = price_df.iloc[-2]['close']
+            
+            # Additional Metrics from DB cache if missing in info_dict
+            metrics_map = {
+                'trailingPE': self._db_ticker.ttm_pe,
+                'trailingEps': self._db_ticker.ttm_eps,
+                'returnOnEquity': self._db_ticker.roe,
+                'returnOnAssets': self._db_ticker.roa,
+                'profitMargins': self._db_ticker.quarterly_net_margin,
+                'operatingMargins': self._db_ticker.quarterly_operating_margin
+            }
+            
+            for key, method in metrics_map.items():
+                if info_dict.get(key) is None:
+                    try:
+                        res_df = method()
+                        if not res_df.empty:
+                            col = res_df.columns[-1]
+                            info_dict[key] = res_df.iloc[-1][col]
+                    except: pass
+            
+            # Dividend info
+            if info_dict.get('dividendYield') is None:
+                divs = self._db_ticker.dividends()
+                if not divs.empty and info_dict.get('currentPrice'):
+                    last_year_divs = divs.tail(4)['amount'].sum()
+                    info_dict['dividendYield'] = last_year_divs / info_dict['currentPrice']
+                
+            # Balance Sheet metrics
+            if info_dict.get('currentRatio') is None or info_dict.get('debtToEquity') is None:
+                qbs = self._db_ticker.quarterly_balance_sheet().df()
+                if not qbs.empty and qbs.columns[1] != 'Breakdown':
+                    latest_col = qbs.columns[1]
+                    qbs_dict = qbs[['Breakdown', latest_col]].set_index('Breakdown').to_dict()[latest_col]
+                    if info_dict.get('currentRatio') is None:
+                        ca = qbs_dict.get('Total Current Assets')
+                        cl = qbs_dict.get('Total Current Liabilities')
+                        if ca and cl: info_dict['currentRatio'] = ca / cl
+                    if info_dict.get('debtToEquity') is None:
+                        debt = qbs_dict.get('Total Debt')
+                        equity = qbs_dict.get('Total Equity') or qbs_dict.get("Stockholders' Equity")
+                        if debt and equity: info_dict['debtToEquity'] = (debt / equity) * 100
+        except Exception as e:
+            log_event("DEBUG", self.ticker, f"Error merging DB metrics: {e}")
             
         return info_dict
 
@@ -220,21 +225,35 @@ class YFinanceAdapterTicker:
     @property
     def earnings_dates(self):
         try:
+            # First try the real yfinance data as it contains surprises and estimates
+            yf_ed = self._yf_ticker.earnings_dates
+            if yf_ed is not None and not yf_ed.empty:
+                return yf_ed
+        except Exception as e:
+            log_event("DEBUG", self.ticker, f"Error fetching yfinance earnings_dates: {e}")
+            
+        # Fallback to DB cache
+        try:
             cal_df = self._db_ticker.calendar()
             if cal_df is None or cal_df.empty:
                 return None
-            
             cal_df['Earnings Date'] = pd.to_datetime(cal_df['report_date']).dt.tz_localize('UTC')
             cal_df = cal_df.set_index('Earnings Date')
             cal_df = cal_df.sort_index(ascending=False)
-            
-            cal_df['EPS Estimate'] = float('nan')
-            cal_df['Reported EPS'] = float('nan')
-            cal_df['Surprise(%)'] = float('nan')
-            
+            if 'EPS Estimate' not in cal_df.columns: cal_df['EPS Estimate'] = float('nan')
+            if 'Reported EPS' not in cal_df.columns: cal_df['Reported EPS'] = float('nan')
+            if 'Surprise(%)' not in cal_df.columns: cal_df['Surprise(%)'] = float('nan')
             return cal_df
         except Exception as e:
-            log_event("DEBUG", self.ticker, f"Error in earnings_dates: {e}")
+            log_event("DEBUG", self.ticker, f"Error in earnings_dates (DB fallback): {e}")
+            return None
+
+    @property
+    def calendar(self):
+        try:
+            return self._yf_ticker.calendar
+        except Exception as e:
+            log_event("DEBUG", self.ticker, f"Error in calendar: {e}")
             return None
 
     @property

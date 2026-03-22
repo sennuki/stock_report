@@ -140,13 +140,17 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols
         # ----------------------------
 
         # --- Add Earnings Surprise ---
+        def format_date(d):
+            if d is None: return None
+            if hasattr(d, 'strftime'): return d.strftime('%Y-%m-%d')
+            s = str(d)
+            if ' ' in s: s = s.split(' ')[0]
+            return s
+
         try:
             # yfinance property access for earnings_dates is notoriously flaky
             ed = utils.safe_get(ticker_obj, 'earnings_dates')
-            if ed is None:
-                # If it fails, try to get just the calendar (less data but more stable)
-                pass
-
+            
             if ed is not None and not ed.empty:
                 # Ensure it's a DataFrame and has required columns
                 required_cols = ['Reported EPS', 'EPS Estimate', 'Surprise(%)']
@@ -156,7 +160,7 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols
                     if not valid_ed.empty:
                         latest = valid_ed.iloc[0]
                         report_data["earnings_surprise"] = {
-                            "date": valid_ed.index[0].strftime('%Y-%m-%d') if hasattr(valid_ed.index[0], 'strftime') else str(valid_ed.index[0]),
+                            "date": format_date(valid_ed.index[0]),
                             "actual": float(latest['Reported EPS']),
                             "estimate": float(latest['EPS Estimate']) if not np.isnan(latest['EPS Estimate']) else None,
                             "surprise_pct": float(latest['Surprise(%)']) if not np.isnan(latest['Surprise(%)']) else None
@@ -165,30 +169,87 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols
                     # Next earnings (where Reported EPS is NaN)
                     next_ed = ed[ed['Reported EPS'].isnull()].sort_index(ascending=True)
                     if not next_ed.empty:
-                        next_item = next_ed.iloc[0]
-                        report_data["next_earnings"] = {
-                            "date": next_ed.index[0].strftime('%Y-%m-%d') if hasattr(next_ed.index[0], 'strftime') else str(next_ed.index[0]),
-                            "estimate": float(next_item['EPS Estimate']) if not np.isnan(next_item['EPS Estimate']) else None
-                        }
+                        # Check if the date is in the future
+                        now_str = datetime.datetime.now().strftime('%Y-%m-%d')
+                        next_date_cand = format_date(next_ed.index[0])
+                        if next_date_cand >= now_str:
+                            next_item = next_ed.iloc[0]
+                            report_data["next_earnings"] = {
+                                "date": next_date_cand,
+                                "estimate": float(next_item['EPS Estimate']) if not np.isnan(next_item['EPS Estimate']) else None
+                            }
                     
-                    # If next_earnings is still missing or estimate is None, try ticker.calendar and ticker.info
-                    if not report_data.get("next_earnings") or report_data["next_earnings"].get("estimate") is None:
+                    # If next_earnings is still missing or estimate is None OR date is in the past, 
+                    # try ticker.calendar and ticker.info
+                    now_str = datetime.datetime.now().strftime('%Y-%m-%d')
+                    if not report_data.get("next_earnings") or report_data["next_earnings"].get("date", "") < now_str:
                         cal = utils.safe_get(ticker_obj, 'calendar')
                         next_date = None
-                        if cal is not None and not cal.empty:
-                            if 'Earnings Date' in cal.index:
-                                dates = cal.loc['Earnings Date']
-                                if isinstance(dates, (list, pd.Series)) and len(dates) > 0:
-                                    next_date = dates[0].strftime('%Y-%m-%d')
-                                else:
-                                    next_date = dates.strftime('%Y-%m-%d')
+                        cal_est = None
                         
+                        if cal is not None:
+                            # Handle DataFrame format (older yfinance)
+                            if hasattr(cal, 'empty') and not cal.empty:
+                                if 'Earnings Date' in cal.index:
+                                    dates = cal.loc['Earnings Date']
+                                    if isinstance(dates, (list, pd.Series, pd.Index)) and len(dates) > 0:
+                                        next_date = format_date(dates[0])
+                                    else:
+                                        next_date = format_date(dates)
+                                if 'EPS Estimate' in cal.index:
+                                    cal_est = cal.loc['EPS Estimate'].iloc[0] if hasattr(cal.loc['EPS Estimate'], 'iloc') else cal.loc['EPS Estimate']
+                            # Handle dictionary format (newer yfinance)
+                            elif isinstance(cal, dict):
+                                dates = cal.get('Earnings Date')
+                                if dates and isinstance(dates, list) and len(dates) > 0:
+                                    next_date = format_date(dates[0])
+                                cal_est = cal.get('Earnings Average') or cal.get('EPS Estimate')
+                        
+                        # Fallback to info
+                        est = cal_est or info.get("earningsAverage")
+                        
+                        # Only use if it's in the future
+                        if next_date and next_date >= now_str:
+                            report_data["next_earnings"] = {"date": next_date, "estimate": float(est) if est is not None else None}
+                        elif est and report_data.get("next_earnings"):
+                            # Update estimate if missing even if date was found elsewhere
+                            if report_data["next_earnings"].get("estimate") is None:
+                                report_data["next_earnings"]["estimate"] = float(est)
+
+                    if report_data.get("next_earnings") and report_data["next_earnings"].get("estimate") is None:
+                        info = utils.safe_get(ticker_obj, 'info', default={})
                         est = info.get("earningsAverage")
-                        if next_date or est:
-                            report_data["next_earnings"] = {
-                                "date": next_date or "未定",
-                                "estimate": est
-                            }
+                        if est:
+                            report_data["next_earnings"]["estimate"] = float(est)
+
+            # --- Additional Fallback for Recent Earnings (earnings_surprise) ---
+            if not report_data.get("earnings_surprise") or report_data["earnings_surprise"].get("actual") is None:
+                qis = utils.safe_get(ticker_obj, 'quarterly_income_stmt')
+                if qis is not None and not qis.empty:
+                    # Look for EPS rows
+                    eps_row = None
+                    for label in ['Basic EPS', 'Diluted EPS', 'BasicEPS', 'DilutedEPS']:
+                        if label in qis.index:
+                            eps_row = qis.loc[label]
+                            break
+                    
+                    if eps_row is not None and not eps_row.empty:
+                        # Get most recent non-null value
+                        for date_idx, val in eps_row.items():
+                            if val is not None and not np.isnan(val):
+                                # If we didn't have any surprise data, create a basic one
+                                if not report_data.get("earnings_surprise"):
+                                    report_data["earnings_surprise"] = {
+                                        "date": format_date(date_idx),
+                                        "actual": float(val),
+                                        "estimate": None,
+                                        "surprise_pct": None
+                                    }
+                                elif report_data["earnings_surprise"].get("actual") is None:
+                                    report_data["earnings_surprise"]["actual"] = float(val)
+                                break
+            # -----------------------------------------------------------------
+
         except Exception:
             # Silently skip earnings surprise errors as they are very common with yfinance
             pass
@@ -200,47 +261,74 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols
                 if df is None or not hasattr(df, 'empty') or df.empty: return None
                 return df.replace({np.nan: None}).to_dict('index')
 
-            # Fetch consensus from ticker.info first (more reliable)
+            # Fetch consensus from ticker.info first (more reliable for current)
             info = utils.safe_get(ticker_obj, 'info', default={})
             
+            # Helper to extract data from estimate dataframe rows
+            def get_row_val(df, period, col_name_base):
+                if df is None or period not in df.index:
+                    return None
+                row = df.loc[period]
+                # Try various case variants (e.g., 'Avg', 'avg')
+                for variant in [col_name_base, col_name_base.lower(), col_name_base.capitalize()]:
+                    if variant in row:
+                        val = row[variant]
+                        if val is not None and not pd.isna(val):
+                            return float(val)
+                return None
+
             # Create a simplified consensus structure
             consensus = {
-                "earnings": {
-                    "0q": {
-                        "avg": info.get("earningsAverage"),
-                        "low": info.get("earningsLow"),
-                        "high": info.get("earningsHigh"),
-                        "growth": info.get("earningsGrowth"),
-                        "numberOfAnalysts": info.get("numberOfAnalystOpinions")
-                    }
-                },
-                "revenue": {
-                    "0q": {
-                        "avg": info.get("revenueAverage"),
-                        "low": info.get("revenueLow"),
-                        "high": info.get("revenueHigh"),
-                        "growth": info.get("revenueGrowth"),
-                        "numberOfAnalysts": info.get("numberOfAnalystOpinions")
-                    }
-                }
+                "earnings": {},
+                "revenue": {}
             }
 
-            # If info fields are missing, try the dedicated properties as fallback
+            # Map for periods we want to extract
+            periods = ["0q", "+1q", "0y", "+1y"]
+            
+            # Initial load from info (mostly for 0q)
+            consensus["earnings"]["0q"] = {
+                "avg": info.get("earningsAverage"),
+                "low": info.get("earningsLow"),
+                "high": info.get("earningsHigh"),
+                "growth": info.get("earningsGrowth"),
+                "numberOfAnalysts": info.get("numberOfAnalystOpinions")
+            }
+            consensus["revenue"]["0q"] = {
+                "avg": info.get("revenueAverage"),
+                "low": info.get("revenueLow"),
+                "high": info.get("revenueHigh"),
+                "growth": info.get("revenueGrowth"),
+                "numberOfAnalysts": info.get("numberOfAnalystOpinions")
+            }
+
+            # Fallback and additional periods from dedicated properties
             e_est = utils.safe_get(ticker_obj, 'earnings_estimate')
             r_est = utils.safe_get(ticker_obj, 'revenue_estimate')
             
             if e_est is not None and not e_est.empty:
                 consensus["earnings_full"] = df_to_dict_safe(e_est)
-                # If we don't have info data, try to extract from 0q row of estimate table
-                if consensus["earnings"]["0q"]["avg"] is None and "0q" in e_est.index:
-                    row = e_est.loc["0q"]
-                    consensus["earnings"]["0q"]["avg"] = float(row['Avg']) if 'Avg' in row else None
+                for p in periods:
+                    if p not in consensus["earnings"] or consensus["earnings"][p].get("avg") is None:
+                        consensus["earnings"][p] = {
+                            "avg": get_row_val(e_est, p, "avg"),
+                            "low": get_row_val(e_est, p, "low"),
+                            "high": get_row_val(e_est, p, "high"),
+                            "growth": get_row_val(e_est, p, "growth"),
+                            "numberOfAnalysts": get_row_val(e_est, p, "numberOfAnalysts")
+                        }
 
             if r_est is not None and not r_est.empty:
                 consensus["revenue_full"] = df_to_dict_safe(r_est)
-                if consensus["revenue"]["0q"]["avg"] is None and "0q" in r_est.index:
-                    row = r_est.loc["0q"]
-                    consensus["revenue"]["0q"]["avg"] = float(row['Avg']) if 'Avg' in row else None
+                for p in periods:
+                    if p not in consensus["revenue"] or consensus["revenue"][p].get("avg") is None:
+                        consensus["revenue"][p] = {
+                            "avg": get_row_val(r_est, p, "avg"),
+                            "low": get_row_val(r_est, p, "low"),
+                            "high": get_row_val(r_est, p, "high"),
+                            "growth": get_row_val(r_est, p, "growth"),
+                            "numberOfAnalysts": get_row_val(r_est, p, "numberOfAnalysts")
+                        }
 
             report_data["consensus"] = consensus
             report_data["consensus_raw"] = {
@@ -255,18 +343,23 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols
         try:
             info = utils.safe_get(ticker_obj, 'info', default={})
             
-            def normalize_ratio(val):
+            def get_growth_val(field):
+                val = info.get(field)
                 if val is None: return None
-                # If value is > 1.0 (like 0.89 being 0.89%), it might be percentage.
-                # But dividend yield can be very small (0.0089).
-                # Actually, many yfinance fields are inconsistent.
-                # For MSFT: dividendYield=0.89 (%), payoutRatio=0.21 (ratio).
-                # It seems dividendYield is often percentage while growth is ratio.
+                # Growth values are sometimes 10.5 (for 10.5%) and sometimes 0.105
+                if val > 1.0 or val < -1.0: return val / 100.0
+                return val
+
+            def get_yield_val(field):
+                val = info.get(field)
+                if val is None: return None
+                # Dividend yield is almost always a ratio (0.0089) in yfinance, but sometimes 0.89
+                if val > 0.1: return val / 100.0
                 return val
                 
             report_data["highlights"] = {
-                "revenue_growth": info.get("revenueGrowth"),
-                "earnings_growth": info.get("earningsGrowth"),
+                "revenue_growth": get_growth_val("revenueGrowth"),
+                "earnings_growth": get_growth_val("earningsGrowth"),
                 "profit_margins": info.get("profitMargins"),
                 "operating_margins": info.get("operatingMargins"),
                 "roe": info.get("returnOnEquity"),
@@ -275,11 +368,19 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols
                 "eps_forward": info.get("forwardEps"),
                 "pe_ttm": info.get("trailingPE"),
                 "pe_forward": info.get("forwardPE"),
-                "dividend_yield": info.get("dividendYield") / 100 if info.get("dividendYield") is not None and info.get("dividendYield") > 0.05 else info.get("dividendYield"),
+                "dividend_yield": get_yield_val("dividendYield"),
                 "payout_ratio": info.get("payoutRatio"),
                 "debt_to_equity": info.get("debtToEquity"),
                 "current_ratio": info.get("currentRatio")
             }
+            
+            # Additional fallback for payout ratio if missing
+            if report_data["highlights"]["payout_ratio"] is None:
+                div_rate = info.get("dividendRate")
+                eps_ttm = info.get("trailingEps")
+                if div_rate and eps_ttm and eps_ttm > 0:
+                    report_data["highlights"]["payout_ratio"] = div_rate / eps_ttm
+
         except Exception as h_err:
             print(f"Error fetching highlights for {ticker_display}: {h_err}")
         # ----------------------------
