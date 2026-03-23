@@ -89,42 +89,104 @@ class YFinanceAdapterTicker:
         return self._yf_ticker_cached
 
     def history(self, period="10y", start=None, end=None, **kwargs):
+        # 1. Try DB first (defeatbeta_api)
         df = self._db_ticker.price()
-        if df is None or df.empty:
-            # Fallback to yfinance for indices, ETFs, or symbols not in DB
-            try:
-                yf_hist = self._yf_ticker.history(period=period, start=start, end=end, **kwargs)
-                if not yf_hist.empty:
-                    return yf_hist
-            except Exception as e:
-                log_event("DEBUG", self.ticker, f"Error in yfinance history fallback: {e}")
-            return pd.DataFrame()
-        
-        df = df.rename(columns={
-            'report_date': 'Date',
-            'open': 'Open',
-            'close': 'Close',
-            'high': 'High',
-            'low': 'Low',
-            'volume': 'Volume'
-        })
-        
-        df['Date'] = pd.to_datetime(df['Date']).dt.tz_localize('UTC')
-        
-        if 'symbol' in df.columns:
-            df = df.drop(columns=['symbol'])
-            
-        df = df.set_index('Date')
-        df = df.sort_index()
+        if df is not None and not df.empty:
+            df = df.rename(columns={
+                'report_date': 'Date',
+                'open': 'Open',
+                'close': 'Close',
+                'high': 'High',
+                'low': 'Low',
+                'volume': 'Volume'
+            })
+            df['Date'] = pd.to_datetime(df['Date']).dt.tz_localize('UTC')
+            if 'symbol' in df.columns:
+                df = df.drop(columns=['symbol'])
+            df = df.set_index('Date')
+            df = df.sort_index()
 
+            # Trim to requested period if needed
+            now = datetime.datetime.now(datetime.timezone.utc)
+            if period == '10y':
+                start_date = now - datetime.timedelta(days=365 * 10)
+                df = df[df.index >= start_date]
+            elif period == '1mo':
+                start_date = now - datetime.timedelta(days=30)
+                df = df[df.index >= start_date]
+            return df
+
+        # 2. If DB is empty, use local persistent cache and yfinance (Incremental)
+        cache_dir = os.path.join(os.path.dirname(__file__), "data", "price_cache")
+        os.makedirs(cache_dir, exist_ok=True)
+        # Using .csv for simpler inspection, but .parquet is also an option
+        cache_path = os.path.join(cache_dir, f"{self.ticker.replace('^', '_')}.csv")
+        # print(f"DEBUG: Using cache path: {cache_path}") # Debug line
+        
+        cached_df = pd.DataFrame()
+        if os.path.exists(cache_path):
+            try:
+                cached_df = pd.read_csv(cache_path)
+                if not cached_df.empty and 'Date' in cached_df.columns:
+                    cached_df['Date'] = pd.to_datetime(cached_df['Date'], utc=True)
+                    cached_df = cached_df.set_index('Date').sort_index()
+            except Exception as e:
+                log_event("WARN", self.ticker, f"Failed to load cache: {e}")
+
+        # Determine start date for yfinance fetch
+        fetch_start = None
+        if not cached_df.empty:
+            # Fetch from last date + 1 day
+            last_date = cached_df.index.max()
+            if isinstance(last_date, pd.Timestamp):
+                fetch_start = (last_date + datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+                # If last update was today or later, no need to fetch
+                if last_date.date() >= datetime.datetime.now(datetime.timezone.utc).date():
+                    return self._trim_period(cached_df, period)
+            else:
+                fetch_start = None
+        else:
+            # No cache, full fetch for the period
+            fetch_start = None # Let period handle it
+
+        try:
+            # If start/end provided as args, override our incremental logic
+            s_arg = start if start else fetch_start
+            e_arg = end
+            
+            # yfinance call
+            if s_arg:
+                yf_hist = self._yf_ticker.history(start=s_arg, end=e_arg, **kwargs)
+            else:
+                yf_hist = self._yf_ticker.history(period=period, **kwargs)
+
+            if not yf_hist.empty:
+                # Merge with cache
+                if not cached_df.empty:
+                    # Drop overlapping dates from cache just in case
+                    cached_df = cached_df[~cached_df.index.isin(yf_hist.index)]
+                    merged_df = pd.concat([cached_df, yf_hist]).sort_index()
+                else:
+                    merged_df = yf_hist.sort_index()
+                
+                # Save back to cache (keep full 10y+ in cache)
+                merged_df.to_csv(cache_path)
+                return self._trim_period(merged_df, period)
+            
+        except Exception as e:
+            log_event("DEBUG", self.ticker, f"Error in yfinance history incremental: {e}")
+
+        return self._trim_period(cached_df, period) if not cached_df.empty else pd.DataFrame()
+
+    def _trim_period(self, df, period):
+        if df.empty: return df
         now = datetime.datetime.now(datetime.timezone.utc)
         if period == '10y':
             start_date = now - datetime.timedelta(days=365 * 10)
-            df = df[df.index >= start_date]
+            return df[df.index >= start_date]
         elif period == '1mo':
             start_date = now - datetime.timedelta(days=30)
-            df = df[df.index >= start_date]
-
+            return df[df.index >= start_date]
         return df
 
     @property

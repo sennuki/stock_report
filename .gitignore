@@ -20,3 +20,4 @@ stock-blog/src/data/blog/
 stock-blog/src/data/stocks.json
 stock-blog/public/reports/*.json
 public/reports/
+code/data/
