@@ -282,11 +282,10 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
           if (chart.options.scales.x) {
             const xValues = visibleDatasets.flatMap((ds: any) => ds.data.map((p: any) => p.x)).filter((v: any) => v !== null && !isNaN(v));
             if (xValues.length > 0) {
-              const minX = Math.min(...xValues);
               const maxX = Math.max(...xValues);
-              const rangeX = maxX - minX;
+              const rangeX = maxX;
               const paddingX = rangeX === 0 ? Math.abs(maxX) * 0.05 || 0.01 : rangeX * 0.05;
-              chart.options.scales.x.min = minX - paddingX;
+              chart.options.scales.x.min = 0;
               chart.options.scales.x.max = maxX + paddingX;
             }
           }
@@ -563,11 +562,11 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
     if (isScatterChart) {
       const allInitialX = initialVisible.flatMap((ds: any) => ds.data.map((p: any) => p.x)).filter((v: any) => v !== null && !isNaN(v));
       if (allInitialX.length > 0) {
-        const minX = Math.min(...allInitialX);
         const maxX = Math.max(...allInitialX);
-        const rangeX = maxX - minX;
+        const rangeX = maxX;
         const paddingX = rangeX === 0 ? Math.abs(maxX) * 0.05 || 0.01 : rangeX * 0.05;
-        xOpts.min = minX - paddingX; xOpts.max = maxX + paddingX;
+        xOpts.min = 0;
+        xOpts.max = maxX + paddingX;
       }
       xOpts.ticks.callback = (value: any) => (value * 100).toFixed(0) + '%';
     }

@@ -524,7 +524,11 @@ def export_json_reports(df_info, df_metrics, output_dir="../stock-blog/public/re
 
     rows = df_info.to_dicts()
     # 制限を回避するため、デフォルトの並列度を 2 に抑える (環境変数で変更可能)
-    max_workers = int(os.environ.get("PYTHON_MAX_WORKERS", 2)) 
+    max_workers = int(os.environ.get("PYTHON_MAX_WORKERS", 2))
+
+    # Prefetch common data for performance charts to avoid rate limits and race conditions during parallel processing
+    common_etfs = ["XLC", "XLY", "XLP", "XLE", "XLF", "XLV", "XLI", "XLK", "XLB", "XLRE", "XLU", "SPY", "^GSPC"]
+    performance_comparison.prefetch_common_data(common_etfs)
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
         futures = {executor.submit(generate_json_for_ticker, row, df_info, df_metrics, output_dir, monex_symbols, rakuten_symbols, sbi_symbols, mufg_symbols, matsui_symbols, dmm_symbols, paypay_symbols): row['Symbol'] for row in rows}

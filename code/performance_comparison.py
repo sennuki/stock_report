@@ -25,6 +25,40 @@ def generate_performance_chart_html(target_symbol, sector_etf_symbol):
     if fig is None:
         return "<p>データ取得に失敗しました。</p>"
     return fig.to_html(full_html=False, include_plotlyjs=False, config={'displayModeBar': False, 'responsive': True})
+import threading
+
+_history_cache = {}
+_cache_lock = threading.Lock()
+
+def get_cached_history(symbol):
+    with _cache_lock:
+        if symbol in _history_cache:
+            return _history_cache[symbol]
+    
+    # ロックの外で取得を試みる (重い処理)
+    try:
+        ticker = utils.get_ticker(symbol)
+        # 取得に失敗した場合に備えてリトライ回数を増やす
+        hist = utils.safe_call(ticker, "history", period="10y", max_retries=5)
+        if hist is not None and not hist.empty:
+            df = pl.from_pandas(hist.reset_index()).select(['Date', 'Close'])
+            df = df.with_columns(pl.col("Date").dt.replace_time_zone(None))
+            with _cache_lock:
+                _history_cache[symbol] = df
+            return df
+        else:
+            return None
+    except Exception as e:
+        print(f"Error fetching data for {symbol}: {e}")
+        return None
+
+def prefetch_common_data(symbols):
+    """
+    主要なETFや指数のデータを事前に一括取得してキャッシュする。
+    """
+    print(f"\n共通データ ({len(symbols)} 銘柄) を事前取得中...")
+    for sym in symbols:
+        get_cached_history(sym)
 
 def generate_performance_chart_fig(target_symbol, sector_etf_symbol):
     """
@@ -34,23 +68,31 @@ def generate_performance_chart_fig(target_symbol, sector_etf_symbol):
     labels = {target_symbol: target_symbol, sector_etf_symbol: sector_etf_symbol, "^GSPC": "S&P 500"}
     colors = {target_symbol: "#ff6b01", sector_etf_symbol: "#006cac", "^GSPC": "#22c55e"}
 
-    # 最大10年分のデータを取得
+    # 最大10年分のデータを取得 (キャッシュ利用)
     all_data = {}
     last_date = None
-    for sym in symbols:
-        try:
-            ticker = utils.get_ticker(sym)
-            hist = utils.safe_call(ticker, "history", period="10y")
-            if hist is None or hist.empty: continue
+
+    # ターゲット銘柄はキャッシュせず毎回取得 (個別銘柄は多いため)
+    try:
+        ticker = utils.get_ticker(target_symbol)
+        hist = utils.safe_call(ticker, "history", period="10y", max_retries=5)
+        if hist is not None and not hist.empty:
             df = pl.from_pandas(hist.reset_index()).select(['Date', 'Close'])
             df = df.with_columns(pl.col("Date").dt.replace_time_zone(None))
+            all_data[target_symbol] = df
+            last_date = df['Date'][-1]
+    except Exception as e:
+        print(f"Error fetching data for {target_symbol}: {e}")
+
+    # セクターETFとS&P500はキャッシュを利用
+    for sym in [sector_etf_symbol, "^GSPC"]:
+        df = get_cached_history(sym)
+        if df is not None:
             all_data[sym] = df
             if last_date is None or df['Date'][-1] > last_date:
                 last_date = df['Date'][-1]
-        except Exception as e:
-            print(f"Error fetching data for {sym}: {e}")
 
-    if not all_data:
+    if not all_data or last_date is None:
         return None
 
     fig = go.Figure()
