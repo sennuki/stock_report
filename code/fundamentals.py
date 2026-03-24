@@ -75,46 +75,76 @@ def get_financial_data(ticker_obj):
         try:
             # Cast all columns to numeric (float) to avoid Decimal/object issues with Polars
             pandas_df = pandas_df.copy()
-            for col in pandas_df.columns:
-                pandas_df[col] = pd.to_numeric(pandas_df[col], errors='coerce')
+            # Rename index to 'Item' for Polars if not already
+            if pandas_df.index.name != 'Item':
+                pandas_df.index.name = 'Item'
                 
-            df = pl.from_pandas(pandas_df, include_index=True)
-            df = df.rename({df.columns[0]: 'Item'})
+            for col in pandas_df.columns:
+                # 確実に数値に変換し、'*'などの文字列をNaNにする
+                pandas_df[col] = pd.to_numeric(pandas_df[col], errors='coerce').astype(float)
             
-            # 各標準名に対して、最初に見つかったエイリアスの名前を標準名に書き換える
-            # 大文字小文字の違いを許容するために、lowercaseで比較する
-            item_list_lower = [str(x).lower() for x in df['Item'].to_list()]
+            # Polarsに変換する前にインデックスを列に戻す
+            df = pl.from_pandas(pandas_df.reset_index())
+            
+            # アイテム名リスト（小文字）を準備
+            item_list = df['Item'].to_list()
+            item_list_lower = [str(x).lower() for x in item_list]
             
             for standard_name, aliases in alias_dict.items():
-                for alias in aliases:
-                    alias_lower = alias.lower()
-                    if alias_lower in item_list_lower:
-                        # 見つかった実際のアライアンス名（ケースを保持）を取得
-                        actual_name = df['Item'].to_list()[item_list_lower.index(alias_lower)]
-                        
-                        if actual_name != standard_name:
-                            # 標準名が既に存在する場合は、それを優先する（何もしない）
-                            if standard_name not in df['Item'].to_list():
-                                 df = df.with_columns(
-                                     pl.when(pl.col('Item') == actual_name)
-                                     .then(pl.lit(standard_name))
-                                     .otherwise(pl.col('Item'))
-                                     .alias('Item')
-                                 )
-                        break
+                # 標準名が既に存在し、かつ全期間でNaNでないか確認
+                standard_name_lower = standard_name.lower()
+                has_valid_standard = False
+                if standard_name_lower in item_list_lower:
+                    actual_standard_name = item_list[item_list_lower.index(standard_name_lower)]
+                    # 標準名列の全データの合計をチェック（より堅牢な判定）
+                    row_vals = df.filter(pl.col('Item') == actual_standard_name).select(pl.all().exclude('Item'))
+                    if not row_vals.is_empty():
+                        # NaNを除去してデータがあるか確認
+                        valid_count = row_vals.to_series().drop_nulls().len()
+                        if valid_count > 0:
+                            has_valid_standard = True
+                
+                # 有効な標準名がない場合、または標準名が全データNaNの場合、エイリアスから検索してリネームする
+                if not has_valid_standard:
+                    for alias in aliases:
+                        alias_lower = alias.lower()
+                        if alias_lower in item_list_lower:
+                            idx = item_list_lower.index(alias_lower)
+                            actual_name = item_list[idx]
+                            
+                            # そのエイリアスが有効な値（非NaN）を持っているか確認
+                            row_vals = df.filter(pl.col('Item') == actual_name).select(pl.all().exclude('Item'))
+                            if not row_vals.is_empty():
+                                valid_count = row_vals.to_series().drop_nulls().len()
+                                if valid_count > 0:
+                                    # リネーム処理
+                                    if actual_name != standard_name:
+                                        # 標準名がNaNで存在する場合も、その名前をこの有効なエイリアスに譲るために一度別名にするなどの処理はPolarsのwhen().then()で対応可能
+                                        df = df.with_columns(
+                                            pl.when(pl.col('Item') == actual_name)
+                                            .then(pl.lit(standard_name))
+                                            .when(pl.col('Item') == standard_name)
+                                            .then(pl.lit(f"OLD_{standard_name}")) # 既存の無効な標準名を退避
+                                            .otherwise(pl.col('Item'))
+                                            .alias('Item')
+                                        )
+                                    break # 有効なエイリアスを採用したので終了
             
             target_list = list(alias_dict.keys())
             df_filtered = df.filter(pl.col('Item').is_in(target_list))
+            
             if df_filtered.is_empty():
                 return pl.DataFrame()
             return get_melt(df_filtered)
         except Exception as e:
-            print(f"Error processing aliases for {symbol}: {e}")
+            # 不要なデバッグ出力を抑制
+            # print(f"Error processing aliases for {symbol}: {e}")
+            return pl.DataFrame()
             return pl.DataFrame()
 
     # 1. 貸借対照表
-    bs_annual = get_attr(ticker_obj, ['balancesheet', 'balance_sheet'])
-    bs_quarterly = get_attr(ticker_obj, ['quarterly_balancesheet', 'quarterly_balance_sheet'])
+    bs_annual = get_attr(ticker_obj, ['balance_sheet', 'balancesheet'])
+    bs_quarterly = get_attr(ticker_obj, ['quarterly_balance_sheet', 'quarterly_balancesheet'])
     
     if (bs_annual is None or bs_annual.empty) and (bs_quarterly is None or bs_quarterly.empty):
         utils.log_event("WARN", symbol, "Financial data (BS) is empty. GitHub Actions IP might be blocked or data is unavailable.")
@@ -130,12 +160,13 @@ def get_financial_data(ticker_obj):
     # 貸借対照表エイリアス
     bs_aliases = {
         'Total Assets': ['Total Assets', 'TotalAssets', 'Total Liabilities And Equity'],
-        'Total Equity Gross Minority Interest': ['Total Equity Gross Minority Interest', 'Stockholders Equity', 'Common Stock Equity', 'Total Equity'],
+        'Total Equity Gross Minority Interest': ['Total Equity Gross Minority Interest', 'Total Equity', 'TotalEquity'],
+        'Stockholders Equity': ['Stockholders Equity', 'StockholdersEquity', 'Common Stock Equity', "Stockholders' Equity"],
         'Total Liabilities Net Minority Interest': ['Total Liabilities Net Minority Interest', 'Total Liabilities', 'TotalLiabilities'],
-        'Current Assets': ['Current Assets', 'CurrentAssets'],
-        'Total Non Current Assets': ['Total Non Current Assets', 'TotalNonCurrentAssets'],
-        'Current Liabilities': ['Current Liabilities', 'CurrentLiabilities'],
-        'Total Non Current Liabilities Net Minority Interest': ['Total Non Current Liabilities Net Minority Interest', 'Total Non Current Liabilities', 'NonCurrentLiabilities', 'Total Non-Current Liabilities Net Minority Interest'],
+        'Current Assets': ['Current Assets', 'CurrentAssets', 'Total Current Assets', 'TotalCurrentAssets'],
+        'Total Non Current Assets': ['Total Non Current Assets', 'TotalNonCurrentAssets', 'Total Non-Current Assets', 'TotalNonCurrentAssets'],
+        'Current Liabilities': ['Current Liabilities', 'CurrentLiabilities', 'Total Current Liabilities', 'TotalCurrentLiabilities'],
+        'Total Non Current Liabilities Net Minority Interest': ['Total Non Current Liabilities Net Minority Interest', 'Total Non Current Liabilities', 'NonCurrentLiabilities', 'Total Non-Current Liabilities Net Minority Interest', 'Total Non-Current Liabilities', 'TotalNonCurrentLiabilities'],
         'Long Term Debt And Capital Lease Obligation': ['Long Term Debt And Capital Lease Obligation', 'LongTermDebt', 'Long Term Debt'],
         'Other Non Current Liabilities': ['Other Non Current Liabilities', 'OtherNonCurrentLiabilities']
     }

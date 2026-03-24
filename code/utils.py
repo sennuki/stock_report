@@ -371,33 +371,87 @@ class YFinanceAdapterTicker:
 
     @property
     def balancesheet(self):
-        bs = self._db_ticker.annual_balance_sheet()
-        return bs.df().set_index('Breakdown') if bs else pd.DataFrame()
+        try:
+            bs = self._db_ticker.annual_balance_sheet()
+            if bs and not bs.df().empty:
+                df = bs.df()
+                if 'Breakdown' in df.columns:
+                    return df.set_index('Breakdown')
+                return df
+        except: pass
+        try:
+            return self._yf_ticker.balancesheet
+        except: return pd.DataFrame()
 
     @property
     def quarterly_balancesheet(self):
-        bs = self._db_ticker.quarterly_balance_sheet()
-        return bs.df().set_index('Breakdown') if bs else pd.DataFrame()
+        try:
+            bs = self._db_ticker.quarterly_balance_sheet()
+            if bs and not bs.df().empty:
+                df = bs.df()
+                if 'Breakdown' in df.columns:
+                    return df.set_index('Breakdown')
+                return df
+        except: pass
+        try:
+            return self._yf_ticker.quarterly_balancesheet
+        except: return pd.DataFrame()
 
     @property
     def income_stmt(self):
-        is_stmt = self._db_ticker.annual_income_statement()
-        return is_stmt.df().set_index('Breakdown') if is_stmt else pd.DataFrame()
+        try:
+            is_stmt = self._db_ticker.annual_income_statement()
+            if is_stmt and not is_stmt.df().empty:
+                df = is_stmt.df()
+                if 'Breakdown' in df.columns:
+                    return df.set_index('Breakdown')
+                return df
+        except: pass
+        try:
+            return self._yf_ticker.income_stmt
+        except: return pd.DataFrame()
 
     @property
     def quarterly_income_stmt(self):
-        is_stmt = self._db_ticker.quarterly_income_statement()
-        return is_stmt.df().set_index('Breakdown') if is_stmt else pd.DataFrame()
+        try:
+            is_stmt = self._db_ticker.quarterly_income_statement()
+            if is_stmt and not is_stmt.df().empty:
+                df = is_stmt.df()
+                if 'Breakdown' in df.columns:
+                    return df.set_index('Breakdown')
+                return df
+        except: pass
+        try:
+            return self._yf_ticker.quarterly_income_stmt
+        except: return pd.DataFrame()
 
     @property
     def cashflow(self):
-        cf = self._db_ticker.annual_cash_flow()
-        return cf.df().set_index('Breakdown') if cf else pd.DataFrame()
+        try:
+            cf = self._db_ticker.annual_cash_flow()
+            if cf and not cf.df().empty:
+                df = cf.df()
+                if 'Breakdown' in df.columns:
+                    return df.set_index('Breakdown')
+                return df
+        except: pass
+        try:
+            return self._yf_ticker.cashflow
+        except: return pd.DataFrame()
         
     @property
     def quarterly_cashflow(self):
-        cf = self._db_ticker.quarterly_cash_flow()
-        return cf.df().set_index('Breakdown') if cf else pd.DataFrame()
+        try:
+            cf = self._db_ticker.quarterly_cash_flow()
+            if cf and not cf.df().empty:
+                df = cf.df()
+                if 'Breakdown' in df.columns:
+                    return df.set_index('Breakdown')
+                return df
+        except: pass
+        try:
+            return self._yf_ticker.quarterly_cashflow
+        except: return pd.DataFrame()
 
 def get_ticker(symbol):
     """
