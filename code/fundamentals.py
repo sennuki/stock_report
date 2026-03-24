@@ -81,6 +81,9 @@ def get_financial_data(ticker_obj):
                 
             for col in pandas_df.columns:
                 # 確実に数値に変換し、'*'などの文字列をNaNにする
+                # Decimalオブジェクト対策として明示的にfloatに変換
+                if pandas_df[col].dtype == object:
+                    pandas_df[col] = pandas_df[col].apply(lambda x: float(x) if x is not None and str(x).replace('.','',1).replace('-','',1).isdigit() else np.nan if x == '*' else x)
                 pandas_df[col] = pd.to_numeric(pandas_df[col], errors='coerce').astype(float)
             
             # Polarsに変換する前にインデックスを列に戻す
@@ -95,14 +98,27 @@ def get_financial_data(ticker_obj):
                 standard_name_lower = standard_name.lower()
                 has_valid_standard = False
                 if standard_name_lower in item_list_lower:
-                    actual_standard_name = item_list[item_list_lower.index(standard_name_lower)]
+                    idx = item_list_lower.index(standard_name_lower)
+                    actual_standard_name = item_list[idx]
                     # 標準名列の全データの合計をチェック（より堅牢な判定）
-                    row_vals = df.filter(pl.col('Item') == actual_standard_name).select(pl.all().exclude('Item'))
-                    if not row_vals.is_empty():
-                        # NaNを除去してデータがあるか確認
-                        valid_count = row_vals.to_series().drop_nulls().len()
-                        if valid_count > 0:
+                    row_df = df.filter(pl.col('Item') == actual_standard_name).select(pl.all().exclude('Item'))
+                    if not row_df.is_empty():
+                        # いずれかの列に null 以外、かつ NaN 以外の有効な値があるか確認
+                        is_valid = row_df.select(
+                            pl.any_horizontal(
+                                pl.all().is_not_null() & pl.all().is_not_nan()
+                            )
+                        ).to_series()[0]
+                        if is_valid:
                             has_valid_standard = True
+                            # 大文字小文字が異なる場合は標準名にリネームしておく（後でフィルタリングできるように）
+                            if actual_standard_name != standard_name:
+                                df = df.with_columns(
+                                    pl.when(pl.col('Item') == actual_standard_name)
+                                    .then(pl.lit(standard_name))
+                                    .otherwise(pl.col('Item'))
+                                    .alias('Item')
+                                )
                 
                 # 有効な標準名がない場合、または標準名が全データNaNの場合、エイリアスから検索してリネームする
                 if not has_valid_standard:
@@ -113,10 +129,14 @@ def get_financial_data(ticker_obj):
                             actual_name = item_list[idx]
                             
                             # そのエイリアスが有効な値（非NaN）を持っているか確認
-                            row_vals = df.filter(pl.col('Item') == actual_name).select(pl.all().exclude('Item'))
-                            if not row_vals.is_empty():
-                                valid_count = row_vals.to_series().drop_nulls().len()
-                                if valid_count > 0:
+                            row_df = df.filter(pl.col('Item') == actual_name).select(pl.all().exclude('Item'))
+                            if not row_df.is_empty():
+                                is_valid = row_df.select(
+                                    pl.any_horizontal(
+                                        pl.all().is_not_null() & pl.all().is_not_nan()
+                                    )
+                                ).to_series()[0]
+                                if is_valid:
                                     # リネーム処理
                                     if actual_name != standard_name:
                                         # 標準名がNaNで存在する場合も、その名前をこの有効なエイリアスに譲るために一度別名にするなどの処理はPolarsのwhen().then()で対応可能
@@ -217,11 +237,23 @@ def get_financial_data(ticker_obj):
     }
 
     # 4. 総還元性向
-    def process_tp(df_source):
+    def process_tp(df_cf, df_is=None):
         try:
-            if df_source is None or df_source.empty:
+            if df_cf is None or df_cf.empty:
                 return pl.DataFrame()
             
+            # Use pandas level merge to ensure Net Income is available
+            df_source = df_cf.copy()
+            if df_is is not None and not df_is.empty:
+                # Find any net income related rows in IS
+                ni_keys = ['Net Income', 'NetIncome', 'Net Income Common Stockholders', 'Net Income From Continuing Operations']
+                ni_rows = df_is.loc[df_is.index.isin(ni_keys)]
+                if not ni_rows.empty:
+                    # Rename them to 'Net Income' for simplicity during merge
+                    ni_rows.index = ['Net Income'] * len(ni_rows)
+                    # If df_source already has these keys, they will be handled by extract_with_aliases
+                    df_source = pd.concat([df_source, ni_rows])
+
             # Use extract_with_aliases logic locally for TP
             tp_aliases = {
                 'Net Income From Continuing Operations': ['Net Income From Continuing Operations', 'Net Income from Continuing Operations', 'Net Income', 'NetIncome'],
@@ -272,12 +304,12 @@ def get_financial_data(ticker_obj):
             else:
                 return pl.DataFrame()
         except Exception as e:
-            print(f"Error in tp for {symbol}: {e}")
+            # print(f"Error in tp for {symbol}: {e}")
             return pl.DataFrame()
 
     data['tp'] = {
-        'annual': process_tp(utils.safe_get(ticker_obj, 'cashflow')),
-        'quarterly': process_tp(utils.safe_get(ticker_obj, 'quarterly_cashflow'))
+        'annual': process_tp(utils.safe_get(ticker_obj, 'cashflow'), is_annual),
+        'quarterly': process_tp(utils.safe_get(ticker_obj, 'quarterly_cashflow'), is_quarterly)
     }
 
     # 5. PER Valuation Data
