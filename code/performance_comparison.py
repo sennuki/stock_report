@@ -109,6 +109,10 @@ def generate_performance_chart_fig(target_symbol, sector_etf_symbol):
             start_date = last_date - np.timedelta64(p['days'], 'D')
         
         current_period_traces = []
+        valid_symbols_for_period = []
+        
+        # Determine the latest common start date for this period across all symbols
+        period_start_dates = []
         for sym in symbols:
             if sym not in all_data: continue
             df = all_data[sym]
@@ -116,7 +120,16 @@ def generate_performance_chart_fig(target_symbol, sector_etf_symbol):
                 df_p = df.filter(pl.col("Date") >= start_date)
             else:
                 df_p = df
-
+            if not df_p.is_empty():
+                period_start_dates.append(df_p['Date'][0])
+                valid_symbols_for_period.append((sym, df_p))
+        
+        if not period_start_dates: continue
+        common_start_date = max(period_start_dates)
+        
+        for sym, df_p in valid_symbols_for_period:
+            # Sync all to the common start date
+            df_p = df_p.filter(pl.col("Date") >= common_start_date)
             if df_p.is_empty(): continue
 
             # 累積リターン計算 (最初の値を 0% とする)

@@ -135,19 +135,38 @@ class YFinanceAdapterTicker:
 
         # Determine start date for yfinance fetch
         fetch_start = None
+        needs_full_fetch = False
+        
         if not cached_df.empty:
-            # Fetch from last date + 1 day
-            last_date = cached_df.index.max()
-            if isinstance(last_date, pd.Timestamp):
-                fetch_start = (last_date + datetime.timedelta(days=1)).strftime('%Y-%m-%d')
-                # If last update was today or later, no need to fetch
-                if last_date.date() >= datetime.datetime.now(datetime.timezone.utc).date():
-                    return self._trim_period(cached_df, period)
-            else:
+            # Check if cache covers the requested period
+            cache_start = cached_df.index.min()
+            now = datetime.datetime.now(datetime.timezone.utc)
+            
+            # Map period strings to days for checking
+            period_to_days = {
+                '1mo': 30, '3mo': 91, '6mo': 182, 'ytd': 365,
+                '1y': 365, '2y': 365*2, '5y': 365*5, '10y': 365*10, 'max': 365*50
+            }
+            required_days = period_to_days.get(period.lower(), 30)
+            expected_start = now - datetime.timedelta(days=required_days)
+            
+            if cache_start > expected_start:
+                # Cache doesn't have enough history, need to fetch the whole period
+                needs_full_fetch = True
                 fetch_start = None
+            else:
+                # Fetch from last date + 1 day
+                last_date = cached_df.index.max()
+                if isinstance(last_date, pd.Timestamp):
+                    # If last update was today or later, no need to fetch more
+                    if last_date.date() >= now.date():
+                        return self._trim_period(cached_df, period)
+                    fetch_start = (last_date + datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+                else:
+                    fetch_start = None
         else:
             # No cache, full fetch for the period
-            fetch_start = None # Let period handle it
+            fetch_start = None
 
         try:
             # If start/end provided as args, override our incremental logic
@@ -155,12 +174,18 @@ class YFinanceAdapterTicker:
             e_arg = end
             
             # yfinance call
-            if s_arg:
+            if s_arg and not needs_full_fetch:
                 yf_hist = self._yf_ticker.history(start=s_arg, end=e_arg, **kwargs)
             else:
                 yf_hist = self._yf_ticker.history(period=period, **kwargs)
 
             if not yf_hist.empty:
+                # Ensure yf_hist index is UTC-aware and has no timezone shift issues during merge
+                if yf_hist.index.tz is None:
+                    yf_hist.index = yf_hist.index.tz_localize('UTC')
+                else:
+                    yf_hist.index = yf_hist.index.tz_convert('UTC')
+
                 # Merge with cache
                 if not cached_df.empty:
                     # Drop overlapping dates from cache just in case
@@ -181,13 +206,24 @@ class YFinanceAdapterTicker:
     def _trim_period(self, df, period):
         if df.empty: return df
         now = datetime.datetime.now(datetime.timezone.utc)
-        if period == '10y':
-            start_date = now - datetime.timedelta(days=365 * 10)
-            return df[df.index >= start_date]
-        elif period == '1mo':
-            start_date = now - datetime.timedelta(days=30)
-            return df[df.index >= start_date]
-        return df
+        
+        # Mapping yfinance period to days
+        period_to_days = {
+            '1d': 1, '5d': 5, '1mo': 30, '3mo': 91, '6mo': 182, 
+            '1y': 365, '2y': 365*2, '5y': 365*5, '10y': 365*10, 'ytd': None
+        }
+        
+        days = period_to_days.get(period.lower())
+        if period.lower() == 'ytd':
+            # Set to Jan 1st of current year
+            start_date = datetime.datetime(now.year, 1, 1, tzinfo=datetime.timezone.utc)
+        elif days:
+            start_date = now - datetime.timedelta(days=days)
+        else:
+            # Fallback or 'max'
+            return df
+            
+        return df[df.index >= start_date]
 
     @property
     def info(self):
