@@ -5,28 +5,56 @@ async function loadGoogleFont(
 ): Promise<ArrayBuffer> {
   const API = `https://fonts.googleapis.com/css2?family=${font}:wght@${weight}&text=${encodeURIComponent(text)}`;
 
-  const css = await (
-    await fetch(API, {
-      headers: {
-        "User-Agent":
-          "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_8; de-at) AppleWebKit/533.21.1 (KHTML, like Gecko) Version/5.0.5 Safari/533.21.1",
-      },
-    })
-  ).text();
+  const maxAttempts = 3;
+  let attempts = 0;
 
-  const resource = css.match(
-    /src: url\((.+?)\) format\('(opentype|truetype)'\)/
-  );
+  while (attempts <= maxAttempts) {
+    try {
+      const cssResponse = await fetch(API, {
+        headers: {
+          "User-Agent":
+            "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_8; de-at) AppleWebKit/533.21.1 (KHTML, like Gecko) Version/5.0.5 Safari/533.21.1",
+        },
+      });
 
-  if (!resource) throw new Error("Failed to download dynamic font");
+      if (!cssResponse.ok) {
+        if (cssResponse.status === 502 && attempts < maxAttempts) {
+          throw new Error("502");
+        }
+        throw new Error(`CSS fetch failed with status: ${cssResponse.status}`);
+      }
 
-  const res = await fetch(resource[1]);
+      const css = await cssResponse.text();
+      const resource = css.match(
+        /src: url\((.+?)\) format\('(opentype|truetype)'\)/
+      );
 
-  if (!res.ok) {
-    throw new Error("Failed to download dynamic font. Status: " + res.status);
+      if (!resource) throw new Error("Failed to parse font URL from CSS");
+
+      const res = await fetch(resource[1]);
+
+      if (!res.ok) {
+        if (res.status === 502 && attempts < maxAttempts) {
+          throw new Error("502");
+        }
+        throw new Error(`Font fetch failed with status: ${res.status}`);
+      }
+
+      return await res.arrayBuffer();
+    } catch (error: any) {
+      if (error.message === "502" && attempts < maxAttempts) {
+        attempts++;
+        console.warn(
+          `Failed to download dynamic font (502). Retrying attempt ${attempts}...`
+        );
+        await new Promise(resolve => setTimeout(resolve, 1000 * attempts));
+        continue;
+      }
+      throw error;
+    }
   }
 
-  return res.arrayBuffer();
+  throw new Error("Failed to download dynamic font after maximum attempts");
 }
 
 async function loadGoogleFonts(

@@ -287,3 +287,11 @@
 [2026-03-23 22:20:42] [DEBUG  ] [WTW   ] Error fetching yfinance earnings_dates: ['Earnings Date']
 [2026-03-23 22:21:24] [SUCCESS] [SYSTEM] Generated all JSON reports
 [2026-03-23 22:32:27] [WARN   ] [^GSPC ] Failed to load cache: Mixed timezones detected. Pass utc=True in to_datetime or tz='UTC' in DatetimeIndex to convert to a common timezone.
+[2026-03-25 22:39:43] [INFO   ] [SYSTEM] --- Execution started ---
+[2026-03-25 22:45:38] [SUCCESS] [SYSTEM] Fetched 503 companies
+[2026-03-25 22:49:52] [DEBUG  ] [GEN   ] Error fetching yfinance earnings_dates: ['Earnings Date']
+[2026-03-25 22:50:31] [DEBUG  ] [VST   ] Error fetching yfinance earnings_dates: ['Earnings Date']
+[2026-03-25 22:50:41] [DEBUG  ] [ACN   ] Error fetching yfinance earnings_dates: ['Earnings Date']
+[2026-03-25 22:52:06] [DEBUG  ] [O     ] Error fetching yfinance earnings_dates: ['Earnings Date']
+[2026-03-25 22:53:43] [DEBUG  ] [IT    ] Error fetching yfinance earnings_dates: ['Earnings Date']
+[2026-03-25 22:53:57] [SUCCESS] [SYSTEM] Calculated risk metrics
