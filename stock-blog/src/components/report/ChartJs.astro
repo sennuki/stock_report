@@ -260,7 +260,11 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
           chart.data.datasets.forEach((chartDs: any) => {
             const plotlyDs = plotlyData.data[chartDs.originalIndex];
             if (plotlyDs && plotlyDs.y) {
-              chartDs.data = plotlyDs.y;
+              // Ensure alignment with new labels
+              chartDs.data = chart.data.labels.map((label: any) => {
+                const xIdx = (plotlyDs.x || []).findIndex((xv: any) => String(xv) === String(label));
+                return xIdx !== -1 ? plotlyDs.y[xIdx] : null;
+              });
             }
           });
         }
@@ -476,7 +480,12 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
           customText: (d.customdata && d.customdata[i]) ? d.customdata[i][2] : (d.text ? (Array.isArray(d.text) ? d.text[i] : d.text) : '')
         }));
       } else {
-        s.data = d.y || [];
+        // Important: Map individual trace data to global labels to ensure correct alignment
+        // Plotly traces can have different x-axis lengths/ranges, but Chart.js category axis requires synchronized indices
+        s.data = labels.map((label: any) => {
+          const xIdx = (d.x || []).findIndex((xv: any) => String(xv) === String(label));
+          return xIdx !== -1 ? d.y[xIdx] : null;
+        });
       }
 
       // BS/Payout stacking order

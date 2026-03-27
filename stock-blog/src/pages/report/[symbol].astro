@@ -621,22 +621,22 @@ if (reportData?.analyst_ratings) {
                           </td>
                           <td class="px-4 py-3 text-right whitespace-nowrap">
                             <div class="flex items-center justify-end gap-1.5">
-                              {change.priorPriceTarget && change.priorPriceTarget > 0 && (
+                              {change.priorPriceTarget > 0 && (
                                 <span class="text-xs opacity-50">${change.priorPriceTarget}</span>
                               )}
                               {change.priorPriceTarget > 0 && change.currentPriceTarget > 0 && (
                                 <span class="text-xs opacity-30">→</span>
                               )}
-                              {change.currentPriceTarget && change.currentPriceTarget > 0 ? (
+                              {change.currentPriceTarget > 0 ? (
                                 <span class={`font-bold ${
-                                  change.priorPriceTarget && change.priorPriceTarget > 0
+                                  change.priorPriceTarget > 0
                                   ? (change.currentPriceTarget > change.priorPriceTarget ? 'text-green-600' : change.priorPriceTarget > change.currentPriceTarget ? 'text-red-600' : '')
                                   : ''
                                 }`}>
                                   ${change.currentPriceTarget}
                                 </span>
                               ) : (
-                                (!change.priorPriceTarget || !(change.priorPriceTarget > 0)) ? (
+                                !(change.priorPriceTarget > 0) ? (
                                   <span class="opacity-30">---</span>
                                 ) : null
                               )}
