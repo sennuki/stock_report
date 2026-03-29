@@ -436,7 +436,14 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
   function transformPlotlyToChartJs(plotlyData: any, isDark: boolean, textColor: string, gridColor: string, yAxisPosition: string = 'left', canvasId: string = '') {
     const data = plotlyData.data || [];
     const layout = plotlyData.layout || {};
+    if (data.length === 0) return null;
+
     const isScatterChart = data.some((d: any) => d.type === 'scatter' && d.mode && d.mode.includes('markers')) && !data.some((d: any) => d.type === 'bar');
+
+    // Determine global labels for synchronized category axis (before allSeries)
+    const initialVisibleTraces = data.filter((d: any) => d.visible !== false);
+    const firstTrace = initialVisibleTraces[0] || data[0];
+    const labels = !isScatterChart ? (firstTrace?.x || []) : [];
 
     const allSeries = data.map((d: any, idx: number) => {
       const name = d.name || '';
@@ -533,10 +540,7 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
       });
     }
 
-    if (allSeries.length === 0) return null;
     const initialVisible = allSeries.filter((s: any) => s._periodVisible);
-    const firstVisible = initialVisible[0] || allSeries[0];
-    const labels = !isScatterChart ? (data[firstVisible.originalIndex]?.x || []) : [];
     
     let initialMinY, initialMaxY;
     if (isScatterChart) {
