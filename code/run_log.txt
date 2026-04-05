@@ -309,3 +309,4 @@
 [2026-04-05 18:00:33] [DEBUG  ] [VMC   ] Error fetching yf_ticker.info: Failed to perform, curl: (6) Could not resolve host: query2.finance.yahoo.com. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.
 [2026-04-05 18:01:19] [SUCCESS] [SYSTEM] Fetched 503 companies
 [2026-04-05 18:08:45] [SUCCESS] [SYSTEM] Calculated risk metrics
+[2026-04-05 18:52:19] [SUCCESS] [SYSTEM] Generated all JSON reports

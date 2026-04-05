@@ -414,13 +414,23 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols
                     recent_ud = ud.sort_index(ascending=False).head(10).reset_index()
                     
                     # Fetch historical data to get prices at those dates
-                    # We fetch 2 years of data to be sure we cover these dates
-                    hist_for_rating = ticker_obj.history(period="2y")
+                    # We fetch 10 years of data to cover older ratings
+                    hist_for_rating = ticker_obj.history(period="10y")
+                    
+                    # Ensure index is UTC and normalized for comparison
+                    if hist_for_rating.index.tz is None:
+                        hist_for_rating.index = hist_for_rating.index.tz_localize('UTC').normalize()
+                    else:
+                        hist_for_rating.index = hist_for_rating.index.tz_convert('UTC').normalize()
                     
                     def get_price_at_date(date_ts):
                         try:
-                            # Normalize date to midnight for matching
-                            date_only = date_ts.normalize()
+                            # Ensure date_ts is UTC and normalized
+                            if date_ts.tzinfo is None:
+                                date_only = pd.Timestamp(date_ts).tz_localize('UTC').normalize()
+                            else:
+                                date_only = pd.Timestamp(date_ts).tz_convert('UTC').normalize()
+                            
                             if date_only in hist_for_rating.index:
                                 return float(hist_for_rating.loc[date_only]['Close'])
                             # If not found (e.g. weekend), find the closest previous business day
