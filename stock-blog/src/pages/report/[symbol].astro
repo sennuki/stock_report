@@ -584,15 +584,18 @@ if (reportData?.analyst_ratings) {
                         <th scope="col" class="px-4 py-3 text-left font-semibold">格付け</th>
                         <th scope="col" class="px-4 py-3 text-left font-semibold">アクション</th>
                         <th scope="col" class="px-4 py-3 text-right font-semibold">判定時株価</th>
-                        <th scope="col" class="px-4 py-3 text-right font-semibold">目標株価 (新/旧)</th>
-                        <th scope="col" class="px-4 py-3 text-right font-semibold">上昇余地</th>
+                        <th scope="col" class="px-4 py-3 text-right font-semibold">目標株価 (旧→新)</th>
+                        <th scope="col" class="px-4 py-3 text-right font-semibold">判定時乖離</th>
+                        <th scope="col" class="px-4 py-3 text-right font-semibold text-skin-accent bg-skin-fill/5">現在比</th>
                       </tr>
                     </thead>
                     <tbody class="divide-y divide-skin-line">
                       {reportData.rating_changes.map((change: any) => {
                         const currentPrice = reportData.analyst_ratings?.currentPrice;
+                        const basePrice = change.PriceAtRating;
                         const targetPrice = change.currentPriceTarget;
-                        const upside = (currentPrice > 0 && targetPrice > 0) ? (targetPrice / currentPrice - 1) * 100 : null;
+                        const upsideAtRating = (basePrice > 0 && targetPrice > 0) ? (targetPrice / basePrice - 1) * 100 : null;
+                        const upsideCurrent = (currentPrice > 0 && targetPrice > 0) ? (targetPrice / currentPrice - 1) * 100 : null;
                         
                         return (
                         <tr class="hover:bg-skin-fill/10">
@@ -658,9 +661,21 @@ if (reportData?.analyst_ratings) {
                             </div>
                           </td>
                           <td class="px-4 py-3 text-right whitespace-nowrap">
-                            {upside !== null ? (
-                              <span class={`font-bold ${upside > 0 ? 'text-green-600' : upside < 0 ? 'text-red-600' : ''}`}>
-                                {upside > 0 ? '+' : ''}{upside.toFixed(1)}%
+                            {upsideAtRating !== null ? (
+                              <div class="flex flex-col items-end">
+                                <span class={`font-bold ${upsideAtRating > 0 ? 'text-green-600' : upsideAtRating < 0 ? 'text-red-600' : ''}`}>
+                                  {upsideAtRating > 0 ? '+' : ''}{upsideAtRating.toFixed(1)}%
+                                </span>
+                                <span class="text-[10px] opacity-40 leading-none mt-0.5">判定時</span>
+                              </div>
+                            ) : (
+                              <span class="opacity-30">---</span>
+                            )}
+                          </td>
+                          <td class="px-4 py-3 text-right whitespace-nowrap bg-skin-fill/5">
+                            {upsideCurrent !== null ? (
+                              <span class={`font-bold ${upsideCurrent > 0 ? 'text-green-600' : upsideCurrent < 0 ? 'text-red-600' : ''}`}>
+                                {upsideCurrent > 0 ? '+' : ''}{upsideCurrent.toFixed(1)}%
                               </span>
                             ) : (
                               <span class="opacity-30">---</span>
