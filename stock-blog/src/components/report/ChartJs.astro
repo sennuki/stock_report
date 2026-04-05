@@ -87,7 +87,14 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
     const { isDark, textColor, gridColor } = getThemeColors();
     const yAxisPosition = wrapper.dataset.yAxisPosition || 'left';
     const config = transformPlotlyToChartJs(plotlyData, isDark, textColor, gridColor, yAxisPosition, canvas.id);
-    if (!config) return;
+    if (!config) {
+      if (canvas.id === 'chart-performance') console.warn('ChartJs: Config transformation failed for performance chart');
+      return;
+    }
+    
+    if (canvas.id === 'chart-performance') {
+      console.log('ChartJs: Rendering performance chart with', config.data.datasets.length, 'datasets');
+    }
     
     // 既存のチャートを確実に破棄
     const existingChart = Chart.getChart(canvas);
@@ -153,8 +160,10 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
             if (isScatterChart) return;
             
             // Strictly define performance period labels
-            const periodLabels = ['(1ヶ月)', '(3ヶ月)', '(6ヶ月)', '(年初来)', '(1年)', '(3年)', '(5年)', '(10年)', '(全期間)'];
-            const isPerformanceChart = datasets.some((ds: any) => periodLabels.some(p => ds.label.endsWith(p)));
+            const periodLabels = ['1ヶ月', '3ヶ月', '6ヶ月', '年初来', '1年', '3年', '5年', '10年', '全期間'];
+            const isPerformanceChart = datasets.some((ds: any) => 
+              periodLabels.some(p => ds.label.includes(`(${p})`))
+            );
             if (!isPerformanceChart) return;
             
             ctx.save();
@@ -171,10 +180,10 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
               if (value === null || value === undefined) return;
               
               // Only draw for performance datasets
-              if (!periodLabels.some(p => ds.label.endsWith(p))) return;
+              if (!periodLabels.some(p => ds.label.includes(`(${p})`))) return;
               
               const val = value * 100;
-              const text = (val >= 0 ? '+' : '') + val.toFixed(1) + '%';
+              const text = (val >= 0 ? '+' : '') + val.toFixed(2) + '%';
               
               ctx.fillStyle = ds.borderColor;
               ctx.font = 'bold 12px sans-serif';
@@ -316,6 +325,13 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
         if (match) defaultGroup = match[1];
       }
       chart._activeGroup = defaultGroup;
+
+      // Ensure initial visibility is synced with the default group
+      chart.data.datasets.forEach((ds: any, idx: number) => {
+        const inActiveGroup = ds.label.includes(`(${defaultGroup})`);
+        const isUserHidden = chart._userHiddenLabels && chart._userHiddenLabels.has(ds.label);
+        chart.setDatasetVisibility(idx, inActiveGroup && !isUserHidden);
+      });
 
       const groupControls = document.createElement('div');
       groupControls.className = "flex justify-center gap-2 mb-4 w-full";
@@ -585,14 +601,16 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
     }
 
     // Strictly define performance period labels
-    const periodLabels = ['(1ヶ月)', '(3ヶ月)', '(6ヶ月)', '(年初来)', '(1年)', '(3年)', '(5年)', '(10年)', '(全期間)'];
-    const isPerformanceChart = allSeries.some((s: any) => periodLabels.some(p => s.label.endsWith(p)));
+    const periodLabels = ['1ヶ月', '3ヶ月', '6ヶ月', '年初来', '1年', '3年', '5年', '10年', '全期間'];
+    const isPerformanceChart = allSeries.some((s: any) => 
+      periodLabels.some(p => s.label.includes(`(${p})`))
+    );
 
     return {
-      type: isScatterChart ? 'scatter' : 'bar',
+      type: (isScatterChart ? 'scatter' : (isPerformanceChart ? 'line' : 'bar')),
       data: { labels: labels, datasets: allSeries },
       options: {
-        layout: { padding: { right: isPerformanceChart ? 60 : 0 } },
+        layout: { padding: { right: isPerformanceChart ? 80 : 0 } },
         color: textColor,
         responsive: true,
         maintainAspectRatio: false,
@@ -695,7 +713,18 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
     };
   }
 
-  document.addEventListener('astro:page-load', () => setTimeout(initChartJs, 20));
+  // Run on initial script load
+  initChartJs();
+
+  // Run on page transitions (View Transitions)
+  document.addEventListener('astro:page-load', () => {
+    // Reset initialization flags on page load to ensure fresh rendering
+    document.querySelectorAll('.chartjs-graph-div canvas').forEach(c => {
+      (c as any)._chart_initialized = false;
+    });
+    setTimeout(initChartJs, 50);
+  });
+
   const themeObserver = new MutationObserver(() => initChartJs());
   themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'class'] });
 </script>

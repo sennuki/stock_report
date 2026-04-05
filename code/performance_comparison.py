@@ -42,7 +42,8 @@ def get_cached_history(symbol):
         hist = utils.safe_call(ticker, "history", period="10y", max_retries=5)
         if hist is not None and not hist.empty:
             df = pl.from_pandas(hist.reset_index()).select(['Date', 'Close'])
-            df = df.with_columns(pl.col("Date").dt.replace_time_zone(None))
+            # 時刻を切り捨てて日付のみにする
+            df = df.with_columns(pl.col("Date").dt.replace_time_zone(None).dt.date())
             with _cache_lock:
                 _history_cache[symbol] = df
             return df
@@ -78,7 +79,7 @@ def generate_performance_chart_fig(target_symbol, sector_etf_symbol):
         hist = utils.safe_call(ticker, "history", period="10y", max_retries=5)
         if hist is not None and not hist.empty:
             df = pl.from_pandas(hist.reset_index()).select(['Date', 'Close'])
-            df = df.with_columns(pl.col("Date").dt.replace_time_zone(None))
+            df = df.with_columns(pl.col("Date").dt.replace_time_zone(None).dt.date())
             all_data[target_symbol] = df
             last_date = df['Date'][-1]
     except Exception as e:

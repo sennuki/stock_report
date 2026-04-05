@@ -2,7 +2,7 @@
 	"name": "stock-blog",
 	"pages_build_output_dir": "./dist",
 	"compatibility_date": "2026-03-12",
-	"compatibility_flags": ["global_fetch_strictly_public"],
+	"compatibility_flags": ["global_fetch_strictly_public", "nodejs_compat"],
 	"observability": {
 		"enabled": true
 	}
