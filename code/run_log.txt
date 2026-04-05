@@ -295,3 +295,17 @@
 [2026-03-25 22:52:06] [DEBUG  ] [O     ] Error fetching yfinance earnings_dates: ['Earnings Date']
 [2026-03-25 22:53:43] [DEBUG  ] [IT    ] Error fetching yfinance earnings_dates: ['Earnings Date']
 [2026-03-25 22:53:57] [SUCCESS] [SYSTEM] Calculated risk metrics
+[2026-04-05 17:40:30] [INFO   ] [SYSTEM] --- Execution started ---
+[2026-04-05 17:56:22] [DEBUG  ] [VRT   ] Error fetching yf_ticker.info: Failed to perform, curl: (28) Operation timed out after 30002 milliseconds with 0 bytes received. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.
+[2026-04-05 17:59:33] [DEBUG  ] [VRT   ] Error merging DB metrics: Query failed: Could not establish connection
+[2026-04-05 17:59:33] [DEBUG  ] [VTRS  ] Error fetching yf_ticker.info: Failed to perform, curl: (6) Could not resolve host: query2.finance.yahoo.com. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.
+[2026-04-05 17:59:48] [DEBUG  ] [VTRS  ] Error merging DB metrics: Query failed: Could not establish connection
+[2026-04-05 17:59:48] [DEBUG  ] [VICI  ] Error fetching yf_ticker.info: Failed to perform, curl: (6) Could not resolve host: query2.finance.yahoo.com. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.
+[2026-04-05 18:00:03] [DEBUG  ] [VICI  ] Error merging DB metrics: Query failed: Could not establish connection
+[2026-04-05 18:00:03] [DEBUG  ] [V     ] Error fetching yf_ticker.info: Failed to perform, curl: (6) Could not resolve host: query2.finance.yahoo.com. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.
+[2026-04-05 18:00:18] [DEBUG  ] [V     ] Error merging DB metrics: Query failed: Could not establish connection
+[2026-04-05 18:00:18] [DEBUG  ] [VST   ] Error fetching yf_ticker.info: Failed to perform, curl: (6) Could not resolve host: query2.finance.yahoo.com. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.
+[2026-04-05 18:00:33] [DEBUG  ] [VST   ] Error merging DB metrics: Query failed: Could not establish connection
+[2026-04-05 18:00:33] [DEBUG  ] [VMC   ] Error fetching yf_ticker.info: Failed to perform, curl: (6) Could not resolve host: query2.finance.yahoo.com. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.
+[2026-04-05 18:01:19] [SUCCESS] [SYSTEM] Fetched 503 companies
+[2026-04-05 18:08:45] [SUCCESS] [SYSTEM] Calculated risk metrics

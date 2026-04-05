@@ -410,9 +410,31 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols
             try:
                 ud = utils.safe_get(ticker_obj, 'upgrades_downgrades')
                 if ud is not None and not ud.empty:
-                    # Take the last 10 changes, convert index to string
+                    # Sort by date descending
                     recent_ud = ud.sort_index(ascending=False).head(10).reset_index()
-                    # Convert Timestamp to string
+                    
+                    # Fetch historical data to get prices at those dates
+                    # We fetch 2 years of data to be sure we cover these dates
+                    hist_for_rating = ticker_obj.history(period="2y")
+                    
+                    def get_price_at_date(date_ts):
+                        try:
+                            # Normalize date to midnight for matching
+                            date_only = date_ts.normalize()
+                            if date_only in hist_for_rating.index:
+                                return float(hist_for_rating.loc[date_only]['Close'])
+                            # If not found (e.g. weekend), find the closest previous business day
+                            prev_dates = hist_for_rating.index[hist_for_rating.index <= date_only]
+                            if not prev_dates.empty:
+                                return float(hist_for_rating.loc[prev_dates[-1]]['Close'])
+                        except:
+                            pass
+                        return None
+
+                    # Add price at the time of rating
+                    recent_ud['PriceAtRating'] = recent_ud['GradeDate'].apply(get_price_at_date)
+                    
+                    # Convert Timestamp to string for JSON
                     recent_ud['GradeDate'] = recent_ud['GradeDate'].dt.strftime('%Y-%m-%d')
                     # Replace NaN with null for JSON compatibility
                     recent_ud = recent_ud.replace({np.nan: None})

@@ -493,14 +493,9 @@ if (reportData?.analyst_ratings) {
                           <div class="text-sm opacity-70 mb-1">平均目標株価</div>
                           <div class="text-3xl font-bold text-skin-accent">{typeof analystSummary.targetMean === 'number' ? `$${analystSummary.targetMean.toFixed(2)}` : '---'}</div>
                         </div>
-                        {typeof analystSummary.currentPrice === 'number' && typeof analystSummary.targetMean === 'number' && (
-                          <div class={`text-lg font-bold mb-1 ${analystSummary.targetMean > analystSummary.currentPrice ? 'text-green-600' : 'text-red-600'}`}>
-                            {((analystSummary.targetMean / analystSummary.currentPrice - 1) * 100).toFixed(1)}% {analystSummary.targetMean > analystSummary.currentPrice ? '上昇余地' : '下落予想'}
-                          </div>
-                        )}
                       </div>
                       
-                      <div class="grid grid-cols-3 gap-4 text-center">
+                      <div class="grid grid-cols-2 gap-4 text-center">
                         <div class="bg-skin-fill/30 p-3 rounded-md">
                           <div class="text-xs opacity-70 mb-1">最高</div>
                           <div class="text-lg font-bold text-green-600">{typeof analystSummary.targetHigh === 'number' ? `$${analystSummary.targetHigh.toFixed(2)}` : '---'}</div>
@@ -508,10 +503,6 @@ if (reportData?.analyst_ratings) {
                         <div class="bg-skin-fill/30 p-3 rounded-md">
                           <div class="text-xs opacity-70 mb-1">最低</div>
                           <div class="text-lg font-bold text-red-600">{typeof analystSummary.targetLow === 'number' ? `$${analystSummary.targetLow.toFixed(2)}` : '---'}</div>
-                        </div>
-                        <div class="bg-skin-fill/30 p-3 rounded-md">
-                          <div class="text-xs opacity-70 mb-1">現在</div>
-                          <div class="text-lg font-bold opacity-80">{typeof analystSummary.currentPrice === 'number' ? `$${analystSummary.currentPrice.toFixed(2)}` : '---'}</div>
                         </div>
                       </div>
 
@@ -578,11 +569,18 @@ if (reportData?.analyst_ratings) {
                         <th scope="col" class="px-4 py-3 text-left font-semibold">調査会社</th>
                         <th scope="col" class="px-4 py-3 text-left font-semibold">格付け</th>
                         <th scope="col" class="px-4 py-3 text-left font-semibold">アクション</th>
+                        <th scope="col" class="px-4 py-3 text-right font-semibold">判定時株価</th>
                         <th scope="col" class="px-4 py-3 text-right font-semibold">目標株価 (新/旧)</th>
+                        <th scope="col" class="px-4 py-3 text-right font-semibold">上昇余地</th>
                       </tr>
                     </thead>
                     <tbody class="divide-y divide-skin-line">
-                      {reportData.rating_changes.map((change: any) => (
+                      {reportData.rating_changes.map((change: any) => {
+                        const currentPrice = reportData.analyst_ratings?.currentPrice;
+                        const targetPrice = change.currentPriceTarget;
+                        const upside = (currentPrice > 0 && targetPrice > 0) ? (targetPrice / currentPrice - 1) * 100 : null;
+                        
+                        return (
                         <tr class="hover:bg-skin-fill/10">
                           <td class="px-4 py-3 whitespace-nowrap opacity-80">{change.GradeDate}</td>
                           <td class="px-4 py-3 font-medium">{change.Firm}</td>
@@ -619,6 +617,9 @@ if (reportData?.analyst_ratings) {
                               return <span class={colorClass}>{text}</span>;
                             })()}
                           </td>
+                          <td class="px-4 py-3 text-right whitespace-nowrap opacity-70">
+                            {change.PriceAtRating ? `$${change.PriceAtRating.toFixed(2)}` : '---'}
+                          </td>
                           <td class="px-4 py-3 text-right whitespace-nowrap">
                             <div class="flex items-center justify-end gap-1.5">
                               {change.priorPriceTarget > 0 && (
@@ -642,8 +643,17 @@ if (reportData?.analyst_ratings) {
                               )}
                             </div>
                           </td>
+                          <td class="px-4 py-3 text-right whitespace-nowrap">
+                            {upside !== null ? (
+                              <span class={`font-bold ${upside > 0 ? 'text-green-600' : upside < 0 ? 'text-red-600' : ''}`}>
+                                {upside > 0 ? '+' : ''}{upside.toFixed(1)}%
+                              </span>
+                            ) : (
+                              <span class="opacity-30">---</span>
+                            )}
+                          </td>
                         </tr>
-                      ))}
+                      )})}
                     </tbody>
                   </table>
                 </div>

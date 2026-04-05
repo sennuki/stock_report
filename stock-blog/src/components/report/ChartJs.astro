@@ -184,6 +184,7 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
               
               const val = value * 100;
               const text = (val >= 0 ? '+' : '') + val.toFixed(2) + '%';
+
               
               ctx.fillStyle = ds.borderColor;
               ctx.font = 'bold 12px sans-serif';
@@ -204,15 +205,15 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
   function formatYValueAbbreviated(v: any, isPercent: boolean, isPerformance: boolean = false, canvasId: string = '') {
     if (v === null || v === undefined || isNaN(v)) return '';
     if (isPercent) {
-      // 損益計算書(chart-is)と株主還元(chart-tp)の比率は小数点0桁にする
+      // 損益計算書(chart-is)と株主還元(chart-tp)の比率は小数点1桁にする
       const isFinRatio = ['chart-is', 'chart-tp'].includes(canvasId);
       
-      // パフォーマンスチャートは0桁
-      // 財務比率(利益率、総還元性向)も0桁
+      // パフォーマンスチャートは1桁
+      // 財務比率(利益率、総還元性向)も1桁
       // それ以外（配当利回りなど）は2桁
       let decimals = 2;
       if (isPerformance || isFinRatio) {
-        decimals = 0;
+        decimals = 1;
       }
       return (parseFloat(v) * 100).toFixed(decimals) + '%';
     }
@@ -252,16 +253,27 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
     const isScatterChart = chart.config.type === 'scatter';
 
     const updateLabelsAndScales = () => {
-      // Find ANY dataset in the new group to use as the label source (ignoring visibility)
-      const groupSourceIdx = chart.data.datasets.findIndex((ds:any) => {
+      // Find ALL datasets in the new group
+      const groupTraces = chart.data.datasets.filter((ds: any) => {
         return chart._activeGroup ? ds.label.includes(`(${chart._activeGroup})`) : true;
       });
 
-      if (!isScatterChart && groupSourceIdx !== -1) {
-        const ds = chart.data.datasets[groupSourceIdx];
-        const originalDataSeries = plotlyData.data[ds.originalIndex];
+      if (!isScatterChart && groupTraces.length > 0) {
+        // Find the trace with most points to use as labels (avoiding truncation if Target has less data than S&P 500)
+        let bestTraceIdx = -1;
+        let maxLen = -1;
         
-        if (originalDataSeries && originalDataSeries.x) {
+        groupTraces.forEach(ds => {
+          const plotlyDs = plotlyData.data[ds.originalIndex];
+          if (plotlyDs && plotlyDs.x && plotlyDs.x.length > maxLen) {
+            maxLen = plotlyDs.x.length;
+            bestTraceIdx = ds.originalIndex;
+          }
+        });
+
+        if (bestTraceIdx !== -1) {
+          const originalDataSeries = plotlyData.data[bestTraceIdx];
+          
           // Update the global labels
           chart.data.labels = originalDataSeries.x;
           
@@ -580,9 +592,12 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
         callback: function(this: any, val: any): any {
           // For category axis, we get the label string
           const label: any = this.getLabelForValue(val);
-          if (typeof label === 'string' && label.includes('T')) {
-            // Convert "2024-03-08T00:00:00" to "2024-03-08"
-            return label.split('T')[0];
+          if (typeof label === 'string') {
+            const datePart = label.split('T')[0];
+            if (datePart.match(/^\d{4}-\d{2}-\d{2}$/)) {
+              return datePart.replace(/-/g, '/');
+            }
+            return datePart;
           }
           return label;
         }
