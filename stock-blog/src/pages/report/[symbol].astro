@@ -307,6 +307,18 @@ if (reportData?.analyst_ratings) {
                   <div class="text-xs opacity-50 mt-1">流動比率: {typeof reportData.highlights.current_ratio === 'number' ? reportData.highlights.current_ratio.toFixed(2) : '---'}</div>
                 </div>
               </div>
+              <div class="mt-6 p-4 bg-red-50/30 border border-red-200/50 rounded-lg text-xs text-red-800/80">
+                <p class="font-bold flex items-center gap-1 mb-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                  財務データに関する重要事項
+                </p>
+                <p>
+                  本レポートに使用されている財務データは外部API（yfinance）を通じて自動取得されており、時期や項目の分類方法により実際の決算数値と異なる場合があります。
+                  特に合併・分社化、会計方針の変更があった銘柄では正確な推移が表示されない可能性があります。投資判断の際は必ず公式サイトのIR情報を併せてご確認ください。
+                </p>
+              </div>
               <p class="text-xs text-gray-500 mt-4 italic">
                 ※YoY (Year over Year): 前年同期比。前年の同じ時期と比較した成長率を示します。季節的な変動を排除して、企業の純粋な成長性を判断するための重要な指標です。
               </p>
@@ -458,6 +470,21 @@ if (reportData?.analyst_ratings) {
 
           <div id="cash-flow" class="scroll-mt-20 my-24">
             <ChartJs chartData={reportData.charts.cf} id="chart-cf" title="キャッシュフロー" />
+            {reportData.is_financial && (
+              <div class="mt-4 p-4 bg-skin-fill/30 border border-skin-line rounded-lg text-sm text-gray-500 italic">
+                <p class="flex items-center gap-2 mb-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-skin-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <strong>金融・不動産セクターのキャッシュフローに関する注意点:</strong>
+                </p>
+                <p>
+                  金融（銀行、証券など）や一部の不動産セクターでは、営業キャッシュフローおよびフリーキャッシュフローに「顧客からの預り金」や「担保金」の増減が含まれる場合があります。
+                  そのため、純利益と比べてキャッシュフローが極端に大きく（あるいは小さく）表示されることがありますが、これは業種特有の会計上の特性によるものです。
+                  これらの業種では、FCFよりも純利益や営業利益の推移、または自己資本比率やROEなどの指標を重視して分析することをお勧めします。
+                </p>
+              </div>
+            )}
           </div>
 
           <div id="shareholder-return" class="scroll-mt-20 my-24">

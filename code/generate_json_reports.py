@@ -101,6 +101,9 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols
         "Materials": "XLB", "Real Estate": "XLRE", "Utilities": "XLU"
     }
     sector_etf_ticker = sector_map.get(current_sector, "SPY")
+    
+    # Financial sector flag for FCF warning
+    is_financial = current_sector in ["Financials", "Real Estate"]
 
     # 1. Financial Data & Charts
     report_data = {
@@ -113,6 +116,7 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols
         "exchange": exchange,
         "full_symbol": full_symbol,
         "sector_etf": sector_etf_ticker,
+        "is_financial": is_financial,
         "is_available_monex": is_available_monex,
         "is_available_rakuten": is_available_rakuten,
         "is_available_sbi": is_available_sbi,

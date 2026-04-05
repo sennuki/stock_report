@@ -63,7 +63,48 @@ def get_monex_available_symbols():
             if symbol and any(c.isalnum() for c in symbol):
                 mapping[symbol] = ja_name
     
+    # マネックスで不足している日本語名（REITなど）を補完
+    # 注意: ここに追加しても取扱銘柄フラグ(Monex)には影響させないため、
+    # 別の関数でこれらをマージして利用する
     return mapping
+
+def get_manual_ja_name_map():
+    return {
+        "AMT": "アメリカン・タワー",
+        "ARE": "アレクサンドリア・リアル・エステート・エクイティーズ",
+        "AVB": "アバロンベイ・コミュニティーズ",
+        "BXP": "BXP",
+        "CCI": "クラウン・キャッスル",
+        "CPT": "カムデン・プロパティ・トラスト",
+        "DLR": "デジタル・リアルティ",
+        "DOC": "ヘルスピーク・プロパティーズ",
+        "EQIX": "エクイニクス",
+        "EQR": "エクイティ・レジデンシャル",
+        "ESS": "エセックス・プロパティ・トラスト",
+        "EXR": "エクストラ・スペース・ストレージ",
+        "FRT": "フェデラル・リアルティー・インベストメント・トラスト",
+        "HST": "ホスト・ホテルズ＆リゾーツ",
+        "INVH": "インビテーション・ホームズ",
+        "IRM": "アイアン・マウンテン",
+        "KIM": "キムコ・リアルティ",
+        "MAA": "ミッド・アメリカ・アパートメント・コミュニティーズ",
+        "O": "リアルティー・インカム",
+        "PLD": "プロロジス",
+        "PSA": "パブリック・ストレージ",
+        "REG": "リージェンシー・センターズ",
+        "SBAC": "SBAコミュニケーションズ",
+        "SPG": "サイモン・プロパティ・グループ",
+        "UDR": "UDR",
+        "VICI": "VICIプロパティーズ",
+        "VTR": "ベンタス",
+        "WELL": "ウェルタワー",
+        "WY": "ウェアーハウザー"
+    }
+
+def get_combined_ja_name_map():
+    monex_mapping = get_monex_available_symbols()
+    manual_mapping = get_manual_ja_name_map()
+    return {**monex_mapping, **manual_mapping}
 
 def get_rakuten_available_symbols():
     """
@@ -364,8 +405,8 @@ def fetch_sp500_companies_optimized():
             pl.col('Symbol').str.replace(r"-", ".", literal=False).alias('Symbol')
         ])
 
-        # マネックスの日本語名マッピングを取得
-        monex_mapping = get_monex_available_symbols()
+        # マネックスの日本語名マッピングを取得 (手動補完分を含む)
+        ja_name_combined_mapping = get_combined_ja_name_map()
 
         symbols = df['Symbol_YF'].to_list()
         ex_map = {}
@@ -387,9 +428,9 @@ def fetch_sp500_companies_optimized():
                 
                 # 日本語名の紐付け (Yahoo Finance 用シンボル A -> A, BRK-B -> BRK.B など考慮)
                 display_symbol = s.replace("-", ".")
-                ja_name = monex_mapping.get(display_symbol)
+                ja_name = ja_name_combined_mapping.get(display_symbol)
                 if not ja_name:
-                    ja_name = monex_mapping.get(s)
+                    ja_name = ja_name_combined_mapping.get(s)
                 
                 ja_name_map[s] = ja_name
 
