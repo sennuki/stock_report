@@ -144,6 +144,8 @@ if (reportData?.analyst_ratings) {
                 <li><a href="#performance" class="text-skin-accent hover:underline">{symbol}のパフォーマンス比較</a></li>
                 <li><a href="#earnings-highlights" class="text-skin-accent hover:underline">{symbol}の直近決算・財務ハイライト</a></li>
                 <li><a href="#next-earnings" class="text-skin-accent hover:underline">{symbol}の来期業績予想</a></li>
+                <li><a href="#revenue-by-segment" class="text-skin-accent hover:underline">{symbol}のセグメント収益</a></li>
+                <li><a href="#revenue-by-geography" class="text-skin-accent hover:underline">{symbol}の地域別収益</a></li>
                 <li><a href="#fundamentals" class="text-skin-accent hover:underline">{symbol}のファンダメンタルズ分析 (概要)</a></li>
                 <li><a href="#fundamentals-detail" class="text-skin-accent hover:underline">{symbol}の財務データ推移 (詳細)</a></li>
                 <li><a href="#analyst-ratings" class="text-skin-accent hover:underline">{symbol}のアナリスト評価 (直近)</a></li>
@@ -458,6 +460,18 @@ if (reportData?.analyst_ratings) {
 
         <section id="fundamentals-detail" class="mt-12">
           <h2 class="text-2xl font-bold mb-8 border-b pb-2">📈 {symbol}の財務データ推移 (詳細分析)</h2>
+
+          {reportData.charts.segment && (
+            <div id="revenue-by-segment" class="scroll-mt-20 my-24">
+              <ChartJs chartData={reportData.charts.segment} id="chart-segment" title="セグメント収益" />
+            </div>
+          )}
+
+          {reportData.charts.geo && (
+            <div id="revenue-by-geography" class="scroll-mt-20 my-24">
+              <ChartJs chartData={reportData.charts.geo} id="chart-geo" title="地域別収益" />
+            </div>
+          )}
 
           <div id="balance-sheet" class="scroll-mt-20 my-24">
             <ChartJs chartData={reportData.charts.bs} id="chart-bs" title="貸借対照表" />

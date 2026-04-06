@@ -109,7 +109,7 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
           afterDatasetsDraw: (chart: any) => {
             const { ctx, data } = chart;
             // 棒グラフかつ、特定の財務・配当チャートを対象とする
-            const targetIds = ['chart-bs', 'chart-is', 'chart-cf', 'chart-tp', 'chart-dps'];
+            const targetIds = ['chart-bs', 'chart-is', 'chart-cf', 'chart-tp', 'chart-dps', 'chart-segment', 'chart-geo'];
             if (!targetIds.includes(canvas.id)) return;
 
             // スマホ画面かつ「権利落日別」タブの場合は配当チャートの数値を非表示にする
@@ -319,7 +319,7 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
     };
 
     if (hasGroups) {
-      const order = ["1ヶ月", "3ヶ月", "6ヶ月", "年初来", "1年", "3年", "5年", "10年", "全期間", "通年", "四半期", "年間推移", "権利落日別"];
+      const order = ["1ヶ月", "3ヶ月", "6ヶ月", "年初来", "1年", "3年", "5年", "10年", "全期間", "四半期", "通年", "年間推移", "権利落日別"];
       const groupList = Array.from(groups).sort((a, b) => {
         const indexA = order.indexOf(a);
         const indexB = order.indexOf(b);
@@ -477,6 +477,8 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
       const name = d.name || '';
       const isRatio = name.includes('率') || name.includes('性向');
       const type = (d.type === 'bar') ? 'bar' : (isScatterChart ? 'scatter' : (isRatio ? 'line' : 'line'));
+      
+      // Prioritize marker color from Plotly (explicitly set for segments)
       let baseColor = d.marker?.color || d.line?.color || (isDark ? '#ff6b01' : '#006cac');
       if (isScatterChart && name.includes('S&P') && !name.includes('銘柄')) baseColor = '#22c55e';
 
@@ -540,6 +542,8 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
       else if (name.includes('負債') || name.includes('純資産')) s.stack = offsetGroup || 'liabilities';
       else if (name.includes('配当金') || name.includes('自社株買い')) s.stack = offsetGroup || 'payout';
       else if (name.includes('純利益') && !isRatio) s.stack = offsetGroup || (data.some((os: any) => os.name && os.name.includes('営業CF')) ? 'net_income_cf' : 'net_income_is');
+      else if (canvasId === 'chart-segment') s.stack = offsetGroup || 'segment';
+      else if (canvasId === 'chart-geo') s.stack = offsetGroup || 'geography';
       else if (type === 'bar') s.stack = offsetGroup || name.replace(' (Q)', '').replace(' (年間推移)', '');
 
       return s;
@@ -557,8 +561,9 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
           'group-0': 10, 'assets': 10,
           'group-1': 60, 'liabilities': 60,
           'net_income_cf': 5, '売上高': 10, '売上総利益': 20, '営業利益': 30, 'net_income_is': 50, 
-          '営業CF': 10, '投資CF': 20, '財務CF': 30, 'フリーCF': 40, 'payout': 70 
-        };        const pA = groupPriority[a.stack] || 99;
+          '営業CF': 10, '投資CF': 20, '財務CF': 30, 'フリーCF': 40, 'payout': 70, 'segment': 80, 'geography': 90
+        };
+        const pA = groupPriority[a.stack] || 99;
         const pB = groupPriority[b.stack] || 99;
         if (pA !== pB) return pA - pB;
         if (a.type !== b.type) return a.type === 'bar' ? -1 : 1;

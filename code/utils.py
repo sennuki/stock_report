@@ -489,6 +489,27 @@ class YFinanceAdapterTicker:
             return self._yf_ticker.quarterly_cashflow
         except: return pd.DataFrame()
 
+    def revenue_by_segment(self):
+        try:
+            return self._db_ticker.revenue_by_segment()
+        except Exception as e:
+            log_event("DEBUG", self.ticker, f"Error in revenue_by_segment: {e}")
+            return pd.DataFrame()
+
+    def revenue_by_product(self):
+        try:
+            return self._db_ticker.revenue_by_product()
+        except Exception as e:
+            log_event("DEBUG", self.ticker, f"Error in revenue_by_product: {e}")
+            return pd.DataFrame()
+
+    def revenue_by_geography(self):
+        try:
+            return self._db_ticker.revenue_by_geography()
+        except Exception as e:
+            log_event("DEBUG", self.ticker, f"Error in revenue_by_geography: {e}")
+            return pd.DataFrame()
+
 def get_ticker(symbol):
     """
     Returns a ticker object. Currently switched to use Defeat Beta API adapter.

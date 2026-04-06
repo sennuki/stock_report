@@ -312,6 +312,30 @@ def get_financial_data(ticker_obj):
         'quarterly': process_tp(utils.safe_get(ticker_obj, 'quarterly_cashflow'), is_quarterly)
     }
 
+    # 7. Segment Revenue Data
+    try:
+        df_seg = utils.safe_call(ticker_obj, 'revenue_by_segment')
+        if df_seg is not None and not df_seg.empty:
+            # We want to filter out rows where all segment values are 0
+            seg_cols = [c for c in df_seg.columns if c not in ['symbol', 'report_date']]
+            if seg_cols:
+                # Remove rows where all segments are 0 or NaN
+                df_seg = df_seg[df_seg[seg_cols].sum(axis=1) > 0]
+                if not df_seg.empty:
+                    # Rename 'report_date' to 'Date' for consistency
+                    df_seg = df_seg.rename(columns={'report_date': 'Date'})
+                    # Convert to Polars
+                    data['segment'] = pl.from_pandas(df_seg)
+                else:
+                    data['segment'] = pl.DataFrame()
+            else:
+                data['segment'] = pl.DataFrame()
+        else:
+            data['segment'] = pl.DataFrame()
+    except Exception as e:
+        print(f"Error fetching segment data for {symbol}: {e}")
+        data['segment'] = pl.DataFrame()
+
     # 5. PER Valuation Data
     # try:
     #     # Get historical EPS
@@ -493,7 +517,100 @@ def get_financial_data(ticker_obj):
         print(f"Error fetching dividends for {symbol}: {e}")
         data['dps'] = {'annual': pl.DataFrame(), 'quarterly': pl.DataFrame()}
 
+    # 8. Geographic Revenue Data
+    try:
+        df_geo = utils.safe_call(ticker_obj, 'revenue_by_geography')
+        if df_geo is not None and not df_geo.empty:
+            geo_cols = [c for c in df_geo.columns if c not in ['symbol', 'report_date']]
+            if geo_cols:
+                df_geo = df_geo[df_geo[geo_cols].sum(axis=1) > 0]
+                if not df_geo.empty:
+                    df_geo = df_geo.rename(columns={'report_date': 'Date'})
+                    data['geography'] = pl.from_pandas(df_geo)
+                else:
+                    data['geography'] = pl.DataFrame()
+            else:
+                data['geography'] = pl.DataFrame()
+        else:
+            data['geography'] = pl.DataFrame()
+    except Exception as e:
+        print(f"Error fetching geographic data for {symbol}: {e}")
+        data['geography'] = pl.DataFrame()
+
     return data
+
+def get_geo_chart_html(data_dict):
+    fig = get_geo_chart_data(data_dict)
+    if isinstance(fig, str): return f'<h3 id="revenue-by-geography">地域別収益</h3><p>{fig}</p>'
+    return '<h3 id="revenue-by-geography">地域別収益</h3>' + create_chart_html(fig)
+
+def get_geo_chart_data(df_geo):
+    if df_geo is None or df_geo.is_empty():
+        return '詳細な地域別収益のデータが取得できませんでした（企業による未開示、またはデータソースの制約によるもの）。'
+    
+    # report_date (Date) と symbol を除く列が項目
+    cols_all = [c for c in df_geo.columns if c not in ['symbol', 'Date']]
+    if not cols_all:
+        return '詳細な地域別収益のデータが取得できませんでした（企業による未開示、またはデータソースの制約によるもの）。'
+
+    # 1. 四半期データ (直近12四半期)
+    df_q = df_geo.sort('Date').tail(12)
+    active_cols_q = [col for col in cols_all if df_q[col].sum() != 0]
+
+    # 2. 通年データ (年次集計)
+    try:
+        df_a = df_geo.with_columns(
+            pl.col("Date").str.slice(0, 4).alias("Year")
+        ).group_by("Year").agg([pl.col(c).sum() for c in cols_all]).sort("Year").tail(5)
+        active_cols_a = [col for col in cols_all if df_a[col].sum() != 0]
+    except Exception as e:
+        # print(f"Error in geo aggregation: {e}")
+        df_a = pl.DataFrame()
+        active_cols_a = []
+
+    if not active_cols_q and not active_cols_a:
+        return '詳細な地域別収益のデータが取得できませんでした（企業による未開示、またはデータソースの制約によるもの）。'
+
+    fig = go.Figure()
+    # カラーパレット
+    colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd',
+              '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
+
+    # 四半期トレース (Default visible)
+    for i, col in enumerate(active_cols_q):
+        fig.add_trace(go.Bar(
+            name=f"{col} (四半期)",
+            x=df_q['Date'],
+            y=df_q[col],
+            marker_color=colors[i % len(colors)],
+            visible=True,
+            hovertemplate='日付: %{x}<br>地域: ' + col + '<br>収益: $%{y:,.0f}<extra></extra>'
+        ))
+
+    # 通年トレース (Hidden by default)
+    num_q = len(active_cols_q)
+    for i, col in enumerate(active_cols_a):
+        fig.add_trace(go.Bar(
+            name=f"{col} (通年)",
+            x=df_a['Year'],
+            y=df_a[col],
+            marker_color=colors[i % len(colors)],
+            visible=False,
+            hovertemplate='年度: %{x}<br>地域: ' + col + '<br>収益: $%{y:,.0f}<extra></extra>'
+        ))
+
+    fig.update_layout(
+        barmode='stack',
+        height=500,
+        margin=dict(t=50, b=80, l=60, r=40),
+        template='plotly_white',
+        showlegend=True,
+        xaxis=dict(type='category', tickangle=0),
+        yaxis=dict(title='収益 ($)', type='linear', automargin=True, gridcolor='#F3F4F6'),
+        legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5)
+    )
+
+    return fig
 
 def get_valuation_chart_data(valuation_data):
     """
@@ -978,3 +1095,74 @@ def get_tp_chart_data(data_dict):
     )
     return fig
 
+def get_segment_chart_html(data_dict):
+    fig = get_segment_chart_data(data_dict)
+    if isinstance(fig, str): return f'<h3 id="revenue-by-segment">セグメント収益</h3><p>{fig}</p>'
+    return '<h3 id="revenue-by-segment">セグメント収益</h3>' + create_chart_html(fig)
+
+def get_segment_chart_data(df_segment):
+    if df_segment is None or df_segment.is_empty():
+        return '詳細なセグメント収益のデータが取得できませんでした（企業による未開示、またはデータソースの制約によるもの）。'
+
+    # report_date (Date) と symbol を除く列がセグメント
+    seg_cols_all = [c for c in df_segment.columns if c not in ['symbol', 'Date']]
+    if not seg_cols_all:
+        return '詳細なセグメント収益のデータが取得できませんでした（企業による未開示、またはデータソースの制約によるもの）。'
+
+    # 1. 四半期データ (直近12四半期)
+    df_q = df_segment.sort('Date').tail(12)
+    active_seg_cols_q = [col for col in seg_cols_all if df_q[col].sum() != 0]
+
+    # 2. 通年データ (年次集計)
+    try:
+        df_a = df_segment.with_columns(
+            pl.col("Date").str.slice(0, 4).alias("Year")
+        ).group_by("Year").agg([pl.col(c).sum() for c in seg_cols_all]).sort("Year").tail(5)
+        active_seg_cols_a = [col for col in seg_cols_all if df_a[col].sum() != 0]
+    except Exception as e:
+        # print(f"Error in segment aggregation: {e}")
+        df_a = pl.DataFrame()
+        active_seg_cols_a = []
+
+    if not active_seg_cols_q and not active_seg_cols_a:
+        return '詳細なセグメント収益のデータが取得できませんでした（企業による未開示、またはデータソースの制約によるもの）。'
+    fig = go.Figure()
+    # 視認性の高いカラーパレット
+    colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd',
+              '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
+
+    # 四半期トレース (Default visible)
+    for i, col in enumerate(active_seg_cols_q):
+        fig.add_trace(go.Bar(
+            name=f"{col} (四半期)",
+            x=df_q['Date'],
+            y=df_q[col],
+            marker_color=colors[i % len(colors)],
+            visible=True,
+            hovertemplate='日付: %{x}<br>セグメント: ' + col + '<br>収益: $%{y:,.0f}<extra></extra>'
+        ))
+
+    # 通年トレース (Hidden by default)
+    num_q = len(active_seg_cols_q)
+    for i, col in enumerate(active_seg_cols_a):
+        fig.add_trace(go.Bar(
+            name=f"{col} (通年)",
+            x=df_a['Year'],
+            y=df_a[col],
+            marker_color=colors[i % len(colors)],
+            visible=False,
+            hovertemplate='年度: %{x}<br>セグメント: ' + col + '<br>収益: $%{y:,.0f}<extra></extra>'
+        ))
+
+    fig.update_layout(
+        barmode='stack',
+        height=500,
+        margin=dict(t=50, b=80, l=60, r=40),
+        template='plotly_white',
+        showlegend=True,
+        xaxis=dict(type='category', tickangle=0),
+        yaxis=dict(title='収益 ($)', type='linear', automargin=True, gridcolor='#F3F4F6'),
+        legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5)
+    )
+
+    return fig

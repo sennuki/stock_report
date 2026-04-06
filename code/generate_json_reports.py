@@ -137,6 +137,8 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols
         report_data["charts"]["tp"] = fig_to_dict(fundamentals.get_tp_chart_data(fin_data.get('tp', {})))
         report_data["charts"]["dps"] = fig_to_dict(fundamentals.get_dps_eps_chart_data(fin_data.get('dps', {}), fin_data.get('is', {})))
         report_data["charts"]["dps_history"] = fig_to_dict(fundamentals.get_dps_history_chart_data(fin_data.get('dps', {})))
+        report_data["charts"]["segment"] = fig_to_dict(fundamentals.get_segment_chart_data(fin_data.get('segment', pl.DataFrame())))
+        report_data["charts"]["geo"] = fig_to_dict(fundamentals.get_geo_chart_data(fin_data.get('geography', pl.DataFrame())))
         
         # --- Add Valuation Data ---
         # if "valuation" in fin_data:
@@ -535,6 +537,21 @@ def export_json_reports(df_info, df_metrics, output_dir="../stock-blog/public/re
     output_dir = os.path.join(base_dir, output_dir)
     if not os.path.exists(output_dir): os.makedirs(output_dir)
 
+    # Also update the master list used by Astro for page generation
+    stocks_json_path = os.path.join(base_dir, "../stock-blog/src/data/stocks.json")
+    
+    # Merge df_info with df_metrics to have Daily_Change for the index page
+    try:
+        df_master = df_info.join(df_metrics.select(["Symbol", "Daily_Change"]), left_on="Symbol_YF", right_on="Symbol", how="left")
+        # Ensure it's sorted by Symbol for a consistent UI
+        df_master = df_master.sort("Symbol")
+        
+        with open(stocks_json_path, "w", encoding="utf-8") as f:
+            json.dump(df_master.to_dicts(), f, ensure_ascii=False, indent=2)
+        print(f"マスター銘柄リスト更新完了: {stocks_json_path}")
+    except Exception as me:
+        print(f"マスター銘柄リスト更新エラー: {me}")
+
     print(f"\nJSONレポート生成開始: {output_dir}")
     
     # 全銘柄の直近の価格データをまとめて取得 (一括ダウンロード)
@@ -576,15 +593,46 @@ def export_json_reports(df_info, df_metrics, output_dir="../stock-blog/public/re
                 print(f"Error processing {ticker}: {e}")
 
 if __name__ == "__main__":
-    print("Testing JSON generation for MSFT...")
-    test_symbol = "MSFT"
-    df_info = pl.DataFrame({
-        "Symbol": [test_symbol],
-        "Symbol_YF": [test_symbol],
-        "Security": ["Microsoft Corp"],
-        "GICS Sector": ["Information Technology"],
-        "GICS Sub-Industry": ["Systems Software"],
-        "Exchange": ["NASDAQ"]
-    })
-    df_metrics = risk_return.calculate_market_metrics_parallel([test_symbol])
+    print("Testing JSON generation for all sectors (2 stocks per sector + MSFT)...")
+    
+    test_data = [
+        # Communication Services
+        {"Symbol": "GOOGL", "Symbol_YF": "GOOGL", "Security": "Alphabet Inc", "Security_JA": "アルファベット", "GICS Sector": "Communication Services", "GICS Sub-Industry": "Interactive Media", "Exchange": "NASDAQ"},
+        {"Symbol": "META", "Symbol_YF": "META", "Security": "Meta Platforms Inc", "Security_JA": "メタ・プラットフォームズ", "GICS Sector": "Communication Services", "GICS Sub-Industry": "Interactive Media", "Exchange": "NASDAQ"},
+        # Consumer Discretionary
+        {"Symbol": "AMZN", "Symbol_YF": "AMZN", "Security": "Amazon.com Inc", "Security_JA": "アマゾン・ドット・コム", "GICS Sector": "Consumer Discretionary", "GICS Sub-Industry": "Broadline Retail", "Exchange": "NASDAQ"},
+        {"Symbol": "TSLA", "Symbol_YF": "TSLA", "Security": "Tesla Inc", "Security_JA": "テスラ", "GICS Sector": "Consumer Discretionary", "GICS Sub-Industry": "Automobile Manufacturers", "Exchange": "NASDAQ"},
+        # Consumer Staples
+        {"Symbol": "PG", "Symbol_YF": "PG", "Security": "Procter & Gamble", "Security_JA": "プロクター・アンド・ギャンブル", "GICS Sector": "Consumer Staples", "GICS Sub-Industry": "Household Products", "Exchange": "NYSE"},
+        {"Symbol": "KO", "Symbol_YF": "KO", "Security": "Coca-Cola Co", "Security_JA": "コカ・コーラ", "GICS Sector": "Consumer Staples", "GICS Sub-Industry": "Soft Drinks", "Exchange": "NYSE"},
+        # Energy
+        {"Symbol": "XOM", "Symbol_YF": "XOM", "Security": "Exxon Mobil Corp", "Security_JA": "エクソンモービル", "GICS Sector": "Energy", "GICS Sub-Industry": "Integrated Oil & Gas", "Exchange": "NYSE"},
+        {"Symbol": "CVX", "Symbol_YF": "CVX", "Security": "Chevron Corp", "Security_JA": "シェブロン", "GICS Sector": "Energy", "GICS Sub-Industry": "Integrated Oil & Gas", "Exchange": "NYSE"},
+        # Financials
+        {"Symbol": "JPM", "Symbol_YF": "JPM", "Security": "JPMorgan Chase & Co", "Security_JA": "JPモルガン・チェース", "GICS Sector": "Financials", "GICS Sub-Industry": "Diversified Banks", "Exchange": "NYSE"},
+        {"Symbol": "V", "Symbol_YF": "V", "Security": "Visa Inc", "Security_JA": "ビザ", "GICS Sector": "Financials", "GICS Sub-Industry": "Transaction & Payment Processing Services", "Exchange": "NYSE"},
+        # Health Care
+        {"Symbol": "JNJ", "Symbol_YF": "JNJ", "Security": "Johnson & Johnson", "Security_JA": "ジョンソン・エンド・ジョンソン", "GICS Sector": "Health Care", "GICS Sub-Industry": "Pharmaceuticals", "Exchange": "NYSE"},
+        {"Symbol": "LLY", "Symbol_YF": "LLY", "Security": "Eli Lilly & Co", "Security_JA": "イーライリリー", "GICS Sector": "Health Care", "GICS Sub-Industry": "Pharmaceuticals", "Exchange": "NYSE"},
+        # Industrials
+        {"Symbol": "CAT", "Symbol_YF": "CAT", "Security": "Caterpillar Inc", "Security_JA": "キャタピラー", "GICS Sector": "Industrials", "GICS Sub-Industry": "Construction Machinery & Heavy Transportation Equipment", "Exchange": "NYSE"},
+        {"Symbol": "HON", "Symbol_YF": "HON", "Security": "Honeywell International", "Security_JA": "ハネウェル・インターナショナル", "GICS Sector": "Industrials", "GICS Sub-Industry": "Industrial Conglomerates", "Exchange": "NASDAQ"},
+        # Information Technology
+        {"Symbol": "MSFT", "Symbol_YF": "MSFT", "Security": "Microsoft Corp", "Security_JA": "マイクロソフト", "GICS Sector": "Information Technology", "GICS Sub-Industry": "Systems Software", "Exchange": "NASDAQ"},
+        {"Symbol": "AAPL", "Symbol_YF": "AAPL", "Security": "Apple Inc", "Security_JA": "アップル", "GICS Sector": "Information Technology", "GICS Sub-Industry": "Technology Hardware Storage & Peripherals", "Exchange": "NASDAQ"},
+        # Materials
+        {"Symbol": "LIN", "Symbol_YF": "LIN", "Security": "Linde plc", "Security_JA": "リンデ", "GICS Sector": "Materials", "GICS Sub-Industry": "Industrial Gases", "Exchange": "NYSE"},
+        {"Symbol": "SHW", "Symbol_YF": "SHW", "Security": "Sherwin-Williams Co", "Security_JA": "シャーウィン・ウィリアムズ", "GICS Sector": "Materials", "GICS Sub-Industry": "Specialty Chemicals", "Exchange": "NYSE"},
+        # Real Estate
+        {"Symbol": "PLD", "Symbol_YF": "PLD", "Security": "Prologis Inc", "Security_JA": "プロロジス", "GICS Sector": "Real Estate", "GICS Sub-Industry": "Industrial REITs", "Exchange": "NYSE"},
+        {"Symbol": "AMT", "Symbol_YF": "AMT", "Security": "American Tower Corp", "Security_JA": "アメリカン・タワー", "GICS Sector": "Real Estate", "GICS Sub-Industry": "Telecom Tower REITs", "Exchange": "NYSE"},
+        # Utilities
+        {"Symbol": "NEE", "Symbol_YF": "NEE", "Security": "NextEra Energy", "Security_JA": "ネクステラ・エナジー", "GICS Sector": "Utilities", "GICS Sub-Industry": "Electric Utilities", "Exchange": "NYSE"},
+        {"Symbol": "SO", "Symbol_YF": "SO", "Security": "Southern Co", "Security_JA": "サザンカンパニー", "GICS Sector": "Utilities", "GICS Sub-Industry": "Electric Utilities", "Exchange": "NYSE"}
+    ]
+    
+    df_info = pl.DataFrame(test_data)
+    test_symbols = df_info["Symbol_YF"].to_list()
+    
+    df_metrics = risk_return.calculate_market_metrics_parallel(test_symbols)
     export_json_reports(df_info, df_metrics, output_dir="../stock-blog/public/reports")
