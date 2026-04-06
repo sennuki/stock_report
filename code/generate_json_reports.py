@@ -20,12 +20,49 @@ import risk_return
 import performance_comparison
 import utils
 import market_data
+from utils import get_gemini_model
 
 import time
 import random
 
 # Force Plotly to use standard JSON output
 pio.json.config.default_engine = 'json'
+
+# Initialize Gemini Client
+from utils import get_gemini_client
+gemini_client = get_gemini_client()
+GEMINI_MODEL_NAME = "gemini-3.1-flash-lite-preview"
+
+translation_cache = {}
+
+def translate_summary(symbol, summary):
+    if not summary or not gemini_client:
+        return None
+    
+    if symbol in translation_cache:
+        return translation_cache[symbol]
+        
+    for attempt in range(2):
+        try:
+            # 原文に忠実な翻訳を指示するプロンプト
+            prompt = f"以下の英文の会社概要を、内容を省略・補完することなく、原文に忠実かつ正確な日本語に翻訳してください。専門用語は日本の投資家が理解できる適切な用語を用い、自然な日本語の文章として整えてください。情報の追加や主観的な要約は行わないでください。\n\n{summary}"
+            response = gemini_client.models.generate_content(
+                model=GEMINI_MODEL_NAME,
+                contents=prompt,
+                config={
+                    "system_instruction": "あなたはプロの翻訳者および証券アナリストです。提供されたテキストを、正確かつ忠実に日本語へ翻訳してください。"
+                }
+            )
+            translation_cache[symbol] = response.text
+            return response.text
+        except Exception as e:
+            if "429" in str(e):
+                print(f"Rate limited for {symbol}, waiting longer...")
+                time.sleep(30)
+                continue
+            print(f"Translation error for {symbol}: {e}")
+            break
+    return None
 
 from decimal import Decimal
 
@@ -62,7 +99,7 @@ def fig_to_dict(fig):
     # Thoroughly clean bdata and numpy types
     return clean_plotly_data(data)
 
-def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols=None, rakuten_symbols=None, sbi_symbols=None, mufg_symbols=None, matsui_symbols=None, dmm_symbols=None, paypay_symbols=None):
+def generate_json_for_ticker(row, df_info, df_metrics, output_dir, force_translate=False, monex_symbols=None, rakuten_symbols=None, sbi_symbols=None, mufg_symbols=None, matsui_symbols=None, dmm_symbols=None, paypay_symbols=None):
     # Add a small random delay to mimic human behavior and avoid rate limits
     time.sleep(random.uniform(0.5, 1.5))
     
@@ -105,12 +142,45 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols
     # Financial sector flag for FCF warning
     is_financial = current_sector in ["Financials", "Real Estate"]
 
+    # --- Fetch Info & Translate Summary ---
+    ticker_obj = utils.get_ticker(chart_target_symbol)
+    info = utils.safe_get(ticker_obj, 'info', default={})
+    
+    # Check if we already have a translation to save API tokens
+    business_summary_ja = None
+    output_path = os.path.join(output_dir, f"{chart_target_symbol}.json")
+    if os.path.exists(output_path):
+        try:
+            with open(output_path, "r", encoding="utf-8") as f:
+                old_data = json.load(f)
+                business_summary_ja = old_data.get("business_summary_ja")
+        except: pass
+
+    # If force_translate is True OR we don't have a translation yet, call Gemini
+    if (not business_summary_ja or force_translate) and info.get("longBusinessSummary"):
+        # Calculate safer delay based on max_workers to stay under 15 RPM
+        # 60s / 15 requests = 4s per request. With N workers, we need 4s * N delay.
+        max_workers = int(os.environ.get("PYTHON_MAX_WORKERS", 2))
+        
+        if not business_summary_ja:
+            # Initial translation: ensure we are well under 15 RPM
+            wait_time = 4.5 * max_workers
+            print(f" [{ticker_display}] 初回翻訳を開始します (Wait: {wait_time}s)...")
+            time.sleep(wait_time) 
+        else:
+            # Periodic rotation update
+            print(f" [{ticker_display}] 定期ローテーションによる再翻訳を実行します...")
+            time.sleep(2.0)
+            
+        business_summary_ja = translate_summary(chart_target_symbol, info.get("longBusinessSummary"))
+
     # 1. Financial Data & Charts
     report_data = {
         "symbol": ticker_display,
         "symbol_yf": chart_target_symbol,
         "security": row['Security'],
         "security_ja": row.get('Security_JA'),
+        "business_summary_ja": business_summary_ja,
         "sector": current_sector,
         "sub_industry": current_sub_industry,
         "exchange": exchange,
@@ -128,7 +198,6 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols
     }
 
     try:
-        ticker_obj = utils.get_ticker(chart_target_symbol)
         fin_data = fundamentals.get_financial_data(ticker_obj)
         
         report_data["charts"]["bs"] = fig_to_dict(fundamentals.get_bs_chart_data(fin_data.get('bs', {})))
@@ -224,7 +293,6 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols
                                 report_data["next_earnings"]["estimate"] = float(est)
 
                     if report_data.get("next_earnings") and report_data["next_earnings"].get("estimate") is None:
-                        info = utils.safe_get(ticker_obj, 'info', default={})
                         est = info.get("earningsAverage")
                         if est:
                             report_data["next_earnings"]["estimate"] = float(est)
@@ -268,9 +336,6 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols
                 if df is None or not hasattr(df, 'empty') or df.empty: return None
                 return df.replace({np.nan: None}).to_dict('index')
 
-            # Fetch consensus from ticker.info first (more reliable for current)
-            info = utils.safe_get(ticker_obj, 'info', default={})
-            
             # Helper to extract data from estimate dataframe rows
             def get_row_val(df, period, col_name_base):
                 if df is None or period not in df.index:
@@ -348,9 +413,8 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, monex_symbols
 
         # --- Add Highlights ---
         try:
-            info = utils.safe_get(ticker_obj, 'info', default={})
-            
             def get_growth_val(field):
+
                 val = info.get(field)
                 if val is None: return None
                 # Growth values are sometimes 10.5 (for 10.5%) and sometimes 0.105
@@ -576,15 +640,37 @@ def export_json_reports(df_info, df_metrics, output_dir="../stock-blog/public/re
     paypay_symbols = market_data.get_paypay_available_symbols()
 
     rows = df_info.to_dicts()
+    # Ensure consistent order by sorting by Symbol
+    rows = sorted(rows, key=lambda x: x['Symbol'])
+    num_stocks = len(rows)
+    
+    # Calculate daily rotation for translation (365 days cycle)
+    # Day of year (1 to 365)
+    day_of_year = datetime.datetime.now().timetuple().tm_yday
+    batch_size = max(1, num_stocks // 365 + (1 if num_stocks % 365 > 0 else 0))
+    start_idx = ((day_of_year - 1) * batch_size) % num_stocks
+    end_idx = min(start_idx + batch_size, num_stocks)
+    
+    # Identify which stocks are in today's rotation batch
+    target_symbols = [rows[i]['Symbol'] for i in range(start_idx, end_idx)]
+    print(f"\n--- 日次翻訳ローテーション ---")
+    print(f"全銘柄数: {num_stocks}, 1日のノルマ: {batch_size}")
+    print(f"本日の再翻訳対象 ({start_idx+1}-{end_idx}番目): {', '.join(target_symbols)}")
+
     # 制限を回避するため、デフォルトの並列度を 2 に抑える (環境変数で変更可能)
     max_workers = int(os.environ.get("PYTHON_MAX_WORKERS", 2))
 
-    # Prefetch common data for performance charts to avoid rate limits and race conditions during parallel processing
+    # Prefetch common data for performance charts
     common_etfs = ["XLC", "XLY", "XLP", "XLE", "XLF", "XLV", "XLI", "XLK", "XLB", "XLRE", "XLU", "SPY", "^GSPC"]
     performance_comparison.prefetch_common_data(common_etfs)
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
-        futures = {executor.submit(generate_json_for_ticker, row, df_info, df_metrics, output_dir, monex_symbols, rakuten_symbols, sbi_symbols, mufg_symbols, matsui_symbols, dmm_symbols, paypay_symbols): row['Symbol'] for row in rows}
+        futures = {}
+        for i, row in enumerate(rows):
+            # Check if this stock is in today's batch
+            force_translate = (i >= start_idx and i < end_idx)
+            futures[executor.submit(generate_json_for_ticker, row, df_info, df_metrics, output_dir, force_translate, monex_symbols, rakuten_symbols, sbi_symbols, mufg_symbols, matsui_symbols, dmm_symbols, paypay_symbols)] = row['Symbol']
+            
         for future in tqdm(concurrent.futures.as_completed(futures), total=len(rows)):
             try:
                 future.result()

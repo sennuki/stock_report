@@ -1,8 +1,8 @@
 [project]
 name = "code"
 version = "0.1.0"
-description = "Add your description here"
-readme = "README.md"
+description = "Stock Report Generation"
+readme = "STRUCTURE.md"
 requires-python = ">=3.12"
 dependencies = [
     "beautifulsoup4==4.14.3",
@@ -17,6 +17,7 @@ dependencies = [
     "docopt==0.6.2",
     "flask==3.1.3",
     "frozendict==2.4.7",
+    "google-genai>=1.0.0",
     "greenlet==3.3.0",
     "grip==4.6.2",
     "idna==3.11",
@@ -41,7 +42,7 @@ dependencies = [
     "plotly==6.5.2",
     "polars==1.37.1",
     "polars-runtime-32==1.37.1",
-    "protobuf==6.33.5",
+    "protobuf>=4.21.5,<6.0.0.dev0",
     "pyarrow==23.0.0",
     "pycparser==3.0",
     "pygments==2.19.2",
@@ -61,3 +62,7 @@ dependencies = [
     "werkzeug==3.1.6",
     "yfinance==1.1.0",
 ]
+
+[tool.setuptools]
+packages = []
+py-modules = ["utils", "fundamentals", "market_data", "risk_return", "performance_comparison", "generate_json_reports"]

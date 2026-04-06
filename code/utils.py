@@ -15,10 +15,39 @@ import time
 import random
 import pandas as pd
 import datetime
+from dotenv import load_dotenv
+from google import genai
 from defeatbeta_api.data.ticker import Ticker as DBTicker
 from yfinance.exceptions import YFRateLimitError
 
+# .envファイルを読み込む
+load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env"))
+
 LOG_FILE = "run_log.txt"
+
+def get_gemini_client():
+    """
+    最新の google-genai SDK クライアントを初期化して返します。
+    """
+    api_key = os.getenv("GEMINI_API_KEY")
+    if not api_key:
+        log_event("ERROR", "SYSTEM", "GEMINI_API_KEY not found in environment variables.")
+        return None
+    
+    try:
+        client = genai.Client(api_key=api_key)
+        return client
+    except Exception as e:
+        log_event("ERROR", "SYSTEM", f"Failed to initialize Gemini client: {e}")
+        return None
+
+# 旧互換性のために get_gemini_model も残し、クライアントとモデル名を返す
+def get_gemini_model(model_name="gemini-3.1-flash-lite-preview"):
+    """
+    (旧SDK互換用) クライアントを初期化します。
+    ※ 3.1 SDK以降は Client を通じて呼び出すため、この関数は Client を返します。
+    """
+    return get_gemini_client()
 
 def log_event(category, symbol, message):
     """
@@ -246,12 +275,16 @@ class YFinanceAdapterTicker:
                     'market_capitalization': 'marketCap',
                     'full_time_employees': 'fullTimeEmployees',
                     'web_site': 'website',
-                    'company_name': 'shortName'
+                    'company_name': 'shortName',
+                    'description': 'longBusinessSummary'  # Defeatbeta uses 'description'
                 }
                 for k, v in base_info.items():
                     key = mapping.get(k, k)
-                    # Only overwrite if yfinance didn't provide it or provided None
-                    if info_dict.get(key) is None:
+                    # For business summary, prioritize defeatbeta if available and not empty
+                    if key == 'longBusinessSummary' and v:
+                        info_dict[key] = v
+                    # For others, only overwrite if yfinance didn't provide it or provided None
+                    elif info_dict.get(key) is None:
                         info_dict[key] = v
         except: pass
                 
