@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: '0 21 * * 1-5' # 平日毎日実行
   push:
-    branches: [ master, feature/replace-yfinance-with-defeatbeta ] # コードが更新された時も実行
+    branches: [ master, feature/replace-yfinance-with-defeatbeta, feat/segment-geo-revenue ] # コードが更新された時も実行
   workflow_dispatch: # 手動実行用
 
 env:
