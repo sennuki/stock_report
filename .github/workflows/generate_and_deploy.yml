@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: '0 21 * * 1-5' # 平日毎日実行
   push:
-    branches: [ master, feature/replace-yfinance-with-defeatbeta, feat/segment-geo-revenue ] # コードが更新された時も実行
+    branches: [ master, feature/replace-yfinance-with-defeatbeta, feat/segment-geo-revenue, feat/gemini-translation-rotation ] # コードが更新された時も実行
   workflow_dispatch: # 手動実行用
 
 env:
@@ -55,6 +55,7 @@ jobs:
         env:
           TEST_MODE: false
           PYTHON_MAX_WORKERS: 1
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
       - name: Upload JSON Reports
         uses: actions/upload-artifact@v4
