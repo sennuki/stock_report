@@ -14,11 +14,13 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       deployments: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -44,11 +46,21 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yfinance-
 
+      - name: Restore stock reports cache
+        uses: actions/cache@v4
+        with:
+          path: stock-blog/public/reports
+          key: ${{ runner.os }}-stock-reports-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-stock-reports-
+
       - name: Create output directories
         run: |
+          mkdir -p stock-blog/public/reports
           mkdir -p stock-blog/public/output_reports_full
           mkdir -p stock-blog/src/data/blog
-          echo "[]" > stock-blog/src/data/stocks.json
+          # If stocks.json doesn't exist, create an empty array
+          [ -f stock-blog/src/data/stocks.json ] || echo "[]" > stock-blog/src/data/stocks.json
 
       - name: Run Python report generator
         run: PYTHONPATH=code python code/main.py
@@ -56,6 +68,13 @@ jobs:
           TEST_MODE: false
           PYTHON_MAX_WORKERS: 1
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add stock-blog/public/reports/*.json stock-blog/src/data/stocks.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "data: update stock reports and translations [skip ci]" && git push origin feat/gemini-translation-rotation)
 
       - name: Upload JSON Reports
         uses: actions/upload-artifact@v4
