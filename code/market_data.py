@@ -5,6 +5,7 @@ import polars as pl
 import pandas as pd
 import requests
 import utils
+import json
 from io import StringIO
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm
@@ -15,6 +16,16 @@ except ImportError:
     curl_requests = None
 
 # ==========================================
+#  Broker Lists Management
+# ==========================================
+
+# Use a central directory for all broker list caches
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BROKER_LISTS_DIR = os.path.join(BASE_DIR, "data", "broker_lists")
+if not os.path.exists(BROKER_LISTS_DIR):
+    os.makedirs(BROKER_LISTS_DIR)
+
+# ==========================================
 #  Part C (前半): データ取得
 # ==========================================
 
@@ -23,7 +34,7 @@ def get_monex_available_symbols():
     マネックス証券の米国株取扱銘柄リストを取得し、{シンボル: 日本語名} の辞書を返します。
     """
     url = "https://mst.monex.co.jp/pc/pdfroot/public/50/99/Monex_US_LIST.csv"
-    csv_path = "Monex_US_LIST.csv"
+    csv_path = os.path.join(BROKER_LISTS_DIR, "Monex_US_LIST.csv")
     
     # 既にファイルがある場合はそれを使う（デバッグ・キャッシュ用）
     if os.path.exists(csv_path):
@@ -63,9 +74,6 @@ def get_monex_available_symbols():
             if symbol and any(c.isalnum() for c in symbol):
                 mapping[symbol] = ja_name
     
-    # マネックスで不足している日本語名（REITなど）を補完
-    # 注意: ここに追加しても取扱銘柄フラグ(Monex)には影響させないため、
-    # 別の関数でこれらをマージして利用する
     return mapping
 
 def get_manual_ja_name_map():
@@ -111,7 +119,7 @@ def get_rakuten_available_symbols():
     楽天証券の米国株取扱銘柄リストを取得し、シンボルのセットを返します。
     """
     url = "https://www.trkd-asia.com/rakutensec/exportcsvus?all=on&vall=on&forwarding=na&target=0&theme=na&returns=na&head_office=na&name=&code=&sector=na&pageNo=&c=us&p=result&r1=on"
-    csv_path = "Rakuten_US_LIST.csv"
+    csv_path = os.path.join(BROKER_LISTS_DIR, "Rakuten_US_LIST.csv")
     
     if os.path.exists(csv_path):
         try:
@@ -155,7 +163,7 @@ def get_sbi_available_symbols():
     SBI証券の米国株取扱銘柄リストをHTMLスクレイピングで取得し、シンボルのセットを返します。
     """
     url = "https://search.sbisec.co.jp/v2/popwin/info/stock/pop6040_usequity_list.html"
-    cache_path = "SBI_US_LIST.html"
+    cache_path = os.path.join(BROKER_LISTS_DIR, "SBI_US_LIST.html")
     
     # BeautifulSoup をインポート
     try:
@@ -205,7 +213,7 @@ def get_mufg_available_symbols():
     三菱UFJ eスマート証券（auカブコム証券）の米国株取扱銘柄リストを取得し、シンボルのセットを返します。
     """
     url = "https://kabu.com/process/beikabu.js"
-    csv_path = "Mufg_US_LIST.js"
+    csv_path = os.path.join(BROKER_LISTS_DIR, "Mufg_US_LIST.js")
     
     if os.path.exists(csv_path):
         try:
@@ -247,7 +255,7 @@ def get_matsui_available_symbols():
     松井証券の米国株取扱銘柄リストを取得し、シンボルのセットを返します。
     """
     url = "https://www.matsui.co.jp/us-stock/domestic/list/symbollist/symbollist.csv"
-    csv_path = "Matsui_US_LIST.csv"
+    csv_path = os.path.join(BROKER_LISTS_DIR, "Matsui_US_LIST.csv")
     
     if os.path.exists(csv_path):
         try:
@@ -289,7 +297,7 @@ def get_dmm_available_symbols():
     DMM株の米国株取扱銘柄リストを取得し、シンボルのセットを返します。
     """
     url = "https://kabu.dmm.com/_data/us-stock.csv"
-    csv_path = "Dmm_US_LIST.csv"
+    csv_path = os.path.join(BROKER_LISTS_DIR, "Dmm_US_LIST.csv")
     
     if os.path.exists(csv_path):
         try:
@@ -334,7 +342,7 @@ def get_paypay_available_symbols():
         "https://www.paypay-sec.co.jp/us-stock/list/data-us_stock.json",
         "https://www.paypay-sec.co.jp/us-stock/list/data-us_etf.json"
     ]
-    cache_path = "Paypay_US_LIST.txt"
+    cache_path = os.path.join(BROKER_LISTS_DIR, "Paypay_US_LIST.txt")
     
     if os.path.exists(cache_path):
         try:
@@ -346,7 +354,6 @@ def get_paypay_available_symbols():
     if not curl_requests:
         return set()
 
-    import json
     symbols = set()
     
     for url in urls:
@@ -375,8 +382,7 @@ def get_moomoo_available_symbols():
     """
     moomoo証券の米国株取扱銘柄リストをローカルCSVから取得し、シンボルのセットを返します。
     """
-    # code/ から見た相対パス
-    csv_path = os.path.join(os.path.dirname(__file__), "..", "moomoo", "moomoo_us_stocks.csv")
+    csv_path = os.path.join(BROKER_LISTS_DIR, "moomoo_us_stocks.csv")
     symbols = set()
     
     if not os.path.exists(csv_path):
@@ -385,7 +391,6 @@ def get_moomoo_available_symbols():
 
     try:
         # Polarsで高速読み込み (code列のみ)
-        # 引用符などが含まれる可能性があるため、適切に処理
         df = pl.read_csv(csv_path)
         if "code" in df.columns:
             for code in df["code"]:
