@@ -330,7 +330,7 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
     };
 
     if (hasGroups) {
-      const order = ["1ヶ月", "3ヶ月", "6ヶ月", "年初来", "1年", "3年", "5年", "10年", "四半期", "通年", "年間推移", "権利落日別"];
+      const order = ["1ヶ月", "3ヶ月", "6ヶ月", "年初来", "1年", "3年", "5年", "10年", "通年", "四半期", "年間推移", "権利落日別"];
       const groupList = Array.from(groups).sort((a, b) => {
         const indexA = order.indexOf(a);
         const indexB = order.indexOf(b);
@@ -340,12 +340,21 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
         return a.localeCompare(b);
       });
       
-      // Determine default active group based on which trace is initially visible
+      // Determine default active group based on order preference
       let defaultGroup = groupList[0];
-      const initiallyVisibleDs = chart.data.datasets.find((ds: any) => ds._periodVisible);
-      if (initiallyVisibleDs) {
-        const match = initiallyVisibleDs.label.match(/\(([^)]+)\)$/);
-        if (match) defaultGroup = match[1];
+      
+      // Explicitly prefer '通年' (Annual) as default if available
+      if (groupList.includes('通年')) {
+        defaultGroup = '通年';
+      } else if (groupList.includes('1年')) {
+        // Fallback for performance charts
+        defaultGroup = '1年';
+      } else {
+        const initiallyVisibleDs = chart.data.datasets.find((ds: any) => ds._periodVisible);
+        if (initiallyVisibleDs) {
+          const match = initiallyVisibleDs.label.match(/\(([^)]+)\)$/);
+          if (match) defaultGroup = match[1];
+        }
       }
       chart._activeGroup = defaultGroup;
 
