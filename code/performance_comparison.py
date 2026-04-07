@@ -15,7 +15,6 @@ PERIOD_CONFIGS = [
     {"key": "3Y", "label": "3年", "days": 365 * 3},
     {"key": "5Y", "label": "5年", "days": 365 * 5},
     {"key": "10Y", "label": "10年", "days": 365 * 10},
-    {"key": "All", "label": "全期間", "days": None},
 ]
 
 def generate_performance_chart_html(target_symbol, sector_etf_symbol):

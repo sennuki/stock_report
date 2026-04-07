@@ -371,6 +371,33 @@ def get_paypay_available_symbols():
 
     return symbols
 
+def get_moomoo_available_symbols():
+    """
+    moomoo証券の米国株取扱銘柄リストをローカルCSVから取得し、シンボルのセットを返します。
+    """
+    # code/ から見た相対パス
+    csv_path = os.path.join(os.path.dirname(__file__), "..", "moomoo", "moomoo_us_stocks.csv")
+    symbols = set()
+    
+    if not os.path.exists(csv_path):
+        print(f"Warning: moomoo stock list not found at {csv_path}")
+        return symbols
+
+    try:
+        # Polarsで高速読み込み (code列のみ)
+        # 引用符などが含まれる可能性があるため、適切に処理
+        df = pl.read_csv(csv_path)
+        if "code" in df.columns:
+            for code in df["code"]:
+                if code and code.startswith("US."):
+                    symbol = code[3:] # "US.AAPL" -> "AAPL"
+                    if symbol:
+                        symbols.add(symbol)
+    except Exception as e:
+        print(f"Error reading moomoo list: {e}")
+        
+    return symbols
+
 def get_market_info(symbol):
     try:
         t = utils.get_ticker(symbol)

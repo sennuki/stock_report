@@ -160,7 +160,7 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
             if (isScatterChart) return;
             
             // Strictly define performance period labels
-            const periodLabels = ['1ヶ月', '3ヶ月', '6ヶ月', '年初来', '1年', '3年', '5年', '10年', '全期間'];
+            const periodLabels = ['1ヶ月', '3ヶ月', '6ヶ月', '年初来', '1年', '3年', '5年', '10年'];
             const isPerformanceChart = datasets.some((ds: any) => 
               periodLabels.some(p => ds.label.includes(`(${p})`))
             );
@@ -173,11 +173,22 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
               const meta = chart.getDatasetMeta(i);
               if (!meta.data || meta.data.length === 0) return;
               
-              const lastPoint = meta.data[meta.data.length - 1];
+              // Find the last valid data point (not null)
+              // This handles cases where some stocks have shorter history than others (e.g. IPO stocks vs S&P 500)
+              let lastValidIdx = -1;
+              for (let j = ds.data.length - 1; j >= 0; j--) {
+                if (ds.data[j] !== null && ds.data[j] !== undefined) {
+                  lastValidIdx = j;
+                  break;
+                }
+              }
+
+              if (lastValidIdx === -1) return;
+              
+              const lastPoint = meta.data[lastValidIdx];
               if (!lastPoint || lastPoint.skip) return;
               
-              const value = ds.data[ds.data.length - 1];
-              if (value === null || value === undefined) return;
+              const value = ds.data[lastValidIdx];
               
               // Only draw for performance datasets
               if (!periodLabels.some(p => ds.label.includes(`(${p})`))) return;
@@ -319,7 +330,7 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
     };
 
     if (hasGroups) {
-      const order = ["1ヶ月", "3ヶ月", "6ヶ月", "年初来", "1年", "3年", "5年", "10年", "全期間", "四半期", "通年", "年間推移", "権利落日別"];
+      const order = ["1ヶ月", "3ヶ月", "6ヶ月", "年初来", "1年", "3年", "5年", "10年", "四半期", "通年", "年間推移", "権利落日別"];
       const groupList = Array.from(groups).sort((a, b) => {
         const indexA = order.indexOf(a);
         const indexB = order.indexOf(b);
@@ -621,7 +632,7 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
     }
 
     // Strictly define performance period labels
-    const periodLabels = ['1ヶ月', '3ヶ月', '6ヶ月', '年初来', '1年', '3年', '5年', '10年', '全期間'];
+    const periodLabels = ['1ヶ月', '3ヶ月', '6ヶ月', '年初来', '1年', '3年', '5年', '10年'];
     const isPerformanceChart = allSeries.some((s: any) => 
       periodLabels.some(p => s.label.includes(`(${p})`))
     );

@@ -973,6 +973,37 @@ if (reportData?.analyst_ratings) {
                 </a>
               </div>
             </div>
+
+            <div class={`p-6 rounded-lg border-2 flex flex-col justify-between bg-transparent ${reportData.is_available_moomoo ? 'border-green-500/30' : 'border-gray-300'}`}>
+              <div class="flex items-center gap-4 mb-6">
+                <div class={`p-3 rounded-full ${reportData.is_available_moomoo ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
+                   {reportData.is_available_moomoo ? (
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                     </svg>
+                   ) : (
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                     </svg>
+                   )}
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold text-skin-base leading-tight">moomoo証券</h3>
+                  <p class="text-sm opacity-70 mt-1">moomoo Securities</p>
+                </div>
+              </div>
+              <div class="flex flex-col gap-3">
+                <span class={`w-full text-center py-2 rounded-full font-bold text-sm ${reportData.is_available_moomoo ? 'bg-green-600 text-white' : 'bg-gray-400 text-white'}`}>
+                  {reportData.is_available_moomoo ? '購入可能' : '取扱なし'}
+                </span>
+                <a href="https://www.moomoo.com/ja/quote/us-tradable-stocks" target="_blank" rel="noopener noreferrer" class="text-xs text-skin-accent hover:underline flex items-center justify-center gap-1">
+                  公式サイトを確認
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+              </div>
+            </div>
           </div>
           
           <p class="text-xs text-gray-500 mt-6 bg-skin-fill/50 p-4 rounded border border-skin-line italic">
