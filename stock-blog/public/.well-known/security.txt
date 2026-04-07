@@ -1,0 +1,5 @@
+# Security contact information
+Contact: mailto:18099305+sennuki@users.noreply.github.com
+Expires: 2027-04-07T00:00:00.000Z
+Preferred-Languages: ja, en
+# Canonical: https://YOUR_DOMAIN_HERE/.well-known/security.txt
