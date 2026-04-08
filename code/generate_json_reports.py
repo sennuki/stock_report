@@ -12,6 +12,7 @@ from tqdm import tqdm
 import plotly.io as pio
 import logging
 import datetime
+import threading
 # Suppress noisy yfinance errors
 logging.getLogger('yfinance').setLevel(logging.CRITICAL)
 
@@ -34,6 +35,9 @@ gemini_client = get_gemini_client()
 GEMINI_MODEL_NAME = "gemini-3.1-flash-lite-preview"
 
 translation_cache = {}
+initial_translation_counter = 0
+translation_lock = threading.Lock()
+MAX_INITIAL_TRANSLATIONS = 100
 
 def translate_summary(symbol, summary):
     if not summary or not gemini_client:
@@ -163,17 +167,30 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, force_transla
         # 60s / 15 requests = 4s per request. With N workers, we need 4s * N delay.
         max_workers = int(os.environ.get("PYTHON_MAX_WORKERS", 2))
         
-        if not business_summary_ja:
-            # Initial translation: ensure we are well under 15 RPM
-            wait_time = 4.5 * max_workers
-            print(f" [{ticker_display}] 初回翻訳を開始します (Wait: {wait_time}s)...")
-            time.sleep(wait_time) 
-        else:
+        do_translate = False
+        if force_translate:
             # Periodic rotation update
             print(f" [{ticker_display}] 定期ローテーションによる再翻訳を実行します...")
             time.sleep(2.0)
+            do_translate = True
+        elif not business_summary_ja:
+            # Initial translation: ensure we are well under 15 RPM and limit to 100
+            global initial_translation_counter
+            with translation_lock:
+                if initial_translation_counter < MAX_INITIAL_TRANSLATIONS:
+                    initial_translation_counter += 1
+                    do_translate = True
+                else:
+                    print(f" [{ticker_display}] 初回翻訳制限({MAX_INITIAL_TRANSLATIONS})に達したためスキップします。")
+                    do_translate = False
             
-        business_summary_ja = translate_summary(chart_target_symbol, info.get("longBusinessSummary"))
+            if do_translate:
+                wait_time = 4.5 * max_workers
+                print(f" [{ticker_display}] 初回翻訳を開始します ({initial_translation_counter}/{MAX_INITIAL_TRANSLATIONS}) (Wait: {wait_time}s)...")
+                time.sleep(wait_time) 
+            
+        if do_translate:
+            business_summary_ja = translate_summary(chart_target_symbol, info.get("longBusinessSummary"))
 
     # 1. Financial Data & Charts
     report_data = {
