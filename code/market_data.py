@@ -403,6 +403,61 @@ def get_moomoo_available_symbols():
         
     return symbols
 
+def get_iwaicosmo_available_symbols():
+    """
+    岩井コスモ証券の米国株取扱銘柄リストをHTMLスクレイピングで取得し、シンボルのセットを返します。
+    """
+    url = "https://www.iwaicosmo.co.jp/investment/list/"
+    cache_path = os.path.join(BROKER_LISTS_DIR, "IwaiCosmo_US_LIST.html")
+    
+    # BeautifulSoup をインポート
+    try:
+        from bs4 import BeautifulSoup
+    except ImportError:
+        print("BeautifulSoup4 is not installed. Skipping IwaiCosmo list fetch.")
+        return set()
+
+    if os.path.exists(cache_path):
+        try:
+            with open(cache_path, "r", encoding="utf-8", errors="replace") as f:
+                html = f.read()
+        except Exception:
+            html = None
+    else:
+        html = None
+
+    if not html:
+        if curl_requests:
+            try:
+                # TLSフィンガープリントをChromeに偽装して取得
+                resp = curl_requests.get(url, impersonate="chrome110")
+                resp.raise_for_status()
+                html = resp.text
+                with open(cache_path, "w", encoding="utf-8", errors="replace") as f:
+                    f.write(html)
+            except Exception as e:
+                print(f"Error fetching IwaiCosmo list: {e}")
+                return set()
+        else:
+            return set()
+
+    symbols = set()
+    soup = BeautifulSoup(html, "html.parser")
+    
+    # id="myTable" の tbody 内の 各 tr の 3番目の td がシンボル
+    table = soup.find("table", id="myTable")
+    if table:
+        tbody = table.find("tbody")
+        if tbody:
+            for tr in tbody.find_all("tr"):
+                tds = tr.find_all("td")
+                if len(tds) >= 3:
+                    symbol = tds[2].get_text(strip=True)
+                    if symbol and any(c.isalnum() for c in symbol):
+                        symbols.add(symbol)
+            
+    return symbols
+
 def get_market_info(symbol):
     try:
         t = utils.get_ticker(symbol)

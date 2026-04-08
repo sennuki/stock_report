@@ -103,7 +103,7 @@ def fig_to_dict(fig):
     # Thoroughly clean bdata and numpy types
     return clean_plotly_data(data)
 
-def generate_json_for_ticker(row, df_info, df_metrics, output_dir, force_translate=False, monex_symbols=None, rakuten_symbols=None, sbi_symbols=None, mufg_symbols=None, matsui_symbols=None, dmm_symbols=None, paypay_symbols=None, moomoo_symbols=None):
+def generate_json_for_ticker(row, df_info, df_metrics, output_dir, force_translate=False, monex_symbols=None, rakuten_symbols=None, sbi_symbols=None, mufg_symbols=None, matsui_symbols=None, dmm_symbols=None, paypay_symbols=None, moomoo_symbols=None, iwaicosmo_symbols=None):
     # Add a small random delay to mimic human behavior and avoid rate limits
     time.sleep(random.uniform(0.5, 1.5))
     
@@ -131,6 +131,7 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, force_transla
     is_available_dmm = check_availability(ticker_display, dmm_symbols)
     is_available_paypay = check_availability(ticker_display, paypay_symbols)
     is_available_moomoo = check_availability(ticker_display, moomoo_symbols)
+    is_available_iwaicosmo = check_availability(ticker_display, iwaicosmo_symbols)
     # TradingView symbol
     tv_ticker = ticker_display.replace("-", ".")
     full_symbol = f"{exchange}:{tv_ticker}"
@@ -213,6 +214,7 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, force_transla
         "is_available_dmm": is_available_dmm,
         "is_available_paypay": is_available_paypay,
         "is_available_moomoo": is_available_moomoo,
+        "is_available_iwaicosmo": is_available_iwaicosmo,
         "charts": {}
     }
 
@@ -658,6 +660,7 @@ def export_json_reports(df_info, df_metrics, output_dir="../stock-blog/public/re
     dmm_symbols = market_data.get_dmm_available_symbols()
     paypay_symbols = market_data.get_paypay_available_symbols()
     moomoo_symbols = market_data.get_moomoo_available_symbols()
+    iwaicosmo_symbols = market_data.get_iwaicosmo_available_symbols()
 
     rows = df_info.to_dicts()
     # Ensure consistent order by sorting by Symbol
@@ -689,7 +692,7 @@ def export_json_reports(df_info, df_metrics, output_dir="../stock-blog/public/re
         for i, row in enumerate(rows):
             # Check if this stock is in today's batch
             force_translate = (i >= start_idx and i < end_idx)
-            futures[executor.submit(generate_json_for_ticker, row, df_info, df_metrics, output_dir, force_translate, monex_symbols, rakuten_symbols, sbi_symbols, mufg_symbols, matsui_symbols, dmm_symbols, paypay_symbols, moomoo_symbols)] = row['Symbol']
+            futures[executor.submit(generate_json_for_ticker, row, df_info, df_metrics, output_dir, force_translate, monex_symbols, rakuten_symbols, sbi_symbols, mufg_symbols, matsui_symbols, dmm_symbols, paypay_symbols, moomoo_symbols, iwaicosmo_symbols)] = row['Symbol']
             
         for future in tqdm(concurrent.futures.as_completed(futures), total=len(rows)):
             try:

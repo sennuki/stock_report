@@ -21,6 +21,7 @@ def generate_az_sheet():
     matsui = market_data.get_matsui_available_symbols()
     dmm = market_data.get_dmm_available_symbols()
     paypay = market_data.get_paypay_available_symbols()
+    iwaicosmo = market_data.get_iwaicosmo_available_symbols()
 
     # 取扱いフラグを追加 (Symbolカラムで判定)
     df = df.with_columns([
@@ -31,6 +32,7 @@ def generate_az_sheet():
         pl.col('Symbol').is_in(list(matsui)).alias('Matsui'),
         pl.col('Symbol').is_in(list(dmm)).alias('DMM'),
         pl.col('Symbol').is_in(list(paypay)).alias('PayPay'),
+        pl.col('Symbol').is_in(list(iwaicosmo)).alias('IwaiCosmo'),
     ])
 
     # A-Z順にソート (Symbol基準)
