@@ -32,12 +32,12 @@ pio.json.config.default_engine = 'json'
 # Initialize Gemini Client
 from utils import get_gemini_client
 gemini_client = get_gemini_client()
-GEMINI_MODEL_NAME = "gemini-3.1-flash-lite-preview"
+GEMINI_MODEL_NAME = "gemma-4-26b-a4b-it"
 
 translation_cache = {}
 initial_translation_counter = 0
 translation_lock = threading.Lock()
-MAX_INITIAL_TRANSLATIONS = 100
+MAX_INITIAL_TRANSLATIONS = 500
 
 def translate_summary(symbol, summary):
     if not summary or not gemini_client:

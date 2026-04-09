@@ -4,7 +4,7 @@ import os
 def test_translation():
     print("--- Gemini API 3.1 Flash-Lite テスト ---")
     client = get_gemini_client()
-    model_name = "gemini-3.1-flash-lite-preview"
+    model_name = "gemma-4-26b-a4b-it"
     
     if not client:
         print("❌ クライアントの初期化に失敗しました。")

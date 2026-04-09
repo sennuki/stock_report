@@ -42,7 +42,7 @@ def get_gemini_client():
         return None
 
 # 旧互換性のために get_gemini_model も残し、クライアントとモデル名を返す
-def get_gemini_model(model_name="gemini-3.1-flash-lite-preview"):
+def get_gemini_model(model_name="gemma-4-26b-a4b-it"):
     """
     (旧SDK互換用) クライアントを初期化します。
     ※ 3.1 SDK以降は Client を通じて呼び出すため、この関数は Client を返します。
