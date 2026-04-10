@@ -37,7 +37,7 @@ GEMINI_MODEL_NAME = "gemma-4-26b-a4b-it"
 translation_cache = {}
 initial_translation_counter = 0
 translation_lock = threading.Lock()
-MAX_INITIAL_TRANSLATIONS = 500
+MAX_INITIAL_TRANSLATIONS = 250
 
 def translate_summary(symbol, summary):
     if not summary or not gemini_client:
