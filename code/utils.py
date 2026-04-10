@@ -524,7 +524,23 @@ class YFinanceAdapterTicker:
 
     def revenue_by_segment(self):
         try:
-            return self._db_ticker.revenue_by_segment()
+            df = self._db_ticker.revenue_by_segment()
+            if df is not None and not df.empty:
+                # Strip whitespace from column names
+                df.columns = [c.strip() if isinstance(c, str) else c for c in df.columns]
+                # Merge duplicate columns by taking the maximum value (to avoid double-counting)
+                if df.columns.duplicated().any():
+                    # Preserve 'symbol' and 'report_date' which shouldn't be duplicated in a way that needs max
+                    # but if they are, groupby will handle them.
+                    # We want to group by columns and take the max for each row.
+                    df = df.T.groupby(level=0).max().T
+                    # Reorder columns to put symbol and report_date first if they exist
+                    cols = df.columns.tolist()
+                    if 'symbol' in cols and 'report_date' in cols:
+                        cols.remove('symbol')
+                        cols.remove('report_date')
+                        df = df[['symbol', 'report_date'] + cols]
+            return df
         except Exception as e:
             log_event("DEBUG", self.ticker, f"Error in revenue_by_segment: {e}")
             return pd.DataFrame()
