@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: '0 21 * * 1-5' # 平日毎日実行
   push:
-    branches: [ master, feature/replace-yfinance-with-defeatbeta, feat/segment-geo-revenue, feat/gemini-translation-rotation ] # コードが更新された時も実行
+    branches: [ master ] # コードが更新された時も実行
   workflow_dispatch: # 手動実行用
 
 env:
@@ -74,7 +74,7 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add -f stock-blog/public/reports/*.json stock-blog/src/data/stocks.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "data: update stock reports and translations [skip ci]" && git push origin feat/gemini-translation-rotation)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "data: update stock reports and translations [skip ci]" && git push origin HEAD)
 
       - name: Upload JSON Reports
         uses: actions/upload-artifact@v4
