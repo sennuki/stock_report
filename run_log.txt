@@ -1,0 +1,1 @@
+[2026-04-10 21:51:00] [DEBUG  ] [STZ   ] Error in revenue_by_segment: DataFrame.groupby() got an unexpected keyword argument 'axis'

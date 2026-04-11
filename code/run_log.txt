@@ -389,3 +389,12 @@ violations {
 [2026-04-06 19:10:42] [INFO   ] [SYSTEM] Gemini 3.1 API test successful.
 [2026-04-06 19:12:00] [DEBUG  ] [XLE   ] Error fetching yfinance earnings_dates: ['Earnings Date']
 [2026-04-06 19:40:19] [INFO   ] [SYSTEM] Gemini 3.1 API test successful.
+[2026-04-09 20:54:56] [INFO   ] [SYSTEM] Gemini 3.1 API test successful.
+[2026-04-09 20:58:20] [DEBUG  ] [META  ] Error fetching yfinance earnings_dates: ['Earnings Date']
+[2026-04-09 20:58:23] [DEBUG  ] [CVX   ] Error fetching yfinance earnings_dates: ['Earnings Date']
+[2026-04-09 21:00:24] [DEBUG  ] [CVX   ] Error fetching yfinance earnings_dates: ['Earnings Date']
+[2026-04-09 21:01:11] [DEBUG  ] [META  ] Error fetching yfinance earnings_dates: ['Earnings Date']
+[2026-04-10 20:08:38] [DEBUG  ] [XLK   ] Error fetching yfinance earnings_dates: ['Earnings Date']
+[2026-04-10 20:09:02] [DEBUG  ] [XLI   ] Error fetching yfinance earnings_dates: ['Earnings Date']
+[2026-04-10 20:09:09] [DEBUG  ] [NEE   ] Error fetching yfinance earnings_dates: ['Earnings Date']
+[2026-04-10 20:16:59] [DEBUG  ] [NEE   ] Error fetching yfinance earnings_dates: ['Earnings Date']
