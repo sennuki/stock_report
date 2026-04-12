@@ -21,7 +21,7 @@ def generate_styled_reason(client, symbol, stats, original_reason):
     """
     指定されたニューススタイルで株価変動理由を生成する
     """
-    GEMINI_MODEL = "models/gemini-2.0-flash"
+    GEMINI_MODEL = "models/gemini-3.1-flash-lite-preview"
     
     # 前日比の符号に応じた語句の選択
     is_up = stats['diff_pct'] >= 0
