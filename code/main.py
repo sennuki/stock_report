@@ -155,8 +155,42 @@ if __name__ == "__main__":
             os.environ["MAX_WORKERS"] = "3"
             df_metrics = risk_return.calculate_market_metrics_parallel(df_sp500['Symbol_YF'].to_list())
             utils.log_event("SUCCESS", "SYSTEM", "Calculated risk metrics")
+
+            # --- 変動率上位銘柄の理由生成を追加 ---
+            import movement_reasons
+            # TEST_MODE以外または明示的に有効な場合に実行
+            if os.environ.get("TEST_MODE") != "true" or os.environ.get("GENERATE_REASONS") == "true":
+                movers_reasons = movement_reasons.process_top_movers(df_metrics)
+                
+                # df_metrics に理由をマージ
+                reasons_data = []
+                for symbol in df_metrics['Symbol'].to_list():
+                    if symbol in movers_reasons:
+                        reasons_data.append({
+                            "Symbol": symbol,
+                            "movement_reason": movers_reasons[symbol],
+                            "Has_Movement_Reason": True
+                        })
+                    else:
+                        reasons_data.append({
+                            "Symbol": symbol,
+                            "movement_reason": None,
+                            "Has_Movement_Reason": False
+                        })
+                
+                df_reasons = pl.DataFrame(reasons_data)
+                df_metrics = df_metrics.join(df_reasons, on="Symbol", how="left")
+                
+                # df_sp500 にもフラグを反映 (stocks.json用)
+                df_sp500 = df_sp500.join(
+                    df_reasons.select(["Symbol", "Has_Movement_Reason"]).rename({"Symbol": "Symbol_YF"}),
+                    on="Symbol_YF",
+                    how="left"
+                ).with_columns(pl.col("Has_Movement_Reason").fill_null(False))
+            # --- 理由生成終了 ---
+
         except Exception as e:
-            utils.log_event("ERROR", "SYSTEM", f"Failed to calculate risk metrics: {e}")
+            utils.log_event("ERROR", "SYSTEM", f"Failed to calculate risk metrics or reasons: {e}")
             df_metrics = pl.DataFrame()
 
         # 3. レポート作成 (JSON)

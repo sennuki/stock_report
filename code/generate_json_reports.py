@@ -612,6 +612,12 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, force_transla
         "sector": get_peer_list(other_peers)
     }
 
+    # 5. Movement Reason (from df_metrics if exists)
+    if "movement_reason" in df_metrics.columns:
+        symbol_reason = df_metrics.filter(pl.col("Symbol") == chart_target_symbol).select("movement_reason").to_series().to_list()
+        if symbol_reason and symbol_reason[0] is not None:
+            report_data["movement_reason"] = symbol_reason[0]
+
     # Write to JSON atomically
     output_path = os.path.join(output_dir, f"{chart_target_symbol}.json")
     temp_path = output_path + ".tmp"

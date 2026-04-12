@@ -156,6 +156,25 @@ if (reportData?.analyst_ratings) {
 
         <section id="stock-chart">
           <h2 class="text-2xl font-bold mb-4 border-b pb-2">📈 {symbol}の株価推移・概要</h2>
+
+          {reportData.movement_reason && (
+            <div class="mb-8 p-6 bg-skin-accent/5 rounded-lg border-l-4 border-skin-accent shadow-sm leading-relaxed">
+              <h3 class="text-lg font-bold mb-3 flex items-center gap-2 text-skin-accent">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+                直近の株価変動理由 ({reportData.movement_reason.date})
+              </h3>
+              <div class="flex items-center gap-4 mb-3">
+                <span class={`text-2xl font-black ${reportData.movement_reason.change_pct >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                  {reportData.movement_reason.change_pct >= 0 ? '+' : ''}{(reportData.movement_reason.change_pct * 100).toFixed(2)}%
+                </span>
+                <span class="text-sm opacity-60">S&P 500 変動率上位銘柄</span>
+              </div>
+              <p class="text-skin-base whitespace-pre-wrap">{reportData.movement_reason.reason}</p>
+              <p class="text-[10px] opacity-40 mt-4 text-right italic">※Gemini AI 3.1 Flash Lite による調査・分析 (Google Search 連携)</p>
+            </div>
+          )}
           
           {reportData.business_summary_ja && (
             <div class="mb-8 p-6 bg-skin-fill/20 rounded-lg border border-skin-line leading-relaxed">

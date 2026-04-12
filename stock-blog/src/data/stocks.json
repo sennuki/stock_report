@@ -9,7 +9,8 @@
     "Daily_Change": -0.0011960132890365901,
     "Security_JA": "スリーエム",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-20"
+    "Actual_Earnings_Date": "2026-01-20",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "AOS",
@@ -21,7 +22,8 @@
     "Daily_Change": -0.0200683811505871,
     "Security_JA": "エー・オー・スミス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-29"
+    "Actual_Earnings_Date": "2026-01-29",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "ABT",
@@ -33,7 +35,8 @@
     "Daily_Change": -0.023559190031152664,
     "Security_JA": "アボット･ラボラトリーズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": null
+    "Actual_Earnings_Date": null,
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "ABBV",
@@ -45,7 +48,8 @@
     "Daily_Change": -0.02099811676082866,
     "Security_JA": "アッヴィ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": null
+    "Actual_Earnings_Date": null,
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "ACN",
@@ -57,7 +61,8 @@
     "Daily_Change": -0.03494060097833683,
     "Security_JA": "アクセンチュア　クラスA",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": null
+    "Actual_Earnings_Date": null,
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "ADBE",
@@ -69,7 +74,8 @@
     "Daily_Change": -0.019961729146733945,
     "Security_JA": "アドビ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": null
+    "Actual_Earnings_Date": null,
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "AMD",
@@ -81,7 +87,8 @@
     "Daily_Change": 0.03549695740365114,
     "Security_JA": "アドバンスト・マイクロ・デバイシズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-03"
+    "Actual_Earnings_Date": "2026-02-03",
+    "Has_Movement_Reason": true
   },
   {
     "Symbol": "AES",
@@ -93,7 +100,8 @@
     "Daily_Change": -0.00138792505204716,
     "Security_JA": "エーイーエス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": null
+    "Actual_Earnings_Date": null,
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "AFL",
@@ -105,7 +113,8 @@
     "Daily_Change": -0.020960466967365265,
     "Security_JA": "アフラック",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": null
+    "Actual_Earnings_Date": null,
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "A",
@@ -117,7 +126,8 @@
     "Daily_Change": -0.0028598665395614723,
     "Security_JA": "アジレント･テクノロジーズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": null
+    "Actual_Earnings_Date": null,
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "APD",
@@ -129,7 +139,8 @@
     "Daily_Change": 0.0032578759991938283,
     "Security_JA": "エアー・プロダクツ・アンド・ケミカルズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-30"
+    "Actual_Earnings_Date": "2026-01-30",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "ABNB",
@@ -141,7 +152,8 @@
     "Daily_Change": -0.001548467017652436,
     "Security_JA": "エアビーアンドビー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": null
+    "Actual_Earnings_Date": null,
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "AKAM",
@@ -153,7 +165,8 @@
     "Daily_Change": -0.166590639540188,
     "Security_JA": "アカマイ・テクノロジーズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": null
+    "Actual_Earnings_Date": "2026-02-19",
+    "Has_Movement_Reason": true
   },
   {
     "Symbol": "ALB",
@@ -165,7 +178,8 @@
     "Daily_Change": 0.00748476936466488,
     "Security_JA": "アルビマール",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-11"
+    "Actual_Earnings_Date": "2026-02-11",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "ARE",
@@ -177,7 +191,8 @@
     "Daily_Change": -0.03137076608320078,
     "Security_JA": "アレクサンドリア・リアル・エステート・エクイティーズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-26"
+    "Actual_Earnings_Date": "2026-01-26",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "ALGN",
@@ -189,7 +204,8 @@
     "Daily_Change": -0.00796424683435521,
     "Security_JA": "アライン・テクノロジー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "ALLE",
@@ -201,7 +217,8 @@
     "Daily_Change": -0.01011689110670579,
     "Security_JA": "アレジオン",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-17"
+    "Actual_Earnings_Date": "2026-02-17",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "LNT",
@@ -213,7 +230,8 @@
     "Daily_Change": -0.008410200759631099,
     "Security_JA": "アライアント・エナジー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-19"
+    "Actual_Earnings_Date": "2026-02-19",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "ALL",
@@ -225,7 +243,8 @@
     "Daily_Change": -0.016455342159239238,
     "Security_JA": "オールステート",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "GOOGL",
@@ -237,7 +256,8 @@
     "Daily_Change": -0.003877855404662889,
     "Security_JA": "アルファベット クラスA",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "GOOG",
@@ -249,7 +269,8 @@
     "Daily_Change": -0.002054556373865971,
     "Security_JA": "アルファベット クラスC",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "MO",
@@ -261,7 +282,8 @@
     "Daily_Change": -0.0011858879335902505,
     "Security_JA": "アルトリア・グループ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-29"
+    "Actual_Earnings_Date": "2026-01-29",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "AMZN",
@@ -273,7 +295,8 @@
     "Daily_Change": 0.02024395463299803,
     "Security_JA": "アマゾン･ドットコム",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-05"
+    "Actual_Earnings_Date": "2026-02-05",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "AMCR",
@@ -285,7 +308,8 @@
     "Daily_Change": -0.014367816091954057,
     "Security_JA": "アムコー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-03"
+    "Actual_Earnings_Date": "2026-02-03",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "AEE",
@@ -297,7 +321,8 @@
     "Daily_Change": -0.00761021693491944,
     "Security_JA": "アメレン・コーポレーション",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": null
+    "Actual_Earnings_Date": null,
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "AEP",
@@ -309,7 +334,8 @@
     "Daily_Change": -0.006197593875318952,
     "Security_JA": "アメリカン・エレクトリック・パワー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": null
+    "Actual_Earnings_Date": null,
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "AXP",
@@ -321,7 +347,8 @@
     "Daily_Change": -0.013437391824275363,
     "Security_JA": "アメリカン・エキスプレス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-30"
+    "Actual_Earnings_Date": "2026-01-30",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "AIG",
@@ -333,7 +360,8 @@
     "Daily_Change": -0.01093669583118881,
     "Security_JA": "エーアイジー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": null
+    "Actual_Earnings_Date": "2026-02-10",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "AMT",
@@ -345,7 +373,8 @@
     "Daily_Change": -0.0035569388095371243,
     "Security_JA": "アメリカン・タワー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-24"
+    "Actual_Earnings_Date": "2026-02-24",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "AWK",
@@ -357,7 +386,8 @@
     "Daily_Change": -0.014578096947935376,
     "Security_JA": "アメリカン・ウォーター・ワークス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-18"
+    "Actual_Earnings_Date": "2026-02-18",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "AMP",
@@ -369,7 +399,8 @@
     "Daily_Change": -0.014484433649812327,
     "Security_JA": "アメリプライズ・フィナンシャル",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-29"
+    "Actual_Earnings_Date": "2026-01-29",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "AME",
@@ -381,7 +412,8 @@
     "Daily_Change": 0.006081630904963756,
     "Security_JA": "アメテック",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-03"
+    "Actual_Earnings_Date": "2026-02-03",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "AMGN",
@@ -393,7 +425,8 @@
     "Daily_Change": -0.01287964004499449,
     "Security_JA": "アムジェン",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-03"
+    "Actual_Earnings_Date": "2026-02-03",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "APH",
@@ -405,7 +438,8 @@
     "Daily_Change": 0.022298082510168456,
     "Security_JA": "アンフェノール クラスA",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-28"
+    "Actual_Earnings_Date": "2026-01-28",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "ADI",
@@ -417,7 +451,8 @@
     "Daily_Change": -0.0034722222222222997,
     "Security_JA": "アナログ・デバイシズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": null
+    "Actual_Earnings_Date": null,
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "AON",
@@ -429,7 +464,8 @@
     "Daily_Change": -0.03942839582052853,
     "Security_JA": "エーオン",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-30"
+    "Actual_Earnings_Date": "2026-01-30",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "APA",
@@ -441,7 +477,8 @@
     "Daily_Change": -0.008724659994867753,
     "Security_JA": "アパッチ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-25"
+    "Actual_Earnings_Date": "2026-02-25",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "APO",
@@ -453,7 +490,8 @@
     "Daily_Change": -0.025238362310712307,
     "Security_JA": "アポロ・グローバル・マネジメント",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-09"
+    "Actual_Earnings_Date": "2026-02-09",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "AAPL",
@@ -465,7 +503,8 @@
     "Daily_Change": -3.838918960417254e-05,
     "Security_JA": "アップル",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": null
+    "Actual_Earnings_Date": null,
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "AMAT",
@@ -477,7 +516,8 @@
     "Daily_Change": 0.00422312159070915,
     "Security_JA": "アプライド・マテリアルズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-12"
+    "Actual_Earnings_Date": "2026-02-12",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "APP",
@@ -489,7 +529,8 @@
     "Daily_Change": 0.032283589175502475,
     "Security_JA": "アップラビン",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-11"
+    "Actual_Earnings_Date": "2026-02-11",
+    "Has_Movement_Reason": true
   },
   {
     "Symbol": "APTV",
@@ -501,7 +542,8 @@
     "Daily_Change": -0.007817697937458398,
     "Security_JA": "アプティブ・ホールディングス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-02"
+    "Actual_Earnings_Date": "2026-02-02",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "ACGL",
@@ -513,7 +555,8 @@
     "Daily_Change": -0.029036827195467466,
     "Security_JA": "アーチ・キャピタル・グループ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": null
+    "Actual_Earnings_Date": null,
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "ADM",
@@ -525,7 +568,8 @@
     "Daily_Change": -0.008813077469793752,
     "Security_JA": "アーチャーダニエルズ・ミッドランド",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": null
+    "Actual_Earnings_Date": null,
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "ARES",
@@ -537,7 +581,8 @@
     "Daily_Change": -0.04141221374045805,
     "Security_JA": "アレス・マネジメント　クラスA",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-05"
+    "Actual_Earnings_Date": "2026-02-05",
+    "Has_Movement_Reason": true
   },
   {
     "Symbol": "ANET",
@@ -549,7 +594,8 @@
     "Daily_Change": 0.008901061280383312,
     "Security_JA": "アリスタネットワークス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-12"
+    "Actual_Earnings_Date": "2026-02-12",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "AJG",
@@ -561,7 +607,8 @@
     "Daily_Change": -0.022162186913320094,
     "Security_JA": "アーサー・ジェイ・ギャラガー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-29"
+    "Actual_Earnings_Date": "2026-01-29",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "AIZ",
@@ -573,7 +620,8 @@
     "Daily_Change": -0.01737728412755283,
     "Security_JA": "アシュラント",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-10"
+    "Actual_Earnings_Date": null,
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "T",
@@ -585,7 +633,8 @@
     "Daily_Change": -0.0038588235294117327,
     "Security_JA": "エーティー・アンド・ティー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-28"
+    "Actual_Earnings_Date": "2026-01-28",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "ATO",
@@ -597,7 +646,8 @@
     "Daily_Change": -0.010036923396952408,
     "Security_JA": "アトモス・エナジー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-03"
+    "Actual_Earnings_Date": "2026-02-03",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "ADSK",
@@ -609,7 +659,8 @@
     "Daily_Change": -0.029671745213876458,
     "Security_JA": "オートデスク",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": null
+    "Actual_Earnings_Date": null,
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "ADP",
@@ -621,7 +672,8 @@
     "Daily_Change": -0.03688399142944607,
     "Security_JA": "オートマチック・データ・プロセシング",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": null
+    "Actual_Earnings_Date": null,
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "AZO",
@@ -633,7 +685,8 @@
     "Daily_Change": -0.03318311589852861,
     "Security_JA": "オートゾーン",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-03-03"
+    "Actual_Earnings_Date": "2026-03-03",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "AVB",
@@ -645,7 +698,8 @@
     "Daily_Change": 0.00753664470951285,
     "Security_JA": "アバロンベイ・コミュニティーズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "AVY",
@@ -657,7 +711,8 @@
     "Daily_Change": -0.015246533571140933,
     "Security_JA": "エイブリー・デニソン",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "AXON",
@@ -669,7 +724,8 @@
     "Daily_Change": -0.015341701534170115,
     "Security_JA": "アクソン・エンタープライズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-24"
+    "Actual_Earnings_Date": "2026-02-24",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "BKR",
@@ -681,7 +737,8 @@
     "Daily_Change": -0.009303058971933198,
     "Security_JA": "ベーカー・ヒューズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-25"
+    "Actual_Earnings_Date": "2026-01-25",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "BALL",
@@ -693,7 +750,8 @@
     "Daily_Change": -0.00922538571655795,
     "Security_JA": "ボール",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-03"
+    "Actual_Earnings_Date": "2026-02-03",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "BAC",
@@ -705,7 +763,8 @@
     "Daily_Change": -0.0032251944602542534,
     "Security_JA": "バンク・オブ・アメリカ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-14"
+    "Actual_Earnings_Date": "2026-01-14",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "BAX",
@@ -717,7 +776,8 @@
     "Daily_Change": -0.008670520231213995,
     "Security_JA": "バクスター・インターナショナル",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-12"
+    "Actual_Earnings_Date": "2026-02-12",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "BDX",
@@ -729,7 +789,8 @@
     "Daily_Change": -0.00797632831596558,
     "Security_JA": "ベクトン・ディッキンソン",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-09"
+    "Actual_Earnings_Date": "2026-02-09",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "BRK.B",
@@ -741,7 +802,8 @@
     "Daily_Change": -0.010923330585325663,
     "Security_JA": "バークシャー・ハサウェイ　クラスB",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-28"
+    "Actual_Earnings_Date": "2026-02-28",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "BBY",
@@ -753,7 +815,8 @@
     "Daily_Change": -0.033472803347280394,
     "Security_JA": "ベスト・バイ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-03-03"
+    "Actual_Earnings_Date": "2026-03-03",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "TECH",
@@ -765,7 +828,8 @@
     "Daily_Change": -0.0005398596364945318,
     "Security_JA": "テクネ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "BIIB",
@@ -777,7 +841,8 @@
     "Daily_Change": -0.02337530348371077,
     "Security_JA": "バイオジェン",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-06"
+    "Actual_Earnings_Date": "2026-02-06",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "BLK",
@@ -789,7 +854,8 @@
     "Daily_Change": -0.0023062638525589135,
     "Security_JA": "ブラックロック・ファンディング",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-15"
+    "Actual_Earnings_Date": "2026-01-15",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "BX",
@@ -801,7 +867,8 @@
     "Daily_Change": -0.017707442258340523,
     "Security_JA": "ブラックストーン",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-29"
+    "Actual_Earnings_Date": "2026-01-29",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "XYZ",
@@ -813,7 +880,8 @@
     "Daily_Change": -0.007816238634550884,
     "Security_JA": "ブロック",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-26"
+    "Actual_Earnings_Date": "2026-02-26",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "BK",
@@ -825,7 +893,8 @@
     "Daily_Change": -0.007932804479701431,
     "Security_JA": "バンク・オブ・ニューヨーク・メロン",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-13"
+    "Actual_Earnings_Date": "2026-01-13",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "BA",
@@ -837,7 +906,8 @@
     "Daily_Change": -0.011042442970099094,
     "Security_JA": "ボーイング",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-27"
+    "Actual_Earnings_Date": "2026-01-27",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "BKNG",
@@ -849,7 +919,8 @@
     "Daily_Change": -0.01778029445073605,
     "Security_JA": "ブッキング・ ホールディングス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-18"
+    "Actual_Earnings_Date": "2026-02-18",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "BSX",
@@ -861,7 +932,8 @@
     "Daily_Change": 0.008322454308093962,
     "Security_JA": "ボストン・サイエンティフィック",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "BMY",
@@ -873,7 +945,8 @@
     "Daily_Change": -0.01429292080040359,
     "Security_JA": "ブリストル・マイヤーズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-05"
+    "Actual_Earnings_Date": "2026-02-05",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "AVGO",
@@ -885,7 +958,8 @@
     "Daily_Change": 0.046885125806542464,
     "Security_JA": "ブロードコム",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-03-04"
+    "Actual_Earnings_Date": "2026-03-04",
+    "Has_Movement_Reason": true
   },
   {
     "Symbol": "BR",
@@ -897,7 +971,8 @@
     "Daily_Change": -0.02370954196007486,
     "Security_JA": "ブロードリッジ・フィナンシャル・ソリューションズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-03"
+    "Actual_Earnings_Date": "2026-02-03",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "BRO",
@@ -909,7 +984,8 @@
     "Daily_Change": -0.030537762550275543,
     "Security_JA": "ブラウン・アンド・ブラウン",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-26"
+    "Actual_Earnings_Date": "2026-01-26",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "BF.B",
@@ -921,7 +997,8 @@
     "Daily_Change": -0.027053777631144846,
     "Security_JA": "ブラウン・フォーマン クラスB",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-03-04"
+    "Actual_Earnings_Date": "2026-03-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "BLDR",
@@ -933,7 +1010,8 @@
     "Daily_Change": 0.0010562140593827418,
     "Security_JA": "ビルダーズ・ファーストソース",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-17"
+    "Actual_Earnings_Date": "2026-02-17",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "BG",
@@ -945,7 +1023,8 @@
     "Daily_Change": 0.007807417046193949,
     "Security_JA": "ブンゲ・グローバル",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "BXP",
@@ -957,7 +1036,8 @@
     "Daily_Change": 0.009908536585365915,
     "Security_JA": "BXP",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-27"
+    "Actual_Earnings_Date": "2026-01-27",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CHRW",
@@ -969,7 +1049,8 @@
     "Daily_Change": -0.039424206815511044,
     "Security_JA": "シー・エイチ・ロビンソン・ワールドワイド",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-28"
+    "Actual_Earnings_Date": "2026-01-28",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CDNS",
@@ -981,7 +1062,8 @@
     "Daily_Change": -0.054624390591082046,
     "Security_JA": "ケイデンス・デザイン・システムズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-17"
+    "Actual_Earnings_Date": "2026-02-17",
+    "Has_Movement_Reason": true
   },
   {
     "Symbol": "CPT",
@@ -993,7 +1075,8 @@
     "Daily_Change": 0.011007536691788966,
     "Security_JA": "カムデン・プロパティ・トラスト",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-05"
+    "Actual_Earnings_Date": "2026-02-05",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CPB",
@@ -1005,7 +1088,8 @@
     "Daily_Change": -0.017316017316017288,
     "Security_JA": "ザ・キャンベルズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-03-11"
+    "Actual_Earnings_Date": "2026-03-11",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "COF",
@@ -1017,7 +1101,8 @@
     "Daily_Change": -0.008884095927694706,
     "Security_JA": "キャピタル・ワン・フィナンシャル",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-22"
+    "Actual_Earnings_Date": "2026-01-22",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CAH",
@@ -1029,7 +1114,8 @@
     "Daily_Change": -0.001297497683039857,
     "Security_JA": "カーディナル・ヘルス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-05"
+    "Actual_Earnings_Date": "2026-02-05",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CCL",
@@ -1041,7 +1127,8 @@
     "Daily_Change": 0.004667863554757594,
     "Security_JA": "カーニバル",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-03-27"
+    "Actual_Earnings_Date": "2026-03-27",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CARR",
@@ -1053,7 +1140,8 @@
     "Daily_Change": 0.030589000976244753,
     "Security_JA": "キャリア・グローバル",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-05"
+    "Actual_Earnings_Date": "2026-02-05",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CVNA",
@@ -1065,7 +1153,8 @@
     "Daily_Change": 0.028691157128437266,
     "Security_JA": "カーヴァナ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-18"
+    "Actual_Earnings_Date": "2026-02-18",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CASY",
@@ -1077,7 +1166,8 @@
     "Daily_Change": -0.027136380410142907,
     "Security_JA": "ケーシーズ・ゼネラル・ストアーズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-03-09"
+    "Actual_Earnings_Date": "2026-03-09",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CAT",
@@ -1089,7 +1179,8 @@
     "Daily_Change": 0.004561220730049319,
     "Security_JA": "キャタピラー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-29"
+    "Actual_Earnings_Date": "2026-01-29",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CBOE",
@@ -1101,7 +1192,8 @@
     "Daily_Change": 0.0038328471609795655,
     "Security_JA": "シービーオーイー・マーケッツ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-06"
+    "Actual_Earnings_Date": "2026-02-06",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CBRE",
@@ -1113,7 +1205,8 @@
     "Daily_Change": -0.008704197669521333,
     "Security_JA": "CBREグループ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-12"
+    "Actual_Earnings_Date": "2026-02-12",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CDW",
@@ -1125,7 +1218,8 @@
     "Daily_Change": -0.009625246548323462,
     "Security_JA": "CDWコープ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "COR",
@@ -1137,7 +1231,8 @@
     "Daily_Change": -0.005085902127395604,
     "Security_JA": "センコア",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CNC",
@@ -1149,7 +1244,8 @@
     "Daily_Change": -0.006657789613848203,
     "Security_JA": "センティーン",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-06"
+    "Actual_Earnings_Date": "2026-02-06",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CNP",
@@ -1161,7 +1257,8 @@
     "Daily_Change": -0.016768638114661272,
     "Security_JA": "センターポイント・エナジー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-19"
+    "Actual_Earnings_Date": "2026-02-19",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CF",
@@ -1173,7 +1270,8 @@
     "Daily_Change": 0.016250628245937326,
     "Security_JA": "シーエフ・インダストリーズ・ホールディングス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-18"
+    "Actual_Earnings_Date": "2026-02-18",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CRL",
@@ -1185,7 +1283,8 @@
     "Daily_Change": 0.0005696382796923629,
     "Security_JA": "チャールス・リバー・ラボラトリーズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-18"
+    "Actual_Earnings_Date": "2026-02-18",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "SCHW",
@@ -1197,7 +1296,8 @@
     "Daily_Change": -0.025393235324354876,
     "Security_JA": "チャールズ・シュワブ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-21"
+    "Actual_Earnings_Date": "2026-01-21",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CHTR",
@@ -1209,7 +1309,8 @@
     "Daily_Change": -0.019755409219190955,
     "Security_JA": "チャーター・コミュニケーションズ クラスA",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-30"
+    "Actual_Earnings_Date": "2026-01-30",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CVX",
@@ -1221,7 +1322,8 @@
     "Daily_Change": -0.009508300063038464,
     "Security_JA": "シェブロン",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-30"
+    "Actual_Earnings_Date": "2026-01-30",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CMG",
@@ -1233,7 +1335,8 @@
     "Daily_Change": -0.004380841121495285,
     "Security_JA": "チポトレ・メキシカン・グリル",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-03"
+    "Actual_Earnings_Date": "2026-02-03",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CB",
@@ -1245,7 +1348,8 @@
     "Daily_Change": -0.015107827236138563,
     "Security_JA": "チャブ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-03"
+    "Actual_Earnings_Date": "2026-02-03",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CHD",
@@ -1257,7 +1361,8 @@
     "Daily_Change": -0.007695507487520746,
     "Security_JA": "チャーチ・アンド・ドワイト",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-30"
+    "Actual_Earnings_Date": "2026-01-30",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CIEN",
@@ -1269,7 +1374,8 @@
     "Daily_Change": 0.01772744060076324,
     "Security_JA": "シエナ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-03-05"
+    "Actual_Earnings_Date": "2026-03-05",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CI",
@@ -1281,7 +1387,8 @@
     "Daily_Change": -0.025857425031423915,
     "Security_JA": "ザ・シグナ・グループ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-05"
+    "Actual_Earnings_Date": "2026-02-05",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CINF",
@@ -1293,7 +1400,8 @@
     "Daily_Change": -0.017139371759682845,
     "Security_JA": "シンシナティ・フィナンシャル",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-09"
+    "Actual_Earnings_Date": "2026-02-09",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CTAS",
@@ -1305,7 +1413,8 @@
     "Daily_Change": 0.004467361844825326,
     "Security_JA": "シンタス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-03-25"
+    "Actual_Earnings_Date": "2026-03-25",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CSCO",
@@ -1317,7 +1426,8 @@
     "Daily_Change": -0.011422387880245315,
     "Security_JA": "シスコシステムズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-11"
+    "Actual_Earnings_Date": "2026-02-11",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "C",
@@ -1329,7 +1439,8 @@
     "Daily_Change": -0.004242715337816212,
     "Security_JA": "シティグループ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-14"
+    "Actual_Earnings_Date": "2026-01-14",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CFG",
@@ -1341,7 +1452,8 @@
     "Daily_Change": -0.012313375404032587,
     "Security_JA": "シチズンズ・フィナンシャル・グループ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-21"
+    "Actual_Earnings_Date": "2026-01-21",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CLX",
@@ -1353,7 +1465,8 @@
     "Daily_Change": -0.021743170414421142,
     "Security_JA": "クロロックス・カンパニー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-03"
+    "Actual_Earnings_Date": "2026-02-03",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CME",
@@ -1365,7 +1478,8 @@
     "Daily_Change": -0.012143311143076959,
     "Security_JA": "シーエムイー・グループ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CMS",
@@ -1377,7 +1491,8 @@
     "Daily_Change": -0.00700525394045537,
     "Security_JA": "シーエムエス・エナジー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-05"
+    "Actual_Earnings_Date": "2026-02-05",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "KO",
@@ -1389,7 +1504,8 @@
     "Daily_Change": -0.009081606548989613,
     "Security_JA": "コカ・コーラ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-10"
+    "Actual_Earnings_Date": "2026-02-10",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CTSH",
@@ -1401,7 +1517,8 @@
     "Daily_Change": -0.02162162162162164,
     "Security_JA": "コグニザント・テクノロジー・ソリューションズ クラスA",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "COHR",
@@ -1413,7 +1530,8 @@
     "Daily_Change": 0.08209874370975115,
     "Security_JA": "コヒレント",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": true
   },
   {
     "Symbol": "COIN",
@@ -1425,7 +1543,8 @@
     "Daily_Change": -0.006922257720979859,
     "Security_JA": "コインベース・グローバル",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-12"
+    "Actual_Earnings_Date": "2026-02-12",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CL",
@@ -1437,7 +1556,8 @@
     "Daily_Change": -0.01975825197582523,
     "Security_JA": "コルゲート・パルモリーブ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-30"
+    "Actual_Earnings_Date": "2026-01-30",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CMCSA",
@@ -1449,7 +1569,8 @@
     "Daily_Change": -0.013422818791946274,
     "Security_JA": "コムキャスト クラスA",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-29"
+    "Actual_Earnings_Date": "2026-01-29",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "FIX",
@@ -1461,7 +1582,8 @@
     "Daily_Change": 0.011680269300390532,
     "Security_JA": "コンフォート・システムズUSA",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-19"
+    "Actual_Earnings_Date": "2026-02-19",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CAG",
@@ -1473,7 +1595,8 @@
     "Daily_Change": -0.02379421221864958,
     "Security_JA": "コナグラ・ブランズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-04-01"
+    "Actual_Earnings_Date": "2026-04-01",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "COP",
@@ -1485,7 +1608,8 @@
     "Daily_Change": -0.0074512027213088335,
     "Security_JA": "コノコ・フィリップス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-05"
+    "Actual_Earnings_Date": "2026-02-05",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "ED",
@@ -1497,7 +1621,8 @@
     "Daily_Change": -0.012349973908505842,
     "Security_JA": "コンソリデーテッド・エジソン",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-19"
+    "Actual_Earnings_Date": "2026-02-19",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "STZ",
@@ -1509,7 +1634,8 @@
     "Daily_Change": 0.018887594284663106,
     "Security_JA": "コンステレーション･ブランズ クラスA",
     "Is_Recent_Actual": true,
-    "Actual_Earnings_Date": "2026-04-08"
+    "Actual_Earnings_Date": "2026-04-08",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CEG",
@@ -1521,7 +1647,8 @@
     "Daily_Change": 0.02230151650312221,
     "Security_JA": "コンステレーション・エナジー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-24"
+    "Actual_Earnings_Date": "2026-02-24",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "COO",
@@ -1533,7 +1660,8 @@
     "Daily_Change": -0.0034984606773019876,
     "Security_JA": "クーパー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-03-05"
+    "Actual_Earnings_Date": "2026-03-05",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CPRT",
@@ -1545,7 +1673,8 @@
     "Daily_Change": -0.006971809639284752,
     "Security_JA": "コパート",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-19"
+    "Actual_Earnings_Date": "2026-02-19",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "GLW",
@@ -1557,7 +1686,8 @@
     "Daily_Change": 0.00848056537102472,
     "Security_JA": "コーニング",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-28"
+    "Actual_Earnings_Date": "2026-01-28",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CPAY",
@@ -1569,7 +1699,8 @@
     "Daily_Change": -0.012199497667743123,
     "Security_JA": "コーペイ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CTVA",
@@ -1581,7 +1712,8 @@
     "Daily_Change": 0.0032312111057921974,
     "Security_JA": "コルテバ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-03"
+    "Actual_Earnings_Date": "2026-02-03",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CSGP",
@@ -1593,7 +1725,8 @@
     "Daily_Change": -0.022508038585209094,
     "Security_JA": "コスター・グループ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-24"
+    "Actual_Earnings_Date": "2026-02-24",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "COST",
@@ -1605,7 +1738,8 @@
     "Daily_Change": -0.03251843454163149,
     "Security_JA": "コストコ・ホールセール",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-03-05"
+    "Actual_Earnings_Date": "2026-03-05",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CTRA",
@@ -1617,7 +1751,8 @@
     "Daily_Change": -0.0020908004778972607,
     "Security_JA": "コテラ・エナジー・インク",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-26"
+    "Actual_Earnings_Date": "2026-02-26",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CRH",
@@ -1629,7 +1764,8 @@
     "Daily_Change": 0.020692640692640697,
     "Security_JA": "CRH",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-18"
+    "Actual_Earnings_Date": "2026-02-18",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CRWD",
@@ -1641,7 +1777,8 @@
     "Daily_Change": -0.039677713590757134,
     "Security_JA": "クラウドストライク・ホールディングス　クラスA",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-03-03"
+    "Actual_Earnings_Date": "2026-03-03",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CCI",
@@ -1653,7 +1790,8 @@
     "Daily_Change": -0.0032343768048976197,
     "Security_JA": "クラウン・キャッスル",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CSX",
@@ -1665,7 +1803,8 @@
     "Daily_Change": -0.005883737349964697,
     "Security_JA": "シーエスエックス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-22"
+    "Actual_Earnings_Date": "2026-01-22",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CMI",
@@ -1677,7 +1816,8 @@
     "Daily_Change": 0.008428943190559547,
     "Security_JA": "カミンズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-05"
+    "Actual_Earnings_Date": "2026-02-05",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CVS",
@@ -1689,7 +1829,8 @@
     "Daily_Change": 0.0062151192288177936,
     "Security_JA": "シーブイエス・ヘルス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-10"
+    "Actual_Earnings_Date": "2026-02-10",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "DHR",
@@ -1701,7 +1842,8 @@
     "Daily_Change": -0.017513860821804214,
     "Security_JA": "ダナハー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-28"
+    "Actual_Earnings_Date": "2026-01-28",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "DRI",
@@ -1713,7 +1855,8 @@
     "Daily_Change": -0.012574420036953485,
     "Security_JA": "ダーデン・レストランツ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-03-19"
+    "Actual_Earnings_Date": "2026-03-19",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "DDOG",
@@ -1725,7 +1868,8 @@
     "Daily_Change": -0.03312534409983483,
     "Security_JA": "データドッグ　クラスA",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-10"
+    "Actual_Earnings_Date": "2026-02-10",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "DVA",
@@ -1737,7 +1881,8 @@
     "Daily_Change": -0.004181045925139338,
     "Security_JA": "ダビータ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-02"
+    "Actual_Earnings_Date": "2026-02-02",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "DECK",
@@ -1749,7 +1894,8 @@
     "Daily_Change": -0.017400018219914336,
     "Security_JA": "デッカーズ・アウトドア",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-29"
+    "Actual_Earnings_Date": "2026-01-29",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "DE",
@@ -1761,7 +1907,8 @@
     "Daily_Change": -0.021035598705501618,
     "Security_JA": "ディア",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-19"
+    "Actual_Earnings_Date": "2026-02-19",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "DELL",
@@ -1773,7 +1920,8 @@
     "Daily_Change": -0.020169734376722124,
     "Security_JA": "デル・テクノロジーズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-26"
+    "Actual_Earnings_Date": "2026-02-26",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "DAL",
@@ -1785,7 +1933,8 @@
     "Daily_Change": -0.00014742739200951079,
     "Security_JA": "デルタ航空",
     "Is_Recent_Actual": true,
-    "Actual_Earnings_Date": "2026-04-08"
+    "Actual_Earnings_Date": "2026-04-08",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "DVN",
@@ -1797,7 +1946,8 @@
     "Daily_Change": -0.001879699248120372,
     "Security_JA": "デボン・エナジー・コーポレーション",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-17"
+    "Actual_Earnings_Date": "2026-02-17",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "DXCM",
@@ -1809,7 +1959,8 @@
     "Daily_Change": -0.025274056029232803,
     "Security_JA": "デクスコム",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-12"
+    "Actual_Earnings_Date": "2026-02-12",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "FANG",
@@ -1821,7 +1972,8 @@
     "Daily_Change": 0.010171220009661372,
     "Security_JA": "ダイアモンドバック・エナジー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-23"
+    "Actual_Earnings_Date": "2026-02-23",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "DLR",
@@ -1833,7 +1985,8 @@
     "Daily_Change": 0.0038267339888386864,
     "Security_JA": "デジタル・リアルティ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-05"
+    "Actual_Earnings_Date": "2026-02-05",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "DG",
@@ -1845,7 +1998,8 @@
     "Daily_Change": -0.0335699373695198,
     "Security_JA": "ダラー・ゼネラル",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-03-12"
+    "Actual_Earnings_Date": "2026-03-12",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "DLTR",
@@ -1857,7 +2011,8 @@
     "Daily_Change": -0.029727095516569175,
     "Security_JA": "ダラー・ツリー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-03-16"
+    "Actual_Earnings_Date": "2026-03-16",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "D",
@@ -1869,7 +2024,8 @@
     "Daily_Change": 0.0018717828731867813,
     "Security_JA": "ドミニオン・エナジー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-23"
+    "Actual_Earnings_Date": "2026-02-23",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "DPZ",
@@ -1881,7 +2037,8 @@
     "Daily_Change": -0.01968925796946162,
     "Security_JA": "ドミノ･ピザ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-23"
+    "Actual_Earnings_Date": "2026-02-23",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "DASH",
@@ -1893,7 +2050,8 @@
     "Daily_Change": -0.012746683921061137,
     "Security_JA": "ドアダッシュ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-18"
+    "Actual_Earnings_Date": "2026-02-18",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "DOV",
@@ -1905,7 +2063,8 @@
     "Daily_Change": -0.005496518871381407,
     "Security_JA": "ドーバー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-29"
+    "Actual_Earnings_Date": "2026-01-29",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "DOW",
@@ -1917,7 +2076,8 @@
     "Daily_Change": 0.025499474237644554,
     "Security_JA": "ダウ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-29"
+    "Actual_Earnings_Date": "2026-01-29",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "DHI",
@@ -1929,7 +2089,8 @@
     "Daily_Change": -0.0076527062752193035,
     "Security_JA": "ディーアール・ホートン",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-20"
+    "Actual_Earnings_Date": "2026-01-20",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "DTE",
@@ -1941,7 +2102,8 @@
     "Daily_Change": -0.008610411975095926,
     "Security_JA": "ディーティーイー・エナジー・カンパニー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-17"
+    "Actual_Earnings_Date": "2026-02-17",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "DUK",
@@ -1953,7 +2115,8 @@
     "Daily_Change": -0.009097744360902316,
     "Security_JA": "デューク・エナジー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-10"
+    "Actual_Earnings_Date": "2026-02-10",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "DD",
@@ -1965,7 +2128,8 @@
     "Daily_Change": -0.0035849852382961135,
     "Security_JA": "デュポン・ド・ヌムール",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-10"
+    "Actual_Earnings_Date": "2026-02-10",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "ETN",
@@ -1977,7 +2141,8 @@
     "Daily_Change": 0.006392967735490965,
     "Security_JA": "イートン",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-03"
+    "Actual_Earnings_Date": "2026-02-03",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "EBAY",
@@ -1989,7 +2154,8 @@
     "Daily_Change": -0.0018832391713746873,
     "Security_JA": "イーベイ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-18"
+    "Actual_Earnings_Date": "2026-02-18",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "SATS",
@@ -2001,7 +2167,8 @@
     "Daily_Change": 0.07078024814722292,
     "Security_JA": "エコスター クラスA",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-03-02"
+    "Actual_Earnings_Date": "2026-03-02",
+    "Has_Movement_Reason": true
   },
   {
     "Symbol": "ECL",
@@ -2013,7 +2180,8 @@
     "Daily_Change": 0.003009505633647716,
     "Security_JA": "エコラボ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-10"
+    "Actual_Earnings_Date": "2026-02-10",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "EIX",
@@ -2025,7 +2193,8 @@
     "Daily_Change": -0.0013189132155103445,
     "Security_JA": "エジソン・インターナショナル",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-18"
+    "Actual_Earnings_Date": "2026-02-18",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "EW",
@@ -2037,7 +2206,8 @@
     "Daily_Change": -0.016171825647504752,
     "Security_JA": "エドワーズ・ライフサイエンシズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-10"
+    "Actual_Earnings_Date": "2026-02-10",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "EA",
@@ -2049,7 +2219,8 @@
     "Daily_Change": 0.002670623145400695,
     "Security_JA": "エレクトロニック・アーツ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-03"
+    "Actual_Earnings_Date": "2026-02-03",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "ELV",
@@ -2061,7 +2232,8 @@
     "Daily_Change": -0.016852336920503776,
     "Security_JA": "エレバンス・ヘルス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-28"
+    "Actual_Earnings_Date": "2026-01-28",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "EME",
@@ -2073,7 +2245,8 @@
     "Daily_Change": 0.002536231884057937,
     "Security_JA": "エムコア・グループ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-26"
+    "Actual_Earnings_Date": "2026-02-26",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "EMR",
@@ -2085,7 +2258,8 @@
     "Daily_Change": -0.006221054814405042,
     "Security_JA": "エマーソン・エレクトリック",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-03"
+    "Actual_Earnings_Date": "2026-02-03",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "ETR",
@@ -2097,7 +2271,8 @@
     "Daily_Change": -0.008259536784741135,
     "Security_JA": "エンタジー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-12"
+    "Actual_Earnings_Date": "2026-02-12",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "EOG",
@@ -2109,7 +2284,8 @@
     "Daily_Change": -0.002855469322009187,
     "Security_JA": "イーオージー・リソーシズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-24"
+    "Actual_Earnings_Date": "2026-02-24",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "EPAM",
@@ -2121,7 +2297,8 @@
     "Daily_Change": -0.011142511102139648,
     "Security_JA": "イーピーエーエム・システムズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-19"
+    "Actual_Earnings_Date": "2026-02-19",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "EQT",
@@ -2133,7 +2310,8 @@
     "Daily_Change": -0.013284008743904476,
     "Security_JA": "イーキューティー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-17"
+    "Actual_Earnings_Date": "2026-02-17",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "EFX",
@@ -2145,7 +2323,8 @@
     "Daily_Change": -0.021605277625068756,
     "Security_JA": "エキファックス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "EQIX",
@@ -2157,7 +2336,8 @@
     "Daily_Change": -0.0012892968969628114,
     "Security_JA": "エクイニクス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-11"
+    "Actual_Earnings_Date": "2026-02-11",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "EQR",
@@ -2169,7 +2349,8 @@
     "Daily_Change": 0.011247105524313591,
     "Security_JA": "エクイティ・レジデンシャル",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-05"
+    "Actual_Earnings_Date": "2026-02-05",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "ERIE",
@@ -2181,7 +2362,8 @@
     "Daily_Change": -0.013566569484936867,
     "Security_JA": "イリー・インデムニティー・カンパニー クラスA",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-23"
+    "Actual_Earnings_Date": "2026-02-23",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "ESS",
@@ -2193,7 +2375,8 @@
     "Daily_Change": 0.00015998080230369171,
     "Security_JA": "エセックス・プロパティ・トラスト",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "EL",
@@ -2205,7 +2388,8 @@
     "Daily_Change": -0.008459544276163248,
     "Security_JA": "エスティローダー クラスA",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-05"
+    "Actual_Earnings_Date": "2026-02-05",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "EG",
@@ -2217,7 +2401,8 @@
     "Daily_Change": -0.01710318524477819,
     "Security_JA": "エベレスト・リ・グループ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "EVRG",
@@ -2229,7 +2414,8 @@
     "Daily_Change": -0.009821227594213978,
     "Security_JA": "エヴァージー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-19"
+    "Actual_Earnings_Date": "2026-02-19",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "ES",
@@ -2241,7 +2427,8 @@
     "Daily_Change": -0.008502196400736777,
     "Security_JA": "エバーソース・エナジー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-12"
+    "Actual_Earnings_Date": "2026-02-12",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "EXC",
@@ -2253,7 +2440,8 @@
     "Daily_Change": -0.017597087378640727,
     "Security_JA": "エクセロン",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-12"
+    "Actual_Earnings_Date": "2026-02-12",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "EXE",
@@ -2265,7 +2453,8 @@
     "Daily_Change": -0.005125628140703569,
     "Security_JA": "エクスパンド・エナジー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-17"
+    "Actual_Earnings_Date": "2026-02-17",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "EXPE",
@@ -2277,7 +2466,8 @@
     "Daily_Change": -0.009424129245201023,
     "Security_JA": "エクスペディア・グループ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-12"
+    "Actual_Earnings_Date": "2026-02-12",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "EXPD",
@@ -2289,7 +2479,8 @@
     "Daily_Change": -0.012221224884347235,
     "Security_JA": "エクスペディターズ・インターナショナル・オブ・ワシントン",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-24"
+    "Actual_Earnings_Date": "2026-02-24",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "EXR",
@@ -2301,7 +2492,8 @@
     "Daily_Change": -0.0024423532792184712,
     "Security_JA": "エクストラ・スペース・ストレージ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-19"
+    "Actual_Earnings_Date": "2026-02-19",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "XOM",
@@ -2313,7 +2505,8 @@
     "Daily_Change": -0.016318369453044382,
     "Security_JA": "エクソン・モービル",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-30"
+    "Actual_Earnings_Date": "2026-01-30",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "FFIV",
@@ -2325,7 +2518,8 @@
     "Daily_Change": -0.016225941138531427,
     "Security_JA": "F5ネットワークス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-27"
+    "Actual_Earnings_Date": "2026-01-27",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "FDS",
@@ -2337,7 +2531,8 @@
     "Daily_Change": -0.008992131884601049,
     "Security_JA": "ファクトセット・リサーチ・システムズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-03-31"
+    "Actual_Earnings_Date": "2026-03-31",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "FICO",
@@ -2349,7 +2544,8 @@
     "Daily_Change": -0.13986105282790126,
     "Security_JA": "フェア・アイザック",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-28"
+    "Actual_Earnings_Date": "2026-01-28",
+    "Has_Movement_Reason": true
   },
   {
     "Symbol": "FAST",
@@ -2361,7 +2557,8 @@
     "Daily_Change": 0.0014256619144602909,
     "Security_JA": "ファスナル",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-20"
+    "Actual_Earnings_Date": "2026-01-20",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "FRT",
@@ -2373,7 +2570,8 @@
     "Daily_Change": 0.01545767762361483,
     "Security_JA": "フェデラル・リアルティー・インベストメント・トラスト",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-12"
+    "Actual_Earnings_Date": "2026-02-12",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "FDX",
@@ -2385,7 +2583,8 @@
     "Daily_Change": -0.007745358090185718,
     "Security_JA": "フェデックス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-03-19"
+    "Actual_Earnings_Date": "2026-03-19",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "FIS",
@@ -2397,7 +2596,8 @@
     "Daily_Change": -0.04239346434091415,
     "Security_JA": "フィディリティ・ナショナル・インフォメーション・サービシズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-24"
+    "Actual_Earnings_Date": "2026-02-24",
+    "Has_Movement_Reason": true
   },
   {
     "Symbol": "FITB",
@@ -2409,7 +2609,8 @@
     "Daily_Change": -0.018120270808442782,
     "Security_JA": "フィフス・サード・バンコープ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-20"
+    "Actual_Earnings_Date": "2026-01-20",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "FSLR",
@@ -2421,7 +2622,8 @@
     "Daily_Change": 0.03153358681875792,
     "Security_JA": "ファースト・ソーラー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-24"
+    "Actual_Earnings_Date": "2026-02-24",
+    "Has_Movement_Reason": true
   },
   {
     "Symbol": "FE",
@@ -2433,7 +2635,8 @@
     "Daily_Change": -0.009246773261413927,
     "Security_JA": "ファーストエナジー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-17"
+    "Actual_Earnings_Date": "2026-02-17",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "FISV",
@@ -2445,7 +2648,8 @@
     "Daily_Change": -0.005672753057968325,
     "Security_JA": "フィサーブ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-10"
+    "Actual_Earnings_Date": "2026-02-10",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "F",
@@ -2457,7 +2661,8 @@
     "Daily_Change": -0.008986928104575118,
     "Security_JA": "フォード・モーター",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-10"
+    "Actual_Earnings_Date": "2026-02-10",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "FTNT",
@@ -2469,7 +2674,8 @@
     "Daily_Change": -0.04909496652615911,
     "Security_JA": "フォーティネット",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-05"
+    "Actual_Earnings_Date": "2026-02-05",
+    "Has_Movement_Reason": true
   },
   {
     "Symbol": "FTV",
@@ -2481,7 +2687,8 @@
     "Daily_Change": -0.03104765067242234,
     "Security_JA": "フォーティブ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "FOXA",
@@ -2493,7 +2700,8 @@
     "Daily_Change": -0.027724665391969328,
     "Security_JA": "フォックス　クラスA",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "FOX",
@@ -2505,7 +2713,8 @@
     "Daily_Change": -0.018670716455243912,
     "Security_JA": "フォックス　クラスB",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "BEN",
@@ -2517,7 +2726,8 @@
     "Daily_Change": -0.005191693290734785,
     "Security_JA": "フランクリン・リソーシズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-30"
+    "Actual_Earnings_Date": "2026-01-30",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "FCX",
@@ -2529,7 +2739,8 @@
     "Daily_Change": 0.02031602708803603,
     "Security_JA": "フリーポートマクモラン",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-22"
+    "Actual_Earnings_Date": "2026-01-22",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "GRMN",
@@ -2541,7 +2752,8 @@
     "Daily_Change": 0.0014033446380540822,
     "Security_JA": "ガーミン",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-18"
+    "Actual_Earnings_Date": "2026-02-18",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "IT",
@@ -2553,7 +2765,8 @@
     "Daily_Change": -0.02905012836103237,
     "Security_JA": "ガートナー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-03"
+    "Actual_Earnings_Date": "2026-02-03",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "GE",
@@ -2565,7 +2778,8 @@
     "Daily_Change": -0.014919174493642448,
     "Security_JA": "GE エアロスペース（ゼネラル・エレクトリック）",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-22"
+    "Actual_Earnings_Date": "2026-01-22",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "GEHC",
@@ -2577,7 +2791,8 @@
     "Daily_Change": 0.003703195720751752,
     "Security_JA": "GEヘルスケア・テクノロジーズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "GEV",
@@ -2589,7 +2804,8 @@
     "Daily_Change": 0.024069750624987157,
     "Security_JA": "GEベルノバ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-28"
+    "Actual_Earnings_Date": "2026-01-28",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "GEN",
@@ -2601,7 +2817,8 @@
     "Daily_Change": -0.026129559063690824,
     "Security_JA": "ゲンデジタル",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-05"
+    "Actual_Earnings_Date": "2026-02-05",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "GNRC",
@@ -2613,7 +2830,8 @@
     "Daily_Change": -0.0014951287739944162,
     "Security_JA": "ジェネラック・ホールディングス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-11"
+    "Actual_Earnings_Date": "2026-02-11",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "GD",
@@ -2625,7 +2843,8 @@
     "Daily_Change": -0.02091671292103656,
     "Security_JA": "ゼネラル・ダイナミックス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-28"
+    "Actual_Earnings_Date": "2026-01-28",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "GIS",
@@ -2637,7 +2856,8 @@
     "Daily_Change": -0.015218594355284923,
     "Security_JA": "ゼネラル・ミルズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-03-18"
+    "Actual_Earnings_Date": "2026-03-18",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "GM",
@@ -2649,7 +2869,8 @@
     "Daily_Change": -0.004040140753290789,
     "Security_JA": "ゼネラルモーターズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-27"
+    "Actual_Earnings_Date": "2026-01-27",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "GPC",
@@ -2661,7 +2882,8 @@
     "Daily_Change": -0.009672070744288845,
     "Security_JA": "ジェニュイン・パーツ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-17"
+    "Actual_Earnings_Date": "2026-02-17",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "GILD",
@@ -2673,7 +2895,8 @@
     "Daily_Change": -0.021817158139207503,
     "Security_JA": "ギリアド・サイエンシズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-10"
+    "Actual_Earnings_Date": "2026-02-10",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "GPN",
@@ -2685,7 +2908,8 @@
     "Daily_Change": -0.006678809957498448,
     "Security_JA": "グローバル・ペイメンツ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-18"
+    "Actual_Earnings_Date": "2026-02-18",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "GL",
@@ -2697,7 +2921,8 @@
     "Daily_Change": -0.010516317253544901,
     "Security_JA": "グローブ・ライフ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "GDDY",
@@ -2709,7 +2934,8 @@
     "Daily_Change": -0.020385470719051044,
     "Security_JA": "ゴーダディ クラスA",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-24"
+    "Actual_Earnings_Date": "2026-02-24",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "GS",
@@ -2721,7 +2947,8 @@
     "Daily_Change": 0.004514672686230167,
     "Security_JA": "ゴールドマン・サックス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-15"
+    "Actual_Earnings_Date": "2026-01-15",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "HAL",
@@ -2733,7 +2960,8 @@
     "Daily_Change": -0.002653223666754957,
     "Security_JA": "ハリバートン",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-21"
+    "Actual_Earnings_Date": "2026-01-21",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "HIG",
@@ -2745,7 +2973,8 @@
     "Daily_Change": -0.02257834757834769,
     "Security_JA": "ハートフォード・インシュランス・グループ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-29"
+    "Actual_Earnings_Date": "2026-01-29",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "HAS",
@@ -2757,7 +2986,8 @@
     "Daily_Change": -0.014291854717386613,
     "Security_JA": "ハスブロ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-10"
+    "Actual_Earnings_Date": "2026-02-10",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "HCA",
@@ -2769,7 +2999,8 @@
     "Daily_Change": -0.02310771111417806,
     "Security_JA": "HCAヘルスケア",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-27"
+    "Actual_Earnings_Date": "2026-01-27",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "DOC",
@@ -2781,7 +3012,8 @@
     "Daily_Change": 0.002995805871779338,
     "Security_JA": "ヘルスピーク・プロパティーズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-02"
+    "Actual_Earnings_Date": "2026-02-02",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "HSIC",
@@ -2793,7 +3025,8 @@
     "Daily_Change": -0.0037027241470510594,
     "Security_JA": "ヘンリー・シャイン",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-24"
+    "Actual_Earnings_Date": "2026-02-24",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "HSY",
@@ -2805,7 +3038,8 @@
     "Daily_Change": -0.040457218744071335,
     "Security_JA": "ハーシー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-05"
+    "Actual_Earnings_Date": "2026-02-05",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "HPE",
@@ -2817,7 +3051,8 @@
     "Daily_Change": 0.0024164317358035554,
     "Security_JA": "ヒューレット・パッカード・エンタープライズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-03-09"
+    "Actual_Earnings_Date": "2026-03-09",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "HLT",
@@ -2829,7 +3064,8 @@
     "Daily_Change": 0.002852624724814784,
     "Security_JA": "ヒルトン・ワールドワイド・ホールディングス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-11"
+    "Actual_Earnings_Date": "2026-02-11",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "HD",
@@ -2841,7 +3077,8 @@
     "Daily_Change": -0.006596383768184255,
     "Security_JA": "ホームデポ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-24"
+    "Actual_Earnings_Date": "2026-02-24",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "HON",
@@ -2853,7 +3090,8 @@
     "Daily_Change": -0.004320935355418157,
     "Security_JA": "ハネウェル・インターナショナル",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-29"
+    "Actual_Earnings_Date": "2026-01-29",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "HRL",
@@ -2865,7 +3103,8 @@
     "Daily_Change": -0.012304779933743399,
     "Security_JA": "ホーメル・フーズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-26"
+    "Actual_Earnings_Date": "2026-02-26",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "HST",
@@ -2877,7 +3116,8 @@
     "Daily_Change": 0.011551983927674557,
     "Security_JA": "ホスト・ホテルズ＆リゾーツ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-17"
+    "Actual_Earnings_Date": "2026-02-17",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "HWM",
@@ -2889,7 +3129,8 @@
     "Daily_Change": -0.005471148547587242,
     "Security_JA": "ハウメット・エアロスペース",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-12"
+    "Actual_Earnings_Date": "2026-02-12",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "HPQ",
@@ -2901,7 +3142,8 @@
     "Daily_Change": -0.006528835690968305,
     "Security_JA": "HP",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-24"
+    "Actual_Earnings_Date": "2026-02-24",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "HUBB",
@@ -2913,7 +3155,8 @@
     "Daily_Change": 0.002506218789159728,
     "Security_JA": "ハベル",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-03"
+    "Actual_Earnings_Date": "2026-02-03",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "HUM",
@@ -2925,7 +3168,8 @@
     "Daily_Change": -0.026201094668558623,
     "Security_JA": "ヒューマナ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-11"
+    "Actual_Earnings_Date": "2026-02-11",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "HBAN",
@@ -2937,7 +3181,8 @@
     "Daily_Change": -0.012658227848101318,
     "Security_JA": "ハンチントン・バンクシェアーズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-22"
+    "Actual_Earnings_Date": "2026-01-22",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "HII",
@@ -2949,7 +3194,8 @@
     "Daily_Change": -0.022212856682450304,
     "Security_JA": "ハンティントン・インガルス・インダストリーズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-05"
+    "Actual_Earnings_Date": "2026-02-05",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "IBM",
@@ -2961,7 +3207,8 @@
     "Daily_Change": -0.027068049582595562,
     "Security_JA": "アイビーエム",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-28"
+    "Actual_Earnings_Date": "2026-01-28",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "IEX",
@@ -2973,7 +3220,8 @@
     "Daily_Change": 0.006809192409753235,
     "Security_JA": "アイデックス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "IDXX",
@@ -2985,7 +3233,8 @@
     "Daily_Change": -0.037195382642154766,
     "Security_JA": "アイデックス・ラボラトリーズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-02"
+    "Actual_Earnings_Date": "2026-02-02",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "ITW",
@@ -2997,7 +3246,8 @@
     "Daily_Change": -0.009737169631744728,
     "Security_JA": "イリノイ・ツール・ワークス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-03"
+    "Actual_Earnings_Date": "2026-02-03",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "INCY",
@@ -3009,7 +3259,8 @@
     "Daily_Change": -0.009179042904290436,
     "Security_JA": "インサイト",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-10"
+    "Actual_Earnings_Date": "2026-02-10",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "IR",
@@ -3021,7 +3272,8 @@
     "Daily_Change": -0.01895897966218552,
     "Security_JA": "インガソール・ランド",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-12"
+    "Actual_Earnings_Date": "2026-02-12",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "PODD",
@@ -3033,7 +3285,8 @@
     "Daily_Change": -0.01248621000902608,
     "Security_JA": "インシュレット",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-18"
+    "Actual_Earnings_Date": "2026-02-18",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "INTC",
@@ -3045,7 +3298,8 @@
     "Daily_Change": 0.010693454309786191,
     "Security_JA": "インテル",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-22"
+    "Actual_Earnings_Date": "2026-01-22",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "IBKR",
@@ -3057,7 +3311,8 @@
     "Daily_Change": -0.01000973168358144,
     "Security_JA": "インタラクティブ・ブローカーズ・グループ　クラスA",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-20"
+    "Actual_Earnings_Date": "2026-01-20",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "ICE",
@@ -3069,7 +3324,8 @@
     "Daily_Change": -0.008458356485768998,
     "Security_JA": "インターコンチネンタル・エクスチェンジ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-05"
+    "Actual_Earnings_Date": "2026-02-05",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "IFF",
@@ -3081,7 +3337,8 @@
     "Daily_Change": -0.00834130999589771,
     "Security_JA": "インターナショナル・フレーバー・アンド・フレグランス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-11"
+    "Actual_Earnings_Date": "2026-02-11",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "IP",
@@ -3093,7 +3350,8 @@
     "Daily_Change": -0.007612833061446469,
     "Security_JA": "インターナショナル・ペーパー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-29"
+    "Actual_Earnings_Date": "2026-01-29",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "INTU",
@@ -3105,7 +3363,8 @@
     "Daily_Change": -0.02972158478254859,
     "Security_JA": "インテュイト",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-26"
+    "Actual_Earnings_Date": "2026-02-26",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "ISRG",
@@ -3117,7 +3376,8 @@
     "Daily_Change": -0.009495757682331721,
     "Security_JA": "インテュイティブ・サージカル",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-22"
+    "Actual_Earnings_Date": "2026-01-22",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "IVZ",
@@ -3129,7 +3389,8 @@
     "Daily_Change": 0.0004242681374627921,
     "Security_JA": "インベスコ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-27"
+    "Actual_Earnings_Date": "2026-01-27",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "INVH",
@@ -3141,7 +3402,8 @@
     "Daily_Change": 0.0007692307692307529,
     "Security_JA": "インビテーション・ホームズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-18"
+    "Actual_Earnings_Date": "2026-02-18",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "IQV",
@@ -3153,7 +3415,8 @@
     "Daily_Change": -0.009705290566930917,
     "Security_JA": "アイキューヴィア・ホールディングス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-05"
+    "Actual_Earnings_Date": "2026-02-05",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "IRM",
@@ -3165,7 +3428,8 @@
     "Daily_Change": 0.006256325328917166,
     "Security_JA": "アイアン・マウンテン",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-12"
+    "Actual_Earnings_Date": "2026-02-12",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "JBHT",
@@ -3177,7 +3441,8 @@
     "Daily_Change": 0.008080987478909481,
     "Security_JA": "ジェイビー・ハント・トランスポート・サービシズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-15"
+    "Actual_Earnings_Date": "2026-01-15",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "JBL",
@@ -3189,7 +3454,8 @@
     "Daily_Change": 0.02211453143130168,
     "Security_JA": "ジェイビル・サーキット",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-03-18"
+    "Actual_Earnings_Date": "2026-03-18",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "JKHY",
@@ -3201,7 +3467,8 @@
     "Daily_Change": -0.04029208501760338,
     "Security_JA": "ジャック・ヘンリー・アンド・アソシエイツ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-03"
+    "Actual_Earnings_Date": "2026-02-03",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "J",
@@ -3213,7 +3480,8 @@
     "Daily_Change": -0.03350900652875003,
     "Security_JA": "ジェイコブズ・ソリューションズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-03"
+    "Actual_Earnings_Date": "2026-02-03",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "JNJ",
@@ -3225,7 +3493,8 @@
     "Daily_Change": -0.011810534167668122,
     "Security_JA": "ジョンソン・エンド・ジョンソン",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-21"
+    "Actual_Earnings_Date": "2026-01-21",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "JCI",
@@ -3237,7 +3506,8 @@
     "Daily_Change": 0.0047937962636588425,
     "Security_JA": "ジョンソン・コントロールズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "JPM",
@@ -3249,7 +3519,8 @@
     "Daily_Change": -0.0014822930428897612,
     "Security_JA": "ジェイピー・モルガン・チェース",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-13"
+    "Actual_Earnings_Date": "2026-01-13",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "KVUE",
@@ -3261,7 +3532,8 @@
     "Daily_Change": -0.004589787722317745,
     "Security_JA": "ケンビュー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-17"
+    "Actual_Earnings_Date": "2026-02-17",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "KDP",
@@ -3273,7 +3545,8 @@
     "Daily_Change": 0.0056775170325510434,
     "Security_JA": "キューリグ・ドクターペッパー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-24"
+    "Actual_Earnings_Date": "2026-02-24",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "KEY",
@@ -3285,7 +3558,8 @@
     "Daily_Change": -0.008775981524249318,
     "Security_JA": "キーコープ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-20"
+    "Actual_Earnings_Date": "2026-01-20",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "KEYS",
@@ -3297,7 +3571,8 @@
     "Daily_Change": 0.0038397225490803526,
     "Security_JA": "キーサイト・テクノロジーズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-23"
+    "Actual_Earnings_Date": "2026-02-23",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "KMB",
@@ -3309,7 +3584,8 @@
     "Daily_Change": -0.0069416088199264255,
     "Security_JA": "キンバリークラーク",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-27"
+    "Actual_Earnings_Date": "2026-01-27",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "KIM",
@@ -3321,7 +3597,8 @@
     "Daily_Change": 0.00433463372345043,
     "Security_JA": "キムコ・リアルティ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-12"
+    "Actual_Earnings_Date": "2026-02-12",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "KMI",
@@ -3333,7 +3610,8 @@
     "Daily_Change": -0.00879587503791323,
     "Security_JA": "キンダー・モルガン",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-21"
+    "Actual_Earnings_Date": "2026-01-21",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "KKR",
@@ -3345,7 +3623,8 @@
     "Daily_Change": -0.01734353118603899,
     "Security_JA": "KKR",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-05"
+    "Actual_Earnings_Date": "2026-02-05",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "KLAC",
@@ -3357,7 +3636,8 @@
     "Daily_Change": 0.005801095376492238,
     "Security_JA": "ケーエルエー・コーポレーション",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-29"
+    "Actual_Earnings_Date": "2026-01-29",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "KHC",
@@ -3369,7 +3649,8 @@
     "Daily_Change": -0.009024495058014647,
     "Security_JA": "クラフト・ハインツ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-11"
+    "Actual_Earnings_Date": "2026-02-11",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "KR",
@@ -3381,7 +3662,8 @@
     "Daily_Change": -0.03354655294953802,
     "Security_JA": "クローガー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-03-05"
+    "Actual_Earnings_Date": "2026-03-05",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "LHX",
@@ -3393,7 +3675,8 @@
     "Daily_Change": -0.012235662206330284,
     "Security_JA": "L3ハリス・テクノロジーズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-29"
+    "Actual_Earnings_Date": "2026-01-29",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "LH",
@@ -3405,7 +3688,8 @@
     "Daily_Change": -0.045121861962965616,
     "Security_JA": "ラボコープ・ホールディングス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-17"
+    "Actual_Earnings_Date": "2026-02-17",
+    "Has_Movement_Reason": true
   },
   {
     "Symbol": "LRCX",
@@ -3417,7 +3701,8 @@
     "Daily_Change": 0.018936466223527727,
     "Security_JA": "ラム・リサーチ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-28"
+    "Actual_Earnings_Date": "2026-01-28",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "LVS",
@@ -3429,7 +3714,8 @@
     "Daily_Change": -0.018906020558002827,
     "Security_JA": "ラスベガス・サンズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-28"
+    "Actual_Earnings_Date": "2026-01-28",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "LDOS",
@@ -3441,7 +3727,8 @@
     "Daily_Change": -0.017670115016385015,
     "Security_JA": "レイドス・ホールディングス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-17"
+    "Actual_Earnings_Date": "2026-02-17",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "LEN",
@@ -3453,7 +3740,8 @@
     "Daily_Change": 0.0004497919712132243,
     "Security_JA": "レナー クラスA",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-03-12"
+    "Actual_Earnings_Date": "2026-03-12",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "LII",
@@ -3465,7 +3753,8 @@
     "Daily_Change": 0.03403044937382335,
     "Security_JA": "レノックス・インターナショナル",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-28"
+    "Actual_Earnings_Date": "2026-01-28",
+    "Has_Movement_Reason": true
   },
   {
     "Symbol": "LLY",
@@ -3477,7 +3766,8 @@
     "Daily_Change": -0.016457458725489198,
     "Security_JA": "イーライ・リリー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "LIN",
@@ -3489,7 +3779,8 @@
     "Daily_Change": -0.00029803298231677745,
     "Security_JA": "リンデ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-05"
+    "Actual_Earnings_Date": "2026-02-05",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "LYV",
@@ -3501,7 +3792,8 @@
     "Daily_Change": -0.01875840156421846,
     "Security_JA": "ライブ・ネーション・エンターテインメント",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-19"
+    "Actual_Earnings_Date": "2026-02-19",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "LMT",
@@ -3513,7 +3805,8 @@
     "Daily_Change": -0.016269415102505295,
     "Security_JA": "ロッキード・マーチン",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-29"
+    "Actual_Earnings_Date": "2026-01-29",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "L",
@@ -3525,7 +3818,8 @@
     "Daily_Change": -0.012716450216450187,
     "Security_JA": "ロウズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2020-02-10"
+    "Actual_Earnings_Date": "2020-02-10",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "LOW",
@@ -3537,7 +3831,8 @@
     "Daily_Change": -0.014486905290343422,
     "Security_JA": "ロウズ・カンパニーズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-25"
+    "Actual_Earnings_Date": "2026-02-25",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "LULU",
@@ -3549,7 +3844,8 @@
     "Daily_Change": -0.015914960062458575,
     "Security_JA": "ルルレモン・アスレティカ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-03-17"
+    "Actual_Earnings_Date": "2026-03-17",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "LITE",
@@ -3561,7 +3857,8 @@
     "Daily_Change": 0.003545345755091496,
     "Security_JA": "ルメンタム・ホールディングス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-03"
+    "Actual_Earnings_Date": "2026-02-03",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "LYB",
@@ -3573,7 +3870,8 @@
     "Daily_Change": 0.02006365020063654,
     "Security_JA": "リヨンデルバセル・インダストリーズ クラスA",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-30"
+    "Actual_Earnings_Date": "2026-01-30",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "MTB",
@@ -3585,7 +3883,8 @@
     "Daily_Change": -0.013767433517198177,
     "Security_JA": "エム・アンド・ティー・バンク",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-16"
+    "Actual_Earnings_Date": "2026-01-16",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "MPC",
@@ -3597,7 +3896,8 @@
     "Daily_Change": -0.004026485325697949,
     "Security_JA": "マラソン・ペトロリアム",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-03"
+    "Actual_Earnings_Date": "2026-02-03",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "MAR",
@@ -3609,7 +3909,8 @@
     "Daily_Change": 0.0033151049783243587,
     "Security_JA": "マリオット・インターナショナル",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-10"
+    "Actual_Earnings_Date": "2026-02-10",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "MRSH",
@@ -3621,7 +3922,8 @@
     "Daily_Change": -0.02882060760078538,
     "Security_JA": "マーシュ・アンド・マクレナン",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-29"
+    "Actual_Earnings_Date": "2026-01-29",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "MLM",
@@ -3633,7 +3935,8 @@
     "Daily_Change": 0.00964028776978413,
     "Security_JA": "マーチン・マリエッタ・マテリアルズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-11"
+    "Actual_Earnings_Date": "2026-02-11",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "MAS",
@@ -3645,7 +3948,8 @@
     "Daily_Change": -0.007095553453169392,
     "Security_JA": "マスコ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-10"
+    "Actual_Earnings_Date": "2026-02-10",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "MA",
@@ -3657,7 +3961,8 @@
     "Daily_Change": -0.00975038227058794,
     "Security_JA": "マスターカード クラスA",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-29"
+    "Actual_Earnings_Date": "2026-01-29",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "MKC",
@@ -3669,7 +3974,8 @@
     "Daily_Change": 0.04412908242612759,
     "Security_JA": "マコーミック",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-03-31"
+    "Actual_Earnings_Date": "2026-03-31",
+    "Has_Movement_Reason": true
   },
   {
     "Symbol": "MCD",
@@ -3681,7 +3987,8 @@
     "Daily_Change": -0.012502019059925713,
     "Security_JA": "マクドナルド",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-11"
+    "Actual_Earnings_Date": "2026-02-11",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "MCK",
@@ -3693,7 +4000,8 @@
     "Daily_Change": -0.008964656583813159,
     "Security_JA": "マケッソン",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "MDT",
@@ -3705,7 +4013,8 @@
     "Daily_Change": -0.007962689113866488,
     "Security_JA": "メドトロニック",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-17"
+    "Actual_Earnings_Date": "2026-02-17",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "MRK",
@@ -3717,7 +4026,8 @@
     "Daily_Change": -0.010270622758395867,
     "Security_JA": "メルク",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-03"
+    "Actual_Earnings_Date": "2026-02-03",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "META",
@@ -3729,7 +4039,8 @@
     "Daily_Change": 0.0023393115740225454,
     "Security_JA": "メタ・プラットフォームズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-28"
+    "Actual_Earnings_Date": "2026-01-28",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "MET",
@@ -3741,7 +4052,8 @@
     "Daily_Change": -0.010314802411252648,
     "Security_JA": "メットライフ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "MTD",
@@ -3753,7 +4065,8 @@
     "Daily_Change": -0.0074831460674157375,
     "Security_JA": "メトラー・トレド・インターナショナル",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-05"
+    "Actual_Earnings_Date": "2026-02-05",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "MGM",
@@ -3765,7 +4078,8 @@
     "Daily_Change": 0.010560519902518294,
     "Security_JA": "エムジーエム・リゾーツ・インターナショナル",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-05"
+    "Actual_Earnings_Date": "2026-02-05",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "MCHP",
@@ -3777,7 +4091,8 @@
     "Daily_Change": 0.00477393990452125,
     "Security_JA": "マイクロチップ・テクノロジー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-05"
+    "Actual_Earnings_Date": "2026-02-05",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "MU",
@@ -3789,7 +4104,8 @@
     "Daily_Change": -0.002182629119119394,
     "Security_JA": "マイクロン・テクノロジー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-03-18"
+    "Actual_Earnings_Date": "2026-03-18",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "MSFT",
@@ -3801,7 +4117,8 @@
     "Daily_Change": -0.005897016645669683,
     "Security_JA": "マイクロソフト",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-28"
+    "Actual_Earnings_Date": "2026-01-28",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "MAA",
@@ -3813,7 +4130,8 @@
     "Daily_Change": 0.006129597197898392,
     "Security_JA": "ミッド・アメリカ・アパートメント・コミュニティーズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "MRNA",
@@ -3825,7 +4143,8 @@
     "Daily_Change": -0.006240249609984405,
     "Security_JA": "モデルナ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-13"
+    "Actual_Earnings_Date": "2026-02-13",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "TAP",
@@ -3837,7 +4156,8 @@
     "Daily_Change": 0.008281110116383113,
     "Security_JA": "モルソン・クアーズ・ビバレッジ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-18"
+    "Actual_Earnings_Date": "2026-02-18",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "MDLZ",
@@ -3849,7 +4169,8 @@
     "Daily_Change": -0.0015231003553901406,
     "Security_JA": "モンデリーズ・インターナショナル クラスA",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-03"
+    "Actual_Earnings_Date": "2026-02-03",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "MPWR",
@@ -3861,7 +4182,8 @@
     "Daily_Change": 0.014720321388686843,
     "Security_JA": "モノリシック・パワー・システムズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-05"
+    "Actual_Earnings_Date": "2026-02-05",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "MNST",
@@ -3873,7 +4195,8 @@
     "Daily_Change": -0.006168788554928454,
     "Security_JA": "モンスター・ビバレッジ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-26"
+    "Actual_Earnings_Date": "2026-02-26",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "MCO",
@@ -3885,7 +4208,8 @@
     "Daily_Change": -0.024667974989731188,
     "Security_JA": "ムーディーズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-18"
+    "Actual_Earnings_Date": "2026-02-18",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "MS",
@@ -3897,7 +4221,8 @@
     "Daily_Change": -0.0029187247418051765,
     "Security_JA": "モルガン・スタンレー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-15"
+    "Actual_Earnings_Date": "2026-01-15",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "MOS",
@@ -3909,7 +4234,8 @@
     "Daily_Change": -0.020182034032449468,
     "Security_JA": "モザイク",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-24"
+    "Actual_Earnings_Date": "2026-02-24",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "MSI",
@@ -3921,7 +4247,8 @@
     "Daily_Change": -0.019909604519774016,
     "Security_JA": "モトローラ・ソリューションズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-11"
+    "Actual_Earnings_Date": "2026-02-11",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "MSCI",
@@ -3933,7 +4260,8 @@
     "Daily_Change": -0.017219901809921553,
     "Security_JA": "エムエスシーアイ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-28"
+    "Actual_Earnings_Date": "2026-01-28",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "NDAQ",
@@ -3945,7 +4273,8 @@
     "Daily_Change": -0.012468827930174531,
     "Security_JA": "ナスダック",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-29"
+    "Actual_Earnings_Date": "2026-01-29",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "NTAP",
@@ -3957,7 +4286,8 @@
     "Daily_Change": 0.0027176753423226205,
     "Security_JA": "ネットアップ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-26"
+    "Actual_Earnings_Date": "2026-02-26",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "NFLX",
@@ -3969,7 +4299,8 @@
     "Daily_Change": 0.009011656381624074,
     "Security_JA": "ネットフリックス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-20"
+    "Actual_Earnings_Date": "2026-01-20",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "NEM",
@@ -3981,7 +4312,8 @@
     "Daily_Change": 0.015881018401814977,
     "Security_JA": "ニューモント",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-19"
+    "Actual_Earnings_Date": "2026-02-19",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "NWSA",
@@ -3993,7 +4325,8 @@
     "Daily_Change": -0.004473363155754349,
     "Security_JA": "ニューズ・コーポレーション クラスA",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-05"
+    "Actual_Earnings_Date": "2026-02-05",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "NWS",
@@ -4005,7 +4338,8 @@
     "Daily_Change": -0.004929577464788628,
     "Security_JA": "ニューズ・コーポレーション クラスB",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-05"
+    "Actual_Earnings_Date": "2026-02-05",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "NEE",
@@ -4017,7 +4351,8 @@
     "Daily_Change": -0.004233700254022075,
     "Security_JA": "ネクステラ・エナジー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-27"
+    "Actual_Earnings_Date": "2026-01-27",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "NKE",
@@ -4029,7 +4364,8 @@
     "Daily_Change": -0.03136363636363642,
     "Security_JA": "ナイキ クラスB",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-03-31"
+    "Actual_Earnings_Date": "2026-03-31",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "NI",
@@ -4041,7 +4377,8 @@
     "Daily_Change": -0.008665153703321677,
     "Security_JA": "ナイソース",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-11"
+    "Actual_Earnings_Date": "2026-02-11",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "NDSN",
@@ -4053,7 +4390,8 @@
     "Daily_Change": -0.003511312217194669,
     "Security_JA": "ノードソン",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-18"
+    "Actual_Earnings_Date": "2026-02-18",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "NSC",
@@ -4065,7 +4403,8 @@
     "Daily_Change": 0.003352522858110427,
     "Security_JA": "ノーフォーク・サザン",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-29"
+    "Actual_Earnings_Date": "2026-01-29",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "NTRS",
@@ -4077,7 +4416,8 @@
     "Daily_Change": -0.002620716766035548,
     "Security_JA": "ノーザン・トラスト",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-22"
+    "Actual_Earnings_Date": "2026-01-22",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "NOC",
@@ -4089,7 +4429,8 @@
     "Daily_Change": -0.024385652432048932,
     "Security_JA": "ノースロップ・グラマン",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-27"
+    "Actual_Earnings_Date": "2026-01-27",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "NCLH",
@@ -4101,7 +4442,8 @@
     "Daily_Change": 0.0,
     "Security_JA": "ノルウェージャン・クルーズライン・ホールディングス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-03-02"
+    "Actual_Earnings_Date": "2026-03-02",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "NRG",
@@ -4113,7 +4455,8 @@
     "Daily_Change": 0.014155025343058425,
     "Security_JA": "エヌアールジー・エナジー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-24"
+    "Actual_Earnings_Date": "2026-02-24",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "NUE",
@@ -4125,7 +4468,8 @@
     "Daily_Change": 0.011521739130434807,
     "Security_JA": "ニューコア",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-26"
+    "Actual_Earnings_Date": "2026-01-26",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "NVDA",
@@ -4137,7 +4481,8 @@
     "Daily_Change": 0.02551417061276406,
     "Security_JA": "エヌビディア",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-25"
+    "Actual_Earnings_Date": "2026-02-25",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "NVR",
@@ -4149,7 +4494,8 @@
     "Daily_Change": -0.007164552307409456,
     "Security_JA": "エヌブイアール",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-28"
+    "Actual_Earnings_Date": "2026-01-28",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "NXPI",
@@ -4161,7 +4507,8 @@
     "Daily_Change": -0.006320805173335844,
     "Security_JA": "NXPセミコンダクターズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-02"
+    "Actual_Earnings_Date": "2026-02-02",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "ORLY",
@@ -4173,7 +4520,8 @@
     "Daily_Change": -0.01458887346774445,
     "Security_JA": "オライリー・オートモーティブ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "OXY",
@@ -4185,7 +4533,8 @@
     "Daily_Change": -0.009567743037758453,
     "Security_JA": "オクシデンタル・ペトロリアム",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-18"
+    "Actual_Earnings_Date": "2026-02-18",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "ODFL",
@@ -4197,7 +4546,8 @@
     "Daily_Change": -0.005489260143198118,
     "Security_JA": "オールド・ドミニオン・フレイト・ラインズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "OMC",
@@ -4209,7 +4559,8 @@
     "Daily_Change": -0.0014690170940170864,
     "Security_JA": "オムニコム・グループ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-18"
+    "Actual_Earnings_Date": "2026-02-18",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "ON",
@@ -4221,7 +4572,8 @@
     "Daily_Change": 0.0024824766355140433,
     "Security_JA": "オン・セミコンダクター・コーポレーション",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-09"
+    "Actual_Earnings_Date": "2026-02-09",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "OKE",
@@ -4233,7 +4585,8 @@
     "Daily_Change": 0.0003481086098861328,
     "Security_JA": "ワンオーケー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-23"
+    "Actual_Earnings_Date": "2026-02-23",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "ORCL",
@@ -4245,7 +4598,8 @@
     "Daily_Change": 0.0016683592049904958,
     "Security_JA": "オラクル",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-03-10"
+    "Actual_Earnings_Date": "2026-03-10",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "OTIS",
@@ -4257,7 +4611,8 @@
     "Daily_Change": -0.015999999999999966,
     "Security_JA": "オティス・ワールドワイド",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-28"
+    "Actual_Earnings_Date": "2026-01-28",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "PCAR",
@@ -4269,7 +4624,8 @@
     "Daily_Change": 0.0011019283746556518,
     "Security_JA": "パッカー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-27"
+    "Actual_Earnings_Date": "2026-01-27",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "PKG",
@@ -4281,7 +4637,8 @@
     "Daily_Change": -0.008360561214683879,
     "Security_JA": "パッケージング・コーポレーション・オブ・アメリカ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-27"
+    "Actual_Earnings_Date": "2026-01-27",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "PLTR",
@@ -4293,7 +4650,8 @@
     "Daily_Change": -0.018975462895577527,
     "Security_JA": "パランティア・テクノロジーズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-02"
+    "Actual_Earnings_Date": "2026-02-02",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "PANW",
@@ -4305,7 +4663,8 @@
     "Daily_Change": -0.06742918737648972,
     "Security_JA": "パロ・アルト・ネットワークス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-17"
+    "Actual_Earnings_Date": "2026-02-17",
+    "Has_Movement_Reason": true
   },
   {
     "Symbol": "PSKY",
@@ -4317,7 +4676,8 @@
     "Daily_Change": -0.02119815668202769,
     "Security_JA": "パラマウント・スカイダンス B",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-25"
+    "Actual_Earnings_Date": "2026-02-25",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "PH",
@@ -4329,7 +4689,8 @@
     "Daily_Change": 0.0012614573902074377,
     "Security_JA": "パーカー･ハニフィン",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-29"
+    "Actual_Earnings_Date": "2026-01-29",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "PAYX",
@@ -4341,7 +4702,8 @@
     "Daily_Change": -0.026064193034372938,
     "Security_JA": "ペイチェックス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-03-25"
+    "Actual_Earnings_Date": "2026-03-25",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "PYPL",
@@ -4353,7 +4715,8 @@
     "Daily_Change": -0.016093953892996844,
     "Security_JA": "ペイパル・ホールディングス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-03"
+    "Actual_Earnings_Date": "2026-02-03",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "PNR",
@@ -4365,7 +4728,8 @@
     "Daily_Change": -0.0027636524430687598,
     "Security_JA": "ペンテア",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-03"
+    "Actual_Earnings_Date": "2026-02-03",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "PEP",
@@ -4377,7 +4741,8 @@
     "Daily_Change": -0.002730332084576842,
     "Security_JA": "ペプシコ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-03"
+    "Actual_Earnings_Date": "2026-02-03",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "PFE",
@@ -4389,7 +4754,8 @@
     "Daily_Change": -0.011021307861866171,
     "Security_JA": "ファイザー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-03"
+    "Actual_Earnings_Date": "2026-02-03",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "PCG",
@@ -4401,7 +4767,8 @@
     "Daily_Change": -0.004830917874396128,
     "Security_JA": "パシフィック・ガス・アンド・エレクトリック",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-12"
+    "Actual_Earnings_Date": "2026-02-12",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "PM",
@@ -4413,7 +4780,8 @@
     "Daily_Change": -0.00496124031007759,
     "Security_JA": "フィリップ・モリス・インターナショナル",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-06"
+    "Actual_Earnings_Date": "2026-02-06",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "PSX",
@@ -4425,7 +4793,8 @@
     "Daily_Change": -0.011299435028248546,
     "Security_JA": "フィリップス66",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "PNW",
@@ -4437,7 +4806,8 @@
     "Daily_Change": -0.008233604595500234,
     "Security_JA": "ピナクル・ウェスト・キャピタル",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-25"
+    "Actual_Earnings_Date": "2026-02-25",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "PNC",
@@ -4449,7 +4819,8 @@
     "Daily_Change": -0.009407337723424246,
     "Security_JA": "ピーエヌシー・フィナンシャル・サービシズ・グループ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-16"
+    "Actual_Earnings_Date": "2026-01-16",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "POOL",
@@ -4461,7 +4832,8 @@
     "Daily_Change": 0.006557069926467172,
     "Security_JA": "プール",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-19"
+    "Actual_Earnings_Date": "2026-02-19",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "PPG",
@@ -4473,7 +4845,8 @@
     "Daily_Change": 0.005742935278030952,
     "Security_JA": "ピーピージー・インダストリーズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-27"
+    "Actual_Earnings_Date": "2026-01-27",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "PPL",
@@ -4485,7 +4858,8 @@
     "Daily_Change": -0.004019090680733577,
     "Security_JA": "パシフィック・パワー・アンド・ライト・コーポレーション",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-20"
+    "Actual_Earnings_Date": "2026-02-20",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "PFG",
@@ -4497,7 +4871,8 @@
     "Daily_Change": -0.005632582322356977,
     "Security_JA": "プリンシパル・フィナンシャル・グループ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-09"
+    "Actual_Earnings_Date": "2026-02-09",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "PG",
@@ -4509,7 +4884,8 @@
     "Daily_Change": -0.010227737624437475,
     "Security_JA": "プロクター・アンド・ギャンブル",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-22"
+    "Actual_Earnings_Date": "2026-01-22",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "PGR",
@@ -4521,7 +4897,8 @@
     "Daily_Change": -0.028767260356213728,
     "Security_JA": "プログレッシブ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-28"
+    "Actual_Earnings_Date": "2026-01-28",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "PLD",
@@ -4533,7 +4910,8 @@
     "Daily_Change": -0.006013621214316856,
     "Security_JA": "プロロジス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-21"
+    "Actual_Earnings_Date": "2026-01-21",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "PRU",
@@ -4545,7 +4923,8 @@
     "Daily_Change": -0.0020597322348093576,
     "Security_JA": "プルデンシャル・フィナンシャル",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-03"
+    "Actual_Earnings_Date": "2026-02-03",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "PEG",
@@ -4557,7 +4936,8 @@
     "Daily_Change": -0.00953175265101884,
     "Security_JA": "パブリック・サービス・エンタープライズ・グループ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-26"
+    "Actual_Earnings_Date": "2026-02-26",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "PTC",
@@ -4569,7 +4949,8 @@
     "Daily_Change": -0.04131043896831669,
     "Security_JA": "ピー・ティー・シー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": true
   },
   {
     "Symbol": "PSA",
@@ -4581,7 +4962,8 @@
     "Daily_Change": 0.005899000920653385,
     "Security_JA": "パブリック・ストレージ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-12"
+    "Actual_Earnings_Date": "2026-02-12",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "PHM",
@@ -4593,7 +4975,8 @@
     "Daily_Change": -0.015544465352204906,
     "Security_JA": "パルト・グループ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-29"
+    "Actual_Earnings_Date": "2026-01-29",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "PWR",
@@ -4605,7 +4988,8 @@
     "Daily_Change": 0.005669518606329362,
     "Security_JA": "クアンタ・サービシズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-19"
+    "Actual_Earnings_Date": "2026-02-19",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "QCOM",
@@ -4617,7 +5001,8 @@
     "Daily_Change": 0.00242661448140902,
     "Security_JA": "クアルコム",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "DGX",
@@ -4629,7 +5014,8 @@
     "Daily_Change": -0.03189768476392681,
     "Security_JA": "クエスト・ダイアグノスティクス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-10"
+    "Actual_Earnings_Date": "2026-02-10",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "Q",
@@ -4641,7 +5027,8 @@
     "Daily_Change": 0.005928549430243381,
     "Security_JA": "キューニティ・エレクトロニクス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-26"
+    "Actual_Earnings_Date": "2026-02-26",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "RL",
@@ -4653,7 +5040,8 @@
     "Daily_Change": -0.013683335929791717,
     "Security_JA": "ラルフローレン",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-05"
+    "Actual_Earnings_Date": "2026-02-05",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "RJF",
@@ -4665,7 +5053,8 @@
     "Daily_Change": -0.013163223977318677,
     "Security_JA": "レイモンド・ジェームズ・フィナンシャル",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-28"
+    "Actual_Earnings_Date": "2026-01-28",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "RTX",
@@ -4677,7 +5066,8 @@
     "Daily_Change": -0.008022048329150034,
     "Security_JA": "RTX",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-27"
+    "Actual_Earnings_Date": "2026-01-27",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "O",
@@ -4689,7 +5079,8 @@
     "Daily_Change": 0.008702531645569575,
     "Security_JA": "リアルティー・インカム",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-24"
+    "Actual_Earnings_Date": "2026-02-24",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "REG",
@@ -4701,7 +5092,8 @@
     "Daily_Change": 0.0006381620931718107,
     "Security_JA": "リージェンシー・センターズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-05"
+    "Actual_Earnings_Date": "2026-02-05",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "REGN",
@@ -4713,7 +5105,8 @@
     "Daily_Change": -0.024718369473204424,
     "Security_JA": "リジェネロン・ファーマシューティカルズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-30"
+    "Actual_Earnings_Date": "2026-01-30",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "RF",
@@ -4725,7 +5118,8 @@
     "Daily_Change": -0.023090586145648264,
     "Security_JA": "リジョンズ・フィナンシャル",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-16"
+    "Actual_Earnings_Date": "2026-01-16",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "RSG",
@@ -4737,7 +5131,8 @@
     "Daily_Change": -0.010783410138248864,
     "Security_JA": "リパブリック・サービシズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-17"
+    "Actual_Earnings_Date": "2026-02-17",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "RMD",
@@ -4749,7 +5144,8 @@
     "Daily_Change": 0.003903851215018926,
     "Security_JA": "レスメド",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-29"
+    "Actual_Earnings_Date": "2026-01-29",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "RVTY",
@@ -4761,7 +5157,8 @@
     "Daily_Change": -0.0074065885474241385,
     "Security_JA": "レビティー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-02"
+    "Actual_Earnings_Date": "2026-02-02",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "HOOD",
@@ -4773,7 +5170,8 @@
     "Daily_Change": -0.013262977752424512,
     "Security_JA": "ロビンフッド・マーケッツ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-10"
+    "Actual_Earnings_Date": "2026-02-10",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "ROK",
@@ -4785,7 +5183,8 @@
     "Daily_Change": 0.0027855153203343195,
     "Security_JA": "ロックウェル・オートメーション",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-05"
+    "Actual_Earnings_Date": "2026-02-05",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "ROL",
@@ -4797,7 +5196,8 @@
     "Daily_Change": -0.027962000358487227,
     "Security_JA": "ローリンズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-11"
+    "Actual_Earnings_Date": "2026-02-11",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "ROP",
@@ -4809,7 +5209,8 @@
     "Daily_Change": -0.019235166342746135,
     "Security_JA": "ローパー・テクノロジーズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-27"
+    "Actual_Earnings_Date": "2026-01-27",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "ROST",
@@ -4821,7 +5222,8 @@
     "Daily_Change": -0.016673336001067095,
     "Security_JA": "ロス・ストアーズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-03-03"
+    "Actual_Earnings_Date": "2026-03-03",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "RCL",
@@ -4833,7 +5235,8 @@
     "Daily_Change": 0.003805864656203601,
     "Security_JA": "ロイヤル・カリビアン・クルーズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-29"
+    "Actual_Earnings_Date": "2026-01-29",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "SPGI",
@@ -4845,7 +5248,8 @@
     "Daily_Change": -0.020974736048265406,
     "Security_JA": "S&P グローバル",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-10"
+    "Actual_Earnings_Date": "2026-02-10",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "CRM",
@@ -4857,7 +5261,8 @@
     "Daily_Change": -0.0344746853965466,
     "Security_JA": "セールスフォース",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-25"
+    "Actual_Earnings_Date": "2026-02-25",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "SNDK",
@@ -4869,7 +5274,8 @@
     "Daily_Change": -0.00017607287069205707,
     "Security_JA": "サンディスク",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-29"
+    "Actual_Earnings_Date": "2026-01-29",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "SBAC",
@@ -4881,7 +5287,8 @@
     "Daily_Change": 0.024214959260276444,
     "Security_JA": "SBAコミュニケーションズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-26"
+    "Actual_Earnings_Date": "2026-02-26",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "SLB",
@@ -4893,7 +5300,8 @@
     "Daily_Change": -0.011800532927293442,
     "Security_JA": "SLB",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-23"
+    "Actual_Earnings_Date": "2026-01-23",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "STX",
@@ -4905,7 +5313,8 @@
     "Daily_Change": 0.004712742376739848,
     "Security_JA": "シーゲイト・テクノロジー・ホールディングス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-27"
+    "Actual_Earnings_Date": "2026-01-27",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "SRE",
@@ -4917,7 +5326,8 @@
     "Daily_Change": -0.00932330827067676,
     "Security_JA": "センプラ・エナジー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-26"
+    "Actual_Earnings_Date": "2026-02-26",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "NOW",
@@ -4929,7 +5339,8 @@
     "Daily_Change": -0.0758267453512972,
     "Security_JA": "サービスナウ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-28"
+    "Actual_Earnings_Date": "2026-01-28",
+    "Has_Movement_Reason": true
   },
   {
     "Symbol": "SHW",
@@ -4941,7 +5352,8 @@
     "Daily_Change": 0.001131861912846619,
     "Security_JA": "シャーウィンウィリアムズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-29"
+    "Actual_Earnings_Date": "2026-01-29",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "SPG",
@@ -4953,7 +5365,8 @@
     "Daily_Change": 0.008041413278383647,
     "Security_JA": "サイモン・プロパティ・グループ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-02"
+    "Actual_Earnings_Date": "2026-02-02",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "SWKS",
@@ -4965,7 +5378,8 @@
     "Daily_Change": -0.003536067892503586,
     "Security_JA": "スカイワークス・ソリューションズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-03"
+    "Actual_Earnings_Date": "2026-02-03",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "SJM",
@@ -4977,7 +5391,8 @@
     "Daily_Change": -0.016870336325294714,
     "Security_JA": "ジェイ・エム・スマッカー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-26"
+    "Actual_Earnings_Date": "2026-02-26",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "SW",
@@ -4989,7 +5404,8 @@
     "Daily_Change": -0.0018984337921214593,
     "Security_JA": "スマーフィット・ウエストロックPLC",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-11"
+    "Actual_Earnings_Date": "2026-02-11",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "SNA",
@@ -5001,7 +5417,8 @@
     "Daily_Change": -0.010578977539215034,
     "Security_JA": "スナップオン",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-05"
+    "Actual_Earnings_Date": "2026-02-05",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "SOLV",
@@ -5013,7 +5430,8 @@
     "Daily_Change": -0.005893019038984595,
     "Security_JA": "ソルベンタム",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-26"
+    "Actual_Earnings_Date": "2026-02-26",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "SO",
@@ -5025,7 +5443,8 @@
     "Daily_Change": -0.004508658674044448,
     "Security_JA": "サザン",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-19"
+    "Actual_Earnings_Date": "2026-02-19",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "LUV",
@@ -5037,7 +5456,8 @@
     "Daily_Change": -0.016165133051479697,
     "Security_JA": "サウスウェスト航空",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-28"
+    "Actual_Earnings_Date": "2026-01-28",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "SWK",
@@ -5049,7 +5469,8 @@
     "Daily_Change": -0.016886830995506048,
     "Security_JA": "スタンレー・ブラック・アンド・デッカー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "SBUX",
@@ -5061,7 +5482,8 @@
     "Daily_Change": -0.0033016921172101463,
     "Security_JA": "スターバックス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-28"
+    "Actual_Earnings_Date": "2026-01-28",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "STT",
@@ -5073,7 +5495,8 @@
     "Daily_Change": 0.006715286302259935,
     "Security_JA": "ステート・ストリート",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-16"
+    "Actual_Earnings_Date": "2026-01-16",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "STLD",
@@ -5085,7 +5508,8 @@
     "Daily_Change": 0.002999999999999964,
     "Security_JA": "スチール・ダイナミクス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-26"
+    "Actual_Earnings_Date": "2026-01-26",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "STE",
@@ -5097,7 +5521,8 @@
     "Daily_Change": -0.005229050279329553,
     "Security_JA": "ステリス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "SYK",
@@ -5109,7 +5534,8 @@
     "Daily_Change": 2.948634782093208e-05,
     "Security_JA": "ストライカー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-29"
+    "Actual_Earnings_Date": "2026-01-29",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "SMCI",
@@ -5121,7 +5547,8 @@
     "Daily_Change": 0.08785529715762286,
     "Security_JA": "スーパー・マイクロ・コンピューター",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-03"
+    "Actual_Earnings_Date": "2026-02-03",
+    "Has_Movement_Reason": true
   },
   {
     "Symbol": "SYF",
@@ -5133,7 +5560,8 @@
     "Daily_Change": -0.0011036004966202,
     "Security_JA": "シンクロニー・フィナンシャル",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-27"
+    "Actual_Earnings_Date": "2026-01-27",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "SNPS",
@@ -5145,7 +5573,8 @@
     "Daily_Change": -0.031135372796996425,
     "Security_JA": "シノプシス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-25"
+    "Actual_Earnings_Date": "2026-02-25",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "SYY",
@@ -5157,7 +5586,8 @@
     "Daily_Change": -0.0289371916255501,
     "Security_JA": "シスコ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-27"
+    "Actual_Earnings_Date": "2026-01-27",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "TMUS",
@@ -5169,7 +5599,8 @@
     "Daily_Change": -0.009263946542472331,
     "Security_JA": "Ｔモバイル",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-11"
+    "Actual_Earnings_Date": "2026-02-11",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "TROW",
@@ -5181,7 +5612,8 @@
     "Daily_Change": -0.007269965277777796,
     "Security_JA": "ティー・ロウ・プライス・グループ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "TTWO",
@@ -5193,7 +5625,8 @@
     "Daily_Change": -0.004948245392577723,
     "Security_JA": "テイクツー・インタラクティブ・ソフトウェア",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-03"
+    "Actual_Earnings_Date": "2026-02-03",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "TPR",
@@ -5205,7 +5638,8 @@
     "Daily_Change": -0.01520115319093168,
     "Security_JA": "タペストリー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-05"
+    "Actual_Earnings_Date": "2026-02-05",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "TRGP",
@@ -5217,7 +5651,8 @@
     "Daily_Change": -0.00678243105209396,
     "Security_JA": "タルガ・リソーシズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-19"
+    "Actual_Earnings_Date": "2026-02-19",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "TGT",
@@ -5229,7 +5664,8 @@
     "Daily_Change": -0.017253890187857782,
     "Security_JA": "ターゲット",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-03-03"
+    "Actual_Earnings_Date": "2026-03-03",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "TEL",
@@ -5241,7 +5677,8 @@
     "Daily_Change": 0.005029961072475203,
     "Security_JA": "TEコネクティビティ・PLC",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-21"
+    "Actual_Earnings_Date": "2026-01-21",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "TDY",
@@ -5253,7 +5690,8 @@
     "Daily_Change": -0.014107300986289671,
     "Security_JA": "テレダイン･テクノロジーズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-21"
+    "Actual_Earnings_Date": "2026-01-21",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "TER",
@@ -5265,7 +5703,8 @@
     "Daily_Change": 0.010378627714780016,
     "Security_JA": "テラダイン",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-02"
+    "Actual_Earnings_Date": "2026-02-02",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "TSLA",
@@ -5277,7 +5716,8 @@
     "Daily_Change": 0.009766331476524634,
     "Security_JA": "テスラ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-28"
+    "Actual_Earnings_Date": "2026-01-28",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "TXN",
@@ -5289,7 +5729,8 @@
     "Daily_Change": -0.001186129264832541,
     "Security_JA": "テキサス・インストゥルメンツ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-27"
+    "Actual_Earnings_Date": "2026-01-27",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "TPL",
@@ -5301,7 +5742,8 @@
     "Daily_Change": 0.08466280392623753,
     "Security_JA": "テキサス・パシフィック・ランド・コーポ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-18"
+    "Actual_Earnings_Date": "2026-02-18",
+    "Has_Movement_Reason": true
   },
   {
     "Symbol": "TXT",
@@ -5313,7 +5755,8 @@
     "Daily_Change": -0.0002187944426211139,
     "Security_JA": "テクストロン",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-28"
+    "Actual_Earnings_Date": "2026-01-28",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "TMO",
@@ -5325,7 +5768,8 @@
     "Daily_Change": -0.008692003356911573,
     "Security_JA": "サーモ・フィッシャーサイエンティフィック",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-29"
+    "Actual_Earnings_Date": "2026-01-29",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "TJX",
@@ -5337,7 +5781,8 @@
     "Daily_Change": -0.02060606060606064,
     "Security_JA": "ティージェイエックス・カンパニーズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-25"
+    "Actual_Earnings_Date": "2026-02-25",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "TKO",
@@ -5349,7 +5794,8 @@
     "Daily_Change": 0.0015223017202010015,
     "Security_JA": "TKO・グループ・ホールディングス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-25"
+    "Actual_Earnings_Date": "2026-02-25",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "TTD",
@@ -5361,7 +5807,8 @@
     "Daily_Change": -0.025230470645317787,
     "Security_JA": "トレード・デスク　クラスA",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-25"
+    "Actual_Earnings_Date": "2026-02-25",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "TSCO",
@@ -5373,7 +5820,8 @@
     "Daily_Change": -0.013365468886941267,
     "Security_JA": "トラクター・サプライ・カンパニー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-29"
+    "Actual_Earnings_Date": "2026-01-29",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "TT",
@@ -5385,7 +5833,8 @@
     "Daily_Change": 0.012171002586337975,
     "Security_JA": "トレイン・テクノロジーズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-29"
+    "Actual_Earnings_Date": "2026-01-29",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "TDG",
@@ -5397,7 +5846,8 @@
     "Daily_Change": -0.014965076049350413,
     "Security_JA": "トランスダイム・グループ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-03"
+    "Actual_Earnings_Date": "2026-02-03",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "TRV",
@@ -5409,7 +5859,8 @@
     "Daily_Change": -0.01968802559113553,
     "Security_JA": "トラベラーズ･カンパニーズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-21"
+    "Actual_Earnings_Date": "2026-01-21",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "TRMB",
@@ -5421,7 +5872,8 @@
     "Daily_Change": -0.009935799449709655,
     "Security_JA": "トリンブル",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-10"
+    "Actual_Earnings_Date": "2026-02-10",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "TFC",
@@ -5433,7 +5885,8 @@
     "Daily_Change": -0.017432646592709895,
     "Security_JA": "トゥルーイスト・フィナンシャル",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-21"
+    "Actual_Earnings_Date": "2026-01-21",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "TYL",
@@ -5445,7 +5898,8 @@
     "Daily_Change": -0.019710825506673243,
     "Security_JA": "タイラー・テクノロジーズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-11"
+    "Actual_Earnings_Date": "2026-02-11",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "TSN",
@@ -5457,7 +5911,8 @@
     "Daily_Change": 0.0033628859675939905,
     "Security_JA": "タイソン・フーズ クラスA",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-02"
+    "Actual_Earnings_Date": "2026-02-02",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "USB",
@@ -5469,7 +5924,8 @@
     "Daily_Change": -0.011894194922776526,
     "Security_JA": "ユー・エス・バンコープ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-20"
+    "Actual_Earnings_Date": "2026-01-20",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "UBER",
@@ -5481,7 +5937,8 @@
     "Daily_Change": -0.01852109734020329,
     "Security_JA": "ウーバー・テクノロジーズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "UDR",
@@ -5493,7 +5950,8 @@
     "Daily_Change": 0.00717154331612163,
     "Security_JA": "UDR",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-09"
+    "Actual_Earnings_Date": "2026-02-09",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "ULTA",
@@ -5505,7 +5963,8 @@
     "Daily_Change": -0.023292479213198387,
     "Security_JA": "アルタ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-03-12"
+    "Actual_Earnings_Date": "2026-03-12",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "UNP",
@@ -5517,7 +5976,8 @@
     "Daily_Change": -0.002548277921560879,
     "Security_JA": "ユニオン・パシフィック",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-27"
+    "Actual_Earnings_Date": "2026-01-27",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "UAL",
@@ -5529,7 +5989,8 @@
     "Daily_Change": -0.012942332896461293,
     "Security_JA": "ユナイテッド・エアラインズ・ホールディングス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-20"
+    "Actual_Earnings_Date": "2026-01-20",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "UPS",
@@ -5541,7 +6002,8 @@
     "Daily_Change": 0.0005903187721369764,
     "Security_JA": "ユナイテッド･パーセル･サービス クラスB",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-27"
+    "Actual_Earnings_Date": "2026-01-27",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "URI",
@@ -5553,7 +6015,8 @@
     "Daily_Change": 0.0059554837364469565,
     "Security_JA": "ユナイテッド・レンタルズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-28"
+    "Actual_Earnings_Date": "2026-01-28",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "UNH",
@@ -5565,7 +6028,8 @@
     "Daily_Change": -0.008406373203870974,
     "Security_JA": "ユナイテッドヘルス・グループ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-27"
+    "Actual_Earnings_Date": "2026-01-27",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "UHS",
@@ -5577,7 +6041,8 @@
     "Daily_Change": -0.0377900787736853,
     "Security_JA": "ユニバーサル・ヘルス・サービシズ クラスB",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-25"
+    "Actual_Earnings_Date": "2026-02-25",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "VLO",
@@ -5589,7 +6054,8 @@
     "Daily_Change": 0.015823054019566136,
     "Security_JA": "バレロ・エナジー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-29"
+    "Actual_Earnings_Date": "2026-01-29",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "VTR",
@@ -5601,7 +6067,8 @@
     "Daily_Change": 0.0001177163037079565,
     "Security_JA": "ベンタス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-05"
+    "Actual_Earnings_Date": "2026-02-05",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "VLTO",
@@ -5613,7 +6080,8 @@
     "Daily_Change": -0.00133898683329619,
     "Security_JA": "ヴェラルト",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-03"
+    "Actual_Earnings_Date": "2026-02-03",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "VRSN",
@@ -5625,7 +6093,8 @@
     "Daily_Change": -0.037424040314213806,
     "Security_JA": "ベリサイン",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-05"
+    "Actual_Earnings_Date": "2026-02-05",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "VRSK",
@@ -5637,7 +6106,8 @@
     "Daily_Change": -0.030281565432973234,
     "Security_JA": "ベリスク・アナリティックス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-18"
+    "Actual_Earnings_Date": "2026-02-18",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "VZ",
@@ -5649,7 +6119,8 @@
     "Daily_Change": -0.02193425035848954,
     "Security_JA": "ベライゾン・コミュニケーションズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-30"
+    "Actual_Earnings_Date": "2026-01-30",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "VRTX",
@@ -5661,7 +6132,8 @@
     "Daily_Change": -0.02344300862016867,
     "Security_JA": "バーテックス・ファーマシューティカルズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-12"
+    "Actual_Earnings_Date": "2026-02-12",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "VRT",
@@ -5673,7 +6145,8 @@
     "Daily_Change": 0.025969962453066427,
     "Security_JA": "バーティブ・ホールディングス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-11"
+    "Actual_Earnings_Date": "2026-02-11",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "VTRS",
@@ -5685,7 +6158,8 @@
     "Daily_Change": -0.010286554004408435,
     "Security_JA": "ビアトリス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-26"
+    "Actual_Earnings_Date": "2026-02-26",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "VICI",
@@ -5697,7 +6171,8 @@
     "Daily_Change": 0.0017818959372772885,
     "Security_JA": "VICIプロパティーズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-25"
+    "Actual_Earnings_Date": "2026-02-25",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "V",
@@ -5709,7 +6184,8 @@
     "Daily_Change": -0.012747737519867679,
     "Security_JA": "ビザ クラスA",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-29"
+    "Actual_Earnings_Date": "2026-01-29",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "VST",
@@ -5721,7 +6197,8 @@
     "Daily_Change": 0.01296235679214396,
     "Security_JA": "ビストラ・エナジー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-27"
+    "Actual_Earnings_Date": "2026-02-27",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "VMC",
@@ -5733,7 +6210,8 @@
     "Daily_Change": 0.008395331376697962,
     "Security_JA": "バルカン・マテリアルズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-17"
+    "Actual_Earnings_Date": "2026-02-17",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "WRB",
@@ -5745,7 +6223,8 @@
     "Daily_Change": -0.022466894807320205,
     "Security_JA": "ダブリューアール・バークレー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-26"
+    "Actual_Earnings_Date": "2026-01-26",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "GWW",
@@ -5757,7 +6236,8 @@
     "Daily_Change": -0.00011943252488897044,
     "Security_JA": "ダブリュー・ダブリュー・グレインジャー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-03"
+    "Actual_Earnings_Date": "2026-02-03",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "WAB",
@@ -5769,7 +6249,8 @@
     "Daily_Change": -0.013508525872887079,
     "Security_JA": "ワブテック",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-11"
+    "Actual_Earnings_Date": "2026-02-11",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "WMT",
@@ -5781,7 +6262,8 @@
     "Daily_Change": -0.018276155811972426,
     "Security_JA": "ウォルマート",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-19"
+    "Actual_Earnings_Date": "2026-02-19",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "DIS",
@@ -5793,7 +6275,8 @@
     "Daily_Change": -0.006213047399539077,
     "Security_JA": "ウォルト・ディズニー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-02"
+    "Actual_Earnings_Date": "2026-02-02",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "WBD",
@@ -5805,7 +6288,8 @@
     "Daily_Change": -0.003269160915365051,
     "Security_JA": "ワーナーブラザース・ディスカバリー・インク",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-26"
+    "Actual_Earnings_Date": "2026-02-26",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "WM",
@@ -5817,7 +6301,8 @@
     "Daily_Change": -0.015658515658515684,
     "Security_JA": "ウェースト・マネジメント",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-28"
+    "Actual_Earnings_Date": "2026-01-28",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "WAT",
@@ -5829,7 +6314,8 @@
     "Daily_Change": 0.007398079647410744,
     "Security_JA": "ウォーターズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-09"
+    "Actual_Earnings_Date": "2026-02-09",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "WEC",
@@ -5841,7 +6327,8 @@
     "Daily_Change": -0.010439467923892868,
     "Security_JA": "ウィスコンシン・エナジー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-05"
+    "Actual_Earnings_Date": "2026-02-05",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "WFC",
@@ -5853,7 +6340,8 @@
     "Daily_Change": -0.0072076261334572235,
     "Security_JA": "ウェルズ・ファーゴ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-14"
+    "Actual_Earnings_Date": "2026-01-14",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "WELL",
@@ -5865,7 +6353,8 @@
     "Daily_Change": 0.006057962586023069,
     "Security_JA": "ウェルタワー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-10"
+    "Actual_Earnings_Date": "2026-02-10",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "WST",
@@ -5877,7 +6366,8 @@
     "Daily_Change": -0.0076970681519301035,
     "Security_JA": "ウェスト・ファーマシューティカル・サービシズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-12"
+    "Actual_Earnings_Date": "2026-02-12",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "WDC",
@@ -5889,7 +6379,8 @@
     "Daily_Change": 0.016425950041434864,
     "Security_JA": "ウェスタン・デジタル",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-29"
+    "Actual_Earnings_Date": "2026-01-29",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "WY",
@@ -5901,7 +6392,8 @@
     "Daily_Change": -0.007252215954875089,
     "Security_JA": "ウェアーハウザー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-01-29"
+    "Actual_Earnings_Date": "2026-01-29",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "WSM",
@@ -5913,7 +6405,8 @@
     "Daily_Change": -0.011395117871517467,
     "Security_JA": "ウィリアムズソノマ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-03-18"
+    "Actual_Earnings_Date": "2026-03-18",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "WMB",
@@ -5925,7 +6418,8 @@
     "Daily_Change": -0.0010985992859104407,
     "Security_JA": "ウィリアムズ・カンパニーズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-10"
+    "Actual_Earnings_Date": "2026-02-10",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "WTW",
@@ -5937,7 +6431,8 @@
     "Daily_Change": -0.026818592371291694,
     "Security_JA": "ウィリス・タワーズ・ワトソン・パブリック",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-03"
+    "Actual_Earnings_Date": "2026-02-03",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "WDAY",
@@ -5949,7 +6444,8 @@
     "Daily_Change": -0.004953122235980915,
     "Security_JA": "ワークデイ クラスA",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-24"
+    "Actual_Earnings_Date": "2026-02-24",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "WYNN",
@@ -5961,7 +6457,8 @@
     "Daily_Change": -0.008485079607207556,
     "Security_JA": "ウィン・リゾーツ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-12"
+    "Actual_Earnings_Date": "2026-02-12",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "XEL",
@@ -5973,7 +6470,8 @@
     "Daily_Change": -0.004711852120333461,
     "Security_JA": "エクセル・エナジー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-05"
+    "Actual_Earnings_Date": "2026-02-05",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "XYL",
@@ -5985,7 +6483,8 @@
     "Daily_Change": -0.005255023183925864,
     "Security_JA": "ザイレム",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-10"
+    "Actual_Earnings_Date": "2026-02-10",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "YUM",
@@ -5997,7 +6496,8 @@
     "Daily_Change": 0.006032713477206287,
     "Security_JA": "ヤム・ブランズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-04"
+    "Actual_Earnings_Date": "2026-02-04",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "ZBRA",
@@ -6009,7 +6509,8 @@
     "Daily_Change": -0.004213923880396278,
     "Security_JA": "ゼブラ・テクノロジーズ クラスA",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-12"
+    "Actual_Earnings_Date": "2026-02-12",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "ZBH",
@@ -6021,7 +6522,8 @@
     "Daily_Change": 0.0009674298613350899,
     "Security_JA": "ジンマー・バイオメット・ホールディングス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-10"
+    "Actual_Earnings_Date": "2026-02-10",
+    "Has_Movement_Reason": false
   },
   {
     "Symbol": "ZTS",
@@ -6033,6 +6535,7 @@
     "Daily_Change": -0.01775147928994079,
     "Security_JA": "ゾエティス",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-12"
+    "Actual_Earnings_Date": "2026-02-12",
+    "Has_Movement_Reason": false
   }
 ]
