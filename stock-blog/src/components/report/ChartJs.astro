@@ -274,7 +274,7 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
         let bestTraceIdx = -1;
         let maxLen = -1;
         
-        groupTraces.forEach(ds => {
+        groupTraces.forEach((ds: any) => {
           const plotlyDs = plotlyData.data[ds.originalIndex];
           if (plotlyDs && plotlyDs.x && plotlyDs.x.length > maxLen) {
             maxLen = plotlyDs.x.length;
