@@ -581,7 +581,7 @@ if (reportData?.analyst_ratings) {
 
         <section id="dcf-valuation" class="mt-12">
           <h2 class="text-2xl font-bold mb-6 border-b pb-2">💎 {symbol}のDCF理論株価分析</h2>
-          {reportData.dcf_valuation ? (
+          {reportData.dcf_valuation && typeof reportData.dcf_valuation.fair_price === 'number' ? (
             <div class="space-y-10">
               {/* Main Summary Card */}
               <div class="bg-skin-fill/20 p-6 sm:p-8 rounded-lg border-2 border-skin-accent/30 shadow-sm text-center md:text-left">
