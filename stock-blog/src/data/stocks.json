@@ -153,7 +153,7 @@
     "Daily_Change": -0.166590639540188,
     "Security_JA": "アカマイ・テクノロジーズ",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-19"
+    "Actual_Earnings_Date": null
   },
   {
     "Symbol": "ALB",
@@ -333,7 +333,7 @@
     "Daily_Change": -0.01093669583118881,
     "Security_JA": "エーアイジー",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-10"
+    "Actual_Earnings_Date": null
   },
   {
     "Symbol": "AMT",
@@ -573,7 +573,7 @@
     "Daily_Change": -0.01737728412755283,
     "Security_JA": "アシュラント",
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": null
+    "Actual_Earnings_Date": "2026-02-10"
   },
   {
     "Symbol": "T",
