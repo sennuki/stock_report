@@ -119,7 +119,7 @@ jobs:
       - name: Build Astro site
         run: |
           cd stock-blog
-          pnpm exec astro build && pnpm exec pagefind --site dist && cp -r dist/pagefind public/
+          pnpm run build
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3

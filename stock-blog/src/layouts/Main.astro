@@ -1,13 +1,15 @@
 ---
 import Breadcrumb from "@/components/Breadcrumb.astro";
 import { SITE } from "@/config";
+import type { HTMLAttributes } from "astro/types";
 
 type StringTitle = { pageTitle: string };
 type ArrayTitle = { pageTitle: [string, string]; titleTransition: string };
 
-type Props = (StringTitle | ArrayTitle) & { pageDesc?: string };
+type Props = (StringTitle | ArrayTitle) & { pageDesc?: string } & HTMLAttributes<"main">;
 
 const { props } = Astro;
+const { pageTitle, pageDesc, ...attrs } = props as any;
 
 const backUrl = SITE.showBackButton ? Astro.url.pathname : "/";
 ---
@@ -18,6 +20,7 @@ const backUrl = SITE.showBackButton ? Astro.url.pathname : "/";
   id="main-content"
   class="app-layout pb-4"
   data-pagefind-body
+  {...attrs}
 >
   {
     "titleTransition" in props ? (
