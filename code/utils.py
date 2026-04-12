@@ -99,6 +99,196 @@ def get_session():
         
     return session
 
+import re
+
+def format_summary(text):
+    """
+    翻訳された会社概要に適宜改行・空行を入れて読みやすく整形する。
+    """
+    if not text:
+        return text
+    
+    # 既存の改行を一旦削除して正規化
+    text = text.replace('\n\n', '\n').replace('\n', '')
+    
+    # 句点で分割（句点を保持）
+    sentences = re.split('(?<=。)', text)
+    
+    formatted_sentences = []
+    chunk_size = 0
+    for i, s in enumerate(sentences):
+        if not s.strip():
+            continue
+            
+        formatted_sentences.append(s)
+        chunk_size += len(s)
+        
+        # 次の文がある場合、改行を入れるか判定
+        if i < len(sentences) - 1:
+            next_sentence = sentences[i+1].strip()
+            should_break = False
+            
+            # 1. チャンクがある程度の長さ（150文字以上）になった場合、次の文の区切りで改行
+            if chunk_size > 150:
+                should_break = True
+            
+            # 2. 明確な接続詞や段落の開始を示すキーワードで始まる場合
+            # 文頭にあることを重視
+            start_keywords = ["また、", "また ", "さらに", "加えて", "同社は", "同社の", "主要な", "事業は"]
+            if any(next_sentence.startswith(word) for word in start_keywords):
+                # ただし、直前のチャンクが極端に短い（40文字以下）場合は、細切れ感を防ぐため改行しない
+                if chunk_size > 40:
+                    should_break = True
+                
+            if should_break:
+                formatted_sentences.append('\n\n')
+                chunk_size = 0
+            
+    return "".join(formatted_sentences).strip()
+
+def calculate_dcf(symbol, ticker=None):
+    """
+    defeatbeta-apiのロジックに基づいて詳細なDCF理論株価を計算する。
+    """
+    if ticker is None:
+        db_ticker = DBTicker(symbol)
+    elif hasattr(ticker, '_db_ticker'):
+        db_ticker = ticker._db_ticker
+    else:
+        db_ticker = ticker
+    
+    try:
+        # 1. WACCと基本データの取得
+        df_wacc = db_ticker.wacc()
+        if df_wacc.empty:
+            return None
+        last_wacc_data = df_wacc.iloc[-1]
+        
+        wacc_details = {
+            "wacc": float(last_wacc_data['wacc']),
+            "beta": float(last_wacc_data.get('beta_5y', 0)),
+            "risk_free_rate": float(last_wacc_data.get('treasure_10y_yield', 0.04)),
+            "market_return": float(last_wacc_data.get('sp500_10y_cagr', 0.10)),
+            "tax_rate": float(last_wacc_data.get('tax_rate_for_calcs', 0.21)),
+            "cost_of_equity": float(last_wacc_data.get('cost_of_equity', 0)),
+            "cost_of_debt": float(last_wacc_data.get('cost_of_debt', 0)),
+            "weight_of_equity": float(last_wacc_data.get('weight_of_equity', 0)),
+            "weight_of_debt": float(last_wacc_data.get('weight_of_debt', 0))
+        }
+        
+        wacc = wacc_details["wacc"]
+        risk_free_rate = wacc_details["risk_free_rate"]
+        
+        # 2. 成長率の取得 (3Y CAGR)
+        def get_cagr(growth_df):
+            if growth_df is None or growth_df.empty: return 0
+            return float(growth_df['yoy_growth'].tail(3).mean())
+
+        rev_cagr = get_cagr(db_ticker.annual_revenue_yoy_growth())
+        fcf_cagr = get_cagr(db_ticker.annual_fcf_yoy_growth())
+        ebitda_cagr = get_cagr(db_ticker.annual_ebitda_yoy_growth())
+        ni_cagr = get_cagr(db_ticker.annual_net_income_yoy_growth())
+        
+        cagr_details = {
+            "revenue": rev_cagr,
+            "fcf": fcf_cagr,
+            "ebitda": ebitda_cagr,
+            "net_income": ni_cagr
+        }
+        
+        # 将来成長率 (1-5年) - defeatbetaの重み付け
+        growth_1_5y = (rev_cagr * 0.4 + fcf_cagr * 0.3 + ebitda_cagr * 0.2 + ni_cagr * 0.1)
+        
+        # 将来成長率 (6-10年) - Decay Factor 0.9
+        decay_factor = 0.9
+        growth_6_10y = max(growth_1_5y * (decay_factor ** 5), risk_free_rate)
+        
+        # 永続成長率
+        terminal_growth = risk_free_rate
+        
+        # 3. キャッシュフロー予測
+        df_ttm_fcf = db_ticker.ttm_fcf()
+        if df_ttm_fcf.empty:
+            return None
+        base_fcf = float(df_ttm_fcf.iloc[-1]['ttm_free_cash_flow_usd'])
+        
+        projections = []
+        current_fcf = base_fcf
+        
+        # 1-10年目の予測
+        for i in range(1, 11):
+            rate = growth_1_5y if i <= 5 else growth_6_10y
+            current_fcf *= (1 + rate)
+            discounted_fcf = current_fcf / ((1 + wacc) ** i)
+            projections.append({
+                "year": i,
+                "fcf": float(current_fcf),
+                "discounted_fcf": float(discounted_fcf),
+                "growth_rate": float(rate)
+            })
+            
+        # 継続価値 (Terminal Value)
+        tv = (current_fcf * (1 + terminal_growth)) / (wacc - terminal_growth)
+        npv_tv = tv / ((1 + wacc) ** 10)
+        
+        npv_fcf_sum = sum(p["discounted_fcf"] for p in projections)
+        enterprise_value = npv_fcf_sum + npv_tv
+        
+        # 4. 理論株価の算出
+        # 現金及び短期投資
+        bs_df = db_ticker.quarterly_balance_sheet().df()
+        cash_value = 0
+        if not bs_df.empty:
+            cash_rows = bs_df[bs_df['Breakdown'].str.contains('Cash, Cash Equivalents & Short Term Investments', na=False)]
+            if not cash_rows.empty:
+                date_cols = [c for c in bs_df.columns if c != 'Breakdown']
+                if date_cols:
+                    val = cash_rows.iloc[0][date_cols[0]]
+                    try:
+                        if isinstance(val, str):
+                            cash_value = float(val.replace(',', '')) if val != '*' else 0
+                        else:
+                            cash_value = float(val) if not pd.isna(val) else 0
+                    except: cash_value = 0
+        
+        # 負債
+        total_debt = float(last_wacc_data.get('total_debt_usd', 0))
+        
+        # 発行済株式数
+        mc_df = db_ticker.market_capitalization()
+        if mc_df.empty:
+            return None
+        shares = float(mc_df.iloc[-1]['shares_outstanding'])
+        
+        equity_value = enterprise_value + cash_value - total_debt
+        fair_price = equity_value / shares
+        
+        # 現在価格
+        price_df = db_ticker.price()
+        current_price = float(price_df['close'].iloc[-1]) if not price_df.empty else 0
+        
+        return {
+            "fair_price": float(fair_price),
+            "current_price": float(current_price),
+            "enterprise_value": float(enterprise_value),
+            "equity_value": float(equity_value),
+            "shares": float(shares),
+            "cash_value": float(cash_value),
+            "total_debt": float(total_debt),
+            "wacc_details": wacc_details,
+            "cagr_details": cagr_details,
+            "projections": projections,
+            "terminal_value": float(tv),
+            "npv_tv": float(npv_tv),
+            "growth_1_5y": float(growth_1_5y),
+            "growth_6_10y": float(growth_6_10y),
+            "terminal_growth": float(terminal_growth),
+            "base_fcf": float(base_fcf)
+        }
+    except Exception as e:
+        print(f"Error calculating detailed DCF for {symbol}: {e}")
+        return None
+
 _shared_session = None
 
 

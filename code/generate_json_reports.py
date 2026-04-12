@@ -160,6 +160,9 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, force_transla
             with open(output_path, "r", encoding="utf-8") as f:
                 old_data = json.load(f)
                 business_summary_ja = old_data.get("business_summary_ja")
+                # Format existing summary just in case
+                if business_summary_ja:
+                    business_summary_ja = utils.format_summary(business_summary_ja)
         except: pass
 
     # If force_translate is True OR we don't have a translation yet, call Gemini
@@ -192,6 +195,11 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, force_transla
             
         if do_translate:
             business_summary_ja = translate_summary(chart_target_symbol, info.get("longBusinessSummary"))
+            if business_summary_ja:
+                business_summary_ja = utils.format_summary(business_summary_ja)
+
+    # Calculate DCF Valuation
+    dcf_valuation = utils.calculate_dcf(chart_target_symbol, ticker=ticker_obj)
 
     # 1. Financial Data & Charts
     report_data = {
@@ -200,6 +208,7 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, force_transla
         "security": row['Security'],
         "security_ja": row.get('Security_JA'),
         "business_summary_ja": business_summary_ja,
+        "dcf_valuation": dcf_valuation,
         "sector": current_sector,
         "sub_industry": current_sub_industry,
         "exchange": exchange,
