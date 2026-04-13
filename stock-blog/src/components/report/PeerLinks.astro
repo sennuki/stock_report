@@ -9,9 +9,10 @@ interface Props {
   title: string;
   peers: Peer[];
   collapsible?: boolean;
+  icon?: string;
 }
 
-const { title, peers, collapsible = false } = Astro.props;
+const { title, peers, collapsible = false, icon } = Astro.props;
 
 const formatChange = (change?: number) => {
   if (change === undefined || change === null) return null;
@@ -23,7 +24,10 @@ const formatChange = (change?: number) => {
 ---
 
 <div class="peers-container mb-8">
-  <h2 class="text-xl font-bold mb-4 border-b pb-2">{title}</h2>
+  <h2 class="text-xl font-bold mb-4 border-b pb-2 flex items-center gap-2">
+    {icon && <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">{icon}</span>}
+    {title}
+  </h2>
   
   {collapsible ? (
     <details class="cursor-pointer">
@@ -32,7 +36,7 @@ const formatChange = (change?: number) => {
         {peers.map(peer => {
           const change = formatChange(peer.Daily_Change);
           return (
-            <a href={`/report/${peer.Symbol_YF}`} class="peer-link">
+            <a href={`${import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/'}report/${peer.Symbol_YF}`} class="peer-link">
               <span>{peer.Symbol}</span>
               {change && (
                 <span class={`ml-1 text-xs ${change.color}`}>
@@ -50,7 +54,7 @@ const formatChange = (change?: number) => {
       {peers.map(peer => {
         const change = formatChange(peer.Daily_Change);
         return (
-          <a href={`/report/${peer.Symbol_YF}`} class="peer-link">
+          <a href={`${import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/'}report/${peer.Symbol_YF}`} class="peer-link">
             <span>{peer.Symbol}</span>
             {change && (
               <span class={`ml-1 text-xs ${change.color}`}>

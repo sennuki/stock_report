@@ -120,8 +120,8 @@ const base = import.meta.env.BASE_URL.endsWith("/")
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <!-- Gainers (Top 5) -->
         <div class="bg-skin-card p-6 rounded-xl border border-green-200 dark:border-green-900/50 shadow-sm">
-          <h3 class="text-lg font-bold mb-4 flex items-center text-green-700 dark:text-green-400">
-            <span class="mr-2 text-xl">📈</span> 今日の値上がり上位
+          <h3 class="text-lg font-bold mb-4 flex items-center text-green-700 dark:text-green-400 gap-2">
+            <span class="material-symbols-outlined text-green-600" aria-hidden="true">trending_up</span> 今日の値上がり上位
           </h3>
           <div class="space-y-3">
             {[...stocks]
@@ -155,8 +155,8 @@ const base = import.meta.env.BASE_URL.endsWith("/")
 
         <!-- Losers (Bottom 5) -->
         <div class="bg-skin-card p-6 rounded-xl border border-red-200 dark:border-red-900/50 shadow-sm">
-          <h3 class="text-lg font-bold mb-4 flex items-center text-red-700 dark:text-red-400">
-            <span class="mr-2 text-xl">📉</span> 今日の値下がり上位
+          <h3 class="text-lg font-bold mb-4 flex items-center text-red-700 dark:text-red-400 gap-2">
+            <span class="material-symbols-outlined text-red-600" aria-hidden="true">trending_down</span> 今日の値下がり上位
           </h3>
           <div class="space-y-3">
             {[...stocks]

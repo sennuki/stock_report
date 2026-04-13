@@ -155,7 +155,10 @@ if (reportData?.analyst_ratings) {
         </nav>
 
         <section id="stock-chart">
-          <h2 class="text-2xl font-bold mb-4 border-b pb-2">📈 {symbol}の株価推移・概要</h2>
+          <h2 class="text-2xl font-bold mb-4 border-b pb-2 flex items-center gap-2">
+            <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">overview</span>
+            {symbol}の株価推移・概要
+          </h2>
 
           {reportData.movement_reason && (
             <div class="mb-8 p-6 bg-skin-accent/5 rounded-lg border-l-4 border-skin-accent shadow-sm leading-relaxed">
@@ -192,7 +195,10 @@ if (reportData?.analyst_ratings) {
         </section>
 
         <section id="risk-return" class="mt-12">
-          <h2 class="text-2xl font-bold mb-4 border-b pb-2">🎯 {symbol}のリスク・リターン分析</h2>
+          <h2 class="text-2xl font-bold mb-4 border-b pb-2 flex items-center gap-2">
+            <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">scatter_plot</span>
+            {symbol}のリスク・リターン分析
+          </h2>
           <ChartJs chartData={reportData.charts.risk_return} id="chart-risk-return" height={550} />
 
           <div class="mt-6 space-y-4">
@@ -250,17 +256,20 @@ if (reportData?.analyst_ratings) {
           </div>
         </section>
         <section id="peers" class="mt-12">
-          <PeerLinks title={`🏢 ${symbol}の同業種・競合 (${reportData.sub_industry})`} peers={reportData.peers.sub_industry} />
+          <PeerLinks title={`${symbol}の同業種・競合 (${reportData.sub_industry})`} peers={reportData.peers.sub_industry} icon="corporate_fare" />
         </section>
 
         <section id="sector-peers">
-          <PeerLinks title={`🏭 ${symbol}の同セクター他社 (${reportData.sector})`} peers={reportData.peers.sector} collapsible={true} />
+          <PeerLinks title={`${symbol}の同セクター他社 (${reportData.sector})`} peers={reportData.peers.sector} collapsible={true} icon="corporate_fare" />
         </section>
 
         <hr class="my-12 border-skin-line" />
 
         <section id="performance">
-          <h2 class="text-2xl font-bold mb-4 border-b pb-2">📈 {symbol}のパフォーマンス比較</h2>
+          <h2 class="text-2xl font-bold mb-4 border-b pb-2 flex items-center gap-2">
+            <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">ssid_chart</span>
+            {symbol}のパフォーマンス比較
+          </h2>
           {reportData.charts.performance ? (
             <ChartJs chartData={reportData.charts.performance} id="chart-performance" />
           ) : (
@@ -277,7 +286,10 @@ if (reportData?.analyst_ratings) {
         </section>
 
         <section id="earnings-highlights" class="mt-12">
-          <h2 class="text-2xl font-bold mb-6 border-b pb-2">💡 {symbol}の直近決算・財務ハイライト</h2>
+          <h2 class="text-2xl font-bold mb-6 border-b pb-2 flex items-center gap-2">
+            <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">ink_highlighter</span>
+            {symbol}の直近決算・財務ハイライト
+          </h2>
           {reportData.highlights ? (
             <div class="space-y-6">
               {/* Latest Result (Surprise) */}
@@ -286,7 +298,8 @@ if (reportData?.analyst_ratings) {
                   <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <div>
                       <h3 class="text-lg font-bold flex items-center gap-2">
-                        <span class="text-xl">📢</span> 直近の四半期決算実績 (EPSサプライズ)
+                        <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">breaking_news</span>
+                        直近の四半期決算実績 (EPSサプライズ)
                       </h3>
                       <p class="text-sm opacity-70 mt-1">決算発表日: {reportData.earnings_surprise.date}</p>
                     </div>
@@ -416,7 +429,10 @@ if (reportData?.analyst_ratings) {
         </section>
 
         <section id="next-earnings" class="mt-12">
-          <h2 class="text-2xl font-bold mb-6 border-b pb-2">🚀 {symbol}の来期業績予想 (コンセンサス)</h2>
+          <h2 class="text-2xl font-bold mb-6 border-b pb-2 flex items-center gap-2">
+            <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">trending_up</span>
+            {symbol}の来期業績予想 (コンセンサス)
+          </h2>
           
           {(reportData.next_earnings || reportData.consensus) ? (
             <div class="space-y-6">
@@ -461,7 +477,7 @@ if (reportData?.analyst_ratings) {
                   {/* EPS Consensus */}
                   <div class="bg-skin-fill/10 p-6 rounded-lg border border-skin-line">
                     <h4 class="font-bold mb-4 flex items-center gap-2">
-                      <span class="text-blue-500">💎</span> 1株あたり利益 (EPS) 予想 [来期通期]
+                      <span class="material-symbols-outlined text-blue-500" aria-hidden="true">attach_money</span> 1株あたり利益 (EPS) 予想 [来期通期]
                     </h4>
                     <div class="space-y-4">
                       <div class="flex justify-between items-center py-2 border-b border-skin-line/30">
@@ -498,7 +514,7 @@ if (reportData?.analyst_ratings) {
                   {/* Revenue Consensus */}
                   <div class="bg-skin-fill/10 p-6 rounded-lg border border-skin-line">
                     <h4 class="font-bold mb-4 flex items-center gap-2">
-                      <span class="text-green-500">💰</span> 売上高予想 [来期通期]
+                      <span class="material-symbols-outlined text-green-500" aria-hidden="true">money_bag</span> 売上高予想 [来期通期]
                     </h4>
                     <div class="space-y-4">
                       <div class="flex justify-between items-center py-2 border-b border-skin-line/30">
@@ -540,12 +556,18 @@ if (reportData?.analyst_ratings) {
         </section>
 
         <section id="fundamentals" class="mt-12">
-          <h2 class="text-2xl font-bold mb-4 border-b pb-2">📊 {symbol}のファンダメンタルズ分析</h2>
+          <h2 class="text-2xl font-bold mb-4 border-b pb-2 flex items-center gap-2">
+            <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">finance</span>
+            {symbol}のファンダメンタルズ分析
+          </h2>
           <TradingViewWidget symbol={reportData.full_symbol} type="financials" height={950} />
         </section>
 
         <section id="fundamentals-detail" class="mt-12">
-          <h2 class="text-2xl font-bold mb-8 border-b pb-2">📈 {symbol}の財務データ推移 (詳細分析)</h2>
+          <h2 class="text-2xl font-bold mb-8 border-b pb-2 flex items-center gap-2">
+            <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">monitoring</span>
+            {symbol}の財務データ推移 (詳細分析)
+          </h2>
 
           {reportData.charts.segment && (
             <div id="revenue-by-segment" class="scroll-mt-20 my-24">
@@ -599,7 +621,10 @@ if (reportData?.analyst_ratings) {
         </section>
 
         <section id="dcf-valuation" class="mt-12">
-          <h2 class="text-2xl font-bold mb-6 border-b pb-2">💎 {symbol}のDCF理論株価分析</h2>
+          <h2 class="text-2xl font-bold mb-6 border-b pb-2 flex items-center gap-2">
+            <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">data_exploration</span>
+            {symbol}のDCF理論株価分析
+          </h2>
           {reportData.dcf_valuation && typeof reportData.dcf_valuation.fair_price === 'number' ? (
             <div class="space-y-10">
               {/* Main Summary Card */}
@@ -652,7 +677,8 @@ if (reportData?.analyst_ratings) {
                 {/* WACC Components */}
                 <div class="space-y-4">
                   <h3 class="text-lg font-bold flex items-center gap-2">
-                    <span class="text-blue-500">📈</span> 割引率 (WACC) の構成要素
+                    <span class="material-symbols-outlined text-blue-500" aria-hidden="true">percent_discount</span>
+                    割引率 (WACC) の構成要素
                   </h3>
                   <div class="overflow-hidden rounded-lg border border-skin-line">
                     <table class="min-w-full divide-y divide-skin-line text-sm">
@@ -672,7 +698,8 @@ if (reportData?.analyst_ratings) {
                 {/* Growth Estimations */}
                 <div class="space-y-4">
                   <h3 class="text-lg font-bold flex items-center gap-2">
-                    <span class="text-green-500">🌱</span> 成長率の推定 (3Y CAGR)
+                    <span class="material-symbols-outlined text-green-500" aria-hidden="true">show_chart</span>
+                    成長率の推定 (3Y CAGR)
                   </h3>
                   <div class="overflow-hidden rounded-lg border border-skin-line">
                     <table class="min-w-full divide-y divide-skin-line text-sm">
@@ -693,7 +720,8 @@ if (reportData?.analyst_ratings) {
               {/* Cash Flow Projections Table */}
               <div class="space-y-4">
                 <h3 class="text-lg font-bold flex items-center gap-2">
-                  <span class="text-purple-500">📅</span> 10年間のフリーキャッシュフロー予測 (USD)
+                  <span class="material-symbols-outlined text-purple-500" aria-hidden="true">calendar_today</span>
+                  10年間のフリーキャッシュフロー予測 (USD)
                 </h3>
                 <div class="overflow-x-auto rounded-lg border border-skin-line">
                   <table class="min-w-full divide-y divide-skin-line text-xs">
@@ -884,7 +912,10 @@ if (reportData?.analyst_ratings) {
         <hr class="my-12 border-skin-line" />
 
         <section id="analyst-ratings" class="mt-12">
-          <h2 class="text-2xl font-bold mb-6 border-b pb-2">🎯 {symbol}のアナリスト評価 (直近)</h2>
+          <h2 class="text-2xl font-bold mb-6 border-b pb-2 flex items-center gap-2">
+            <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">target</span>
+            {symbol}のアナリスト評価 (直近)
+          </h2>
           {analystSummary ? (
             <div class="space-y-8">
               {/* Consolidated Summary & Target Price Block */}
@@ -894,7 +925,7 @@ if (reportData?.analyst_ratings) {
                   {/* Left Column: Target Price */}
                   <div class="pb-8 lg:pb-0 lg:pr-12">
                     <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
-                      <span class="text-2xl">🎯</span> 目標株価 (Target Price)
+                      <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">target</span> 目標株価 (Target Price)
                     </h3>
                     <div class="space-y-6">
                       <div class="flex justify-between items-end border-b border-skin-line/30 pb-4">
@@ -939,7 +970,8 @@ if (reportData?.analyst_ratings) {
                   {/* Right Column: Overall Rating & Distribution */}
                   <div class="pt-8 lg:pt-0 lg:pl-12">
                     <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
-                      <span class="text-2xl">📊</span> 総合評価と推奨分布
+                      <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">align_horizontal_left</span>
+                      総合評価と推奨分布
                     </h3>
                     <div class="space-y-6">
                       <div class="flex justify-between items-center border-b border-skin-line/30 pb-4">
@@ -984,7 +1016,9 @@ if (reportData?.analyst_ratings) {
               {/* Recent Analyst Rating Changes */}
               {reportData.rating_changes && reportData.rating_changes.length > 0 && (
                 <div class="mt-12 overflow-x-auto bg-skin-fill/10 p-4 rounded-lg border border-skin-line">
-                  <h3 class="text-xl font-bold mb-4 px-2">📑 最近のレーティング変更</h3>
+                  <h3 class="text-xl font-bold mb-4 px-2 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">note_stack</span> 最近のレーティング変更
+                  </h3>
                   <table class="min-w-full divide-y divide-skin-line text-sm">
                     <thead class="bg-skin-fill/20">
                       <tr>
@@ -1109,7 +1143,7 @@ if (reportData?.analyst_ratings) {
 
         <section id="japan-brokers" class="mt-20 border-t-2 border-skin-accent/20 pt-10 pb-8">
           <h2 class="text-2xl font-bold mb-2 flex items-center gap-2">
-             <span class="text-2xl">🇯🇵</span> 日本の証券会社での購入可否
+             <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">price_change</span> 日本の証券会社での購入可否
           </h2>
           <p class="text-xs text-gray-500 mb-6 italic flex items-center gap-1">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
