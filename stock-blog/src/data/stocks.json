@@ -101,7 +101,7 @@
     "Security_JA": "エーイーエス",
     "Has_Movement_Reason": false,
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": null
+    "Actual_Earnings_Date": "2026-03-02"
   },
   {
     "Symbol": "AFL",
@@ -114,7 +114,7 @@
     "Security_JA": "アフラック",
     "Has_Movement_Reason": false,
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": null
+    "Actual_Earnings_Date": "2026-02-04"
   },
   {
     "Symbol": "A",
@@ -322,7 +322,7 @@
     "Security_JA": "アメレン・コーポレーション",
     "Has_Movement_Reason": false,
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": null
+    "Actual_Earnings_Date": "2026-02-11"
   },
   {
     "Symbol": "AEP",
@@ -335,7 +335,7 @@
     "Security_JA": "アメリカン・エレクトリック・パワー",
     "Has_Movement_Reason": false,
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": null
+    "Actual_Earnings_Date": "2026-02-12"
   },
   {
     "Symbol": "AXP",
@@ -569,7 +569,7 @@
     "Security_JA": "アーチャーダニエルズ・ミッドランド",
     "Has_Movement_Reason": false,
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": null
+    "Actual_Earnings_Date": "2026-02-03"
   },
   {
     "Symbol": "ARES",
@@ -660,7 +660,7 @@
     "Security_JA": "オートデスク",
     "Has_Movement_Reason": false,
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": null
+    "Actual_Earnings_Date": "2026-02-26"
   },
   {
     "Symbol": "ADP",
@@ -673,7 +673,7 @@
     "Security_JA": "オートマチック・データ・プロセシング",
     "Has_Movement_Reason": false,
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": null
+    "Actual_Earnings_Date": "2026-01-28"
   },
   {
     "Symbol": "AZO",
