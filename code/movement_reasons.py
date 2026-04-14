@@ -11,31 +11,50 @@ import polars as pl
 # .envの読み込み
 load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env"))
 
+# 2026年時点のモデル設定
+# GEMINI_MODEL = "models/gemini-3.1-flash-lite-preview" # 一時的に制限中のため以下を使用
+GEMINI_MODEL = "models/gemini-2.5-flash-lite"
+
 def get_gemini_client():
     api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
         return None
     return genai.Client(api_key=api_key)
 
+def get_recent_news(symbol):
+    """
+    yfinanceから銘柄に関連する最新ニュースを取得する
+    """
+    try:
+        ticker = yf.Ticker(symbol)
+        news = ticker.news
+        if not news:
+            return ""
+        news_summary = "\n".join([f"- {n.get('title')}" for n in news[:3]])
+        return news_summary
+    except:
+        return ""
+
 def generate_styled_reason(client, symbol, stats, original_reason):
     """
     指定されたニューススタイルで株価変動理由を生成する
     """
-    GEMINI_MODEL = "models/gemini-3.1-flash-lite-preview"
-    
     # 前日比の符号に応じた語句の選択
     is_up = stats['diff_pct'] >= 0
     up_down_word = "高" if is_up else "安"
-    action_word = "上昇" if is_up else "下落"
     
-    # ニュース風の演出用の一時的な価格（高値や安値を活用）
+    # ニュース風の演出用の一時的な価格
     intraday_price = stats.get('high', stats['close']) if is_up else stats.get('low', stats['close'])
-    prev_close = stats['close'] / (1 + stats['diff_pct'])
+    prev_close = stats['close'] / (1 + stats['diff_pct']) if stats['diff_pct'] != -1 else stats['close']
     intraday_diff = intraday_price - prev_close
-    intraday_pct = intraday_diff / prev_close
+    intraday_pct = intraday_diff / prev_close if prev_close != 0 else 0
+    
+    # 最新ニュースの補強
+    recent_news = get_recent_news(symbol)
     
     prompt = f"""
 以下の銘柄情報と背景理由を元に、プロの証券アナリストが執筆する金融ニュース記事のようなスタイルで文章を作成してください。
+必要に応じて、最新の市場動向を検索して補完してください。
 
 【銘柄】: {symbol}
 【日付】: {stats['date']}
@@ -44,6 +63,8 @@ def generate_styled_reason(client, symbol, stats, original_reason):
 【一時的な株価】: {intraday_price:.2f}ドル (前日比 {intraday_diff:.2f}ドル{up_down_word} / {intraday_pct:.2%})
 【年初来騰落率】: {stats['ytd_pct']:.2%}
 【主な背景理由】: {original_reason}
+【関連ニュース】: 
+{recent_news}
 
 【構成案】
 1. 一行目に「年初来・株価騰落率：[+0.00]％」と記載。 (※{stats['ytd_pct']:.2%})
@@ -53,19 +74,29 @@ def generate_styled_reason(client, symbol, stats, original_reason):
 ※必ず指定のスタイルを守り、事実に基づいた格調高い文章にしてください。改行（\n）を適切に使用して読みやすくしてください。
 """
 
-    try:
-        response = client.models.generate_content(
-            model=GEMINI_MODEL,
-            contents=prompt,
-            config={
-                "tools": [{"google_search": {}}],
-                "system_instruction": "あなたは日経新聞やロイター通信のシニア編集者です。正確で客観的、かつ洞察に富んだ金融ニュース記事を執筆します。"
-            }
-        )
-        return response.text.strip()
-    except Exception as e:
-        print(f"Error generating reason for {symbol}: {e}")
-        return None
+    max_retries = 3
+    base_delay = 10 
+
+    for attempt in range(max_retries):
+        try:
+            response = client.models.generate_content(
+                model=GEMINI_MODEL,
+                contents=prompt,
+                config={
+                    "tools": [{"google_search": {}}],
+                    "system_instruction": "あなたは日経新聞やロイター通信のシニア編集者です。正確で客観的、かつ洞察に富んだ金融ニュース記事を執筆します。"
+                }
+            )
+            return response.text.strip()
+        except Exception as e:
+            error_msg = str(e)
+            if ("429" in error_msg or "503" in error_msg) and attempt < max_retries - 1:
+                delay = base_delay * (attempt + 1)
+                print(f"Server error for {symbol} ({error_msg[:10]}...). Retrying in {delay} seconds... (Attempt {attempt + 1}/{max_retries})")
+                time.sleep(delay)
+                continue
+            print(f"Error generating reason for {symbol}: {e}")
+            return None
 
 def process_top_movers(df_metrics):
     """
@@ -96,15 +127,12 @@ def process_top_movers(df_metrics):
         row['type'] = 'loss'
         movers.append(row)
 
-    print(f"Generating professional reasons for {len(movers)} top movers...")
+    print(f"Generating professional reasons for {len(movers)} top movers using {GEMINI_MODEL}...")
     
     for row in movers:
         symbol = row['Symbol']
         print(f"Processing {symbol} (Rank {row['rank']} {row['type']})...")
         
-        # 必要な統計情報をまとめる
-        # 注: risk_return の結果には Last_Close や High が含まれていない場合があるため、
-        # 必要最小限のデータで yfinance から取得を試みる
         try:
             ticker = yf.Ticker(symbol)
             hist = ticker.history(period="5d")
@@ -127,8 +155,6 @@ def process_top_movers(df_metrics):
                 "rank": row['rank']
             }
             
-            # 理由の生成 (Google Searchを使用)
-            # original_reason は空でもGeminiがSearchで補完する
             reason_text = generate_styled_reason(client, symbol, stats, "")
             
             if reason_text:
@@ -139,8 +165,8 @@ def process_top_movers(df_metrics):
                 }
                 print(f"Successfully generated reason for {symbol}")
             
-            # APIクォータ対策
-            time.sleep(2)
+            # APIクォータ対策: 5秒待機
+            time.sleep(5)
         except Exception as e:
             print(f"Failed to fetch detailed data for {symbol}: {e}")
             continue

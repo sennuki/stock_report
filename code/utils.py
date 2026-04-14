@@ -41,11 +41,14 @@ def get_gemini_client():
         log_event("ERROR", "SYSTEM", f"Failed to initialize Gemini client: {e}")
         return None
 
-# 旧互換性のために get_gemini_model も残し、クライアントとモデル名を返す
-def get_gemini_model(model_name="gemma-4-26b-a4b-it"):
+# 2026年時点の推奨モデル
+# DEFAULT_TRANSLATION_MODEL = "models/gemini-3.1-flash-lite-preview" # 一時的に制限中のため以下を使用
+DEFAULT_TRANSLATION_MODEL = "models/gemma-4-26b-a4b-it"
+
+# 互換性のために get_gemini_model も残し、クライアントを返す
+def get_gemini_model(model_name=DEFAULT_TRANSLATION_MODEL):
     """
     (旧SDK互換用) クライアントを初期化します。
-    ※ 3.1 SDK以降は Client を通じて呼び出すため、この関数は Client を返します。
     """
     return get_gemini_client()
 

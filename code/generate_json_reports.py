@@ -32,7 +32,7 @@ pio.json.config.default_engine = 'json'
 # Initialize Gemini Client
 from utils import get_gemini_client
 gemini_client = get_gemini_client()
-GEMINI_MODEL_NAME = "gemma-4-26b-a4b-it"
+GEMINI_MODEL_NAME = "models/gemma-4-26b-a4b-it"
 
 translation_cache = {}
 initial_translation_counter = 0

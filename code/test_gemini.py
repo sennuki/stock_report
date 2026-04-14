@@ -2,9 +2,9 @@ from utils import get_gemini_client, log_event
 import os
 
 def test_translation():
-    print("--- Gemini API 3.1 Flash-Lite テスト ---")
+    print("--- Gemma 4 26B (MoE) テスト ---")
     client = get_gemini_client()
-    model_name = "gemma-4-26b-a4b-it"
+    model_name = "models/gemma-4-26b-a4b-it"
     
     if not client:
         print("❌ クライアントの初期化に失敗しました。")
