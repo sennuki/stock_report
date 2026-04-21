@@ -65,7 +65,7 @@ jobs:
       - name: Run Python report generator
         run: PYTHONPATH=code python code/main.py
         env:
-          TEST_MODE: false
+          TEST_MODE: true
           PYTHON_MAX_WORKERS: 1
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
