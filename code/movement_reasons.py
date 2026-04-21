@@ -12,8 +12,8 @@ import polars as pl
 load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env"))
 
 # 2026年時点のモデル設定
-# GEMINI_MODEL = "models/gemini-3.1-flash-lite-preview" # 一時的に制限中のため以下を使用
-GEMINI_MODEL = "models/gemini-2.5-flash-lite"
+GEMINI_MODEL = "models/gemini-3.1-flash-lite-preview"
+# GEMINI_MODEL = "models/gemini-2.5-flash-lite" # GEMINI.md推奨の安定版が必要な場合はこちらに戻す
 
 def get_gemini_client():
     api_key = os.getenv("GEMINI_API_KEY")
