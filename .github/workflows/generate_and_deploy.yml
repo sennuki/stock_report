@@ -48,18 +48,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yfinance-
 
-      - name: Restore stock reports cache
-        uses: actions/cache@v4
-        with:
-          path: stock-blog/public/reports
-          key: ${{ runner.os }}-stock-reports-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-stock-reports-
-
       - name: Create output directories
         run: |
           mkdir -p stock-blog/public/reports
-          mkdir -p stock-blog/public/output_reports_full
           mkdir -p stock-blog/src/data/blog
           # If stocks.json doesn't exist, create an empty array
           [ -f stock-blog/src/data/stocks.json ] || echo "[]" > stock-blog/src/data/stocks.json
@@ -70,6 +61,11 @@ jobs:
           TEST_MODE: false
           PYTHON_MAX_WORKERS: 1
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.0
 
       - name: Upload Raw Data to Cloudflare R2
         uses: cloudflare/wrangler-action@v3
@@ -100,11 +96,6 @@ jobs:
           name: execution-log
           path: run_log.txt
           retention-days: 7
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.33.0
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
