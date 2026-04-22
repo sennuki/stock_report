@@ -40,6 +40,9 @@ translation_lock = threading.Lock()
 MAX_INITIAL_TRANSLATIONS = 250
 
 def translate_summary(symbol, summary):
+    # Gemini API processing is temporarily disabled
+    return None
+
     if not summary or not gemini_client:
         return None
     

@@ -1,4 +1,5 @@
 import { defineConfig, envField } from "astro/config";
+import cloudflare from "@astrojs/cloudflare";
 import tailwindcss from "@tailwindcss/vite";
 import sitemap from "@astrojs/sitemap";
 import remarkToc from "remark-toc";
@@ -15,7 +16,12 @@ import { SITE } from "./src/config";
 export default defineConfig({
   site: SITE.website,
   base: "/",
-  output: "static",
+  output: "server",
+  adapter: cloudflare({
+    platformProxy: {
+      enabled: true,
+    },
+  }),
 
   integrations: [
     sitemap({

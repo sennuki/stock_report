@@ -5,5 +5,11 @@
 	"compatibility_flags": ["global_fetch_strictly_public", "nodejs_compat"],
 	"observability": {
 		"enabled": true
-	}
+	},
+	"r2_buckets": [
+		{
+			"binding": "STOCK_DATA",
+			"bucket_name": "stock-data-c1"
+		}
+	]
 }

@@ -13,6 +13,8 @@ env:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    # ブランチ名に応じて環境（Environment）を切り替える
+    environment: ${{ github.ref_name == 'master' && 'production' || 'c1' }}
     permissions:
       contents: write
       deployments: write
@@ -69,22 +71,27 @@ jobs:
           PYTHON_MAX_WORKERS: 1
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
-      - name: Commit and push changes
+      - name: Upload Raw Data to Cloudflare R2
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: r2 object put-multi code/data/raw_data/ --bucket stock-data-c1 --prefix raw/
+          workingDirectory: .
+
+      - name: Commit and push stocks.json
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add -f stock-blog/public/reports/*.json stock-blog/src/data/stocks.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "data: update stock reports and translations [skip ci]" && git push origin HEAD)
+          git add stock-blog/src/data/stocks.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "data: update master stock list [skip ci]" && git push origin HEAD)
 
-      - name: Upload JSON Reports
+      - name: Upload JSON Reports Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: stock-reports-json
-          path: |
-            stock-blog/public/reports/
-            stock-blog/src/data/stocks.json
+          name: stock-raw-data
+          path: code/data/raw_data/
           retention-days: 5
-          if-no-files-found: error
 
       - name: Upload run log
         if: always()

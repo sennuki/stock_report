@@ -26,9 +26,9 @@ load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env"))
 LOG_FILE = "run_log.txt"
 
 def get_gemini_client():
-    """
-    最新の google-genai SDK クライアントを初期化して返します。
-    """
+    # Gemini client initialization is temporarily disabled
+    return None
+
     api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
         log_event("ERROR", "SYSTEM", "GEMINI_API_KEY not found in environment variables.")
