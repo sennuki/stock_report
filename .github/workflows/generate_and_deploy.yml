@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: '0 21 * * 1-5' # 平日毎日実行
   push:
-    branches: [ master ] # コードが更新された時も実行
+    branches: [ master, c1 ] # masterとc1の両方で実行
   workflow_dispatch: # 手動実行用
 
 env:
@@ -129,14 +129,6 @@ jobs:
           pnpm run build
 
       - name: Deploy to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ env.CF_API_TOKEN }}
-          accountId: ${{ env.CF_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=${{ env.CF_PROJECT_NAME }}
-          workingDirectory: stock-blog
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-lare Pages
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
