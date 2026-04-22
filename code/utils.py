@@ -17,6 +17,7 @@ import pandas as pd
 import datetime
 from dotenv import load_dotenv
 from google import genai
+from google.genai import types
 from defeatbeta_api.data.ticker import Ticker as DBTicker
 from yfinance.exceptions import YFRateLimitError
 
@@ -35,11 +36,24 @@ def get_gemini_client():
         return None
     
     try:
-        client = genai.Client(api_key=api_key)
-        return client
+        # SDK クライアントの初期化
+        return genai.Client(api_key=api_key)
     except Exception as e:
         log_event("ERROR", "SYSTEM", f"Failed to initialize Gemini client: {e}")
         return None
+
+# 2026年時点の推奨モデル
+DEFAULT_MODEL = "gemini-3.1-flash-lite-preview"
+
+def get_generate_config(thinking_level="MINIMAL"):
+    """
+    SDK 形式の GenerateContentConfig (ThinkingConfig を含む) を返します。
+    """
+    return types.GenerateContentConfig(
+        thinking_config=types.ThinkingConfig(
+            thinking_level=thinking_level,
+        ),
+    )
 
 # 2026年時点の推奨モデル
 # DEFAULT_TRANSLATION_MODEL = "models/gemini-3.1-flash-lite-preview" # 一時的に制限中のため以下を使用

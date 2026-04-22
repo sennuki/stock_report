@@ -39,6 +39,8 @@ initial_translation_counter = 0
 translation_lock = threading.Lock()
 MAX_INITIAL_TRANSLATIONS = 250
 
+from google.genai import types
+
 def translate_summary(symbol, summary):
     # Gemini API processing is temporarily disabled
     return None
@@ -56,9 +58,12 @@ def translate_summary(symbol, summary):
             response = gemini_client.models.generate_content(
                 model=GEMINI_MODEL_NAME,
                 contents=prompt,
-                config={
-                    "system_instruction": "あなたはプロの翻訳者および証券アナリストです。提供されたテキストを、正確かつ忠実に日本語へ翻訳してください。"
-                }
+                config=types.GenerateContentConfig(
+                    system_instruction="あなたはプロの翻訳者および証券アナリストです。提供されたテキストを、正確かつ忠実に日本語へ翻訳してください。",
+                    thinking_config=types.ThinkingConfig(
+                        thinking_level="MINIMAL",
+                    ),
+                )
             )
             translation_cache[symbol] = response.text
             return response.text

@@ -8,12 +8,14 @@ import yfinance as yf
 import pandas as pd
 import polars as pl
 
+from google.genai import types
+import utils
+
 # .envの読み込み
 load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env"))
 
 # 2026年時点のモデル設定
-GEMINI_MODEL = "models/gemini-3.1-flash-lite-preview"
-# GEMINI_MODEL = "models/gemini-2.5-flash-lite" # GEMINI.md推奨の安定版が必要な場合はこちらに戻す
+GEMINI_MODEL = "models/gemini-2.5-flash-lite"
 
 def get_gemini_client():
     # Gemini API processing is temporarily disabled
@@ -82,13 +84,17 @@ def generate_styled_reason(client, symbol, stats, original_reason):
 
     for attempt in range(max_retries):
         try:
+            # 最新の SDK 形式に合わせた呼び出し
             response = client.models.generate_content(
                 model=GEMINI_MODEL,
                 contents=prompt,
-                config={
-                    "tools": [{"google_search": {}}],
-                    "system_instruction": "あなたは日経新聞やロイター通信のシニア編集者です。正確で客観的、かつ洞察に富んだ金融ニュース記事を執筆します。"
-                }
+                config=types.GenerateContentConfig(
+                    tools=[types.Tool(google_search=types.GoogleSearch())],
+                    system_instruction="あなたは日経新聞やロイター通信のシニア編集者です。正確で客観的、かつ洞察に富んだ金融ニュース記事を執筆します。",
+                    thinking_config=types.ThinkingConfig(
+                        thinking_level="MINIMAL",
+                    ),
+                )
             )
             return response.text.strip()
         except Exception as e:
