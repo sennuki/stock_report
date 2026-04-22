@@ -124,6 +124,14 @@ jobs:
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
+          apiToken: ${{ env.CF_API_TOKEN }}
+          accountId: ${{ env.CF_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=${{ env.CF_PROJECT_NAME }}
+          workingDirectory: stock-blog
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+lare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy dist --project-name=stock-blog
