@@ -113,11 +113,6 @@ jobs:
           cd stock-blog
           pnpm install --frozen-lockfile
 
-      - name: Regenerate blog posts (Markdown)
-        run: |
-          cd stock-blog
-          node scripts/generate-blog-posts.js
-
       - name: Build Astro site
         run: |
           cd stock-blog
