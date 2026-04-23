@@ -107,22 +107,3 @@ jobs:
           name: execution-log
           path: run_log.txt
           retention-days: 7
-
-      - name: Install Node dependencies
-        run: |
-          cd stock-blog
-          pnpm install --frozen-lockfile
-
-      - name: Build Astro site
-        run: |
-          cd stock-blog
-          pnpm run build
-
-      - name: Deploy to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=stock-blog
-          workingDirectory: stock-blog
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
