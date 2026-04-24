@@ -6,6 +6,7 @@ import stocks from "@/data/stocks.json";
 import TradingViewWidget from "@/components/report/TradingViewWidget.astro";
 import PeerLinks from "@/components/report/PeerLinks.astro";
 import { calculateDCF } from "@/utils/finance";
+import { transformRawToReport } from "@/utils/report-generator";
 
 // SSR mode: params are available directly
 const { symbol } = Astro.params;
@@ -24,32 +25,11 @@ if (runtime && runtime.env.STOCK_DATA) {
       // Fix potential NaN issues in JSON
       rawData = JSON.parse(content.replace(/\bNaN\b/g, "null"));
       
-      // Calculate DCF on the fly
-      dcfResult = calculateDCF(rawData);
-
-      // Map rawData to reportData
-      const info = rawData.info;
-      reportData = {
-        ...rawData.metadata,
-        symbol: rawData.symbol,
-        info: info,
-        business_summary_ja: info.longBusinessSummary, // Note: currently English as Gemini is disabled
-        full_symbol: rawData.metadata.Exchange + ":" + rawData.symbol.replace("-", "."),
-        highlights: {
-          revenue_growth: info.revenueGrowth,
-          earnings_growth: info.earningsGrowth,
-          operating_margins: info.operatingMargins,
-          roe: info.returnOnEquity,
-          pe_forward: info.forwardPE,
-          pe_ttm: info.trailingPE,
-          eps_ttm: info.trailingEps,
-          eps_forward: info.forwardEps,
-          dividend_yield: info.dividendYield,
-          payout_ratio: info.payoutRatio,
-          debt_to_equity: info.debtToEquity,
-          current_ratio: info.currentRatio
-        }
-      };
+      // Transform raw data to full report format
+      reportData = transformRawToReport(rawData);
+      
+      // Use Python-calculated DCF if available, otherwise fallback to JS calculation
+      dcfResult = reportData.dcf_valuation || calculateDCF(rawData);
     }
   } catch (e) {
     console.error(`Error fetching from R2 for ${symbol}:`, e);

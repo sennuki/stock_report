@@ -67,17 +67,49 @@ def export_raw_data(df_info, df_metrics):
         try:
             ticker = utils.get_ticker(symbol)
             
+            # DCF評価の計算 (defeatbeta-apiを使用)
+            dcf_valuation = utils.calculate_dcf(symbol, ticker=ticker)
+            
+            # 会社概要の翻訳 (Gemini API)
+            business_summary_ja = None
+            if ticker.info.get("longBusinessSummary"):
+                # レート制限を考慮した待機 (15 RPM想定)
+                import time
+                import random
+                time.sleep(random.uniform(2.0, 4.0))
+                
+                try:
+                    from movement_reasons import get_gemini_client
+                    client = get_gemini_client()
+                    if client:
+                        prompt = f"以下の英文の会社概要を、正確な日本語に翻訳してください。専門用語は適切に扱い、自然な文章にしてください。追加情報は不要です。\n\n{ticker.info.get('longBusinessSummary')}"
+                        # GEMINI.mdの指示に従い gemma-4-26b-a4b-it を使用
+                        response = client.models.generate_content(
+                            model="models/gemma-4-26b-a4b-it",
+                            contents=prompt
+                        )
+                        business_summary_ja = response.text
+                except Exception as e:
+                    utils.log_event("WARNING", symbol, f"Translation failed: {e}")
+
             # 生データの抽出 (Workers側で処理しやすい形にする)
             raw_data = {
                 "symbol": symbol,
                 "info": ticker.info,
                 "metadata": row,
+                "dcf_valuation": dcf_valuation,
+                "business_summary_ja": business_summary_ja,
                 # 財務諸表 (DataFrame -> Dict)
                 "income_stmt": ticker.income_stmt.to_dict() if not ticker.income_stmt.empty else {},
                 "balancesheet": ticker.balancesheet.to_dict() if not ticker.balancesheet.empty else {},
                 "cashflow": ticker.cashflow.to_dict() if not ticker.cashflow.empty else {},
+                "quarterly_income_stmt": ticker.quarterly_income_stmt.to_dict() if not ticker.quarterly_income_stmt.empty else {},
+                "quarterly_balancesheet": ticker.quarterly_balancesheet.to_dict() if not ticker.quarterly_balancesheet.empty else {},
+                "quarterly_cashflow": ticker.quarterly_cashflow.to_dict() if not ticker.quarterly_cashflow.empty else {},
                 "history": ticker.history(period="10y").reset_index().to_dict(orient='records'),
-                "earnings_dates": ticker.earnings_dates.reset_index().to_dict(orient='records') if ticker.earnings_dates is not None and not ticker.earnings_dates.empty else []
+                "earnings_dates": ticker.earnings_dates.reset_index().to_dict(orient='records') if ticker.earnings_dates is not None and not ticker.earnings_dates.empty else [],
+                "calendar": ticker.calendar if hasattr(ticker, 'calendar') else None,
+                "recommendations": ticker.recommendations.to_dict() if hasattr(ticker, 'recommendations') and ticker.recommendations is not None and not ticker.recommendations.empty else None
             }
             
             # JSON保存 (日付型などは文字列に変換)
