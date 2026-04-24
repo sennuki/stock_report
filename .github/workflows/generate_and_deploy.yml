@@ -79,7 +79,7 @@ jobs:
           cd stock-blog
           for file in ../code/data/raw_data/*.json; do
             filename=$(basename "$file")
-            npx wrangler r2 object put --remote "stock-data-c1/raw/$filename" --file "$file" --account-id ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+            npx wrangler r2 object put --remote "stock-data-c1/raw/$filename" --file "$file"
           done
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
