@@ -96,7 +96,7 @@ export function transformRawToReport(rawData: any): ReportData {
     const rev = getField(rawData.income_stmt, ["Total Revenue", "TotalRevenue", "Revenue"]);
     const ni = getField(rawData.income_stmt, ["Net Income", "NetIncome", "Net Income Common Stockholders"]);
     if (rev && ni) {
-      charts.is = formatFinancialChart({ "Total Revenue": rev, "Net Income": ni }, ["Total Revenue", "Net Income"], "損益計算書推移");
+      charts.is = formatFinancialChart({ "Total Revenue": rev, "Net Income": ni }, ["Total Revenue", "Net Income"]);
     }
   }
   
@@ -104,7 +104,7 @@ export function transformRawToReport(rawData: any): ReportData {
     const assets = getField(rawData.balancesheet, ["Total Assets", "TotalAssets"]);
     const liab = getField(rawData.balancesheet, ["Total Liabilities Net Minority Interest", "TotalLiabilitiesNetMinorityInterest", "Total Liabilities"]);
     if (assets && liab) {
-      charts.bs = formatFinancialChart({ "Total Assets": assets, "Total Liabilities": liab }, ["Total Assets", "Total Liabilities"], "貸借対照表推移");
+      charts.bs = formatFinancialChart({ "Total Assets": assets, "Total Liabilities": liab }, ["Total Assets", "Total Liabilities"]);
     }
   }
 
@@ -112,7 +112,7 @@ export function transformRawToReport(rawData: any): ReportData {
     const fcf = getField(rawData.cashflow, ["Free Cash Flow", "FreeCashFlow"]);
     const ocf = getField(rawData.cashflow, ["Operating Cash Flow", "OperatingCashFlow"]);
     if (fcf && ocf) {
-      charts.cf = formatFinancialChart({ "Free Cash Flow": fcf, "Operating Cash Flow": ocf }, ["Free Cash Flow", "Operating Cash Flow"], "キャッシュフロー推移");
+      charts.cf = formatFinancialChart({ "Free Cash Flow": fcf, "Operating Cash Flow": ocf }, ["Free Cash Flow", "Operating Cash Flow"]);
     }
   }
 
@@ -201,7 +201,7 @@ export function transformRawToReport(rawData: any): ReportData {
 /**
  * 財務データをChart.js形式に変換
  */
-function formatFinancialChart(stmtFields: Record<string, any>, fields: string[], label: string) {
+function formatFinancialChart(stmtFields: Record<string, any>, fields: string[]) {
   if (!stmtFields || Object.keys(stmtFields).length === 0) return null;
   
   // 日付ラベルの取得とソート

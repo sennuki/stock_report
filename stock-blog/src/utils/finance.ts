@@ -21,10 +21,6 @@ export interface DCFResult {
 export function calculateDCF(rawData: any): DCFResult | null {
   try {
     const info = rawData.info;
-    const history = rawData.history;
-    const income = rawData.income_stmt;
-    const cashflow = rawData.cashflow;
-    const balancesheet = rawData.balancesheet;
 
     // 1. 基本データの取得
     const currentPrice = info.currentPrice || info.regularMarketPrice;
