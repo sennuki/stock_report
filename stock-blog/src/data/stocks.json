@@ -6,7 +6,7 @@
     "GICS Sub-Industry": "Industrial Conglomerates",
     "Symbol_YF": "MMM",
     "Exchange": "NYSE",
-    "Daily_Change": -0.006448072437920138,
+    "Daily_Change": 0.007939795636564525,
     "Security_JA": "スリーエム",
     "Daily_Change_right": 0.02656924609764198
   },
@@ -17,7 +17,7 @@
     "GICS Sub-Industry": "Building Products",
     "Symbol_YF": "AOS",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0043203209381268495,
+    "Daily_Change": -0.010907973575050052,
     "Security_JA": "エー・オー・スミス",
     "Daily_Change_right": 0.024336283185840583
   },
@@ -28,7 +28,7 @@
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "ABT",
     "Exchange": "NYSE",
-    "Daily_Change": 0.00850599781897493,
+    "Daily_Change": -0.014597750865051995,
     "Security_JA": "アボット･ラボラトリーズ",
     "Daily_Change_right": 0.014035822771551309
   },
@@ -39,7 +39,7 @@
     "GICS Sub-Industry": "Biotechnology",
     "Symbol_YF": "ABBV",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0022443890274313648,
+    "Daily_Change": -0.011147051505349495,
     "Security_JA": "アッヴィ",
     "Daily_Change_right": -0.00291879994258105
   },
@@ -50,7 +50,7 @@
     "GICS Sub-Industry": "IT Consulting & Other Services",
     "Symbol_YF": "ACN",
     "Exchange": "NYSE",
-    "Daily_Change": -0.062177801157285606,
+    "Daily_Change": 0.00044873233116453056,
     "Security_JA": "アクセンチュア　クラスA",
     "Daily_Change_right": 0.018814432989690752
   },
@@ -61,7 +61,7 @@
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "ADBE",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.06626553098382437,
+    "Daily_Change": 0.02703155075738559,
     "Security_JA": "アドビ",
     "Daily_Change_right": -0.014950032237266313
   },
@@ -72,7 +72,7 @@
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "AMD",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.006162261912607938,
+    "Daily_Change": 0.1391281564209217,
     "Security_JA": "アドバンスト・マイクロ・デバイシズ",
     "Daily_Change_right": 0.00046718895996548357
   },
@@ -83,7 +83,7 @@
     "GICS Sub-Industry": "Independent Power Producers & Energy Traders",
     "Symbol_YF": "AES",
     "Exchange": "NYSE",
-    "Daily_Change": 0.003460207612456797,
+    "Daily_Change": -0.0006896551724137784,
     "Security_JA": "エーイーエス",
     "Daily_Change_right": -0.002068965517241335
   },
@@ -94,7 +94,7 @@
     "GICS Sub-Industry": "Life & Health Insurance",
     "Symbol_YF": "AFL",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0032244008714597348,
+    "Daily_Change": -0.004343293954134816,
     "Security_JA": "アフラック",
     "Daily_Change_right": 0.007123384047137475
   },
@@ -105,7 +105,7 @@
     "GICS Sub-Industry": "Life Sciences Tools & Services",
     "Symbol_YF": "A",
     "Exchange": "NYSE",
-    "Daily_Change": -0.05021997177720592,
+    "Daily_Change": 0.00987589582240863,
     "Security_JA": "アジレント･テクノロジーズ",
     "Daily_Change_right": 0.030613107822410186
   },
@@ -116,7 +116,7 @@
     "GICS Sub-Industry": "Industrial Gases",
     "Symbol_YF": "APD",
     "Exchange": "NYSE",
-    "Daily_Change": 0.023217414745922586,
+    "Daily_Change": -0.006224271365058411,
     "Security_JA": "エアー・プロダクツ・アンド・ケミカルズ",
     "Daily_Change_right": -0.018268066209123964
   },
@@ -127,7 +127,7 @@
     "GICS Sub-Industry": "Hotels, Resorts & Cruise Lines",
     "Symbol_YF": "ABNB",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.01602163961714525,
+    "Daily_Change": 0.006696271234228439,
     "Security_JA": "エアビーアンドビー",
     "Daily_Change_right": 0.0271388143095567
   },
@@ -138,7 +138,7 @@
     "GICS Sub-Industry": "Internet Services & Infrastructure",
     "Symbol_YF": "AKAM",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.009576768612913115,
+    "Daily_Change": -0.009669369931378735,
     "Security_JA": "アカマイ・テクノロジーズ",
     "Daily_Change_right": -0.00950315050098132
   },
@@ -149,7 +149,7 @@
     "GICS Sub-Industry": "Specialty Chemicals",
     "Symbol_YF": "ALB",
     "Exchange": "NYSE",
-    "Daily_Change": -0.005560704355885143,
+    "Daily_Change": -0.02490421455938684,
     "Security_JA": "アルビマール",
     "Daily_Change_right": -0.08287728411093592
   },
@@ -160,7 +160,7 @@
     "GICS Sub-Industry": "Office REITs",
     "Symbol_YF": "ARE",
     "Exchange": "NYSE",
-    "Daily_Change": -0.00578778135048223,
+    "Daily_Change": 0.0219922380336351,
     "Security_JA": "アレクサンドリア・リアル・エステート・エクイティーズ",
     "Daily_Change_right": 0.014181438998957241
   },
@@ -171,7 +171,7 @@
     "GICS Sub-Industry": "Health Care Supplies",
     "Symbol_YF": "ALGN",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.02744197908696773,
+    "Daily_Change": -0.005559343368122798,
     "Security_JA": "アライン・テクノロジー",
     "Daily_Change_right": 0.027294346557128864
   },
@@ -182,7 +182,7 @@
     "GICS Sub-Industry": "Building Products",
     "Symbol_YF": "ALLE",
     "Exchange": "NYSE",
-    "Daily_Change": 0.01718070792796509,
+    "Daily_Change": -0.008954008954008908,
     "Security_JA": "アレジオン",
     "Daily_Change_right": 0.01978518937252673
   },
@@ -193,7 +193,7 @@
     "GICS Sub-Industry": "Electric Utilities",
     "Symbol_YF": "LNT",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.023534385569334862,
+    "Daily_Change": -0.004405892881729219,
     "Security_JA": "アライアント・エナジー",
     "Daily_Change_right": 0.0008245155970867428
   },
@@ -204,7 +204,7 @@
     "GICS Sub-Industry": "Property & Casualty Insurance",
     "Symbol_YF": "ALL",
     "Exchange": "NYSE",
-    "Daily_Change": 0.011206574523720609,
+    "Daily_Change": -0.016992981159955702,
     "Security_JA": "オールステート",
     "Daily_Change_right": 0.010707439098517754
   },
@@ -215,7 +215,7 @@
     "GICS Sub-Industry": "Interactive Media & Services",
     "Symbol_YF": "GOOGL",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.0012672403630791195,
+    "Daily_Change": 0.016258963085366906,
     "Security_JA": "アルファベット クラスA",
     "Daily_Change_right": 0.016844235462174947
   },
@@ -226,7 +226,7 @@
     "GICS Sub-Industry": "Interactive Media & Services",
     "Symbol_YF": "GOOG",
     "Exchange": "NASDAQ",
-    "Daily_Change": 5.921890267367959e-05,
+    "Daily_Change": 0.013530717986676516,
     "Security_JA": "アルファベット クラスC",
     "Daily_Change_right": 0.01992367100399674
   },
@@ -237,7 +237,7 @@
     "GICS Sub-Industry": "Tobacco",
     "Symbol_YF": "MO",
     "Exchange": "NYSE",
-    "Daily_Change": 0.030223995090518544,
+    "Daily_Change": -0.0040208488458676125,
     "Security_JA": "アルトリア・グループ",
     "Daily_Change_right": -0.011857098860486541
   },
@@ -248,7 +248,7 @@
     "GICS Sub-Industry": "Broadline Retail",
     "Symbol_YF": "AMZN",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.00109649122807018,
+    "Daily_Change": 0.034930217970832664,
     "Security_JA": "アマゾン･ドットコム",
     "Daily_Change_right": 0.0034441329595515167
   },
@@ -259,7 +259,7 @@
     "GICS Sub-Industry": "Paper & Plastic Packaging Products & Materials",
     "Symbol_YF": "AMCR",
     "Exchange": "NYSE",
-    "Daily_Change": -0.01564440029798864,
+    "Daily_Change": -0.01740665993945504,
     "Security_JA": "アムコー",
     "Daily_Change_right": 0.04380288700846187
   },
@@ -270,7 +270,7 @@
     "GICS Sub-Industry": "Multi-Utilities",
     "Symbol_YF": "AEE",
     "Exchange": "NYSE",
-    "Daily_Change": 0.025723178322958645,
+    "Daily_Change": -0.008299866131191366,
     "Security_JA": "アメレン・コーポレーション",
     "Daily_Change_right": 0.0038297114356964073
   },
@@ -281,7 +281,7 @@
     "GICS Sub-Industry": "Electric Utilities",
     "Symbol_YF": "AEP",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.02628779820695949,
+    "Daily_Change": -0.0025910571513179056,
     "Security_JA": "アメリカン・エレクトリック・パワー",
     "Daily_Change_right": -0.006688466111771743
   },
@@ -292,7 +292,7 @@
     "GICS Sub-Industry": "Consumer Finance",
     "Symbol_YF": "AXP",
     "Exchange": "NYSE",
-    "Daily_Change": -0.04310603784920387,
+    "Daily_Change": -0.014032334013498751,
     "Security_JA": "アメリカン・エキスプレス",
     "Daily_Change_right": 0.018203585461689608
   },
@@ -303,7 +303,7 @@
     "GICS Sub-Industry": "Multi-line Insurance",
     "Symbol_YF": "AIG",
     "Exchange": "NYSE",
-    "Daily_Change": 0.003945810864132542,
+    "Daily_Change": -0.01559020044543427,
     "Security_JA": "エーアイジー",
     "Daily_Change_right": 0.005880848887752595
   },
@@ -314,7 +314,7 @@
     "GICS Sub-Industry": "Telecom Tower REITs",
     "Symbol_YF": "AMT",
     "Exchange": "NYSE",
-    "Daily_Change": 0.015313935681470074,
+    "Daily_Change": -0.004469024076867119,
     "Security_JA": "アメリカン・タワー",
     "Daily_Change_right": 0.02105263157894748
   },
@@ -325,7 +325,7 @@
     "GICS Sub-Industry": "Water Utilities",
     "Symbol_YF": "AWK",
     "Exchange": "NYSE",
-    "Daily_Change": 0.029283916723861842,
+    "Daily_Change": -0.018893087352745138,
     "Security_JA": "アメリカン・ウォーター・ワークス",
     "Daily_Change_right": 0.006962509563886956
   },
@@ -336,7 +336,7 @@
     "GICS Sub-Industry": "Asset Management & Custody Banks",
     "Symbol_YF": "AMP",
     "Exchange": "NYSE",
-    "Daily_Change": -0.01895370429659985,
+    "Daily_Change": 0.00976872701955923,
     "Security_JA": "アメリプライズ・フィナンシャル",
     "Daily_Change_right": -0.00605690879776903
   },
@@ -347,7 +347,7 @@
     "GICS Sub-Industry": "Electrical Components & Equipment",
     "Symbol_YF": "AME",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0196997309728369,
+    "Daily_Change": -0.008723404255319197,
     "Security_JA": "アメテック",
     "Daily_Change_right": 0.02614662960389151
   },
@@ -358,7 +358,7 @@
     "GICS Sub-Industry": "Biotechnology",
     "Symbol_YF": "AMGN",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.007805272895467127,
+    "Daily_Change": -0.011674602719293194,
     "Security_JA": "アムジェン",
     "Daily_Change_right": 0.016915195054237456
   },
@@ -369,7 +369,7 @@
     "GICS Sub-Industry": "Electronic Components",
     "Symbol_YF": "APH",
     "Exchange": "NYSE",
-    "Daily_Change": 0.013839195301424502,
+    "Daily_Change": -0.003129577839925415,
     "Security_JA": "アンフェノール クラスA",
     "Daily_Change_right": 0.014097744360902217
   },
@@ -380,7 +380,7 @@
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "ADI",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.05888521839442079,
+    "Daily_Change": -0.010671486580172335,
     "Security_JA": "アナログ・デバイシズ",
     "Daily_Change_right": 0.049886941775014064
   },
@@ -391,7 +391,7 @@
     "GICS Sub-Industry": "Insurance Brokers",
     "Symbol_YF": "AON",
     "Exchange": "NYSE",
-    "Daily_Change": -0.010096065593832255,
+    "Daily_Change": -0.007479292866856274,
     "Security_JA": "エーオン",
     "Daily_Change_right": -0.010556450169976632
   },
@@ -402,7 +402,7 @@
     "GICS Sub-Industry": "Oil & Gas Exploration & Production",
     "Symbol_YF": "APA",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.015764582238570527,
+    "Daily_Change": -0.024055871702017582,
     "Security_JA": "アパッチ",
     "Daily_Change_right": -0.05699208443271759
   },
@@ -413,7 +413,7 @@
     "GICS Sub-Industry": "Asset Management & Custody Banks",
     "Symbol_YF": "APO",
     "Exchange": "NYSE",
-    "Daily_Change": -0.03324035332403538,
+    "Daily_Change": -0.004087521038711156,
     "Security_JA": "アポロ・グローバル・マネジメント",
     "Daily_Change_right": 0.03153712441023096
   },
@@ -424,7 +424,7 @@
     "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
     "Symbol_YF": "AAPL",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.0009517882637185302,
+    "Daily_Change": -0.008667666313133177,
     "Security_JA": "アップル",
     "Daily_Change_right": 0.025930144267274264
   },
@@ -435,7 +435,7 @@
     "GICS Sub-Industry": "Semiconductor Materials & Equipment",
     "Symbol_YF": "AMAT",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.001065728164964823,
+    "Daily_Change": 0.032507241712262616,
     "Security_JA": "アプライド・マテリアルズ",
     "Daily_Change_right": 0.01805591177224935
   },
@@ -446,7 +446,7 @@
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "APP",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.061069649169957135,
+    "Daily_Change": -0.012946693969218563,
     "Security_JA": "アップラビン",
     "Daily_Change_right": 0.02383659808191554
   },
@@ -457,7 +457,7 @@
     "GICS Sub-Industry": "Automotive Parts & Equipment",
     "Symbol_YF": "APTV",
     "Exchange": "NYSE",
-    "Daily_Change": -0.007394019060138068,
+    "Daily_Change": -0.005131600728356152,
     "Security_JA": "アプティブ・ホールディングス",
     "Daily_Change_right": 0.03650904033379684
   },
@@ -468,7 +468,7 @@
     "GICS Sub-Industry": "Property & Casualty Insurance",
     "Symbol_YF": "ACGL",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.013433915469670323,
+    "Daily_Change": -0.019169980626083365,
     "Security_JA": "アーチ・キャピタル・グループ",
     "Daily_Change_right": 0.005046343975283307
   },
@@ -479,7 +479,7 @@
     "GICS Sub-Industry": "Agricultural Products & Services",
     "Symbol_YF": "ADM",
     "Exchange": "NYSE",
-    "Daily_Change": 0.008641797493878644,
+    "Daily_Change": -0.011423675567613839,
     "Security_JA": "アーチャーダニエルズ・ミッドランド",
     "Daily_Change_right": -0.02387885847408271
   },
@@ -490,7 +490,7 @@
     "GICS Sub-Industry": "Asset Management & Custody Banks",
     "Symbol_YF": "ARES",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0517967781908302,
+    "Daily_Change": 0.003920543648719314,
     "Security_JA": "アレス・マネジメント　クラスA",
     "Daily_Change_right": 0.01342281879194633
   },
@@ -501,7 +501,7 @@
     "GICS Sub-Industry": "Communications Equipment",
     "Symbol_YF": "ANET",
     "Exchange": "NYSE",
-    "Daily_Change": -0.029145332808192082,
+    "Daily_Change": 0.025268038249782583,
     "Security_JA": "アリスタネットワークス",
     "Daily_Change_right": 0.019998757841127875
   },
@@ -512,7 +512,7 @@
     "GICS Sub-Industry": "Insurance Brokers",
     "Symbol_YF": "AJG",
     "Exchange": "NYSE",
-    "Daily_Change": -0.007869386278323048,
+    "Daily_Change": -0.01818844873957245,
     "Security_JA": "アーサー・ジェイ・ギャラガー",
     "Daily_Change_right": -0.011022848982506241
   },
@@ -523,7 +523,7 @@
     "GICS Sub-Industry": "Multi-line Insurance",
     "Symbol_YF": "AIZ",
     "Exchange": "NYSE",
-    "Daily_Change": 0.006068014144148141,
+    "Daily_Change": -0.0028638375423066763,
     "Security_JA": "アシュラント",
     "Daily_Change_right": 0.013843756955263678
   },
@@ -534,7 +534,7 @@
     "GICS Sub-Industry": "Integrated Telecommunication Services",
     "Symbol_YF": "T",
     "Exchange": "NYSE",
-    "Daily_Change": 0.024249422632794417,
+    "Daily_Change": -0.015407741450582494,
     "Security_JA": "エーティー・アンド・ティー",
     "Daily_Change_right": 0.00416666666666678
   },
@@ -545,7 +545,7 @@
     "GICS Sub-Industry": "Gas Utilities",
     "Symbol_YF": "ATO",
     "Exchange": "NYSE",
-    "Daily_Change": 0.02915228231683924,
+    "Daily_Change": -0.012565891060114017,
     "Security_JA": "アトモス・エナジー",
     "Daily_Change_right": -0.007660389403127981
   },
@@ -556,7 +556,7 @@
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "ADSK",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.06297208870218525,
+    "Daily_Change": 0.02353651176825592,
     "Security_JA": "オートデスク",
     "Daily_Change_right": -0.004688271097219881
   },
@@ -567,7 +567,7 @@
     "GICS Sub-Industry": "Human Resource & Employment Services",
     "Symbol_YF": "ADP",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.015667608706430643,
+    "Daily_Change": -0.010074044225054148,
     "Security_JA": "オートマチック・データ・プロセシング",
     "Daily_Change_right": 0.00039922151803988476
   },
@@ -578,7 +578,7 @@
     "GICS Sub-Industry": "Automotive Retail",
     "Symbol_YF": "AZO",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0020083621402845237,
+    "Daily_Change": -0.00536250416990992,
     "Security_JA": "オートゾーン",
     "Daily_Change_right": 0.023812867374164985
   },
@@ -589,7 +589,7 @@
     "GICS Sub-Industry": "Multi-Family Residential REITs",
     "Symbol_YF": "AVB",
     "Exchange": "NYSE",
-    "Daily_Change": 0.011908236530266722,
+    "Daily_Change": -0.005595615806172477,
     "Security_JA": "アバロンベイ・コミュニティーズ",
     "Daily_Change_right": 0.025113482284973124
   },
@@ -600,7 +600,7 @@
     "GICS Sub-Industry": "Paper & Plastic Packaging Products & Materials",
     "Symbol_YF": "AVY",
     "Exchange": "NYSE",
-    "Daily_Change": 0.00227476803352287,
+    "Daily_Change": -0.011527205399271377,
     "Security_JA": "エイブリー・デニソン",
     "Daily_Change_right": 0.03734889035905443
   },
@@ -611,7 +611,7 @@
     "GICS Sub-Industry": "Aerospace & Defense",
     "Symbol_YF": "AXON",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.026069701103807495,
+    "Daily_Change": 0.011409942950285296,
     "Security_JA": "アクソン・エンタープライズ",
     "Daily_Change_right": 0.024854991350361347
   },
@@ -622,7 +622,7 @@
     "GICS Sub-Industry": "Oil & Gas Equipment & Services",
     "Symbol_YF": "BKR",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.031180044771346272,
+    "Daily_Change": 0.06900294619320829,
     "Security_JA": "ベーカー・ヒューズ",
     "Daily_Change_right": -0.013531353135313536
   },
@@ -633,7 +633,7 @@
     "GICS Sub-Industry": "Metal, Glass & Plastic Containers",
     "Symbol_YF": "BALL",
     "Exchange": "NYSE",
-    "Daily_Change": 0.007180469123982698,
+    "Daily_Change": -0.02851711026615965,
     "Security_JA": "ボール",
     "Daily_Change_right": 0.017516174846141812
   },
@@ -644,7 +644,7 @@
     "GICS Sub-Industry": "Diversified Banks",
     "Symbol_YF": "BAC",
     "Exchange": "NYSE",
-    "Daily_Change": -0.012236445783132504,
+    "Daily_Change": -0.008004574042309923,
     "Security_JA": "バンク・オブ・アメリカ",
     "Daily_Change_right": 0.007475238273219932
   },
@@ -655,7 +655,7 @@
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "BAX",
     "Exchange": "NYSE",
-    "Daily_Change": 0.005461496450027386,
+    "Daily_Change": -0.013579576317218903,
     "Security_JA": "バクスター・インターナショナル",
     "Daily_Change_right": 0.03142227122381479
   },
@@ -666,7 +666,7 @@
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "BDX",
     "Exchange": "NYSE",
-    "Daily_Change": -0.005139736588499913,
+    "Daily_Change": -0.017500807232805993,
     "Security_JA": "ベクトン・ディッキンソン",
     "Daily_Change_right": 0.024027903371657403
   },
@@ -677,7 +677,7 @@
     "GICS Sub-Industry": "Multi-Sector Holdings",
     "Symbol_YF": "BRK-B",
     "Exchange": "NYSE",
-    "Daily_Change": 0.01106574989256561,
+    "Daily_Change": -0.0026139623844437746,
     "Security_JA": "バークシャー・ハサウェイ　クラスB",
     "Daily_Change_right": -0.0011365549755851584
   },
@@ -688,7 +688,7 @@
     "GICS Sub-Industry": "Computer & Electronics Retail",
     "Symbol_YF": "BBY",
     "Exchange": "NYSE",
-    "Daily_Change": -0.031953407838816325,
+    "Daily_Change": -0.01707317073170727,
     "Security_JA": "ベスト・バイ",
     "Daily_Change_right": 0.016390907685170902
   },
@@ -699,7 +699,7 @@
     "GICS Sub-Industry": "Life Sciences Tools & Services",
     "Symbol_YF": "TECH",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.10891089108910884,
+    "Daily_Change": 0.03802681992337163,
     "Security_JA": "テクネ",
     "Daily_Change_right": 0.03260111576011153
   },
@@ -710,7 +710,7 @@
     "GICS Sub-Industry": "Biotechnology",
     "Symbol_YF": "BIIB",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.011522070816015141,
+    "Daily_Change": -0.018628912071535022,
     "Security_JA": "バイオジェン",
     "Daily_Change_right": 0.0075559595500510396
   },
@@ -721,7 +721,7 @@
     "GICS Sub-Industry": "Asset Management & Custody Banks",
     "Symbol_YF": "BLK",
     "Exchange": "NYSE",
-    "Daily_Change": -0.008470827411597505,
+    "Daily_Change": -0.008068573381301793,
     "Security_JA": "ブラックロック・ファンディング",
     "Daily_Change_right": 0.026528123323088983
   },
@@ -732,7 +732,7 @@
     "GICS Sub-Industry": "Asset Management & Custody Banks",
     "Symbol_YF": "BX",
     "Exchange": "NYSE",
-    "Daily_Change": -0.057041547830108626,
+    "Daily_Change": -0.005558734570424202,
     "Security_JA": "ブラックストーン",
     "Daily_Change_right": 0.007414344806056483
   },
@@ -743,7 +743,7 @@
     "GICS Sub-Industry": "Transaction & Payment Processing Services",
     "Symbol_YF": "XYZ",
     "Exchange": "NYSE",
-    "Daily_Change": -0.03544827586206887,
+    "Daily_Change": 0.024310024310024145,
     "Security_JA": "ブロック",
     "Daily_Change_right": 0.03771661569826712
   },
@@ -754,7 +754,7 @@
     "GICS Sub-Industry": "Asset Management & Custody Banks",
     "Symbol_YF": "BK",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0033853400058876065,
+    "Daily_Change": -0.010116674051100106,
     "Security_JA": "バンク・オブ・ニューヨーク・メロン",
     "Daily_Change_right": 0.0019282112132897574
   },
@@ -765,7 +765,7 @@
     "GICS Sub-Industry": "Aerospace & Defense",
     "Symbol_YF": "BA",
     "Exchange": "NYSE",
-    "Daily_Change": 0.012409200968523023,
+    "Daily_Change": -0.007303010890454871,
     "Security_JA": "ボーイング",
     "Daily_Change_right": 0.02055921052631579
   },
@@ -776,7 +776,7 @@
     "GICS Sub-Industry": "Hotels, Resorts & Cruise Lines",
     "Symbol_YF": "BKNG",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.014771460423634367,
+    "Daily_Change": 0.019801980198019802,
     "Security_JA": "ブッキング・ ホールディングス",
     "Daily_Change_right": 0.04036627654963149
   },
@@ -787,7 +787,7 @@
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "BSX",
     "Exchange": "NYSE",
-    "Daily_Change": 0.012640665947279068,
+    "Daily_Change": -0.05510732227127413,
     "Security_JA": "ボストン・サイエンティフィック",
     "Daily_Change_right": 0.012771996215704861
   },
@@ -798,7 +798,7 @@
     "GICS Sub-Industry": "Pharmaceuticals",
     "Symbol_YF": "BMY",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0037414965986395576,
+    "Daily_Change": -0.005252456794307052,
     "Security_JA": "ブリストル・マイヤーズ",
     "Daily_Change_right": 0.020522388059701507
   },
@@ -809,7 +809,7 @@
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "AVGO",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.006411924760440032,
+    "Daily_Change": 0.006715245035004985,
     "Security_JA": "ブロードコム",
     "Daily_Change_right": 0.02025246568123069
   },
@@ -820,7 +820,7 @@
     "GICS Sub-Industry": "Data Processing & Outsourced Services",
     "Symbol_YF": "BR",
     "Exchange": "NYSE",
-    "Daily_Change": -0.02919571713147409,
+    "Daily_Change": -0.00564283424174412,
     "Security_JA": "ブロードリッジ・フィナンシャル・ソリューションズ",
     "Daily_Change_right": 0.0030784386159339984
   },
@@ -831,7 +831,7 @@
     "GICS Sub-Industry": "Insurance Brokers",
     "Symbol_YF": "BRO",
     "Exchange": "NYSE",
-    "Daily_Change": -0.004861520329994083,
+    "Daily_Change": -0.024426350851221194,
     "Security_JA": "ブラウン・アンド・ブラウン",
     "Daily_Change_right": -0.015983725661144935
   },
@@ -842,7 +842,7 @@
     "GICS Sub-Industry": "Distillers & Vintners",
     "Symbol_YF": "BF-B",
     "Exchange": "NYSE",
-    "Daily_Change": -0.004556607080266476,
+    "Daily_Change": -0.0031690140845070376,
     "Security_JA": "ブラウン・フォーマン クラスB",
     "Daily_Change_right": -0.010522742701968847
   },
@@ -853,7 +853,7 @@
     "GICS Sub-Industry": "Building Products",
     "Symbol_YF": "BLDR",
     "Exchange": "NYSE",
-    "Daily_Change": -0.005406598256647853,
+    "Daily_Change": -0.0011093854004880666,
     "Security_JA": "ビルダーズ・ファーストソース",
     "Daily_Change_right": 0.054827175208581574
   },
@@ -864,7 +864,7 @@
     "GICS Sub-Industry": "Agricultural Products & Services",
     "Symbol_YF": "BG",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0051681641090880635,
+    "Daily_Change": -0.012023414016769467,
     "Security_JA": "ブンゲ・グローバル",
     "Daily_Change_right": -0.030485326396227946
   },
@@ -875,7 +875,7 @@
     "GICS Sub-Industry": "Office REITs",
     "Symbol_YF": "BXP",
     "Exchange": "NYSE",
-    "Daily_Change": -0.022130725681935137,
+    "Daily_Change": 0.012807017543859595,
     "Security_JA": "BXP",
     "Daily_Change_right": 0.0334698237493323
   },
@@ -886,7 +886,7 @@
     "GICS Sub-Industry": "Air Freight & Logistics",
     "Symbol_YF": "CHRW",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.007622703591993501,
+    "Daily_Change": -0.0038641558724284747,
     "Security_JA": "シー・エイチ・ロビンソン・ワールドワイド",
     "Daily_Change_right": 0.0034689719729089556
   },
@@ -897,7 +897,7 @@
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "CDNS",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.052109405627092154,
+    "Daily_Change": 0.05904622530461618,
     "Security_JA": "ケイデンス・デザイン・システムズ",
     "Daily_Change_right": 0.013259056554599927
   },
@@ -908,7 +908,7 @@
     "GICS Sub-Industry": "Multi-Family Residential REITs",
     "Symbol_YF": "CPT",
     "Exchange": "NYSE",
-    "Daily_Change": 0.009361450532124584,
+    "Daily_Change": -0.006638680074197079,
     "Security_JA": "カムデン・プロパティ・トラスト",
     "Daily_Change_right": 0.032142144140547
   },
@@ -919,7 +919,7 @@
     "GICS Sub-Industry": "Packaged Foods & Meats",
     "Symbol_YF": "CPB",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.006724303554274763,
+    "Daily_Change": -0.01622137404580152,
     "Security_JA": "ザ・キャンベルズ",
     "Daily_Change_right": 0.002387774594078183
   },
@@ -930,7 +930,7 @@
     "GICS Sub-Industry": "Consumer Finance",
     "Symbol_YF": "COF",
     "Exchange": "NYSE",
-    "Daily_Change": -0.014040014040014096,
+    "Daily_Change": -0.02664903626099786,
     "Security_JA": "キャピタル・ワン・フィナンシャル",
     "Daily_Change_right": 0.028698121668078277
   },
@@ -941,7 +941,7 @@
     "GICS Sub-Industry": "Health Care Distributors",
     "Symbol_YF": "CAH",
     "Exchange": "NYSE",
-    "Daily_Change": 0.020792819745699263,
+    "Daily_Change": -0.02378858929269248,
     "Security_JA": "カーディナル・ヘルス",
     "Daily_Change_right": 0.004176442984514382
   },
@@ -952,7 +952,7 @@
     "GICS Sub-Industry": "Hotels, Resorts & Cruise Lines",
     "Symbol_YF": "CCL",
     "Exchange": "NYSE",
-    "Daily_Change": -0.010764662212323781,
+    "Daily_Change": 0.019512195121951337,
     "Security_JA": "カーニバル",
     "Daily_Change_right": 0.06993775173928965
   },
@@ -963,7 +963,7 @@
     "GICS Sub-Industry": "Building Products",
     "Symbol_YF": "CARR",
     "Exchange": "NYSE",
-    "Daily_Change": 0.014674361088211057,
+    "Daily_Change": -0.009262268443288922,
     "Security_JA": "キャリア・グローバル",
     "Daily_Change_right": 0.026963657678780763
   },
@@ -974,7 +974,7 @@
     "GICS Sub-Industry": "Automotive Retail",
     "Symbol_YF": "CVNA",
     "Exchange": "NYSE",
-    "Daily_Change": -0.033038220686676834,
+    "Daily_Change": 0.01503647461664434,
     "Security_JA": "カーヴァナ",
     "Daily_Change_right": 0.06981559187279142
   },
@@ -985,7 +985,7 @@
     "GICS Sub-Industry": "Food Retail",
     "Symbol_YF": "CASY",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.008826046416574168,
+    "Daily_Change": 0.012319262616798643,
     "Security_JA": "ケーシーズ・ゼネラル・ストアーズ",
     "Daily_Change_right": 0.02373782588643824
   },
@@ -996,7 +996,7 @@
     "GICS Sub-Industry": "Construction Machinery & Heavy Transportation Equipment",
     "Symbol_YF": "CAT",
     "Exchange": "NYSE",
-    "Daily_Change": 0.03260103601320361,
+    "Daily_Change": -0.005327809970786894,
     "Security_JA": "キャタピラー",
     "Daily_Change_right": 0.02846012476380298
   },
@@ -1007,7 +1007,7 @@
     "GICS Sub-Industry": "Financial Exchanges & Data",
     "Symbol_YF": "CBOE",
     "Exchange": "BTS",
-    "Daily_Change": 0.008976298537569392,
+    "Daily_Change": 0.012295081967213108,
     "Security_JA": "シービーオーイー・マーケッツ",
     "Daily_Change_right": -0.03051263817958497
   },
@@ -1018,7 +1018,7 @@
     "GICS Sub-Industry": "Real Estate Services",
     "Symbol_YF": "CBRE",
     "Exchange": "NYSE",
-    "Daily_Change": -0.02742313705054721,
+    "Daily_Change": -0.0068314245529436084,
     "Security_JA": "CBREグループ",
     "Daily_Change_right": 0.02510148849797009
   },
@@ -1029,7 +1029,7 @@
     "GICS Sub-Industry": "Technology Distributors",
     "Symbol_YF": "CDW",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.04191238416175231,
+    "Daily_Change": -0.008426760460174439,
     "Security_JA": "CDWコープ",
     "Daily_Change_right": 0.004875853274323049
   },
@@ -1040,7 +1040,7 @@
     "GICS Sub-Industry": "Health Care Distributors",
     "Symbol_YF": "COR",
     "Exchange": "NYSE",
-    "Daily_Change": 0.010022705157314222,
+    "Daily_Change": -0.010276502135585563,
     "Security_JA": "センコア",
     "Daily_Change_right": 0.016099512981977225
   },
@@ -1051,7 +1051,7 @@
     "GICS Sub-Industry": "Managed Health Care",
     "Symbol_YF": "CNC",
     "Exchange": "NYSE",
-    "Daily_Change": 0.055484202414590386,
+    "Daily_Change": 0.017765879776101164,
     "Security_JA": "センティーン",
     "Daily_Change_right": -0.02128205128205124
   },
@@ -1062,7 +1062,7 @@
     "GICS Sub-Industry": "Multi-Utilities",
     "Symbol_YF": "CNP",
     "Exchange": "NYSE",
-    "Daily_Change": 0.025166191832858554,
+    "Daily_Change": -0.016442797591477556,
     "Security_JA": "センターポイント・エナジー",
     "Daily_Change_right": -0.004859986114325407
   },
@@ -1073,7 +1073,7 @@
     "GICS Sub-Industry": "Fertilizers & Agricultural Chemicals",
     "Symbol_YF": "CF",
     "Exchange": "NYSE",
-    "Daily_Change": 0.025559366323697614,
+    "Daily_Change": -0.03710486503702521,
     "Security_JA": "シーエフ・インダストリーズ・ホールディングス",
     "Daily_Change_right": -0.09646379600673553
   },
@@ -1084,7 +1084,7 @@
     "GICS Sub-Industry": "Life Sciences Tools & Services",
     "Symbol_YF": "CRL",
     "Exchange": "NYSE",
-    "Daily_Change": -0.09231601731601732,
+    "Daily_Change": 0.012280910933587708,
     "Security_JA": "チャールス・リバー・ラボラトリーズ",
     "Daily_Change_right": 0.03922233525488865
   },
@@ -1095,7 +1095,7 @@
     "GICS Sub-Industry": "Investment Banking & Brokerage",
     "Symbol_YF": "SCHW",
     "Exchange": "NYSE",
-    "Daily_Change": -0.030421982335623075,
+    "Daily_Change": -0.004723346828610006,
     "Security_JA": "チャールズ・シュワブ",
     "Daily_Change_right": -0.003670913409630786
   },
@@ -1106,7 +1106,7 @@
     "GICS Sub-Industry": "Cable & Satellite",
     "Symbol_YF": "CHTR",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.002927955791991455,
+    "Daily_Change": -0.2549838696335512,
     "Security_JA": "チャーター・コミュニケーションズ クラスA",
     "Daily_Change_right": 0.002754587447556917
   },
@@ -1117,7 +1117,7 @@
     "GICS Sub-Industry": "Integrated Oil & Gas",
     "Symbol_YF": "CVX",
     "Exchange": "NYSE",
-    "Daily_Change": 0.006869901245169607,
+    "Daily_Change": -0.012739872068230206,
     "Security_JA": "シェブロン",
     "Daily_Change_right": -0.022110018602179093
   },
@@ -1128,7 +1128,7 @@
     "GICS Sub-Industry": "Restaurants",
     "Symbol_YF": "CMG",
     "Exchange": "NYSE",
-    "Daily_Change": -0.03446311592138994,
+    "Daily_Change": 0.009144542772861424,
     "Security_JA": "チポトレ・メキシカン・グリル",
     "Daily_Change_right": 0.021379703534777653
   },
@@ -1139,7 +1139,7 @@
     "GICS Sub-Industry": "Property & Casualty Insurance",
     "Symbol_YF": "CB",
     "Exchange": "NYSE",
-    "Daily_Change": 0.02289278800356448,
+    "Daily_Change": -0.020307618360970895,
     "Security_JA": "チャブ",
     "Daily_Change_right": 0.0073381645453990865
   },
@@ -1150,7 +1150,7 @@
     "GICS Sub-Industry": "Household Products",
     "Symbol_YF": "CHD",
     "Exchange": "NYSE",
-    "Daily_Change": 0.018083961248654388,
+    "Daily_Change": 0.004652146331148211,
     "Security_JA": "チャーチ・アンド・ドワイト",
     "Daily_Change_right": 0.02475142796699798
   },
@@ -1161,7 +1161,7 @@
     "GICS Sub-Industry": "Communications Equipment",
     "Symbol_YF": "CIEN",
     "Exchange": "NYSE",
-    "Daily_Change": 0.033829689159668906,
+    "Daily_Change": 0.009595812736260409,
     "Security_JA": "シエナ",
     "Daily_Change_right": 0.02475917361714157
   },
@@ -1172,7 +1172,7 @@
     "GICS Sub-Industry": "Health Care Services",
     "Symbol_YF": "CI",
     "Exchange": "NYSE",
-    "Daily_Change": 0.018274481252275352,
+    "Daily_Change": -0.014586014586014731,
     "Security_JA": "ザ・シグナ・グループ",
     "Daily_Change_right": 0.00821362665991237
   },
@@ -1183,7 +1183,7 @@
     "GICS Sub-Industry": "Property & Casualty Insurance",
     "Symbol_YF": "CINF",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.011487339868887931,
+    "Daily_Change": -0.022000237840409186,
     "Security_JA": "シンシナティ・フィナンシャル",
     "Daily_Change_right": 0.02118021547502436
   },
@@ -1194,7 +1194,7 @@
     "GICS Sub-Industry": "Diversified Support Services",
     "Symbol_YF": "CTAS",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.016947211725638428,
+    "Daily_Change": -0.00968359418984348,
     "Security_JA": "シンタス",
     "Daily_Change_right": 0.009294727354664134
   },
@@ -1205,7 +1205,7 @@
     "GICS Sub-Industry": "Communications Equipment",
     "Symbol_YF": "CSCO",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.013474387527839575,
+    "Daily_Change": 0.00474094141550967,
     "Security_JA": "シスコシステムズ",
     "Daily_Change_right": 0.020710059171597635
   },
@@ -1216,7 +1216,7 @@
     "GICS Sub-Industry": "Diversified Banks",
     "Symbol_YF": "C",
     "Exchange": "NYSE",
-    "Daily_Change": -0.009404147074693586,
+    "Daily_Change": -0.00412419266983104,
     "Security_JA": "シティグループ",
     "Daily_Change_right": 0.021957631049945903
   },
@@ -1227,7 +1227,7 @@
     "GICS Sub-Industry": "Regional Banks",
     "Symbol_YF": "CFG",
     "Exchange": "NYSE",
-    "Daily_Change": 0.00015346838551266292,
+    "Daily_Change": -0.021175387448212405,
     "Security_JA": "シチズンズ・フィナンシャル・グループ",
     "Daily_Change_right": 0.0006210215805000195
   },
@@ -1238,7 +1238,7 @@
     "GICS Sub-Industry": "Household Products",
     "Symbol_YF": "CLX",
     "Exchange": "NYSE",
-    "Daily_Change": 0.008363448631905033,
+    "Daily_Change": 0.010444398935080998,
     "Security_JA": "クロロックス・カンパニー",
     "Daily_Change_right": 0.021488571986716186
   },
@@ -1249,7 +1249,7 @@
     "GICS Sub-Industry": "Financial Exchanges & Data",
     "Symbol_YF": "CME",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.0008400126001888358,
+    "Daily_Change": -0.0014362279749186428,
     "Security_JA": "シーエムイー・グループ",
     "Daily_Change_right": -0.028931199783944532
   },
@@ -1260,7 +1260,7 @@
     "GICS Sub-Industry": "Multi-Utilities",
     "Symbol_YF": "CMS",
     "Exchange": "NYSE",
-    "Daily_Change": 0.021872499333155514,
+    "Daily_Change": -0.004567997911772494,
     "Security_JA": "シーエムエス・エナジー",
     "Daily_Change_right": -0.004608884905901926
   },
@@ -1271,7 +1271,7 @@
     "GICS Sub-Industry": "Soft Drinks & Non-alcoholic Beverages",
     "Symbol_YF": "KO",
     "Exchange": "NYSE",
-    "Daily_Change": 0.02210907141900048,
+    "Daily_Change": 0.004588358678552626,
     "Security_JA": "コカ・コーラ",
     "Daily_Change_right": 0.00744878957169444
   },
@@ -1282,7 +1282,7 @@
     "GICS Sub-Industry": "IT Consulting & Other Services",
     "Symbol_YF": "CTSH",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.06308450943717056,
+    "Daily_Change": 0.00018148820326675154,
     "Security_JA": "コグニザント・テクノロジー・ソリューションズ クラスA",
     "Daily_Change_right": 0.012720964810837536
   },
@@ -1293,7 +1293,7 @@
     "GICS Sub-Industry": "Electronic Components",
     "Symbol_YF": "COHR",
     "Exchange": "NYSE",
-    "Daily_Change": -0.03649385111421811,
+    "Daily_Change": -0.004708599857853683,
     "Security_JA": "コヒレント",
     "Daily_Change_right": 0.051890243902438966
   },
@@ -1304,7 +1304,7 @@
     "GICS Sub-Industry": "Financial Exchanges & Data",
     "Symbol_YF": "COIN",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.04029286268425137,
+    "Daily_Change": 0.009296215833880682,
     "Security_JA": "コインベース・グローバル",
     "Daily_Change_right": 0.03252764850122604
   },
@@ -1315,7 +1315,7 @@
     "GICS Sub-Industry": "Household Products",
     "Symbol_YF": "CL",
     "Exchange": "NYSE",
-    "Daily_Change": 0.016636308439587185,
+    "Daily_Change": 0.011108456760630755,
     "Security_JA": "コルゲート・パルモリーブ",
     "Daily_Change_right": 0.026189906720880143
   },
@@ -1326,7 +1326,7 @@
     "GICS Sub-Industry": "Cable & Satellite",
     "Symbol_YF": "CMCSA",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.0772897514470548,
+    "Daily_Change": -0.1289506953223768,
     "Security_JA": "コムキャスト クラスA",
     "Daily_Change_right": 0.009540034071550173
   },
@@ -1337,7 +1337,7 @@
     "GICS Sub-Industry": "Construction & Engineering",
     "Symbol_YF": "FIX",
     "Exchange": "NYSE",
-    "Daily_Change": 0.028657748087840506,
+    "Daily_Change": -0.026940487397895153,
     "Security_JA": "コンフォート・システムズUSA",
     "Daily_Change_right": 0.027709110381887583
   },
@@ -1348,7 +1348,7 @@
     "GICS Sub-Industry": "Packaged Foods & Meats",
     "Symbol_YF": "CAG",
     "Exchange": "NYSE",
-    "Daily_Change": -0.008258774948382603,
+    "Daily_Change": -0.016655100624566287,
     "Security_JA": "コナグラ・ブランズ",
     "Daily_Change_right": 0.010884353741496608
   },
@@ -1359,7 +1359,7 @@
     "GICS Sub-Industry": "Oil & Gas Exploration & Production",
     "Symbol_YF": "COP",
     "Exchange": "NYSE",
-    "Daily_Change": 0.01443719412724315,
+    "Daily_Change": -0.020985768272091334,
     "Security_JA": "コノコ・フィリップス",
     "Daily_Change_right": -0.04548819610101166
   },
@@ -1370,7 +1370,7 @@
     "GICS Sub-Industry": "Multi-Utilities",
     "Symbol_YF": "ED",
     "Exchange": "NYSE",
-    "Daily_Change": 0.019606029778969802,
+    "Daily_Change": -0.010793650793650774,
     "Security_JA": "コンソリデーテッド・エジソン",
     "Daily_Change_right": -0.0033478103510675926
   },
@@ -1381,7 +1381,7 @@
     "GICS Sub-Industry": "Distillers & Vintners",
     "Symbol_YF": "STZ",
     "Exchange": "NYSE",
-    "Daily_Change": 0.015489546149923553,
+    "Daily_Change": -0.020777101249136915,
     "Security_JA": "コンステレーション･ブランズ クラスA",
     "Daily_Change_right": -0.01199391171993911
   },
@@ -1392,7 +1392,7 @@
     "GICS Sub-Industry": "Electric Utilities",
     "Symbol_YF": "CEG",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.01953614709569563,
+    "Daily_Change": 0.07090890460088121,
     "Security_JA": "コンステレーション・エナジー",
     "Daily_Change_right": -0.009794744935481738
   },
@@ -1403,7 +1403,7 @@
     "GICS Sub-Industry": "Health Care Supplies",
     "Symbol_YF": "COO",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.029438135086670633,
+    "Daily_Change": -0.008160123171670534,
     "Security_JA": "クーパー",
     "Daily_Change_right": 0.009801095416546654
   },
@@ -1414,7 +1414,7 @@
     "GICS Sub-Industry": "Diversified Support Services",
     "Symbol_YF": "CPRT",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.0059382422802851205,
+    "Daily_Change": -0.0239079102715467,
     "Security_JA": "コパート",
     "Daily_Change_right": 0.005410279531109098
   },
@@ -1425,7 +1425,7 @@
     "GICS Sub-Industry": "Electronic Components",
     "Symbol_YF": "GLW",
     "Exchange": "NYSE",
-    "Daily_Change": 0.004384925337757817,
+    "Daily_Change": 0.03769911504424771,
     "Security_JA": "コーニング",
     "Daily_Change_right": -0.01023603082851648
   },
@@ -1436,7 +1436,7 @@
     "GICS Sub-Industry": "Transaction & Payment Processing Services",
     "Symbol_YF": "CPAY",
     "Exchange": "NYSE",
-    "Daily_Change": -0.052101602661021956,
+    "Daily_Change": -0.001786454844163723,
     "Security_JA": "コーペイ",
     "Daily_Change_right": 0.007739332068539746
   },
@@ -1447,7 +1447,7 @@
     "GICS Sub-Industry": "Fertilizers & Agricultural Chemicals",
     "Symbol_YF": "CTVA",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0035286704473850177,
+    "Daily_Change": 0.0021348737912847133,
     "Security_JA": "コルテバ",
     "Daily_Change_right": -0.010103499260719483
   },
@@ -1458,7 +1458,7 @@
     "GICS Sub-Industry": "Real Estate Services",
     "Symbol_YF": "CSGP",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.0358524632447769,
+    "Daily_Change": -0.025147137506688195,
     "Security_JA": "コスター・グループ",
     "Daily_Change_right": -0.007992007992007999
   },
@@ -1469,7 +1469,7 @@
     "GICS Sub-Industry": "Consumer Staples Merchandise Retail",
     "Symbol_YF": "COST",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.010640629670220135,
+    "Daily_Change": -0.003184211045170467,
     "Security_JA": "コストコ・ホールセール",
     "Daily_Change_right": 0.012844278319709027
   },
@@ -1480,7 +1480,7 @@
     "GICS Sub-Industry": "Oil & Gas Exploration & Production",
     "Symbol_YF": "CTRA",
     "Exchange": "NYSE",
-    "Daily_Change": 0.021864561190403854,
+    "Daily_Change": -0.0035661218424962093,
     "Security_JA": "コテラ・エナジー・インク",
     "Daily_Change_right": -0.03378167031592112
   },
@@ -1491,7 +1491,7 @@
     "GICS Sub-Industry": "Construction Materials",
     "Symbol_YF": "CRH",
     "Exchange": "NYSE",
-    "Daily_Change": 0.009216986820570188,
+    "Daily_Change": 0.007169682485489957,
     "Security_JA": "CRH",
     "Daily_Change_right": 0.023522210563133944
   },
@@ -1502,7 +1502,7 @@
     "GICS Sub-Industry": "Systems Software",
     "Symbol_YF": "CRWD",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.04562012513928178,
+    "Daily_Change": 0.006151911807629289,
     "Security_JA": "クラウドストライク・ホールディングス　クラスA",
     "Daily_Change_right": 0.013749402199904353
   },
@@ -1513,7 +1513,7 @@
     "GICS Sub-Industry": "Telecom Tower REITs",
     "Symbol_YF": "CCI",
     "Exchange": "NYSE",
-    "Daily_Change": 0.01755609812812453,
+    "Daily_Change": -0.013482632541133372,
     "Security_JA": "クラウン・キャッスル",
     "Daily_Change_right": 0.02118107516979382
   },
@@ -1524,7 +1524,7 @@
     "GICS Sub-Industry": "Rail Transportation",
     "Symbol_YF": "CSX",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.06947660954145438,
+    "Daily_Change": -0.016673884798614185,
     "Security_JA": "シーエスエックス",
     "Daily_Change_right": 0.014044943820224753
   },
@@ -1535,7 +1535,7 @@
     "GICS Sub-Industry": "Construction Machinery & Heavy Transportation Equipment",
     "Symbol_YF": "CMI",
     "Exchange": "NYSE",
-    "Daily_Change": 0.02770564125027365,
+    "Daily_Change": 0.005814927008966024,
     "Security_JA": "カミンズ",
     "Daily_Change_right": 0.030038266353528492
   },
@@ -1546,7 +1546,7 @@
     "GICS Sub-Industry": "Health Care Services",
     "Symbol_YF": "CVS",
     "Exchange": "NYSE",
-    "Daily_Change": 0.040849996700323354,
+    "Daily_Change": -0.011666243976667533,
     "Security_JA": "シーブイエス・ヘルス",
     "Daily_Change_right": 0.006641489777314636
   },
@@ -1557,7 +1557,7 @@
     "GICS Sub-Industry": "Life Sciences Tools & Services",
     "Symbol_YF": "DHR",
     "Exchange": "NYSE",
-    "Daily_Change": -0.029721799608780696,
+    "Daily_Change": -0.007392059136473054,
     "Security_JA": "ダナハー",
     "Daily_Change_right": 0.005005676540406641
   },
@@ -1568,7 +1568,7 @@
     "GICS Sub-Industry": "Restaurants",
     "Symbol_YF": "DRI",
     "Exchange": "NYSE",
-    "Daily_Change": 0.013067641315776366,
+    "Daily_Change": -0.006325985964218648,
     "Security_JA": "ダーデン・レストランツ",
     "Daily_Change_right": 0.022424488965727636
   },
@@ -1579,7 +1579,7 @@
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "DDOG",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.03238988951112447,
+    "Daily_Change": 0.012670107930548962,
     "Security_JA": "データドッグ　クラスA",
     "Daily_Change_right": 0.025431278853162716
   },
@@ -1590,7 +1590,7 @@
     "GICS Sub-Industry": "Health Care Services",
     "Symbol_YF": "DVA",
     "Exchange": "NYSE",
-    "Daily_Change": 0.01712373704238298,
+    "Daily_Change": -0.020512158936979982,
     "Security_JA": "ダビータ",
     "Daily_Change_right": -0.0014851819347870038
   },
@@ -1601,7 +1601,7 @@
     "GICS Sub-Industry": "Footwear",
     "Symbol_YF": "DECK",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0001857182653913643,
+    "Daily_Change": 0.007613035001392697,
     "Security_JA": "デッカーズ・アウトドア",
     "Daily_Change_right": 0.03849349210744948
   },
@@ -1612,7 +1612,7 @@
     "GICS Sub-Industry": "Agricultural & Farm Machinery",
     "Symbol_YF": "DE",
     "Exchange": "NYSE",
-    "Daily_Change": 0.02062104519043438,
+    "Daily_Change": -0.04951431708759196,
     "Security_JA": "ディア",
     "Daily_Change_right": 0.010732809531145656
   },
@@ -1623,7 +1623,7 @@
     "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
     "Symbol_YF": "DELL",
     "Exchange": "NYSE",
-    "Daily_Change": -0.011693454460750149,
+    "Daily_Change": 0.01861977939096831,
     "Security_JA": "デル・テクノロジーズ",
     "Daily_Change_right": 0.017919105080532436
   },
@@ -1634,7 +1634,7 @@
     "GICS Sub-Industry": "Passenger Airlines",
     "Symbol_YF": "DAL",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0005847098377429037,
+    "Daily_Change": 0.001170103846716371,
     "Security_JA": "デルタ航空",
     "Daily_Change_right": 0.02618400343396764
   },
@@ -1645,7 +1645,7 @@
     "GICS Sub-Industry": "Oil & Gas Exploration & Production",
     "Symbol_YF": "DVN",
     "Exchange": "NYSE",
-    "Daily_Change": 0.02185908319185062,
+    "Daily_Change": -0.004361370716510922,
     "Security_JA": "デボン・エナジー・コーポレーション",
     "Daily_Change_right": -0.033857579729139456
   },
@@ -1656,7 +1656,7 @@
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "DXCM",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.011196972086421602,
+    "Daily_Change": -0.018022328548644377,
     "Security_JA": "デクスコム",
     "Daily_Change_right": 0.044912624530458925
   },
@@ -1667,7 +1667,7 @@
     "GICS Sub-Industry": "Oil & Gas Exploration & Production",
     "Symbol_YF": "FANG",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.008871924485479955,
+    "Daily_Change": -0.004090188659951998,
     "Security_JA": "ダイアモンドバック・エナジー",
     "Daily_Change_right": -0.034181623359228475
   },
@@ -1678,7 +1678,7 @@
     "GICS Sub-Industry": "Data Center REITs",
     "Symbol_YF": "DLR",
     "Exchange": "NYSE",
-    "Daily_Change": -0.004281589166583758,
+    "Daily_Change": 0.0,
     "Security_JA": "デジタル・リアルティ",
     "Daily_Change_right": 0.022959055513689992
   },
@@ -1689,7 +1689,7 @@
     "GICS Sub-Industry": "Consumer Staples Merchandise Retail",
     "Symbol_YF": "DG",
     "Exchange": "NYSE",
-    "Daily_Change": -0.009253246753246758,
+    "Daily_Change": -0.011060134360150815,
     "Security_JA": "ダラー・ゼネラル",
     "Daily_Change_right": 0.025998218190653666
   },
@@ -1700,7 +1700,7 @@
     "GICS Sub-Industry": "Consumer Staples Merchandise Retail",
     "Symbol_YF": "DLTR",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.002745905658527029,
+    "Daily_Change": 0.014669926650366748,
     "Security_JA": "ダラー・ツリー",
     "Daily_Change_right": 0.06004202942059441
   },
@@ -1711,7 +1711,7 @@
     "GICS Sub-Industry": "Multi-Utilities",
     "Symbol_YF": "D",
     "Exchange": "NYSE",
-    "Daily_Change": 0.025758818703855622,
+    "Daily_Change": 0.0009596928982724754,
     "Security_JA": "ドミニオン・エナジー",
     "Daily_Change_right": -0.0009603072983353901
   },
@@ -1722,7 +1722,7 @@
     "GICS Sub-Industry": "Restaurants",
     "Symbol_YF": "DPZ",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.017653649605115677,
+    "Daily_Change": -0.012245226778377513,
     "Security_JA": "ドミノ･ピザ",
     "Daily_Change_right": 0.008292682926829274
   },
@@ -1733,7 +1733,7 @@
     "GICS Sub-Industry": "Specialized Consumer Services",
     "Symbol_YF": "DASH",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.028913150820211828,
+    "Daily_Change": -0.0012429378531073382,
     "Security_JA": "ドアダッシュ",
     "Daily_Change_right": 0.025427981932749533
   },
@@ -1744,7 +1744,7 @@
     "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
     "Symbol_YF": "DOV",
     "Exchange": "NYSE",
-    "Daily_Change": 0.05541934588518305,
+    "Daily_Change": -0.014770984001753253,
     "Security_JA": "ドーバー",
     "Daily_Change_right": 0.022879021338189316
   },
@@ -1755,7 +1755,7 @@
     "GICS Sub-Industry": "Commodity Chemicals",
     "Symbol_YF": "DOW",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0072146354032466145,
+    "Daily_Change": 0.0033739942901633907,
     "Security_JA": "ダウ",
     "Daily_Change_right": -0.10821643286573146
   },
@@ -1766,7 +1766,7 @@
     "GICS Sub-Industry": "Homebuilding",
     "Symbol_YF": "DHI",
     "Exchange": "NYSE",
-    "Daily_Change": 0.01886090085618558,
+    "Daily_Change": -0.02630617464377051,
     "Security_JA": "ディーアール・ホートン",
     "Daily_Change_right": 0.045064527380537206
   },
@@ -1777,7 +1777,7 @@
     "GICS Sub-Industry": "Multi-Utilities",
     "Symbol_YF": "DTE",
     "Exchange": "NYSE",
-    "Daily_Change": 0.026676882357038467,
+    "Daily_Change": -0.003527815468114045,
     "Security_JA": "ディーティーイー・エナジー・カンパニー",
     "Daily_Change_right": 6.804109682241889e-05
   },
@@ -1788,7 +1788,7 @@
     "GICS Sub-Industry": "Electric Utilities",
     "Symbol_YF": "DUK",
     "Exchange": "NYSE",
-    "Daily_Change": 0.022275449101796345,
+    "Daily_Change": -0.006013745704467323,
     "Security_JA": "デューク・エナジー",
     "Daily_Change_right": -0.004664541708777069
   },
@@ -1799,7 +1799,7 @@
     "GICS Sub-Industry": "Specialty Chemicals",
     "Symbol_YF": "DD",
     "Exchange": "NYSE",
-    "Daily_Change": 0.008481948673336246,
+    "Daily_Change": -0.000862626698296294,
     "Security_JA": "デュポン・ド・ヌムール",
     "Daily_Change_right": 0.012834224598930511
   },
@@ -1810,7 +1810,7 @@
     "GICS Sub-Industry": "Electrical Components & Equipment",
     "Symbol_YF": "ETN",
     "Exchange": "NYSE",
-    "Daily_Change": 0.025684393650179996,
+    "Daily_Change": -0.0013663133097761699,
     "Security_JA": "イートン",
     "Daily_Change_right": 0.03432383571410374
   },
@@ -1821,7 +1821,7 @@
     "GICS Sub-Industry": "Broadline Retail",
     "Symbol_YF": "EBAY",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.02111142667802698,
+    "Daily_Change": -0.05280464216634437,
     "Security_JA": "イーベイ",
     "Daily_Change_right": 0.026382895253040526
   },
@@ -1832,7 +1832,7 @@
     "GICS Sub-Industry": "Wireless Telecommunication Services",
     "Symbol_YF": "SATS",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.006864988558352431,
+    "Daily_Change": -0.033080974325213924,
     "Security_JA": "エコスター クラスA",
     "Daily_Change_right": 0.005358490566037796
   },
@@ -1843,7 +1843,7 @@
     "GICS Sub-Industry": "Specialty Chemicals",
     "Symbol_YF": "ECL",
     "Exchange": "NYSE",
-    "Daily_Change": 0.009370468151563536,
+    "Daily_Change": -0.0072204825934793875,
     "Security_JA": "エコラボ",
     "Daily_Change_right": 0.02068863053894437
   },
@@ -1854,7 +1854,7 @@
     "GICS Sub-Industry": "Electric Utilities",
     "Symbol_YF": "EIX",
     "Exchange": "NYSE",
-    "Daily_Change": 0.01383684058806584,
+    "Daily_Change": -0.021040659653113504,
     "Security_JA": "エジソン・インターナショナル",
     "Daily_Change_right": -0.01187150837988819
   },
@@ -1865,7 +1865,7 @@
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "EW",
     "Exchange": "NYSE",
-    "Daily_Change": -0.022200417024408222,
+    "Daily_Change": 0.05556949322629211,
     "Security_JA": "エドワーズ・ライフサイエンシズ",
     "Daily_Change_right": 0.024541429475015784
   },
@@ -1876,7 +1876,7 @@
     "GICS Sub-Industry": "Interactive Home Entertainment",
     "Symbol_YF": "EA",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.001331492257619145,
+    "Daily_Change": 0.0007900844402745376,
     "Security_JA": "エレクトロニック・アーツ",
     "Daily_Change_right": 0.002261887200668771
   },
@@ -1887,7 +1887,7 @@
     "GICS Sub-Industry": "Managed Health Care",
     "Symbol_YF": "ELV",
     "Exchange": "NYSE",
-    "Daily_Change": 0.05511882998171856,
+    "Daily_Change": -0.004418262150220998,
     "Security_JA": "エレバンス・ヘルス",
     "Daily_Change_right": 0.0228927870305871
   },
@@ -1898,7 +1898,7 @@
     "GICS Sub-Industry": "Construction & Engineering",
     "Symbol_YF": "EME",
     "Exchange": "NYSE",
-    "Daily_Change": 0.015244186046511643,
+    "Daily_Change": -0.003676512695994819,
     "Security_JA": "エムコア・グループ",
     "Daily_Change_right": 0.01741874408330698
   },
@@ -1909,7 +1909,7 @@
     "GICS Sub-Industry": "Electrical Components & Equipment",
     "Symbol_YF": "EMR",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0023114099600757337,
+    "Daily_Change": -0.007652344846953127,
     "Security_JA": "エマーソン・エレクトリック",
     "Daily_Change_right": 0.04260169551898546
   },
@@ -1920,7 +1920,7 @@
     "GICS Sub-Industry": "Electric Utilities",
     "Symbol_YF": "ETR",
     "Exchange": "NYSE",
-    "Daily_Change": 0.03123019824386714,
+    "Daily_Change": -0.0024578651685393357,
     "Security_JA": "エンタジー",
     "Daily_Change_right": 8.657259111757341e-05
   },
@@ -1931,7 +1931,7 @@
     "GICS Sub-Industry": "Oil & Gas Exploration & Production",
     "Symbol_YF": "EOG",
     "Exchange": "NYSE",
-    "Daily_Change": 0.006465679272235274,
+    "Daily_Change": -0.005527750803017921,
     "Security_JA": "イーオージー・リソーシズ",
     "Daily_Change_right": -0.04206757663906904
   },
@@ -1942,7 +1942,7 @@
     "GICS Sub-Industry": "IT Consulting & Other Services",
     "Symbol_YF": "EPAM",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0646685254027262,
+    "Daily_Change": -0.0148215616461041,
     "Security_JA": "イーピーエーエム・システムズ",
     "Daily_Change_right": 0.035722734800094635
   },
@@ -1953,7 +1953,7 @@
     "GICS Sub-Industry": "Oil & Gas Exploration & Production",
     "Symbol_YF": "EQT",
     "Exchange": "NYSE",
-    "Daily_Change": 0.00357629427792917,
+    "Daily_Change": -0.00033938571186158367,
     "Security_JA": "イーキューティー",
     "Daily_Change_right": 0.0015413598218872462
   },
@@ -1964,7 +1964,7 @@
     "GICS Sub-Industry": "Research & Consulting Services",
     "Symbol_YF": "EFX",
     "Exchange": "NYSE",
-    "Daily_Change": -0.020877644688234578,
+    "Daily_Change": -0.014062767964328633,
     "Security_JA": "エキファックス",
     "Daily_Change_right": 0.03067549112301714
   },
@@ -1975,7 +1975,7 @@
     "GICS Sub-Industry": "Data Center REITs",
     "Symbol_YF": "EQIX",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.011802808723736248,
+    "Daily_Change": -0.005854979422392358,
     "Security_JA": "エクイニクス",
     "Daily_Change_right": 0.01654682976935269
   },
@@ -1986,7 +1986,7 @@
     "GICS Sub-Industry": "Multi-Family Residential REITs",
     "Symbol_YF": "EQR",
     "Exchange": "NYSE",
-    "Daily_Change": 0.01539708265802262,
+    "Daily_Change": -0.006225059856344781,
     "Security_JA": "エクイティ・レジデンシャル",
     "Daily_Change_right": 0.03620433129442879
   },
@@ -1997,7 +1997,7 @@
     "GICS Sub-Industry": "Insurance Brokers",
     "Symbol_YF": "ERIE",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.004399999999999977,
+    "Daily_Change": -0.06139011651265569,
     "Security_JA": "イリー・インデムニティー・カンパニー クラスA",
     "Daily_Change_right": 0.014672358768184988
   },
@@ -2008,7 +2008,7 @@
     "GICS Sub-Industry": "Multi-Family Residential REITs",
     "Symbol_YF": "ESS",
     "Exchange": "NYSE",
-    "Daily_Change": 0.011380308497561381,
+    "Daily_Change": 0.0012154002979691142,
     "Security_JA": "エセックス・プロパティ・トラスト",
     "Daily_Change_right": 0.028104838709677414
   },
@@ -2019,7 +2019,7 @@
     "GICS Sub-Industry": "Personal Care Products",
     "Symbol_YF": "EL",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0033915992695015772,
+    "Daily_Change": 0.018586387434554808,
     "Security_JA": "エスティローダー クラスA",
     "Daily_Change_right": 0.011414919033713822
   },
@@ -2030,7 +2030,7 @@
     "GICS Sub-Industry": "Reinsurance",
     "Symbol_YF": "EG",
     "Exchange": "NYSE",
-    "Daily_Change": 0.016840579710144934,
+    "Daily_Change": -0.021179555884951986,
     "Security_JA": "エベレスト・リ・グループ",
     "Daily_Change_right": 0.020556894399117284
   },
@@ -2041,7 +2041,7 @@
     "GICS Sub-Industry": "Electric Utilities",
     "Symbol_YF": "EVRG",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.028252134605725766,
+    "Daily_Change": -0.008059592135791875,
     "Security_JA": "エヴァージー",
     "Daily_Change_right": 0.004512195121951275
   },
@@ -2052,7 +2052,7 @@
     "GICS Sub-Industry": "Electric Utilities",
     "Symbol_YF": "ES",
     "Exchange": "NYSE",
-    "Daily_Change": 0.025652498135719598,
+    "Daily_Change": -0.0018903591682418999,
     "Security_JA": "エバーソース・エナジー",
     "Daily_Change_right": 0.0010118531367446252
   },
@@ -2063,7 +2063,7 @@
     "GICS Sub-Industry": "Electric Utilities",
     "Symbol_YF": "EXC",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.01940689053641519,
+    "Daily_Change": 0.003636363636363673,
     "Security_JA": "エクセロン",
     "Daily_Change_right": -0.011977306156755626
   },
@@ -2074,7 +2074,7 @@
     "GICS Sub-Industry": "Oil & Gas Exploration & Production",
     "Symbol_YF": "EXE",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.0006226650062266737,
+    "Daily_Change": 0.0014537902388369738,
     "Security_JA": "エクスパンド・エナジー",
     "Daily_Change_right": -0.015817584223500474
   },
@@ -2085,7 +2085,7 @@
     "GICS Sub-Industry": "Hotels, Resorts & Cruise Lines",
     "Symbol_YF": "EXPE",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.05377928949357527,
+    "Daily_Change": 0.0042736749610576075,
     "Security_JA": "エクスペディア・グループ",
     "Daily_Change_right": 0.0448453405651848
   },
@@ -2096,7 +2096,7 @@
     "GICS Sub-Industry": "Air Freight & Logistics",
     "Symbol_YF": "EXPD",
     "Exchange": "NYSE",
-    "Daily_Change": 0.008825114524386973,
+    "Daily_Change": -0.014624373956594309,
     "Security_JA": "エクスペディターズ・インターナショナル・オブ・ワシントン",
     "Daily_Change_right": 0.0019726549214340553
   },
@@ -2107,7 +2107,7 @@
     "GICS Sub-Industry": "Self-Storage REITs",
     "Symbol_YF": "EXR",
     "Exchange": "NYSE",
-    "Daily_Change": 0.009696369169792657,
+    "Daily_Change": -0.00399551380905645,
     "Security_JA": "エクストラ・スペース・ストレージ",
     "Daily_Change_right": 0.026263767297373817
   },
@@ -2118,7 +2118,7 @@
     "GICS Sub-Industry": "Integrated Oil & Gas",
     "Symbol_YF": "XOM",
     "Exchange": "NYSE",
-    "Daily_Change": 0.006889632107023419,
+    "Daily_Change": -0.010761974357271007,
     "Security_JA": "エクソン・モービル",
     "Daily_Change_right": -0.03645216475852081
   },
@@ -2129,7 +2129,7 @@
     "GICS Sub-Industry": "Communications Equipment",
     "Symbol_YF": "FFIV",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.0362812520084839,
+    "Daily_Change": 0.010903998132648767,
     "Security_JA": "F5ネットワークス",
     "Daily_Change_right": 0.009121599688372402
   },
@@ -2140,7 +2140,7 @@
     "GICS Sub-Industry": "Financial Exchanges & Data",
     "Symbol_YF": "FDS",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0603164139749505,
+    "Daily_Change": -0.01736232900736587,
     "Security_JA": "ファクトセット・リサーチ・システムズ",
     "Daily_Change_right": 0.0037955574725037546
   },
@@ -2151,7 +2151,7 @@
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "FICO",
     "Exchange": "NYSE",
-    "Daily_Change": 0.009884865539029276,
+    "Daily_Change": 0.025475626684085935,
     "Security_JA": "フェア・アイザック",
     "Daily_Change_right": 0.0033553596964286617
   },
@@ -2162,7 +2162,7 @@
     "GICS Sub-Industry": "Trading Companies & Distributors",
     "Symbol_YF": "FAST",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.014282526221825497,
+    "Daily_Change": -0.016721672167216834,
     "Security_JA": "ファスナル",
     "Daily_Change_right": 0.02370304114490166
   },
@@ -2173,7 +2173,7 @@
     "GICS Sub-Industry": "Retail REITs",
     "Symbol_YF": "FRT",
     "Exchange": "NYSE",
-    "Daily_Change": 0.012439843820938932,
+    "Daily_Change": -0.004125560538116536,
     "Security_JA": "フェデラル・リアルティー・インベストメント・トラスト",
     "Daily_Change_right": 0.022628135223555022
   },
@@ -2184,7 +2184,7 @@
     "GICS Sub-Industry": "Air Freight & Logistics",
     "Symbol_YF": "FDX",
     "Exchange": "NYSE",
-    "Daily_Change": 0.017463401995077107,
+    "Daily_Change": -0.011994193893401868,
     "Security_JA": "フェデックス",
     "Daily_Change_right": 0.030193236714975844
   },
@@ -2195,7 +2195,7 @@
     "GICS Sub-Industry": "Transaction & Payment Processing Services",
     "Symbol_YF": "FIS",
     "Exchange": "NYSE",
-    "Daily_Change": -0.04389632107023414,
+    "Daily_Change": -0.00021862702230006812,
     "Security_JA": "フィディリティ・ナショナル・インフォメーション・サービシズ",
     "Daily_Change_right": -0.0024681201151788863
   },
@@ -2206,7 +2206,7 @@
     "GICS Sub-Industry": "Regional Banks",
     "Symbol_YF": "FITB",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.0065268987341771815,
+    "Daily_Change": -0.02416977795244653,
     "Security_JA": "フィフス・サード・バンコープ",
     "Daily_Change_right": 0.016558966074313414
   },
@@ -2217,7 +2217,7 @@
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "FSLR",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.03963753908112972,
+    "Daily_Change": -0.012385952393088368,
     "Security_JA": "ファースト・ソーラー",
     "Daily_Change_right": -0.006313592486303198
   },
@@ -2228,7 +2228,7 @@
     "GICS Sub-Industry": "Electric Utilities",
     "Symbol_YF": "FE",
     "Exchange": "NYSE",
-    "Daily_Change": 0.02457154656204827,
+    "Daily_Change": -0.004232164449818639,
     "Security_JA": "ファーストエナジー",
     "Daily_Change_right": -0.00948991696322651
   },
@@ -2239,7 +2239,7 @@
     "GICS Sub-Industry": "Transaction & Payment Processing Services",
     "Symbol_YF": "FISV",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.027031299399304473,
+    "Daily_Change": -0.011535337124289094,
     "Security_JA": "フィサーブ",
     "Daily_Change_right": 0.024503523382447167
   },
@@ -2250,7 +2250,7 @@
     "GICS Sub-Industry": "Automobile Manufacturers",
     "Symbol_YF": "F",
     "Exchange": "NYSE",
-    "Daily_Change": -0.011876484560570099,
+    "Daily_Change": -0.008012820512820484,
     "Security_JA": "フォード・モーター",
     "Daily_Change_right": 0.03456591639871381
   },
@@ -2261,7 +2261,7 @@
     "GICS Sub-Industry": "Systems Software",
     "Symbol_YF": "FTNT",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.049718681823401056,
+    "Daily_Change": 0.019091348477525354,
     "Security_JA": "フォーティネット",
     "Daily_Change_right": -0.006796116504854396
   },
@@ -2272,7 +2272,7 @@
     "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
     "Symbol_YF": "FTV",
     "Exchange": "NYSE",
-    "Daily_Change": 0.004107788366743345,
+    "Daily_Change": -0.0003272786777940766,
     "Security_JA": "フォーティブ",
     "Daily_Change_right": 0.01458507963118197
   },
@@ -2283,7 +2283,7 @@
     "GICS Sub-Industry": "Broadcasting",
     "Symbol_YF": "FOXA",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.015710799267846264,
+    "Daily_Change": -0.026034402603440254,
     "Security_JA": "フォックス　クラスA",
     "Daily_Change_right": 0.008524488530688115
   },
@@ -2294,7 +2294,7 @@
     "GICS Sub-Industry": "Broadcasting",
     "Symbol_YF": "FOX",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.01417107734334981,
+    "Daily_Change": -0.02719085555940423,
     "Security_JA": "フォックス　クラスB",
     "Daily_Change_right": 0.010880829015544087
   },
@@ -2305,7 +2305,7 @@
     "GICS Sub-Industry": "Asset Management & Custody Banks",
     "Symbol_YF": "BEN",
     "Exchange": "NYSE",
-    "Daily_Change": -0.024372499090578325,
+    "Daily_Change": 0.01118568232662195,
     "Security_JA": "フランクリン・リソーシズ",
     "Daily_Change_right": 0.027118644067796568
   },
@@ -2316,7 +2316,7 @@
     "GICS Sub-Industry": "Copper",
     "Symbol_YF": "FCX",
     "Exchange": "NYSE",
-    "Daily_Change": -0.12620807276861856,
+    "Daily_Change": -0.006994144437215351,
     "Security_JA": "フリーポートマクモラン",
     "Daily_Change_right": 0.02826596367896884
   },
@@ -2327,7 +2327,7 @@
     "GICS Sub-Industry": "Consumer Electronics",
     "Symbol_YF": "GRMN",
     "Exchange": "NYSE",
-    "Daily_Change": -0.02171874413893981,
+    "Daily_Change": -0.0054064417177915065,
     "Security_JA": "ガーミン",
     "Daily_Change_right": 0.011575124829777584
   },
@@ -2338,7 +2338,7 @@
     "GICS Sub-Industry": "IT Consulting & Other Services",
     "Symbol_YF": "IT",
     "Exchange": "NYSE",
-    "Daily_Change": -0.05404545165191934,
+    "Daily_Change": 0.013122476446837263,
     "Security_JA": "ガートナー",
     "Daily_Change_right": -0.005850961229344799
   },
@@ -2349,7 +2349,7 @@
     "GICS Sub-Industry": "Aerospace & Defense",
     "Symbol_YF": "GE",
     "Exchange": "NYSE",
-    "Daily_Change": 0.02189728184154314,
+    "Daily_Change": 0.008004533541120804,
     "Security_JA": "GE エアロスペース（ゼネラル・エレクトリック）",
     "Daily_Change_right": 0.019578262764423798
   },
@@ -2360,7 +2360,7 @@
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "GEHC",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.020874194452227445,
+    "Daily_Change": -0.015166690513664363,
     "Security_JA": "GEヘルスケア・テクノロジーズ",
     "Daily_Change_right": 0.019945355191256744
   },
@@ -2371,7 +2371,7 @@
     "GICS Sub-Industry": "Heavy Electrical Equipment",
     "Symbol_YF": "GEV",
     "Exchange": "NYSE",
-    "Daily_Change": 0.01948455071127038,
+    "Daily_Change": -0.00029577305507461147,
     "Security_JA": "GEベルノバ",
     "Daily_Change_right": 0.02497137950772748
   },
@@ -2382,7 +2382,7 @@
     "GICS Sub-Industry": "Systems Software",
     "Symbol_YF": "GEN",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.05902951475737868,
+    "Daily_Change": 0.01222753854332804,
     "Security_JA": "ゲンデジタル",
     "Daily_Change_right": 0.01718907987866531
   },
@@ -2393,7 +2393,7 @@
     "GICS Sub-Industry": "Electrical Components & Equipment",
     "Symbol_YF": "GNRC",
     "Exchange": "NYSE",
-    "Daily_Change": 0.021947681220459533,
+    "Daily_Change": 0.011676893488414742,
     "Security_JA": "ジェネラック・ホールディングス",
     "Daily_Change_right": 0.022612217347283147
   },
@@ -2404,7 +2404,7 @@
     "GICS Sub-Industry": "Aerospace & Defense",
     "Symbol_YF": "GD",
     "Exchange": "NYSE",
-    "Daily_Change": -0.006329113924050725,
+    "Daily_Change": -0.017257067553575353,
     "Security_JA": "ゼネラル・ダイナミックス",
     "Daily_Change_right": 0.004090529081571732
   },
@@ -2415,7 +2415,7 @@
     "GICS Sub-Industry": "Packaged Foods & Meats",
     "Symbol_YF": "GIS",
     "Exchange": "NYSE",
-    "Daily_Change": 0.007956805910770137,
+    "Daily_Change": -0.014096419509444602,
     "Security_JA": "ゼネラル・ミルズ",
     "Daily_Change_right": 0.005096262740656844
   },
@@ -2426,7 +2426,7 @@
     "GICS Sub-Industry": "Automobile Manufacturers",
     "Symbol_YF": "GM",
     "Exchange": "NYSE",
-    "Daily_Change": -0.006075949367088658,
+    "Daily_Change": -0.005985736118186435,
     "Security_JA": "ゼネラルモーターズ",
     "Daily_Change_right": 0.041896220371556644
   },
@@ -2437,7 +2437,7 @@
     "GICS Sub-Industry": "Distributors",
     "Symbol_YF": "GPC",
     "Exchange": "NYSE",
-    "Daily_Change": -0.017451226060497482,
+    "Daily_Change": -0.00956371254212598,
     "Security_JA": "ジェニュイン・パーツ",
     "Daily_Change_right": 0.02347544522396114
   },
@@ -2448,7 +2448,7 @@
     "GICS Sub-Industry": "Biotechnology",
     "Symbol_YF": "GILD",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.005568096313017161,
+    "Daily_Change": -0.02424423825202021,
     "Security_JA": "ギリアド・サイエンシズ",
     "Daily_Change_right": -0.006568025983399675
   },
@@ -2459,7 +2459,7 @@
     "GICS Sub-Industry": "Transaction & Payment Processing Services",
     "Symbol_YF": "GPN",
     "Exchange": "NYSE",
-    "Daily_Change": -0.05249930187098582,
+    "Daily_Change": -0.001473622163277252,
     "Security_JA": "グローバル・ペイメンツ",
     "Daily_Change_right": 0.021597967250141178
   },
@@ -2470,7 +2470,7 @@
     "GICS Sub-Industry": "Life & Health Insurance",
     "Symbol_YF": "GL",
     "Exchange": "NYSE",
-    "Daily_Change": 0.01798347107438016,
+    "Daily_Change": -0.009157628109371933,
     "Security_JA": "グローブ・ライフ",
     "Daily_Change_right": 0.014564404061998977
   },
@@ -2481,7 +2481,7 @@
     "GICS Sub-Industry": "Internet Services & Infrastructure",
     "Symbol_YF": "GDDY",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0410633484162897,
+    "Daily_Change": 0.0149817152294445,
     "Security_JA": "ゴーダディ クラスA",
     "Daily_Change_right": 0.01732732019938279
   },
@@ -2492,7 +2492,7 @@
     "GICS Sub-Industry": "Investment Banking & Brokerage",
     "Symbol_YF": "GS",
     "Exchange": "NYSE",
-    "Daily_Change": -0.003786744255701593,
+    "Daily_Change": -0.00471384086760441,
     "Security_JA": "ゴールドマン・サックス",
     "Daily_Change_right": 0.028833333333333384
   },
@@ -2503,7 +2503,7 @@
     "GICS Sub-Industry": "Oil & Gas Equipment & Services",
     "Symbol_YF": "HAL",
     "Exchange": "NYSE",
-    "Daily_Change": 0.013807210432114527,
+    "Daily_Change": 0.017906683480453996,
     "Security_JA": "ハリバートン",
     "Daily_Change_right": -0.026212319790301444
   },
@@ -2514,7 +2514,7 @@
     "GICS Sub-Industry": "Property & Casualty Insurance",
     "Symbol_YF": "HIG",
     "Exchange": "NYSE",
-    "Daily_Change": 0.01086090797190645,
+    "Daily_Change": -0.036960103144474066,
     "Security_JA": "ハートフォード・インシュランス・グループ",
     "Daily_Change_right": 0.011281457911483961
   },
@@ -2525,7 +2525,7 @@
     "GICS Sub-Industry": "Leisure Products",
     "Symbol_YF": "HAS",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.06588676746495971,
+    "Daily_Change": -0.015531165872851522,
     "Security_JA": "ハスブロ",
     "Daily_Change_right": 0.04070701660417795
   },
@@ -2536,7 +2536,7 @@
     "GICS Sub-Industry": "Health Care Facilities",
     "Symbol_YF": "HCA",
     "Exchange": "NYSE",
-    "Daily_Change": 0.005707132855263712,
+    "Daily_Change": -0.08769487163259708,
     "Security_JA": "HCAヘルスケア",
     "Daily_Change_right": 0.01041472555231168
   },
@@ -2547,7 +2547,7 @@
     "GICS Sub-Industry": "Health Care REITs",
     "Symbol_YF": "DOC",
     "Exchange": "NYSE",
-    "Daily_Change": 0.00489895897121873,
+    "Daily_Change": 0.001218769043266275,
     "Security_JA": "ヘルスピーク・プロパティーズ",
     "Daily_Change_right": 0.011059371362048969
   },
@@ -2558,7 +2558,7 @@
     "GICS Sub-Industry": "Health Care Distributors",
     "Symbol_YF": "HSIC",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.0014082703879144723,
+    "Daily_Change": -0.008693428790590547,
     "Security_JA": "ヘンリー・シャイン",
     "Daily_Change_right": 0.020981738116824307
   },
@@ -2569,7 +2569,7 @@
     "GICS Sub-Industry": "Packaged Foods & Meats",
     "Symbol_YF": "HSY",
     "Exchange": "NYSE",
-    "Daily_Change": 0.018287834614365166,
+    "Daily_Change": -0.0032274856845393263,
     "Security_JA": "ハーシー",
     "Daily_Change_right": 0.006636705685618634
   },
@@ -2580,7 +2580,7 @@
     "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
     "Symbol_YF": "HPE",
     "Exchange": "NYSE",
-    "Daily_Change": -0.020343739038933772,
+    "Daily_Change": 0.008234872896527048,
     "Security_JA": "ヒューレット・パッカード・エンタープライズ",
     "Daily_Change_right": 0.02124372344534572
   },
@@ -2591,7 +2591,7 @@
     "GICS Sub-Industry": "Hotels, Resorts & Cruise Lines",
     "Symbol_YF": "HLT",
     "Exchange": "NYSE",
-    "Daily_Change": 0.001828153564899322,
+    "Daily_Change": 0.004038530573172259,
     "Security_JA": "ヒルトン・ワールドワイド・ホールディングス",
     "Daily_Change_right": 0.032235607482293045
   },
@@ -2602,7 +2602,7 @@
     "GICS Sub-Industry": "Home Improvement Retail",
     "Symbol_YF": "HD",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0019440353460972754,
+    "Daily_Change": -0.012552916274694374,
     "Security_JA": "ホームデポ",
     "Daily_Change_right": 0.036333975975085274
   },
@@ -2613,7 +2613,7 @@
     "GICS Sub-Industry": "Industrial Conglomerates",
     "Symbol_YF": "HON",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.02559439923625947,
+    "Daily_Change": -0.0054586171503219925,
     "Security_JA": "ハネウェル・インターナショナル",
     "Daily_Change_right": 0.01817944023018579
   },
@@ -2624,7 +2624,7 @@
     "GICS Sub-Industry": "Packaged Foods & Meats",
     "Symbol_YF": "HRL",
     "Exchange": "NYSE",
-    "Daily_Change": 0.015398973401773302,
+    "Daily_Change": -0.009650735294117686,
     "Security_JA": "ホーメル・フーズ",
     "Daily_Change_right": 0.013875598086124532
   },
@@ -2635,7 +2635,7 @@
     "GICS Sub-Industry": "Hotel & Resort REITs",
     "Symbol_YF": "HST",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.010551558752997547,
+    "Daily_Change": -0.008068343616516455,
     "Security_JA": "ホスト・ホテルズ＆リゾーツ",
     "Daily_Change_right": 0.026737967914438537
   },
@@ -2646,7 +2646,7 @@
     "GICS Sub-Industry": "Aerospace & Defense",
     "Symbol_YF": "HWM",
     "Exchange": "NYSE",
-    "Daily_Change": 0.02191962803055464,
+    "Daily_Change": -0.015112122196945072,
     "Security_JA": "ハウメット・エアロスペース",
     "Daily_Change_right": 0.03267366720516964
   },
@@ -2657,7 +2657,7 @@
     "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
     "Symbol_YF": "HPQ",
     "Exchange": "NYSE",
-    "Daily_Change": -0.014677103718199642,
+    "Daily_Change": -0.01737835153922549,
     "Security_JA": "HP",
     "Daily_Change_right": 0.00811359026369169
   },
@@ -2668,7 +2668,7 @@
     "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
     "Symbol_YF": "HUBB",
     "Exchange": "NYSE",
-    "Daily_Change": 0.014733969986357476,
+    "Daily_Change": -0.00856861163395173,
     "Security_JA": "ハベル",
     "Daily_Change_right": 0.026566483295317345
   },
@@ -2679,7 +2679,7 @@
     "GICS Sub-Industry": "Managed Health Care",
     "Symbol_YF": "HUM",
     "Exchange": "NYSE",
-    "Daily_Change": -0.011269549218031357,
+    "Daily_Change": 0.0013026285182600658,
     "Security_JA": "ヒューマナ",
     "Daily_Change_right": 0.02181709503885234
   },
@@ -2690,7 +2690,7 @@
     "GICS Sub-Industry": "Regional Banks",
     "Symbol_YF": "HBAN",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.000594530321046255,
+    "Daily_Change": -0.025549613784907887,
     "Security_JA": "ハンチントン・バンクシェアーズ",
     "Daily_Change_right": 0.01689800844900429
   },
@@ -2701,7 +2701,7 @@
     "GICS Sub-Industry": "Aerospace & Defense",
     "Symbol_YF": "HII",
     "Exchange": "NYSE",
-    "Daily_Change": 0.008885739206279959,
+    "Daily_Change": -0.02931323283082068,
     "Security_JA": "ハンティントン・インガルス・インダストリーズ",
     "Daily_Change_right": -0.003432869727642208
   },
@@ -2712,7 +2712,7 @@
     "GICS Sub-Industry": "IT Consulting & Other Services",
     "Symbol_YF": "IBM",
     "Exchange": "NYSE",
-    "Daily_Change": -0.08250615421265782,
+    "Daily_Change": 0.0038947550631814837,
     "Security_JA": "アイビーエム",
     "Daily_Change_right": 0.009840637450199198
   },
@@ -2723,7 +2723,7 @@
     "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
     "Symbol_YF": "IEX",
     "Exchange": "NYSE",
-    "Daily_Change": 0.014781711928497721,
+    "Daily_Change": -0.009194734804490793,
     "Security_JA": "アイデックス",
     "Daily_Change_right": 0.025957849633799907
   },
@@ -2734,7 +2734,7 @@
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "IDXX",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.030120169447566476,
+    "Daily_Change": 0.008913768206371563,
     "Security_JA": "アイデックス・ラボラトリーズ",
     "Daily_Change_right": 0.033862619528028694
   },
@@ -2745,7 +2745,7 @@
     "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
     "Symbol_YF": "ITW",
     "Exchange": "NYSE",
-    "Daily_Change": 0.022614100116065825,
+    "Daily_Change": -0.014059239190129151,
     "Security_JA": "イリノイ・ツール・ワークス",
     "Daily_Change_right": 0.025036707955272682
   },
@@ -2756,7 +2756,7 @@
     "GICS Sub-Industry": "Biotechnology",
     "Symbol_YF": "INCY",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.01312797188339876,
+    "Daily_Change": -0.008589085576620857,
     "Security_JA": "インサイト",
     "Daily_Change_right": 0.02622744439781788
   },
@@ -2767,7 +2767,7 @@
     "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
     "Symbol_YF": "IR",
     "Exchange": "NYSE",
-    "Daily_Change": 0.014934289127837515,
+    "Daily_Change": -0.013419658622719252,
     "Security_JA": "インガソール・ランド",
     "Daily_Change_right": 0.025457153101470006
   },
@@ -2778,7 +2778,7 @@
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "PODD",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.0072823055469476115,
+    "Daily_Change": -0.013787003797929378,
     "Security_JA": "インシュレット",
     "Daily_Change_right": 0.011217551000148861
   },
@@ -2789,7 +2789,7 @@
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "INTC",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.0231346713650989,
+    "Daily_Change": 0.23599880203653795,
     "Security_JA": "インテル",
     "Daily_Change_right": 0.0
   },
@@ -2800,7 +2800,7 @@
     "GICS Sub-Industry": "Investment Banking & Brokerage",
     "Symbol_YF": "IBKR",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.02829343233900901,
+    "Daily_Change": 0.009486166007905123,
     "Security_JA": "インタラクティブ・ブローカーズ・グループ　クラスA",
     "Daily_Change_right": 0.029352481733434094
   },
@@ -2811,7 +2811,7 @@
     "GICS Sub-Industry": "Financial Exchanges & Data",
     "Symbol_YF": "ICE",
     "Exchange": "NYSE",
-    "Daily_Change": -0.008437224530915523,
+    "Daily_Change": 0.006159512319024631,
     "Security_JA": "インターコンチネンタル・エクスチェンジ",
     "Daily_Change_right": -0.015328244274809106
   },
@@ -2822,7 +2822,7 @@
     "GICS Sub-Industry": "Specialty Chemicals",
     "Symbol_YF": "IFF",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0032316987494731483,
+    "Daily_Change": 0.0028192839018889603,
     "Security_JA": "インターナショナル・フレーバー・アンド・フレグランス",
     "Daily_Change_right": 0.05301137940605042
   },
@@ -2833,7 +2833,7 @@
     "GICS Sub-Industry": "Paper & Plastic Packaging Products & Materials",
     "Symbol_YF": "IP",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0063006300630063265,
+    "Daily_Change": -0.026535480023852136,
     "Security_JA": "インターナショナル・ペーパー",
     "Daily_Change_right": 0.025974025974026108
   },
@@ -2844,7 +2844,7 @@
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "INTU",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.062102378388959566,
+    "Daily_Change": 0.03300286981476644,
     "Security_JA": "インテュイト",
     "Daily_Change_right": 0.015861124744904514
   },
@@ -2855,7 +2855,7 @@
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "ISRG",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.009925147843348107,
+    "Daily_Change": 0.00710078944070848,
     "Security_JA": "インテュイティブ・サージカル",
     "Daily_Change_right": 0.024297066014669917
   },
@@ -2866,7 +2866,7 @@
     "GICS Sub-Industry": "Asset Management & Custody Banks",
     "Symbol_YF": "IVZ",
     "Exchange": "NYSE",
-    "Daily_Change": -0.007433489827855936,
+    "Daily_Change": 0.005518328734726076,
     "Security_JA": "インベスコ",
     "Daily_Change_right": 0.0333194502290711
   },
@@ -2877,7 +2877,7 @@
     "GICS Sub-Industry": "Single-Family Residential REITs",
     "Symbol_YF": "INVH",
     "Exchange": "NYSE",
-    "Daily_Change": 0.02323838080959524,
+    "Daily_Change": -0.006227106227106289,
     "Security_JA": "インビテーション・ホームズ",
     "Daily_Change_right": 0.02893033878949378
   },
@@ -2888,7 +2888,7 @@
     "GICS Sub-Industry": "Life Sciences Tools & Services",
     "Symbol_YF": "IQV",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0829290565606986,
+    "Daily_Change": 0.009957679860592447,
     "Security_JA": "アイキューヴィア・ホールディングス",
     "Daily_Change_right": 0.02622855481244559
   },
@@ -2899,7 +2899,7 @@
     "GICS Sub-Industry": "Other Specialized REITs",
     "Symbol_YF": "IRM",
     "Exchange": "NYSE",
-    "Daily_Change": -0.00946856606670647,
+    "Daily_Change": -0.0007750602824664434,
     "Security_JA": "アイアン・マウンテン",
     "Daily_Change_right": 0.002887963985390208
   },
@@ -2910,7 +2910,7 @@
     "GICS Sub-Industry": "Cargo Ground Transportation",
     "Symbol_YF": "JBHT",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.02704125005060117,
+    "Daily_Change": -0.020180521067360388,
     "Security_JA": "ジェイビー・ハント・トランスポート・サービシズ",
     "Daily_Change_right": 0.02836522322927165
   },
@@ -2921,7 +2921,7 @@
     "GICS Sub-Industry": "Electronic Manufacturing Services",
     "Symbol_YF": "JBL",
     "Exchange": "NYSE",
-    "Daily_Change": 0.006331747919143863,
+    "Daily_Change": 0.009216317608483753,
     "Security_JA": "ジェイビル・サーキット",
     "Daily_Change_right": 0.03737504030957747
   },
@@ -2932,7 +2932,7 @@
     "GICS Sub-Industry": "Transaction & Payment Processing Services",
     "Symbol_YF": "JKHY",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.03387220939183989,
+    "Daily_Change": 0.0036520584329350026,
     "Security_JA": "ジャック・ヘンリー・アンド・アソシエイツ",
     "Daily_Change_right": -0.0005838469023678457
   },
@@ -2943,7 +2943,7 @@
     "GICS Sub-Industry": "Construction & Engineering",
     "Symbol_YF": "J",
     "Exchange": "NYSE",
-    "Daily_Change": 0.00023520188161506184,
+    "Daily_Change": -0.007681454773475498,
     "Security_JA": "ジェイコブズ・ソリューションズ",
     "Daily_Change_right": 0.02122772277227728
   },
@@ -2954,7 +2954,7 @@
     "GICS Sub-Industry": "Pharmaceuticals",
     "Symbol_YF": "JNJ",
     "Exchange": "NYSE",
-    "Daily_Change": 0.020123839009287978,
+    "Daily_Change": -0.01365705614567529,
     "Security_JA": "ジョンソン・エンド・ジョンソン",
     "Daily_Change_right": -0.0015349194167305587
   },
@@ -2965,7 +2965,7 @@
     "GICS Sub-Industry": "Building Products",
     "Symbol_YF": "JCI",
     "Exchange": "NYSE",
-    "Daily_Change": 0.013732923252986105,
+    "Daily_Change": 0.0013405771537430165,
     "Security_JA": "ジョンソン・コントロールズ",
     "Daily_Change_right": 0.024136677571792026
   },
@@ -2976,7 +2976,7 @@
     "GICS Sub-Industry": "Diversified Banks",
     "Symbol_YF": "JPM",
     "Exchange": "NYSE",
-    "Daily_Change": -0.004248929780844624,
+    "Daily_Change": -0.010940357406397462,
     "Security_JA": "ジェイピー・モルガン・チェース",
     "Daily_Change_right": 0.0010969511211486752
   },
@@ -2987,7 +2987,7 @@
     "GICS Sub-Industry": "Personal Care Products",
     "Symbol_YF": "KVUE",
     "Exchange": "NYSE",
-    "Daily_Change": 0.010398613518197559,
+    "Daily_Change": 0.0,
     "Security_JA": "ケンビュー",
     "Daily_Change_right": 0.008591065292096137
   },
@@ -2998,7 +2998,7 @@
     "GICS Sub-Industry": "Soft Drinks & Non-alcoholic Beverages",
     "Symbol_YF": "KDP",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.07498116051243414,
+    "Daily_Change": 0.024185068349106123,
     "Security_JA": "キューリグ・ドクターペッパー",
     "Daily_Change_right": 0.018817204301075346
   },
@@ -3009,7 +3009,7 @@
     "GICS Sub-Industry": "Regional Banks",
     "Symbol_YF": "KEY",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0013611615245007979,
+    "Daily_Change": -0.01726487960018185,
     "Security_JA": "キーコープ",
     "Daily_Change_right": 0.005999077065066866
   },
@@ -3020,7 +3020,7 @@
     "GICS Sub-Industry": "Electronic Equipment & Instruments",
     "Symbol_YF": "KEYS",
     "Exchange": "NYSE",
-    "Daily_Change": 0.02230285866005825,
+    "Daily_Change": 0.0012408738060197006,
     "Security_JA": "キーサイト・テクノロジーズ",
     "Daily_Change_right": 0.013274336283185828
   },
@@ -3031,7 +3031,7 @@
     "GICS Sub-Industry": "Household Products",
     "Symbol_YF": "KMB",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.012196382428940639,
+    "Daily_Change": -0.0008169100377822169,
     "Security_JA": "キンバリークラーク",
     "Daily_Change_right": 0.00888026947024604
   },
@@ -3042,7 +3042,7 @@
     "GICS Sub-Industry": "Retail REITs",
     "Symbol_YF": "KIM",
     "Exchange": "NYSE",
-    "Daily_Change": 0.011455239711497648,
+    "Daily_Change": -0.006291946308724773,
     "Security_JA": "キムコ・リアルティ",
     "Daily_Change_right": 0.018526315789473738
   },
@@ -3053,7 +3053,7 @@
     "GICS Sub-Industry": "Oil & Gas Storage & Transportation",
     "Symbol_YF": "KMI",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0025149324111913957,
+    "Daily_Change": 0.0003151591553734009,
     "Security_JA": "キンダー・モルガン",
     "Daily_Change_right": 0.007234979553318779
   },
@@ -3064,7 +3064,7 @@
     "GICS Sub-Industry": "Asset Management & Custody Banks",
     "Symbol_YF": "KKR",
     "Exchange": "NYSE",
-    "Daily_Change": -0.04040785498489427,
+    "Daily_Change": 0.0018693427784336651,
     "Security_JA": "KKR",
     "Daily_Change_right": 0.015487159380513609
   },
@@ -3075,7 +3075,7 @@
     "GICS Sub-Industry": "Semiconductor Materials & Equipment",
     "Symbol_YF": "KLAC",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.0018597618180414106,
+    "Daily_Change": 0.06586318392887631,
     "Security_JA": "ケーエルエー・コーポレーション",
     "Daily_Change_right": 0.03261953483010067
   },
@@ -3086,7 +3086,7 @@
     "GICS Sub-Industry": "Packaged Foods & Meats",
     "Symbol_YF": "KHC",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.003654636820465888,
+    "Daily_Change": -0.0013654984069184153,
     "Security_JA": "クラフト・ハインツ",
     "Daily_Change_right": -0.005312084993359938
   },
@@ -3097,7 +3097,7 @@
     "GICS Sub-Industry": "Food Retail",
     "Symbol_YF": "KR",
     "Exchange": "NYSE",
-    "Daily_Change": 0.015131482297634806,
+    "Daily_Change": -0.02706222865412432,
     "Security_JA": "クローガー",
     "Daily_Change_right": 0.006197432492253235
   },
@@ -3108,7 +3108,7 @@
     "GICS Sub-Industry": "Aerospace & Defense",
     "Symbol_YF": "LHX",
     "Exchange": "NYSE",
-    "Daily_Change": -0.004341795814991249,
+    "Daily_Change": -0.038489491853915675,
     "Security_JA": "L3ハリス・テクノロジーズ",
     "Daily_Change_right": -0.00865849862765627
   },
@@ -3119,7 +3119,7 @@
     "GICS Sub-Industry": "Health Care Services",
     "Symbol_YF": "LH",
     "Exchange": "NYSE",
-    "Daily_Change": -0.028244442814173532,
+    "Daily_Change": -0.0042276913785293845,
     "Security_JA": "ラボコープ・ホールディングス",
     "Daily_Change_right": 0.016218651449166514
   },
@@ -3130,7 +3130,7 @@
     "GICS Sub-Industry": "Semiconductor Materials & Equipment",
     "Symbol_YF": "LRCX",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.026322726416870678,
+    "Daily_Change": 0.03565903465346523,
     "Security_JA": "ラム・リサーチ",
     "Daily_Change_right": 0.025444512568976257
   },
@@ -3141,7 +3141,7 @@
     "GICS Sub-Industry": "Casinos & Gaming",
     "Symbol_YF": "LVS",
     "Exchange": "NYSE",
-    "Daily_Change": -0.08619173262972732,
+    "Daily_Change": 0.016554379210779582,
     "Security_JA": "ラスベガス・サンズ",
     "Daily_Change_right": 0.01639922412272967
   },
@@ -3152,7 +3152,7 @@
     "GICS Sub-Industry": "Diversified Support Services",
     "Symbol_YF": "LDOS",
     "Exchange": "NYSE",
-    "Daily_Change": -0.020635657886006326,
+    "Daily_Change": -0.010433604336043307,
     "Security_JA": "レイドス・ホールディングス",
     "Daily_Change_right": -0.008308301910909512
   },
@@ -3163,7 +3163,7 @@
     "GICS Sub-Industry": "Homebuilding",
     "Symbol_YF": "LEN",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0028586553732132983,
+    "Daily_Change": -0.0013803355277129928,
     "Security_JA": "レナー クラスA",
     "Daily_Change_right": 0.044932432432432536
   },
@@ -3174,7 +3174,7 @@
     "GICS Sub-Industry": "Building Products",
     "Symbol_YF": "LII",
     "Exchange": "NYSE",
-    "Daily_Change": 0.007983502123489108,
+    "Daily_Change": -0.005469240585816413,
     "Security_JA": "レノックス・インターナショナル",
     "Daily_Change_right": 0.01646425441342178
   },
@@ -3185,7 +3185,7 @@
     "GICS Sub-Industry": "Pharmaceuticals",
     "Symbol_YF": "LLY",
     "Exchange": "NYSE",
-    "Daily_Change": -0.004156357164561402,
+    "Daily_Change": -0.03671334386748754,
     "Security_JA": "イーライ・リリー",
     "Daily_Change_right": 0.025487007599641547
   },
@@ -3196,7 +3196,7 @@
     "GICS Sub-Industry": "Industrial Gases",
     "Symbol_YF": "LIN",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.02717237475233512,
+    "Daily_Change": 0.004408928079360723,
     "Security_JA": "リンデ",
     "Daily_Change_right": -0.014001842874884837
   },
@@ -3207,7 +3207,7 @@
     "GICS Sub-Industry": "Movies & Entertainment",
     "Symbol_YF": "LYV",
     "Exchange": "NYSE",
-    "Daily_Change": -0.009183211537217795,
+    "Daily_Change": 0.022387572612753596,
     "Security_JA": "ライブ・ネーション・エンターテインメント",
     "Daily_Change_right": -0.02509496232642133
   },
@@ -3218,7 +3218,7 @@
     "GICS Sub-Industry": "Aerospace & Defense",
     "Symbol_YF": "LMT",
     "Exchange": "NYSE",
-    "Daily_Change": -0.046162432709792395,
+    "Daily_Change": -0.030842409256497706,
     "Security_JA": "ロッキード・マーチン",
     "Daily_Change_right": -0.025185599762958987
   },
@@ -3229,7 +3229,7 @@
     "GICS Sub-Industry": "Multi-line Insurance",
     "Symbol_YF": "L",
     "Exchange": "NYSE",
-    "Daily_Change": 0.015996384997740587,
+    "Daily_Change": -0.01636719444938626,
     "Security_JA": "ロウズ",
     "Daily_Change_right": 0.013747268754551992
   },
@@ -3240,7 +3240,7 @@
     "GICS Sub-Industry": "Home Improvement Retail",
     "Symbol_YF": "LOW",
     "Exchange": "NYSE",
-    "Daily_Change": 0.00550593417349808,
+    "Daily_Change": -0.008477326194532342,
     "Security_JA": "ロウズ・カンパニーズ",
     "Daily_Change_right": 0.03836317135549877
   },
@@ -3251,7 +3251,7 @@
     "GICS Sub-Industry": "Apparel, Accessories & Luxury Goods",
     "Symbol_YF": "LULU",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.13331293973692257,
+    "Daily_Change": 0.01510659325144723,
     "Security_JA": "ルルレモン・アスレティカ",
     "Daily_Change_right": 0.02676160078566176
   },
@@ -3262,7 +3262,7 @@
     "GICS Sub-Industry": "Communications Equipment",
     "Symbol_YF": "LITE",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.03057463369963374,
+    "Daily_Change": 0.04103248355748681,
     "Security_JA": "ルメンタム・ホールディングス",
     "Daily_Change_right": 0.0031978636027019396
   },
@@ -3273,7 +3273,7 @@
     "GICS Sub-Industry": "Specialty Chemicals",
     "Symbol_YF": "LYB",
     "Exchange": "NYSE",
-    "Daily_Change": -0.017777777777777795,
+    "Daily_Change": -0.012019230769230688,
     "Security_JA": "リヨンデルバセル・インダストリーズ クラスA",
     "Daily_Change_right": -0.11980342674990051
   },
@@ -3284,7 +3284,7 @@
     "GICS Sub-Industry": "Regional Banks",
     "Symbol_YF": "MTB",
     "Exchange": "NYSE",
-    "Daily_Change": 0.009789952658914351,
+    "Daily_Change": -0.021756941283568507,
     "Security_JA": "エム・アンド・ティー・バンク",
     "Daily_Change_right": 0.008481216870246618
   },
@@ -3295,7 +3295,7 @@
     "GICS Sub-Industry": "Oil & Gas Refining & Marketing",
     "Symbol_YF": "MPC",
     "Exchange": "NYSE",
-    "Daily_Change": -0.004367992074571076,
+    "Daily_Change": 0.013749434644956997,
     "Security_JA": "マラソン・ペトロリアム",
     "Daily_Change_right": -0.05547206506364927
   },
@@ -3306,7 +3306,7 @@
     "GICS Sub-Industry": "Hotels, Resorts & Cruise Lines",
     "Symbol_YF": "MAR",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.00302345218315042,
+    "Daily_Change": -0.002960026069954464,
     "Security_JA": "マリオット・インターナショナル",
     "Daily_Change_right": 0.042795651454113987
   },
@@ -3317,7 +3317,7 @@
     "GICS Sub-Industry": "Insurance Brokers",
     "Symbol_YF": "MRSH",
     "Exchange": "NYSE",
-    "Daily_Change": -0.008490028490028542,
+    "Daily_Change": -0.022469972990058023,
     "Security_JA": "マーシュ・アンド・マクレナン",
     "Daily_Change_right": -0.03708166730569087
   },
@@ -3328,7 +3328,7 @@
     "GICS Sub-Industry": "Construction Materials",
     "Symbol_YF": "MLM",
     "Exchange": "NYSE",
-    "Daily_Change": 0.013510415301978253,
+    "Daily_Change": -0.005800707718657649,
     "Security_JA": "マーチン・マリエッタ・マテリアルズ",
     "Daily_Change_right": 0.023092864896871547
   },
@@ -3339,7 +3339,7 @@
     "GICS Sub-Industry": "Building Products",
     "Symbol_YF": "MAS",
     "Exchange": "NYSE",
-    "Daily_Change": 0.019469983775013685,
+    "Daily_Change": -0.01618037135278513,
     "Security_JA": "マスコ",
     "Daily_Change_right": 0.04471991212929549
   },
@@ -3350,7 +3350,7 @@
     "GICS Sub-Industry": "Transaction & Payment Processing Services",
     "Symbol_YF": "MA",
     "Exchange": "NYSE",
-    "Daily_Change": -0.015250117610161575,
+    "Daily_Change": 0.0035630399299335573,
     "Security_JA": "マスターカード クラスA",
     "Daily_Change_right": 0.005322636633625161
   },
@@ -3361,7 +3361,7 @@
     "GICS Sub-Industry": "Packaged Foods & Meats",
     "Symbol_YF": "MKC",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0081600932582087,
+    "Daily_Change": -0.00693775293890922,
     "Security_JA": "マコーミック",
     "Daily_Change_right": 0.019898629622676838
   },
@@ -3372,7 +3372,7 @@
     "GICS Sub-Industry": "Restaurants",
     "Symbol_YF": "MCD",
     "Exchange": "NYSE",
-    "Daily_Change": 0.008198087113006897,
+    "Daily_Change": -0.010478299672759593,
     "Security_JA": "マクドナルド",
     "Daily_Change_right": 0.014334115194162217
   },
@@ -3383,7 +3383,7 @@
     "GICS Sub-Industry": "Health Care Distributors",
     "Symbol_YF": "MCK",
     "Exchange": "NYSE",
-    "Daily_Change": 0.00828479432726747,
+    "Daily_Change": -0.009556273173065434,
     "Security_JA": "マケッソン",
     "Daily_Change_right": -0.0011068323840708791
   },
@@ -3394,7 +3394,7 @@
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "MDT",
     "Exchange": "NYSE",
-    "Daily_Change": 0.00684931506849324,
+    "Daily_Change": -0.005609261248359148,
     "Security_JA": "メドトロニック",
     "Daily_Change_right": 0.006304728546409714
   },
@@ -3405,7 +3405,7 @@
     "GICS Sub-Industry": "Pharmaceuticals",
     "Symbol_YF": "MRK",
     "Exchange": "NYSE",
-    "Daily_Change": 0.015324652316414243,
+    "Daily_Change": -0.023730588030012205,
     "Security_JA": "メルク",
     "Daily_Change_right": 0.03126623939026502
   },
@@ -3416,7 +3416,7 @@
     "GICS Sub-Industry": "Interactive Media & Services",
     "Symbol_YF": "META",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.023076239032487622,
+    "Daily_Change": 0.024091633163923227,
     "Security_JA": "メタ・プラットフォームズ",
     "Daily_Change_right": 0.017255898473857535
   },
@@ -3427,7 +3427,7 @@
     "GICS Sub-Industry": "Life & Health Insurance",
     "Symbol_YF": "MET",
     "Exchange": "NYSE",
-    "Daily_Change": -0.011822788099259407,
+    "Daily_Change": 0.021561924796213522,
     "Security_JA": "メットライフ",
     "Daily_Change_right": 0.012842132572318003
   },
@@ -3438,7 +3438,7 @@
     "GICS Sub-Industry": "Life Sciences Tools & Services",
     "Symbol_YF": "MTD",
     "Exchange": "NYSE",
-    "Daily_Change": -0.034891265352233115,
+    "Daily_Change": 0.014307633901736963,
     "Security_JA": "メトラー・トレド・インターナショナル",
     "Daily_Change_right": 0.038533048247652704
   },
@@ -3449,7 +3449,7 @@
     "GICS Sub-Industry": "Casinos & Gaming",
     "Symbol_YF": "MGM",
     "Exchange": "NYSE",
-    "Daily_Change": -0.007645259938838029,
+    "Daily_Change": 0.015408320493066292,
     "Security_JA": "エムジーエム・リゾーツ・インターナショナル",
     "Daily_Change_right": 0.0025980774227072337
   },
@@ -3460,7 +3460,7 @@
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "MCHP",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.09893307468477203,
+    "Daily_Change": -0.013239187996469582,
     "Security_JA": "マイクロチップ・テクノロジー",
     "Daily_Change_right": 0.024586965005854045
   },
@@ -3471,7 +3471,7 @@
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "MU",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.011815869368999735,
+    "Daily_Change": 0.03113842065930416,
     "Security_JA": "マイクロン・テクノロジー",
     "Daily_Change_right": -0.004724099468538865
   },
@@ -3482,7 +3482,7 @@
     "GICS Sub-Industry": "Systems Software",
     "Symbol_YF": "MSFT",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.039660907326988855,
+    "Daily_Change": 0.02133493686109442,
     "Security_JA": "マイクロソフト",
     "Daily_Change_right": 0.0060200828058821435
   },
@@ -3493,7 +3493,7 @@
     "GICS Sub-Industry": "Multi-Family Residential REITs",
     "Symbol_YF": "MAA",
     "Exchange": "NYSE",
-    "Daily_Change": 0.011317120154105438,
+    "Daily_Change": -0.0026984126984127255,
     "Security_JA": "ミッド・アメリカ・アパートメント・コミュニティーズ",
     "Daily_Change_right": 0.03931762794476039
   },
@@ -3504,7 +3504,7 @@
     "GICS Sub-Industry": "Biotechnology",
     "Symbol_YF": "MRNA",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.04946043165467626,
+    "Daily_Change": -0.040113528855250796,
     "Security_JA": "モデルナ",
     "Daily_Change_right": -0.017556693489392847
   },
@@ -3515,7 +3515,7 @@
     "GICS Sub-Industry": "Brewers",
     "Symbol_YF": "TAP",
     "Exchange": "NYSE",
-    "Daily_Change": 0.003981264637002215,
+    "Daily_Change": -0.010030324236062508,
     "Security_JA": "モルソン・クアーズ・ビバレッジ",
     "Daily_Change_right": 0.009508716323296394
   },
@@ -3526,7 +3526,7 @@
     "GICS Sub-Industry": "Packaged Foods & Meats",
     "Symbol_YF": "MDLZ",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.029432750624331046,
+    "Daily_Change": -0.0017328019407381982,
     "Security_JA": "モンデリーズ・インターナショナル クラスA",
     "Daily_Change_right": 0.0031540213772559963
   },
@@ -3537,7 +3537,7 @@
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "MPWR",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.04607631862500336,
+    "Daily_Change": 0.02505385731423144,
     "Security_JA": "モノリシック・パワー・システムズ",
     "Daily_Change_right": 0.04672051097440136
   },
@@ -3548,7 +3548,7 @@
     "GICS Sub-Industry": "Soft Drinks & Non-alcoholic Beverages",
     "Symbol_YF": "MNST",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.021198156682027642,
+    "Daily_Change": 0.008638473439917504,
     "Security_JA": "モンスター・ビバレッジ",
     "Daily_Change_right": 0.01804670912951167
   },
@@ -3559,7 +3559,7 @@
     "GICS Sub-Industry": "Financial Exchanges & Data",
     "Symbol_YF": "MCO",
     "Exchange": "NYSE",
-    "Daily_Change": -0.030789338361330142,
+    "Daily_Change": 0.008179507018901268,
     "Security_JA": "ムーディーズ",
     "Daily_Change_right": 0.01545426162972215
   },
@@ -3570,7 +3570,7 @@
     "GICS Sub-Industry": "Investment Banking & Brokerage",
     "Symbol_YF": "MS",
     "Exchange": "NYSE",
-    "Daily_Change": -0.012562156503533135,
+    "Daily_Change": -0.003074476543864365,
     "Security_JA": "モルガン・スタンレー",
     "Daily_Change_right": 0.008007687379884689
   },
@@ -3581,7 +3581,7 @@
     "GICS Sub-Industry": "Fertilizers & Agricultural Chemicals",
     "Symbol_YF": "MOS",
     "Exchange": "NYSE",
-    "Daily_Change": -0.009787928221859643,
+    "Daily_Change": -0.011532125205930853,
     "Security_JA": "モザイク",
     "Daily_Change_right": -0.006469874646178736
   },
@@ -3592,7 +3592,7 @@
     "GICS Sub-Industry": "Communications Equipment",
     "Symbol_YF": "MSI",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0034189195308608226,
+    "Daily_Change": -0.011079269806169247,
     "Security_JA": "モトローラ・ソリューションズ",
     "Daily_Change_right": -0.005624803131890384
   },
@@ -3603,7 +3603,7 @@
     "GICS Sub-Industry": "Financial Exchanges & Data",
     "Symbol_YF": "MSCI",
     "Exchange": "NYSE",
-    "Daily_Change": -0.01649562528780997,
+    "Daily_Change": -0.00889617230481085,
     "Security_JA": "エムエスシーアイ",
     "Daily_Change_right": 0.0064613205877146
   },
@@ -3614,7 +3614,7 @@
     "GICS Sub-Industry": "Financial Exchanges & Data",
     "Symbol_YF": "NDAQ",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.0077573231446104165,
+    "Daily_Change": 0.032858455882352935,
     "Security_JA": "ナスダック",
     "Daily_Change_right": -0.002925621694610162
   },
@@ -3625,7 +3625,7 @@
     "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
     "Symbol_YF": "NTAP",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.02359935146820384,
+    "Daily_Change": 0.0028597785977858676,
     "Security_JA": "ネットアップ",
     "Daily_Change_right": 0.008198302469135747
   },
@@ -3636,7 +3636,7 @@
     "GICS Sub-Industry": "Movies & Entertainment",
     "Symbol_YF": "NFLX",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.004504504504504523,
+    "Daily_Change": -0.00409394527041581,
     "Security_JA": "ネットフリックス",
     "Daily_Change_right": -0.09722608776324337
   },
@@ -3647,7 +3647,7 @@
     "GICS Sub-Industry": "Gold",
     "Symbol_YF": "NEM",
     "Exchange": "NYSE",
-    "Daily_Change": -0.007063030844881467,
+    "Daily_Change": 0.08679992796686477,
     "Security_JA": "ニューモント",
     "Daily_Change_right": 0.02724627457896132
   },
@@ -3658,7 +3658,7 @@
     "GICS Sub-Industry": "Publishing",
     "Symbol_YF": "NWSA",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.012757973733583484,
+    "Daily_Change": -0.004180919802356497,
     "Security_JA": "ニューズ・コーポレーション クラスA",
     "Daily_Change_right": 0.008530438154323475
   },
@@ -3669,7 +3669,7 @@
     "GICS Sub-Industry": "Publishing",
     "Symbol_YF": "NWS",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.011060507482107998,
+    "Daily_Change": -0.005263157894736847,
     "Security_JA": "ニューズ・コーポレーション クラスB",
     "Daily_Change_right": 0.010455311973018628
   },
@@ -3680,7 +3680,7 @@
     "GICS Sub-Industry": "Multi-Utilities",
     "Symbol_YF": "NEE",
     "Exchange": "NYSE",
-    "Daily_Change": 0.06944444444444445,
+    "Daily_Change": -0.010077922077922066,
     "Security_JA": "ネクステラ・エナジー",
     "Daily_Change_right": 0.001633453119895521
   },
@@ -3691,7 +3691,7 @@
     "GICS Sub-Industry": "Apparel, Accessories & Luxury Goods",
     "Symbol_YF": "NKE",
     "Exchange": "NYSE",
-    "Daily_Change": -0.01970227670753062,
+    "Daily_Change": -0.002009825815096101,
     "Security_JA": "ナイキ クラスB",
     "Daily_Change_right": 0.007221006564551384
   },
@@ -3702,7 +3702,7 @@
     "GICS Sub-Industry": "Multi-Utilities",
     "Symbol_YF": "NI",
     "Exchange": "NYSE",
-    "Daily_Change": 0.030736392742796107,
+    "Daily_Change": -0.0062124663491405505,
     "Security_JA": "ナイソース",
     "Daily_Change_right": 0.012363788767812309
   },
@@ -3713,7 +3713,7 @@
     "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
     "Symbol_YF": "NDSN",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.01567364465915189,
+    "Daily_Change": -0.005179156537363811,
     "Security_JA": "ノードソン",
     "Daily_Change_right": 0.018756776292013003
   },
@@ -3724,7 +3724,7 @@
     "GICS Sub-Industry": "Rail Transportation",
     "Symbol_YF": "NSC",
     "Exchange": "NYSE",
-    "Daily_Change": 0.07746455267656627,
+    "Daily_Change": -0.0053820308611249945,
     "Security_JA": "ノーフォーク・サザン",
     "Daily_Change_right": -0.0008260912665631299
   },
@@ -3735,7 +3735,7 @@
     "GICS Sub-Industry": "Asset Management & Custody Banks",
     "Symbol_YF": "NTRS",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.014538521122564655,
+    "Daily_Change": -0.008343914384182813,
     "Security_JA": "ノーザン・トラスト",
     "Daily_Change_right": 0.015245263762199313
   },
@@ -3746,7 +3746,7 @@
     "GICS Sub-Industry": "Aerospace & Defense",
     "Symbol_YF": "NOC",
     "Exchange": "NYSE",
-    "Daily_Change": -0.003324174892303579,
+    "Daily_Change": -0.02135588605656324,
     "Security_JA": "ノースロップ・グラマン",
     "Daily_Change_right": -0.01116280452457748
   },
@@ -3757,7 +3757,7 @@
     "GICS Sub-Industry": "Hotels, Resorts & Cruise Lines",
     "Symbol_YF": "NCLH",
     "Exchange": "NYSE",
-    "Daily_Change": -0.03205465055176035,
+    "Daily_Change": 0.004885993485342011,
     "Security_JA": "ノルウェージャン・クルーズライン・ホールディングス",
     "Daily_Change_right": 0.0479281078382425
   },
@@ -3768,7 +3768,7 @@
     "GICS Sub-Industry": "Independent Power Producers & Energy Traders",
     "Symbol_YF": "NRG",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0329545454545455,
+    "Daily_Change": 0.03416812269462241,
     "Security_JA": "エヌアールジー・エナジー",
     "Daily_Change_right": -0.00456973293768552
   },
@@ -3779,7 +3779,7 @@
     "GICS Sub-Industry": "Steel",
     "Symbol_YF": "NUE",
     "Exchange": "NYSE",
-    "Daily_Change": -0.00611406702137591,
+    "Daily_Change": 0.006292556938248432,
     "Security_JA": "ニューコア",
     "Daily_Change_right": 0.02095387021110248
   },
@@ -3790,7 +3790,7 @@
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "NVDA",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.014123456790123523,
+    "Daily_Change": 0.043227810058104714,
     "Security_JA": "エヌビディア",
     "Daily_Change_right": 0.016788505167633035
   },
@@ -3801,7 +3801,7 @@
     "GICS Sub-Industry": "Homebuilding",
     "Symbol_YF": "NVR",
     "Exchange": "NYSE",
-    "Daily_Change": 0.00880986632419518,
+    "Daily_Change": -0.024750300269455346,
     "Security_JA": "エヌブイアール",
     "Daily_Change_right": 0.044353846222695587
   },
@@ -3812,7 +3812,7 @@
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "NXPI",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.06826135105204871,
+    "Daily_Change": 0.011942278984906268,
     "Security_JA": "NXPセミコンダクターズ",
     "Daily_Change_right": 0.010761240817854355
   },
@@ -3823,7 +3823,7 @@
     "GICS Sub-Industry": "Automotive Retail",
     "Symbol_YF": "ORLY",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.007240204429301606,
+    "Daily_Change": -0.0011797511797511737,
     "Security_JA": "オライリー・オートモーティブ",
     "Daily_Change_right": 0.0107863229425089
   },
@@ -3834,7 +3834,7 @@
     "GICS Sub-Industry": "Oil & Gas Exploration & Production",
     "Symbol_YF": "OXY",
     "Exchange": "NYSE",
-    "Daily_Change": 0.013672217353198969,
+    "Daily_Change": -0.012277364689607485,
     "Security_JA": "オクシデンタル・ペトロリアム",
     "Daily_Change_right": -0.054158607350096685
   },
@@ -3845,7 +3845,7 @@
     "GICS Sub-Industry": "Cargo Ground Transportation",
     "Symbol_YF": "ODFL",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.012728429857259803,
+    "Daily_Change": -0.012568453182511947,
     "Security_JA": "オールド・ドミニオン・フレイト・ラインズ",
     "Daily_Change_right": 0.01961886032682492
   },
@@ -3856,7 +3856,7 @@
     "GICS Sub-Industry": "Advertising",
     "Symbol_YF": "OMC",
     "Exchange": "NYSE",
-    "Daily_Change": -0.01651517091281534,
+    "Daily_Change": -0.014058838844051007,
     "Security_JA": "オムニコム・グループ",
     "Daily_Change_right": -0.0011427120365668285
   },
@@ -3867,7 +3867,7 @@
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "ON",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.0987751432745253,
+    "Daily_Change": 0.006340764982614078,
     "Security_JA": "オン・セミコンダクター・コーポレーション",
     "Daily_Change_right": 0.03853371700237705
   },
@@ -3878,7 +3878,7 @@
     "GICS Sub-Industry": "Oil & Gas Storage & Transportation",
     "Symbol_YF": "OKE",
     "Exchange": "NYSE",
-    "Daily_Change": 0.013362770160353142,
+    "Daily_Change": 0.0033253067308795584,
     "Security_JA": "ワンオーケー",
     "Daily_Change_right": -0.01995071001056201
   },
@@ -3889,7 +3889,7 @@
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "ORCL",
     "Exchange": "NYSE",
-    "Daily_Change": -0.05984,
+    "Daily_Change": -0.01701837985023826,
     "Security_JA": "オラクル",
     "Daily_Change_right": -0.018391835819221717
   },
@@ -3900,7 +3900,7 @@
     "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
     "Symbol_YF": "OTIS",
     "Exchange": "NYSE",
-    "Daily_Change": 0.020672829994863886,
+    "Daily_Change": -0.019373506101396303,
     "Security_JA": "オティス・ワールドワイド",
     "Daily_Change_right": 0.009170900979055758
   },
@@ -3911,7 +3911,7 @@
     "GICS Sub-Industry": "Construction Machinery & Heavy Transportation Equipment",
     "Symbol_YF": "PCAR",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.013570687315398762,
+    "Daily_Change": 0.00023627628573679718,
     "Security_JA": "パッカー",
     "Daily_Change_right": 0.015116185575299472
   },
@@ -3922,7 +3922,7 @@
     "GICS Sub-Industry": "Paper & Plastic Packaging Products & Materials",
     "Symbol_YF": "PKG",
     "Exchange": "NYSE",
-    "Daily_Change": 0.04765152991619568,
+    "Daily_Change": -0.0099990698539671,
     "Security_JA": "パッケージング・コーポレーション・オブ・アメリカ",
     "Daily_Change_right": 0.027791156921298438
   },
@@ -3933,7 +3933,7 @@
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "PLTR",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.0724020442930154,
+    "Daily_Change": 0.010736738009465355,
     "Security_JA": "パランティア・テクノロジーズ",
     "Daily_Change_right": 0.025427290557579123
   },
@@ -3944,7 +3944,7 @@
     "GICS Sub-Industry": "Systems Software",
     "Symbol_YF": "PANW",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.04409492273730674,
+    "Daily_Change": 0.030771895387102267,
     "Security_JA": "パロ・アルト・ネットワークス",
     "Daily_Change_right": 0.005270407857698961
   },
@@ -3955,7 +3955,7 @@
     "GICS Sub-Industry": "Movies & Entertainment",
     "Symbol_YF": "PSKY",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.04491525423728823,
+    "Daily_Change": -0.02661934338952963,
     "Security_JA": "パラマウント・スカイダンス B",
     "Daily_Change_right": 0.0008525149190110645
   },
@@ -3966,7 +3966,7 @@
     "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
     "Symbol_YF": "PH",
     "Exchange": "NYSE",
-    "Daily_Change": 0.02037865532307246,
+    "Daily_Change": 0.0006058241261757422,
     "Security_JA": "パーカー･ハニフィン",
     "Daily_Change_right": 0.033228840125391804
   },
@@ -3977,7 +3977,7 @@
     "GICS Sub-Industry": "Human Resource & Employment Services",
     "Symbol_YF": "PAYX",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.02654393663705452,
+    "Daily_Change": -0.012424409015942932,
     "Security_JA": "ペイチェックス",
     "Daily_Change_right": -0.0018452187126886108
   },
@@ -3988,7 +3988,7 @@
     "GICS Sub-Industry": "Transaction & Payment Processing Services",
     "Symbol_YF": "PYPL",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.028699726669269794,
+    "Daily_Change": 0.014673366834170792,
     "Security_JA": "ペイパル・ホールディングス",
     "Daily_Change_right": 0.020076289901626177
   },
@@ -3999,7 +3999,7 @@
     "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
     "Symbol_YF": "PNR",
     "Exchange": "NYSE",
-    "Daily_Change": 0.00982142857142868,
+    "Daily_Change": 0.014036251105216578,
     "Security_JA": "ペンテア",
     "Daily_Change_right": 0.026369168356998013
   },
@@ -4010,7 +4010,7 @@
     "GICS Sub-Industry": "Soft Drinks & Non-alcoholic Beverages",
     "Symbol_YF": "PEP",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.01241953312959228,
+    "Daily_Change": -0.0016698779704559469,
     "Security_JA": "ペプシコ",
     "Daily_Change_right": -0.004482889253693698
   },
@@ -4021,7 +4021,7 @@
     "GICS Sub-Industry": "Pharmaceuticals",
     "Symbol_YF": "PFE",
     "Exchange": "NYSE",
-    "Daily_Change": -0.004850746268656679,
+    "Daily_Change": 0.012373453318335143,
     "Security_JA": "ファイザー",
     "Daily_Change_right": 0.012490815576781774
   },
@@ -4032,7 +4032,7 @@
     "GICS Sub-Industry": "Multi-Utilities",
     "Symbol_YF": "PCG",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0029620853080569143,
+    "Daily_Change": -0.013071895424836536,
     "Security_JA": "パシフィック・ガス・アンド・エレクトリック",
     "Daily_Change_right": -0.0063327576280943826
   },
@@ -4043,7 +4043,7 @@
     "GICS Sub-Industry": "Tobacco",
     "Symbol_YF": "PM",
     "Exchange": "NYSE",
-    "Daily_Change": 0.031960963708447754,
+    "Daily_Change": -0.0294934688811396,
     "Security_JA": "フィリップ・モリス・インターナショナル",
     "Daily_Change_right": 0.00992063492063481
   },
@@ -4054,7 +4054,7 @@
     "GICS Sub-Industry": "Oil & Gas Refining & Marketing",
     "Symbol_YF": "PSX",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0069716775599128825,
+    "Daily_Change": 0.020811132702313002,
     "Security_JA": "フィリップス66",
     "Daily_Change_right": -0.042613114553358276
   },
@@ -4065,7 +4065,7 @@
     "GICS Sub-Industry": "Multi-Utilities",
     "Symbol_YF": "PNW",
     "Exchange": "NYSE",
-    "Daily_Change": 0.026289682539682595,
+    "Daily_Change": -0.011116481391976855,
     "Security_JA": "ピナクル・ウェスト・キャピタル",
     "Daily_Change_right": -0.0012479600652778675
   },
@@ -4076,7 +4076,7 @@
     "GICS Sub-Industry": "Diversified Banks",
     "Symbol_YF": "PNC",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0001332977872567366,
+    "Daily_Change": -0.023235150384290682,
     "Security_JA": "ピーエヌシー・フィナンシャル・サービシズ・グループ",
     "Daily_Change_right": 0.02153860135411464
   },
@@ -4087,7 +4087,7 @@
     "GICS Sub-Industry": "Distributors",
     "Symbol_YF": "POOL",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.023652975834685303,
+    "Daily_Change": 0.01692321147454961,
     "Security_JA": "プール",
     "Daily_Change_right": 0.00877503988654502
   },
@@ -4098,7 +4098,7 @@
     "GICS Sub-Industry": "Specialty Chemicals",
     "Symbol_YF": "PPG",
     "Exchange": "NYSE",
-    "Daily_Change": -0.012357840064475647,
+    "Daily_Change": -0.004442832532414625,
     "Security_JA": "ピーピージー・インダストリーズ",
     "Daily_Change_right": 0.023983594864479294
   },
@@ -4109,7 +4109,7 @@
     "GICS Sub-Industry": "Electric Utilities",
     "Symbol_YF": "PPL",
     "Exchange": "NYSE",
-    "Daily_Change": 0.02011646373742716,
+    "Daily_Change": 0.005448884276076826,
     "Security_JA": "パシフィック・パワー・アンド・ライト・コーポレーション",
     "Daily_Change_right": -0.008134214539908497
   },
@@ -4120,7 +4120,7 @@
     "GICS Sub-Industry": "Life & Health Insurance",
     "Symbol_YF": "PFG",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.0044134250230935725,
+    "Daily_Change": 0.02412371134020622,
     "Security_JA": "プリンシパル・フィナンシャル・グループ",
     "Daily_Change_right": 0.02330283038944454
   },
@@ -4131,7 +4131,7 @@
     "GICS Sub-Industry": "Personal Care Products",
     "Symbol_YF": "PG",
     "Exchange": "NYSE",
-    "Daily_Change": 0.020021001050052598,
+    "Daily_Change": 0.02460206607570074,
     "Security_JA": "プロクター・アンド・ギャンブル",
     "Daily_Change_right": 0.02669275382572841
   },
@@ -4142,7 +4142,7 @@
     "GICS Sub-Industry": "Property & Casualty Insurance",
     "Symbol_YF": "PGR",
     "Exchange": "NYSE",
-    "Daily_Change": 0.012924868038083985,
+    "Daily_Change": -0.02162372765791665,
     "Security_JA": "プログレッシブ",
     "Daily_Change_right": -0.004374109205288182
   },
@@ -4153,7 +4153,7 @@
     "GICS Sub-Industry": "Industrial REITs",
     "Symbol_YF": "PLD",
     "Exchange": "NYSE",
-    "Daily_Change": 0.006505444774430887,
+    "Daily_Change": -0.0016861036953773295,
     "Security_JA": "プロロジス",
     "Daily_Change_right": 0.020609129914890674
   },
@@ -4164,7 +4164,7 @@
     "GICS Sub-Industry": "Life & Health Insurance",
     "Symbol_YF": "PRU",
     "Exchange": "NYSE",
-    "Daily_Change": -0.005271481286241434,
+    "Daily_Change": -0.0014838367779544312,
     "Security_JA": "プルデンシャル・フィナンシャル",
     "Daily_Change_right": 0.01874123070755667
   },
@@ -4175,7 +4175,7 @@
     "GICS Sub-Industry": "Electric Utilities",
     "Symbol_YF": "PEG",
     "Exchange": "NYSE",
-    "Daily_Change": 0.021016431027894425,
+    "Daily_Change": 0.007235528942115747,
     "Security_JA": "パブリック・サービス・エンタープライズ・グループ",
     "Daily_Change_right": -0.005607020965382837
   },
@@ -4186,7 +4186,7 @@
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "PTC",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.03392603129445222,
+    "Daily_Change": 0.00986527276742969,
     "Security_JA": "ピー・ティー・シー",
     "Daily_Change_right": 0.01063137339986981
   },
@@ -4197,7 +4197,7 @@
     "GICS Sub-Industry": "Self-Storage REITs",
     "Symbol_YF": "PSA",
     "Exchange": "NYSE",
-    "Daily_Change": 0.019717200879236216,
+    "Daily_Change": -0.008139759346245327,
     "Security_JA": "パブリック・ストレージ",
     "Daily_Change_right": 0.024789553920593947
   },
@@ -4208,7 +4208,7 @@
     "GICS Sub-Industry": "Homebuilding",
     "Symbol_YF": "PHM",
     "Exchange": "NYSE",
-    "Daily_Change": 0.024145500156788836,
+    "Daily_Change": -0.02357624004898947,
     "Security_JA": "パルト・グループ",
     "Daily_Change_right": 0.05030297999501953
   },
@@ -4219,7 +4219,7 @@
     "GICS Sub-Industry": "Construction & Engineering",
     "Symbol_YF": "PWR",
     "Exchange": "NYSE",
-    "Daily_Change": 0.03203102088696289,
+    "Daily_Change": -0.01357666077292249,
     "Security_JA": "クアンタ・サービシズ",
     "Daily_Change_right": 0.024616117939464163
   },
@@ -4230,7 +4230,7 @@
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "QCOM",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.015580216065260562,
+    "Daily_Change": 0.11123553564762977,
     "Security_JA": "クアルコム",
     "Daily_Change_right": 0.012865323120398526
   },
@@ -4241,7 +4241,7 @@
     "GICS Sub-Industry": "Health Care Services",
     "Symbol_YF": "DGX",
     "Exchange": "NYSE",
-    "Daily_Change": -0.021911764705882346,
+    "Daily_Change": -0.016338395228787606,
     "Security_JA": "クエスト・ダイアグノスティクス",
     "Daily_Change_right": 0.01859396218531287
   },
@@ -4252,7 +4252,7 @@
     "GICS Sub-Industry": "Semiconductor Materials & Equipment",
     "Symbol_YF": "Q",
     "Exchange": "NYSE",
-    "Daily_Change": 0.006319569120287221,
+    "Daily_Change": 0.031042603296938517,
     "Security_JA": "キューニティ・エレクトロニクス",
     "Daily_Change_right": 0.038004569687737855
   },
@@ -4263,7 +4263,7 @@
     "GICS Sub-Industry": "Apparel, Accessories & Luxury Goods",
     "Symbol_YF": "RL",
     "Exchange": "NYSE",
-    "Daily_Change": -0.01105811505768881,
+    "Daily_Change": 0.000269440103465061,
     "Security_JA": "ラルフローレン",
     "Daily_Change_right": 0.04647011090073034
   },
@@ -4274,7 +4274,7 @@
     "GICS Sub-Industry": "Investment Banking & Brokerage",
     "Symbol_YF": "RJF",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0071835361118302715,
+    "Daily_Change": 6.518479890483609e-05,
     "Security_JA": "レイモンド・ジェームズ・フィナンシャル",
     "Daily_Change_right": 0.0058995094789870495
   },
@@ -4285,7 +4285,7 @@
     "GICS Sub-Industry": "Aerospace & Defense",
     "Symbol_YF": "RTX",
     "Exchange": "NYSE",
-    "Daily_Change": -0.00889945276656893,
+    "Daily_Change": -0.028109313998884663,
     "Security_JA": "RTX",
     "Daily_Change_right": 0.002910390605054854
   },
@@ -4296,7 +4296,7 @@
     "GICS Sub-Industry": "Retail REITs",
     "Symbol_YF": "O",
     "Exchange": "NYSE",
-    "Daily_Change": 0.011682980738869512,
+    "Daily_Change": -0.011704119850187267,
     "Security_JA": "リアルティー・インカム",
     "Daily_Change_right": 0.00696163366336638
   },
@@ -4307,7 +4307,7 @@
     "GICS Sub-Industry": "Retail REITs",
     "Symbol_YF": "REG",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.022025316455696137,
+    "Daily_Change": -0.006811989100817404,
     "Security_JA": "リージェンシー・センターズ",
     "Daily_Change_right": 0.016070307595731338
   },
@@ -4318,7 +4318,7 @@
     "GICS Sub-Industry": "Biotechnology",
     "Symbol_YF": "REGN",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.0260387366390741,
+    "Daily_Change": -0.018863737239236483,
     "Security_JA": "リジェネロン・ファーマシューティカルズ",
     "Daily_Change_right": 0.006126005361930362
   },
@@ -4329,7 +4329,7 @@
     "GICS Sub-Industry": "Regional Banks",
     "Symbol_YF": "RF",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0067352002835873,
+    "Daily_Change": -0.02253521126760553,
     "Security_JA": "リジョンズ・フィナンシャル",
     "Daily_Change_right": 0.0075214899713466074
   },
@@ -4340,7 +4340,7 @@
     "GICS Sub-Industry": "Environmental & Facilities Services",
     "Symbol_YF": "RSG",
     "Exchange": "NYSE",
-    "Daily_Change": 0.042622631399483656,
+    "Daily_Change": -0.019856101663240516,
     "Security_JA": "リパブリック・サービシズ",
     "Daily_Change_right": -0.009539254030334827
   },
@@ -4351,7 +4351,7 @@
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "RMD",
     "Exchange": "NYSE",
-    "Daily_Change": -0.011394343361556482,
+    "Daily_Change": 0.0015489043779326839,
     "Security_JA": "レスメド",
     "Daily_Change_right": 0.015129939480242105
   },
@@ -4362,7 +4362,7 @@
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "RVTY",
     "Exchange": "NYSE",
-    "Daily_Change": -0.07562579550275769,
+    "Daily_Change": -0.004360298336202061,
     "Security_JA": "レビティー",
     "Daily_Change_right": 0.04948062102088677
   },
@@ -4373,7 +4373,7 @@
     "GICS Sub-Industry": "Investment Banking & Brokerage",
     "Symbol_YF": "HOOD",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.05529797580006785,
+    "Daily_Change": 0.014005266937993624,
     "Security_JA": "ロビンフッド・マーケッツ",
     "Daily_Change_right": 0.044905008635578655
   },
@@ -4384,7 +4384,7 @@
     "GICS Sub-Industry": "Electrical Components & Equipment",
     "Symbol_YF": "ROK",
     "Exchange": "NYSE",
-    "Daily_Change": 0.004643506461599045,
+    "Daily_Change": -0.018903915286982508,
     "Security_JA": "ロックウェル・オートメーション",
     "Daily_Change_right": 0.03207467540527796
   },
@@ -4395,7 +4395,7 @@
     "GICS Sub-Industry": "Environmental & Facilities Services",
     "Symbol_YF": "ROL",
     "Exchange": "NYSE",
-    "Daily_Change": 0.030187997107736834,
+    "Daily_Change": -0.006843305843130383,
     "Security_JA": "ローリンズ",
     "Daily_Change_right": 0.00935951550743252
   },
@@ -4406,7 +4406,7 @@
     "GICS Sub-Industry": "Electronic Equipment & Instruments",
     "Symbol_YF": "ROP",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.002659501549091183,
+    "Daily_Change": -0.028480316692324648,
     "Security_JA": "ローパー・テクノロジーズ",
     "Daily_Change_right": 0.001547474300873224
   },
@@ -4417,7 +4417,7 @@
     "GICS Sub-Industry": "Apparel Retail",
     "Symbol_YF": "ROST",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.0025625165679949813,
+    "Daily_Change": -0.0024237616781243743,
     "Security_JA": "ロス・ストアーズ",
     "Daily_Change_right": 0.02635491282605755
   },
@@ -4428,7 +4428,7 @@
     "GICS Sub-Industry": "Hotels, Resorts & Cruise Lines",
     "Symbol_YF": "RCL",
     "Exchange": "NYSE",
-    "Daily_Change": -0.019613010088841965,
+    "Daily_Change": 0.02077333640517593,
     "Security_JA": "ロイヤル・カリビアン・クルーズ",
     "Daily_Change_right": 0.07343485617597305
   },
@@ -4439,7 +4439,7 @@
     "GICS Sub-Industry": "Financial Exchanges & Data",
     "Symbol_YF": "SPGI",
     "Exchange": "NYSE",
-    "Daily_Change": -0.022335545361421703,
+    "Daily_Change": -0.005102157027993423,
     "Security_JA": "S&P グローバル",
     "Daily_Change_right": 0.01323290368369233
   },
@@ -4450,7 +4450,7 @@
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "CRM",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0869336143308746,
+    "Daily_Change": 0.02804385458742057,
     "Security_JA": "セールスフォース",
     "Daily_Change_right": 0.005076702350733845
   },
@@ -4461,7 +4461,7 @@
     "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
     "Symbol_YF": "SNDK",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.04763704331661689,
+    "Daily_Change": 0.06163465353967593,
     "Security_JA": "サンディスク",
     "Daily_Change_right": 0.001653126257517898
   },
@@ -4472,7 +4472,7 @@
     "GICS Sub-Industry": "Telecom Tower REITs",
     "Symbol_YF": "SBAC",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.036533559898045784,
+    "Daily_Change": -0.0005919854280509811,
     "Security_JA": "SBAコミュニケーションズ",
     "Daily_Change_right": 0.006222943722943703
   },
@@ -4483,7 +4483,7 @@
     "GICS Sub-Industry": "Oil & Gas Equipment & Services",
     "Symbol_YF": "SLB",
     "Exchange": "NYSE",
-    "Daily_Change": 0.007175712971481151,
+    "Daily_Change": 0.025758129338691937,
     "Security_JA": "SLB",
     "Daily_Change_right": 0.017977962497583603
   },
@@ -4494,7 +4494,7 @@
     "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
     "Symbol_YF": "STX",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.013347589156377198,
+    "Daily_Change": -0.002331438684864376,
     "Security_JA": "シーゲイト・テクノロジー・ホールディングス",
     "Daily_Change_right": 0.02997311069742964
   },
@@ -4505,7 +4505,7 @@
     "GICS Sub-Industry": "Multi-Utilities",
     "Symbol_YF": "SRE",
     "Exchange": "NYSE",
-    "Daily_Change": 0.01656202641264344,
+    "Daily_Change": -0.0075604301991267575,
     "Security_JA": "センプラ・エナジー",
     "Daily_Change_right": -0.01847792045098664
   },
@@ -4516,7 +4516,7 @@
     "GICS Sub-Industry": "Systems Software",
     "Symbol_YF": "NOW",
     "Exchange": "NYSE",
-    "Daily_Change": -0.17745221693994367,
+    "Daily_Change": 0.06357631516867186,
     "Security_JA": "サービスナウ",
     "Daily_Change_right": 0.0022812111157196066
   },
@@ -4527,7 +4527,7 @@
     "GICS Sub-Industry": "Specialty Chemicals",
     "Symbol_YF": "SHW",
     "Exchange": "NYSE",
-    "Daily_Change": 0.007489183947486343,
+    "Daily_Change": 0.00011846235858545169,
     "Security_JA": "シャーウィンウィリアムズ",
     "Daily_Change_right": 0.03662926741465182
   },
@@ -4538,7 +4538,7 @@
     "GICS Sub-Industry": "Retail REITs",
     "Symbol_YF": "SPG",
     "Exchange": "NYSE",
-    "Daily_Change": 0.009817532725109032,
+    "Daily_Change": -0.012275360895610331,
     "Security_JA": "サイモン・プロパティ・グループ",
     "Daily_Change_right": 0.024236404271169583
   },
@@ -4549,7 +4549,7 @@
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "SWKS",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.0035615994819492625,
+    "Daily_Change": 0.034118602761982156,
     "Security_JA": "スカイワークス・ソリューションズ",
     "Daily_Change_right": 0.004940374787052796
   },
@@ -4560,7 +4560,7 @@
     "GICS Sub-Industry": "Packaged Foods & Meats",
     "Symbol_YF": "SJM",
     "Exchange": "NYSE",
-    "Daily_Change": 0.012632908727234476,
+    "Daily_Change": -0.0012475309283709799,
     "Security_JA": "ジェイ・エム・スマッカー",
     "Daily_Change_right": 0.01660634447519696
   },
@@ -4571,7 +4571,7 @@
     "GICS Sub-Industry": "Paper & Plastic Packaging Products & Materials",
     "Symbol_YF": "SW",
     "Exchange": "NYSE",
-    "Daily_Change": 0.02091206853111629,
+    "Daily_Change": -0.013820335636722662,
     "Security_JA": "スマーフィット・ウエストロックPLC",
     "Daily_Change_right": 0.02524271844660192
   },
@@ -4582,7 +4582,7 @@
     "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
     "Symbol_YF": "SNA",
     "Exchange": "NYSE",
-    "Daily_Change": 0.021889220147497265,
+    "Daily_Change": -0.031554702495201495,
     "Security_JA": "スナップオン",
     "Daily_Change_right": 0.03655345363353859
   },
@@ -4593,7 +4593,7 @@
     "GICS Sub-Industry": "Health Care Technology",
     "Symbol_YF": "SOLV",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0021704529011721267,
+    "Daily_Change": -0.0063805104408352345,
     "Security_JA": "ソルベンタム",
     "Daily_Change_right": 0.02322880371660872
   },
@@ -4604,7 +4604,7 @@
     "GICS Sub-Industry": "Electric Utilities",
     "Symbol_YF": "SO",
     "Exchange": "NYSE",
-    "Daily_Change": 0.022205290083813996,
+    "Daily_Change": -0.004472367160046872,
     "Security_JA": "サザン",
     "Daily_Change_right": -0.004109589041095896
   },
@@ -4615,7 +4615,7 @@
     "GICS Sub-Industry": "Passenger Airlines",
     "Symbol_YF": "LUV",
     "Exchange": "NYSE",
-    "Daily_Change": -0.040660736975857724,
+    "Daily_Change": 0.04503311258278153,
     "Security_JA": "サウスウェスト航空",
     "Daily_Change_right": 0.050947575682992866
   },
@@ -4626,7 +4626,7 @@
     "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
     "Symbol_YF": "SWK",
     "Exchange": "NYSE",
-    "Daily_Change": 0.004095112285336886,
+    "Daily_Change": 0.008288383107485796,
     "Security_JA": "スタンレー・ブラック・アンド・デッカー",
     "Daily_Change_right": 0.041916167664670725
   },
@@ -4637,7 +4637,7 @@
     "GICS Sub-Industry": "Restaurants",
     "Symbol_YF": "SBUX",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.0002009646302251832,
+    "Daily_Change": -0.008740204942736633,
     "Security_JA": "スターバックス",
     "Daily_Change_right": 0.016673444489629936
   },
@@ -4648,7 +4648,7 @@
     "GICS Sub-Industry": "Asset Management & Custody Banks",
     "Symbol_YF": "STT",
     "Exchange": "NYSE",
-    "Daily_Change": -0.007545931758530221,
+    "Daily_Change": -0.0033719008264462206,
     "Security_JA": "ステート・ストリート",
     "Daily_Change_right": 0.024876673713883024
   },
@@ -4659,7 +4659,7 @@
     "GICS Sub-Industry": "Steel",
     "Symbol_YF": "STLD",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.010595269497933687,
+    "Daily_Change": 0.007731615196622886,
     "Security_JA": "スチール・ダイナミクス",
     "Daily_Change_right": 0.023346104725415037
   },
@@ -4670,7 +4670,7 @@
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "STE",
     "Exchange": "NYSE",
-    "Daily_Change": -0.00013419816595840365,
+    "Daily_Change": -0.007695060844667138,
     "Security_JA": "ステリス",
     "Daily_Change_right": 0.02645815338455241
   },
@@ -4681,7 +4681,7 @@
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "SYK",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0009108850766660224,
+    "Daily_Change": -0.006491733656908802,
     "Security_JA": "ストライカー",
     "Daily_Change_right": 0.014598971570423778
   },
@@ -4692,7 +4692,7 @@
     "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
     "Symbol_YF": "SMCI",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.08327621658670321,
+    "Daily_Change": 0.08710280373831769,
     "Security_JA": "スーパー・マイクロ・コンピューター",
     "Daily_Change_right": 0.005633802816901414
   },
@@ -4703,7 +4703,7 @@
     "GICS Sub-Industry": "Consumer Finance",
     "Symbol_YF": "SYF",
     "Exchange": "NYSE",
-    "Daily_Change": -0.026305756767060533,
+    "Daily_Change": -0.004176455233620561,
     "Security_JA": "シンクロニー・フィナンシャル",
     "Daily_Change_right": 0.04217107888785422
   },
@@ -4714,7 +4714,7 @@
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "SNPS",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.04276494992247406,
+    "Daily_Change": 0.09624603261464369,
     "Security_JA": "シノプシス",
     "Daily_Change_right": 0.019109146548792946
   },
@@ -4725,7 +4725,7 @@
     "GICS Sub-Industry": "Food Distributors",
     "Symbol_YF": "SYY",
     "Exchange": "NYSE",
-    "Daily_Change": 0.003707136237256734,
+    "Daily_Change": 0.009893153937475268,
     "Security_JA": "シスコ",
     "Daily_Change_right": 0.029979743416610385
   },
@@ -4736,7 +4736,7 @@
     "GICS Sub-Industry": "Wireless Telecommunication Services",
     "Symbol_YF": "TMUS",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.02726021596442942,
+    "Daily_Change": -0.0220023702787653,
     "Security_JA": "Ｔモバイル",
     "Daily_Change_right": 0.0027901785714284848
   },
@@ -4747,7 +4747,7 @@
     "GICS Sub-Industry": "Asset Management & Custody Banks",
     "Symbol_YF": "TROW",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.007482043096568237,
+    "Daily_Change": -0.004322042416323175,
     "Security_JA": "ティー・ロウ・プライス・グループ",
     "Daily_Change_right": 0.012845953002611007
   },
@@ -4758,7 +4758,7 @@
     "GICS Sub-Industry": "Interactive Home Entertainment",
     "Symbol_YF": "TTWO",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.037994408543012934,
+    "Daily_Change": 0.004049547403525461,
     "Security_JA": "テイクツー・インタラクティブ・ソフトウェア",
     "Daily_Change_right": -0.008834665544804445
   },
@@ -4769,7 +4769,7 @@
     "GICS Sub-Industry": "Apparel, Accessories & Luxury Goods",
     "Symbol_YF": "TPR",
     "Exchange": "NYSE",
-    "Daily_Change": 0.001915577751932689,
+    "Daily_Change": -0.0038238306589279776,
     "Security_JA": "タペストリー",
     "Daily_Change_right": 0.0342424845709735
   },
@@ -4780,7 +4780,7 @@
     "GICS Sub-Industry": "Oil & Gas Storage & Transportation",
     "Symbol_YF": "TRGP",
     "Exchange": "NYSE",
-    "Daily_Change": 0.013433024965150201,
+    "Daily_Change": 0.0032512192072027056,
     "Security_JA": "タルガ・リソーシズ",
     "Daily_Change_right": -0.0179725616112756
   },
@@ -4791,7 +4791,7 @@
     "GICS Sub-Industry": "Consumer Staples Merchandise Retail",
     "Symbol_YF": "TGT",
     "Exchange": "NYSE",
-    "Daily_Change": -0.003292496171516132,
+    "Daily_Change": -0.006990858108627154,
     "Security_JA": "ターゲット",
     "Daily_Change_right": 0.031716568477120545
   },
@@ -4802,7 +4802,7 @@
     "GICS Sub-Industry": "Electronic Manufacturing Services",
     "Symbol_YF": "TEL",
     "Exchange": "NYSE",
-    "Daily_Change": -0.014974665218964903,
+    "Daily_Change": -0.014054103706425401,
     "Security_JA": "TEコネクティビティ・PLC",
     "Daily_Change_right": 0.040849120433017576
   },
@@ -4813,7 +4813,7 @@
     "GICS Sub-Industry": "Electronic Equipment & Instruments",
     "Symbol_YF": "TDY",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0075225753399626215,
+    "Daily_Change": -0.004710395090142002,
     "Security_JA": "テレダイン･テクノロジーズ",
     "Daily_Change_right": 0.00011010444192785016
   },
@@ -4824,7 +4824,7 @@
     "GICS Sub-Industry": "Semiconductor Materials & Equipment",
     "Symbol_YF": "TER",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.04104574484656525,
+    "Daily_Change": 0.0426195166961769,
     "Security_JA": "テラダイン",
     "Daily_Change_right": 0.03951683428071704
   },
@@ -4835,7 +4835,7 @@
     "GICS Sub-Industry": "Automobile Manufacturers",
     "Symbol_YF": "TSLA",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.03558617842120194,
+    "Daily_Change": 0.006903564165685497,
     "Security_JA": "テスラ",
     "Daily_Change_right": 0.030136281820519487
   },
@@ -4846,7 +4846,7 @@
     "GICS Sub-Industry": "Semiconductors",
     "Symbol_YF": "TXN",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.19432101900046556,
+    "Daily_Change": -0.018034936045069734,
     "Security_JA": "テキサス・インストゥルメンツ",
     "Daily_Change_right": 0.030121021963245176
   },
@@ -4857,7 +4857,7 @@
     "GICS Sub-Industry": "Oil & Gas Exploration & Production",
     "Symbol_YF": "TPL",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0007963594994312235,
+    "Daily_Change": -0.0005465103039962479,
     "Security_JA": "テキサス・パシフィック・ランド・コーポ",
     "Daily_Change_right": -0.008656485326201698
   },
@@ -4868,7 +4868,7 @@
     "GICS Sub-Industry": "Aerospace & Defense",
     "Symbol_YF": "TXT",
     "Exchange": "NYSE",
-    "Daily_Change": 0.010172143974960997,
+    "Daily_Change": -0.026668142082549636,
     "Security_JA": "テクストロン",
     "Daily_Change_right": 0.014844355821424654
   },
@@ -4879,7 +4879,7 @@
     "GICS Sub-Industry": "Life Sciences Tools & Services",
     "Symbol_YF": "TMO",
     "Exchange": "NYSE",
-    "Daily_Change": -0.09198801509786378,
+    "Daily_Change": 0.006449539318620079,
     "Security_JA": "サーモ・フィッシャーサイエンティフィック",
     "Daily_Change_right": 0.020542635658914773
   },
@@ -4890,7 +4890,7 @@
     "GICS Sub-Industry": "Apparel Retail",
     "Symbol_YF": "TJX",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0007572411181927466,
+    "Daily_Change": -0.008335964635301504,
     "Security_JA": "ティージェイエックス・カンパニーズ",
     "Daily_Change_right": 0.020320040640081388
   },
@@ -4901,7 +4901,7 @@
     "GICS Sub-Industry": "Movies & Entertainment",
     "Symbol_YF": "TKO",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0,
+    "Daily_Change": 0.001288521421668684,
     "Security_JA": "TKO・グループ・ホールディングス",
     "Daily_Change_right": 0.010138798525265693
   },
@@ -4912,7 +4912,7 @@
     "GICS Sub-Industry": "Advertising",
     "Symbol_YF": "TTD",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.03989813242784371,
+    "Daily_Change": 0.059681697612731996,
     "Security_JA": "トレード・デスク　クラスA",
     "Daily_Change_right": -0.012741652021089749
   },
@@ -4923,7 +4923,7 @@
     "GICS Sub-Industry": "Other Specialty Retail",
     "Symbol_YF": "TSCO",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.020277207392197103,
+    "Daily_Change": -0.03746397694524495,
     "Security_JA": "トラクター・サプライ・カンパニー",
     "Daily_Change_right": 0.008514452162222618
   },
@@ -4934,7 +4934,7 @@
     "GICS Sub-Industry": "Building Products",
     "Symbol_YF": "TT",
     "Exchange": "NYSE",
-    "Daily_Change": 0.01747731511557236,
+    "Daily_Change": 0.0018330484213128814,
     "Security_JA": "トレイン・テクノロジーズ",
     "Daily_Change_right": 0.03441458274491067
   },
@@ -4945,7 +4945,7 @@
     "GICS Sub-Industry": "Aerospace & Defense",
     "Symbol_YF": "TDG",
     "Exchange": "NYSE",
-    "Daily_Change": -0.018513997053251956,
+    "Daily_Change": -0.015080290968981546,
     "Security_JA": "トランスダイム・グループ",
     "Daily_Change_right": 0.030653867760924332
   },
@@ -4956,7 +4956,7 @@
     "GICS Sub-Industry": "Property & Casualty Insurance",
     "Symbol_YF": "TRV",
     "Exchange": "NYSE",
-    "Daily_Change": 0.01872845399098375,
+    "Daily_Change": -0.014967624377704637,
     "Security_JA": "トラベラーズ･カンパニーズ",
     "Daily_Change_right": 0.006592156337839739
   },
@@ -4967,7 +4967,7 @@
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "TRMB",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.029671443045303184,
+    "Daily_Change": 0.004624105011932996,
     "Security_JA": "トリンブル",
     "Daily_Change_right": 0.023939707403576246
   },
@@ -4978,7 +4978,7 @@
     "GICS Sub-Industry": "Diversified Banks",
     "Symbol_YF": "TFC",
     "Exchange": "NYSE",
-    "Daily_Change": 0.008832188420019543,
+    "Daily_Change": -0.013035019455252952,
     "Security_JA": "トゥルーイスト・フィナンシャル",
     "Daily_Change_right": 0.023062917256726694
   },
@@ -4989,7 +4989,7 @@
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "TYL",
     "Exchange": "NYSE",
-    "Daily_Change": -0.030717708874646303,
+    "Daily_Change": 0.018734735211770905,
     "Security_JA": "タイラー・テクノロジーズ",
     "Daily_Change_right": 0.008150894538606518
   },
@@ -5000,7 +5000,7 @@
     "GICS Sub-Industry": "Packaged Foods & Meats",
     "Symbol_YF": "TSN",
     "Exchange": "NYSE",
-    "Daily_Change": 0.010534469403563236,
+    "Daily_Change": -0.01839644335428488,
     "Security_JA": "タイソン・フーズ クラスA",
     "Daily_Change_right": 0.012970776683856714
   },
@@ -5011,7 +5011,7 @@
     "GICS Sub-Industry": "Diversified Banks",
     "Symbol_YF": "USB",
     "Exchange": "NYSE",
-    "Daily_Change": 0.000530035335689066,
+    "Daily_Change": -0.018541409147095254,
     "Security_JA": "ユー・エス・バンコープ",
     "Daily_Change_right": 0.026135544340302866
   },
@@ -5022,7 +5022,7 @@
     "GICS Sub-Industry": "Passenger Ground Transportation",
     "Symbol_YF": "UBER",
     "Exchange": "NYSE",
-    "Daily_Change": -0.011643291876157653,
+    "Daily_Change": -0.0008032128514056529,
     "Security_JA": "ウーバー・テクノロジーズ",
     "Daily_Change_right": 0.00836820083682009
   },
@@ -5033,7 +5033,7 @@
     "GICS Sub-Industry": "Multi-Family Residential REITs",
     "Symbol_YF": "UDR",
     "Exchange": "NYSE",
-    "Daily_Change": 0.011590843233845221,
+    "Daily_Change": -0.004010312231452119,
     "Security_JA": "UDR",
     "Daily_Change_right": 0.03007299270072996
   },
@@ -5044,7 +5044,7 @@
     "GICS Sub-Industry": "Other Specialty Retail",
     "Symbol_YF": "ULTA",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.0009398662907203037,
+    "Daily_Change": -0.010435121536390226,
     "Security_JA": "アルタ",
     "Daily_Change_right": 0.025804538039448238
   },
@@ -5055,7 +5055,7 @@
     "GICS Sub-Industry": "Rail Transportation",
     "Symbol_YF": "UNP",
     "Exchange": "NYSE",
-    "Daily_Change": 0.08765036086607852,
+    "Daily_Change": -0.00943744009437441,
     "Security_JA": "ユニオン・パシフィック",
     "Daily_Change_right": 0.0002788067072927597
   },
@@ -5066,7 +5066,7 @@
     "GICS Sub-Industry": "Passenger Airlines",
     "Symbol_YF": "UAL",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.005015810707665399,
+    "Daily_Change": 0.019178082191780823,
     "Security_JA": "ユナイテッド・エアラインズ・ホールディングス",
     "Daily_Change_right": 0.07124066084394398
   },
@@ -5077,7 +5077,7 @@
     "GICS Sub-Industry": "Air Freight & Logistics",
     "Symbol_YF": "UPS",
     "Exchange": "NYSE",
-    "Daily_Change": 0.022981956315289664,
+    "Daily_Change": -0.006498329001114026,
     "Security_JA": "ユナイテッド･パーセル･サービス クラスB",
     "Daily_Change_right": 0.013135351227869746
   },
@@ -5088,7 +5088,7 @@
     "GICS Sub-Industry": "Trading Companies & Distributors",
     "Symbol_YF": "URI",
     "Exchange": "NYSE",
-    "Daily_Change": 0.22918820613111776,
+    "Daily_Change": -0.012535722248120154,
     "Security_JA": "ユナイテッド・レンタルズ",
     "Daily_Change_right": 0.024000308685642218
   },
@@ -5099,7 +5099,7 @@
     "GICS Sub-Industry": "Managed Health Care",
     "Symbol_YF": "UNH",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0029418420457117574,
+    "Daily_Change": 0.0010153429602888472,
     "Security_JA": "ユナイテッドヘルス・グループ",
     "Daily_Change_right": 0.026011378002528503
   },
@@ -5110,7 +5110,7 @@
     "GICS Sub-Industry": "Health Care Facilities",
     "Symbol_YF": "UHS",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0025453740593183263,
+    "Daily_Change": -0.037697317584722445,
     "Security_JA": "ユニバーサル・ヘルス・サービシズ クラスB",
     "Daily_Change_right": 0.020589716331897316
   },
@@ -5121,7 +5121,7 @@
     "GICS Sub-Industry": "Oil & Gas Refining & Marketing",
     "Symbol_YF": "VLO",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0022614780679296857,
+    "Daily_Change": 0.008638754650814616,
     "Security_JA": "バレロ・エナジー",
     "Daily_Change_right": -0.0748324646314222
   },
@@ -5132,7 +5132,7 @@
     "GICS Sub-Industry": "Health Care REITs",
     "Symbol_YF": "VTR",
     "Exchange": "NYSE",
-    "Daily_Change": 0.03533083645443212,
+    "Daily_Change": 0.008320270107319398,
     "Security_JA": "ベンタス",
     "Daily_Change_right": -0.004794760846684724
   },
@@ -5143,7 +5143,7 @@
     "GICS Sub-Industry": "Environmental & Facilities Services",
     "Symbol_YF": "VLTO",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0023595505617976823,
+    "Daily_Change": -0.001914630025903837,
     "Security_JA": "ヴェラルト",
     "Daily_Change_right": 0.0048597305058537404
   },
@@ -5154,7 +5154,7 @@
     "GICS Sub-Industry": "Internet Services & Infrastructure",
     "Symbol_YF": "VRSN",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.026386984397583683,
+    "Daily_Change": -0.02798339050370103,
     "Security_JA": "ベリサイン",
     "Daily_Change_right": 0.0007303268212524689
   },
@@ -5165,7 +5165,7 @@
     "GICS Sub-Industry": "Research & Consulting Services",
     "Symbol_YF": "VRSK",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.00978254793448488,
+    "Daily_Change": 0.0025403635542509714,
     "Security_JA": "ベリスク・アナリティックス",
     "Daily_Change_right": -0.0013459705008132415
   },
@@ -5176,7 +5176,7 @@
     "GICS Sub-Industry": "Integrated Telecommunication Services",
     "Symbol_YF": "VZ",
     "Exchange": "NYSE",
-    "Daily_Change": 0.026968247063940888,
+    "Daily_Change": -0.017789072426937662,
     "Security_JA": "ベライゾン・コミュニケーションズ",
     "Daily_Change_right": -0.0049166310389056
   },
@@ -5187,7 +5187,7 @@
     "GICS Sub-Industry": "Biotechnology",
     "Symbol_YF": "VRTX",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.005872004021294567,
+    "Daily_Change": -0.011054929901172149,
     "Security_JA": "バーテックス・ファーマシューティカルズ",
     "Daily_Change_right": 0.012739584528864941
   },
@@ -5198,7 +5198,7 @@
     "GICS Sub-Industry": "Electrical Components & Equipment",
     "Symbol_YF": "VRT",
     "Exchange": "NYSE",
-    "Daily_Change": 0.054434030281182454,
+    "Daily_Change": 0.005314685314685251,
     "Security_JA": "バーティブ・ホールディングス",
     "Daily_Change_right": 0.0449121136912249
   },
@@ -5209,7 +5209,7 @@
     "GICS Sub-Industry": "Pharmaceuticals",
     "Symbol_YF": "VTRS",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.01584022038567496,
+    "Daily_Change": -0.010847457627118653,
     "Security_JA": "ビアトリス",
     "Daily_Change_right": 0.047822983583154885
   },
@@ -5220,7 +5220,7 @@
     "GICS Sub-Industry": "Hotel & Resort REITs",
     "Symbol_YF": "VICI",
     "Exchange": "NYSE",
-    "Daily_Change": 0.01099290780141852,
+    "Daily_Change": -0.0031567870922483286,
     "Security_JA": "VICIプロパティーズ",
     "Daily_Change_right": 0.021478873239436726
   },
@@ -5231,7 +5231,7 @@
     "GICS Sub-Industry": "Transaction & Payment Processing Services",
     "Symbol_YF": "V",
     "Exchange": "NYSE",
-    "Daily_Change": -0.007741976934691204,
+    "Daily_Change": 0.0017482517482518146,
     "Security_JA": "ビザ クラスA",
     "Daily_Change_right": 0.00609330371310682
   },
@@ -5242,7 +5242,7 @@
     "GICS Sub-Industry": "Electric Utilities",
     "Symbol_YF": "VST",
     "Exchange": "NYSE",
-    "Daily_Change": 0.006804031067462625,
+    "Daily_Change": 0.047816385081287854,
     "Security_JA": "ビストラ・エナジー",
     "Daily_Change_right": -0.01250528605086687
   },
@@ -5253,7 +5253,7 @@
     "GICS Sub-Industry": "Construction Materials",
     "Symbol_YF": "VMC",
     "Exchange": "NYSE",
-    "Daily_Change": 0.008962117817379496,
+    "Daily_Change": -0.00218646441870789,
     "Security_JA": "バルカン・マテリアルズ",
     "Daily_Change_right": 0.020750227447687057
   },
@@ -5264,7 +5264,7 @@
     "GICS Sub-Industry": "Property & Casualty Insurance",
     "Symbol_YF": "WRB",
     "Exchange": "NYSE",
-    "Daily_Change": 0.014074074074074116,
+    "Daily_Change": -0.02804967129291456,
     "Security_JA": "ダブリューアール・バークレー",
     "Daily_Change_right": 0.008450279161008033
   },
@@ -5275,7 +5275,7 @@
     "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
     "Symbol_YF": "GWW",
     "Exchange": "NYSE",
-    "Daily_Change": 0.009296643504479386,
+    "Daily_Change": -0.014524727232146751,
     "Security_JA": "ダブリュー・ダブリュー・グレインジャー",
     "Daily_Change_right": 0.02595454866257329
   },
@@ -5286,7 +5286,7 @@
     "GICS Sub-Industry": "Construction Machinery & Heavy Transportation Equipment",
     "Symbol_YF": "WAB",
     "Exchange": "NYSE",
-    "Daily_Change": 0.030322728663199783,
+    "Daily_Change": -0.008869920207830716,
     "Security_JA": "ワブテック",
     "Daily_Change_right": 0.03080234833659493
   },
@@ -5297,7 +5297,7 @@
     "GICS Sub-Industry": "Consumer Staples Merchandise Retail",
     "Symbol_YF": "WMT",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.015771657178027476,
+    "Daily_Change": -0.015981216390214447,
     "Security_JA": "ウォルマート",
     "Daily_Change_right": 0.021470918122095874
   },
@@ -5308,7 +5308,7 @@
     "GICS Sub-Industry": "Movies & Entertainment",
     "Symbol_YF": "DIS",
     "Exchange": "NYSE",
-    "Daily_Change": -0.011161991986262046,
+    "Daily_Change": -0.010130246020260601,
     "Security_JA": "ウォルト・ディズニー",
     "Daily_Change_right": 0.023002887391722814
   },
@@ -5319,7 +5319,7 @@
     "GICS Sub-Industry": "Broadcasting",
     "Symbol_YF": "WBD",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.015733626051957546,
+    "Daily_Change": 0.006319702602230547,
     "Security_JA": "ワーナーブラザース・ディスカバリー・インク",
     "Daily_Change_right": 0.002920774005111292
   },
@@ -5330,7 +5330,7 @@
     "GICS Sub-Industry": "Environmental & Facilities Services",
     "Symbol_YF": "WM",
     "Exchange": "NYSE",
-    "Daily_Change": 0.03961059259590052,
+    "Daily_Change": -0.014046391752577363,
     "Security_JA": "ウェースト・マネジメント",
     "Daily_Change_right": -0.0005801499464478038
   },
@@ -5341,7 +5341,7 @@
     "GICS Sub-Industry": "Life Sciences Tools & Services",
     "Symbol_YF": "WAT",
     "Exchange": "NYSE",
-    "Daily_Change": -0.06932232789042408,
+    "Daily_Change": -0.0042737789203084325,
     "Security_JA": "ウォーターズ",
     "Daily_Change_right": 0.027363340020060058
   },
@@ -5352,7 +5352,7 @@
     "GICS Sub-Industry": "Electric Utilities",
     "Symbol_YF": "WEC",
     "Exchange": "NYSE",
-    "Daily_Change": 0.019315575939319086,
+    "Daily_Change": -0.008393181621528068,
     "Security_JA": "ウィスコンシン・エナジー",
     "Daily_Change_right": -0.004809756935497744
   },
@@ -5363,7 +5363,7 @@
     "GICS Sub-Industry": "Diversified Banks",
     "Symbol_YF": "WFC",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0008687019111441198,
+    "Daily_Change": -0.013538690845857699,
     "Security_JA": "ウェルズ・ファーゴ",
     "Daily_Change_right": 0.001969230769230727
   },
@@ -5374,7 +5374,7 @@
     "GICS Sub-Industry": "Health Care REITs",
     "Symbol_YF": "WELL",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0427641462193291,
+    "Daily_Change": 0.0024490971955435595,
     "Security_JA": "ウェルタワー",
     "Daily_Change_right": -0.018600531443755446
   },
@@ -5385,7 +5385,7 @@
     "GICS Sub-Industry": "Health Care Supplies",
     "Symbol_YF": "WST",
     "Exchange": "NYSE",
-    "Daily_Change": 0.12860318501512322,
+    "Daily_Change": -0.011430416532127749,
     "Security_JA": "ウェスト・ファーマシューティカル・サービシズ",
     "Daily_Change_right": 0.014528742448389666
   },
@@ -5396,7 +5396,7 @@
     "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
     "Symbol_YF": "WDC",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.036031868414289334,
+    "Daily_Change": 0.0021829728120658747,
     "Security_JA": "ウェスタン・デジタル",
     "Daily_Change_right": 0.029942768669302396
   },
@@ -5407,7 +5407,7 @@
     "GICS Sub-Industry": "Timber REITs",
     "Symbol_YF": "WY",
     "Exchange": "NYSE",
-    "Daily_Change": 0.009285425918449755,
+    "Daily_Change": 0.0012000000000000454,
     "Security_JA": "ウェアーハウザー",
     "Daily_Change_right": 0.03325123152709369
   },
@@ -5418,7 +5418,7 @@
     "GICS Sub-Industry": "Homefurnishing Retail",
     "Symbol_YF": "WSM",
     "Exchange": "NYSE",
-    "Daily_Change": -0.024836535049926535,
+    "Daily_Change": -0.009563906647954546,
     "Security_JA": "ウィリアムズソノマ",
     "Daily_Change_right": 0.03754569190600521
   },
@@ -5429,7 +5429,7 @@
     "GICS Sub-Industry": "Oil & Gas Storage & Transportation",
     "Symbol_YF": "WMB",
     "Exchange": "NYSE",
-    "Daily_Change": 0.007735583684950934,
+    "Daily_Change": 0.00739706908583393,
     "Security_JA": "ウィリアムズ・カンパニーズ",
     "Daily_Change_right": 0.004092576912221369
   },
@@ -5440,7 +5440,7 @@
     "GICS Sub-Industry": "Insurance Brokers",
     "Symbol_YF": "WTW",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.0017501715854495229,
+    "Daily_Change": -0.010863212898346346,
     "Security_JA": "ウィリス・タワーズ・ワトソン・パブリック",
     "Daily_Change_right": 0.006118378798634359
   },
@@ -5451,7 +5451,7 @@
     "GICS Sub-Industry": "Application Software",
     "Symbol_YF": "WDAY",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.09423380726698256,
+    "Daily_Change": 0.044388244527775386,
     "Security_JA": "ワークデイ クラスA",
     "Daily_Change_right": -0.008328661808280662
   },
@@ -5462,7 +5462,7 @@
     "GICS Sub-Industry": "Casinos & Gaming",
     "Symbol_YF": "WYNN",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.009658664666166552,
+    "Daily_Change": 0.0005681280181801181,
     "Security_JA": "ウィン・リゾーツ",
     "Daily_Change_right": 0.022186856393933765
   },
@@ -5473,7 +5473,7 @@
     "GICS Sub-Industry": "Multi-Utilities",
     "Symbol_YF": "XEL",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.017539367558571304,
+    "Daily_Change": -0.004151987921489662,
     "Security_JA": "エクセル・エナジー",
     "Daily_Change_right": 0.00037014188772364144
   },
@@ -5484,7 +5484,7 @@
     "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
     "Symbol_YF": "XYL",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0018936275316977112,
+    "Daily_Change": -0.0018900484838524445,
     "Security_JA": "ザイレム",
     "Daily_Change_right": -0.03274498841945527
   },
@@ -5495,7 +5495,7 @@
     "GICS Sub-Industry": "Restaurants",
     "Symbol_YF": "YUM",
     "Exchange": "NYSE",
-    "Daily_Change": 0.010499182698352745,
+    "Daily_Change": -0.0027997262489889174,
     "Security_JA": "ヤム・ブランズ",
     "Daily_Change_right": 0.020498996990972802
   },
@@ -5506,7 +5506,7 @@
     "GICS Sub-Industry": "Electronic Equipment & Instruments",
     "Symbol_YF": "ZBRA",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.01830376460406746,
+    "Daily_Change": 0.003702560937982119,
     "Security_JA": "ゼブラ・テクノロジーズ クラスA",
     "Daily_Change_right": 0.005964641263302501
   },
@@ -5517,7 +5517,7 @@
     "GICS Sub-Industry": "Health Care Equipment",
     "Symbol_YF": "ZBH",
     "Exchange": "NYSE",
-    "Daily_Change": -0.006448839208942482,
+    "Daily_Change": -0.012765036780614372,
     "Security_JA": "ジンマー・バイオメット・ホールディングス",
     "Daily_Change_right": 0.0
   },
@@ -5528,7 +5528,7 @@
     "GICS Sub-Industry": "Pharmaceuticals",
     "Symbol_YF": "ZTS",
     "Exchange": "NYSE",
-    "Daily_Change": -0.012423417290673875,
+    "Daily_Change": 0.006979148716181305,
     "Security_JA": "ゾエティス",
     "Daily_Change_right": 0.02805779569892464
   }
