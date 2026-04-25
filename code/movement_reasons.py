@@ -16,6 +16,9 @@ GEMINI_MODEL = "models/gemini-3.1-flash-lite-preview"
 # GEMINI_MODEL = "models/gemini-2.5-flash-lite" # GEMINI.md推奨の安定版が必要な場合はこちらに戻す
 
 def get_gemini_client():
+    # Gemini API processing is temporarily disabled
+    return None
+
     api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
         return None
