@@ -8,7 +8,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.007939795636564525,
     "Security_JA": "スリーエム",
-    "Daily_Change_right": 0.02656924609764198
+    "Daily_Change_right": 0.007939795636564525
   },
   {
     "Symbol": "AOS",
@@ -19,7 +19,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.010907973575050052,
     "Security_JA": "エー・オー・スミス",
-    "Daily_Change_right": 0.024336283185840583
+    "Daily_Change_right": -0.010907973575050052
   },
   {
     "Symbol": "ABT",
@@ -30,7 +30,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.014597750865051995,
     "Security_JA": "アボット･ラボラトリーズ",
-    "Daily_Change_right": 0.014035822771551309
+    "Daily_Change_right": -0.014597750865051995
   },
   {
     "Symbol": "ABBV",
@@ -41,7 +41,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.011147051505349495,
     "Security_JA": "アッヴィ",
-    "Daily_Change_right": -0.00291879994258105
+    "Daily_Change_right": -0.011147051505349495
   },
   {
     "Symbol": "ACN",
@@ -52,7 +52,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.00044873233116453056,
     "Security_JA": "アクセンチュア　クラスA",
-    "Daily_Change_right": 0.018814432989690752
+    "Daily_Change_right": 0.00044873233116453056
   },
   {
     "Symbol": "ADBE",
@@ -63,7 +63,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.02703155075738559,
     "Security_JA": "アドビ",
-    "Daily_Change_right": -0.014950032237266313
+    "Daily_Change_right": 0.02703155075738559
   },
   {
     "Symbol": "AMD",
@@ -74,7 +74,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.1391281564209217,
     "Security_JA": "アドバンスト・マイクロ・デバイシズ",
-    "Daily_Change_right": 0.00046718895996548357
+    "Daily_Change_right": 0.1391281564209217
   },
   {
     "Symbol": "AES",
@@ -85,7 +85,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.0006896551724137784,
     "Security_JA": "エーイーエス",
-    "Daily_Change_right": -0.002068965517241335
+    "Daily_Change_right": -0.0006896551724137784
   },
   {
     "Symbol": "AFL",
@@ -96,7 +96,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.004343293954134816,
     "Security_JA": "アフラック",
-    "Daily_Change_right": 0.007123384047137475
+    "Daily_Change_right": -0.004343293954134816
   },
   {
     "Symbol": "A",
@@ -107,7 +107,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.00987589582240863,
     "Security_JA": "アジレント･テクノロジーズ",
-    "Daily_Change_right": 0.030613107822410186
+    "Daily_Change_right": 0.00987589582240863
   },
   {
     "Symbol": "APD",
@@ -118,7 +118,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.006224271365058411,
     "Security_JA": "エアー・プロダクツ・アンド・ケミカルズ",
-    "Daily_Change_right": -0.018268066209123964
+    "Daily_Change_right": -0.006224271365058411
   },
   {
     "Symbol": "ABNB",
@@ -129,7 +129,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.006696271234228439,
     "Security_JA": "エアビーアンドビー",
-    "Daily_Change_right": 0.0271388143095567
+    "Daily_Change_right": 0.006696271234228439
   },
   {
     "Symbol": "AKAM",
@@ -140,7 +140,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.009669369931378735,
     "Security_JA": "アカマイ・テクノロジーズ",
-    "Daily_Change_right": -0.00950315050098132
+    "Daily_Change_right": -0.009669369931378735
   },
   {
     "Symbol": "ALB",
@@ -151,7 +151,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.02490421455938684,
     "Security_JA": "アルビマール",
-    "Daily_Change_right": -0.08287728411093592
+    "Daily_Change_right": -0.02490421455938684
   },
   {
     "Symbol": "ARE",
@@ -162,7 +162,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.0219922380336351,
     "Security_JA": "アレクサンドリア・リアル・エステート・エクイティーズ",
-    "Daily_Change_right": 0.014181438998957241
+    "Daily_Change_right": 0.0219922380336351
   },
   {
     "Symbol": "ALGN",
@@ -173,7 +173,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.005559343368122798,
     "Security_JA": "アライン・テクノロジー",
-    "Daily_Change_right": 0.027294346557128864
+    "Daily_Change_right": -0.005559343368122798
   },
   {
     "Symbol": "ALLE",
@@ -184,7 +184,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.008954008954008908,
     "Security_JA": "アレジオン",
-    "Daily_Change_right": 0.01978518937252673
+    "Daily_Change_right": -0.008954008954008908
   },
   {
     "Symbol": "LNT",
@@ -195,7 +195,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.004405892881729219,
     "Security_JA": "アライアント・エナジー",
-    "Daily_Change_right": 0.0008245155970867428
+    "Daily_Change_right": -0.004405892881729219
   },
   {
     "Symbol": "ALL",
@@ -206,7 +206,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.016992981159955702,
     "Security_JA": "オールステート",
-    "Daily_Change_right": 0.010707439098517754
+    "Daily_Change_right": -0.016992981159955702
   },
   {
     "Symbol": "GOOGL",
@@ -217,7 +217,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.016258963085366906,
     "Security_JA": "アルファベット クラスA",
-    "Daily_Change_right": 0.016844235462174947
+    "Daily_Change_right": 0.016258963085366906
   },
   {
     "Symbol": "GOOG",
@@ -228,7 +228,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.013530717986676516,
     "Security_JA": "アルファベット クラスC",
-    "Daily_Change_right": 0.01992367100399674
+    "Daily_Change_right": 0.013530717986676516
   },
   {
     "Symbol": "MO",
@@ -239,7 +239,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.0040208488458676125,
     "Security_JA": "アルトリア・グループ",
-    "Daily_Change_right": -0.011857098860486541
+    "Daily_Change_right": -0.0040208488458676125
   },
   {
     "Symbol": "AMZN",
@@ -250,7 +250,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.034930217970832664,
     "Security_JA": "アマゾン･ドットコム",
-    "Daily_Change_right": 0.0034441329595515167
+    "Daily_Change_right": 0.034930217970832664
   },
   {
     "Symbol": "AMCR",
@@ -261,7 +261,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.01740665993945504,
     "Security_JA": "アムコー",
-    "Daily_Change_right": 0.04380288700846187
+    "Daily_Change_right": -0.01740665993945504
   },
   {
     "Symbol": "AEE",
@@ -272,7 +272,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.008299866131191366,
     "Security_JA": "アメレン・コーポレーション",
-    "Daily_Change_right": 0.0038297114356964073
+    "Daily_Change_right": -0.008299866131191366
   },
   {
     "Symbol": "AEP",
@@ -283,7 +283,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.0025910571513179056,
     "Security_JA": "アメリカン・エレクトリック・パワー",
-    "Daily_Change_right": -0.006688466111771743
+    "Daily_Change_right": -0.0025910571513179056
   },
   {
     "Symbol": "AXP",
@@ -294,7 +294,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.014032334013498751,
     "Security_JA": "アメリカン・エキスプレス",
-    "Daily_Change_right": 0.018203585461689608
+    "Daily_Change_right": -0.014032334013498751
   },
   {
     "Symbol": "AIG",
@@ -305,7 +305,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.01559020044543427,
     "Security_JA": "エーアイジー",
-    "Daily_Change_right": 0.005880848887752595
+    "Daily_Change_right": -0.01559020044543427
   },
   {
     "Symbol": "AMT",
@@ -316,7 +316,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.004469024076867119,
     "Security_JA": "アメリカン・タワー",
-    "Daily_Change_right": 0.02105263157894748
+    "Daily_Change_right": -0.004469024076867119
   },
   {
     "Symbol": "AWK",
@@ -327,7 +327,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.018893087352745138,
     "Security_JA": "アメリカン・ウォーター・ワークス",
-    "Daily_Change_right": 0.006962509563886956
+    "Daily_Change_right": -0.018893087352745138
   },
   {
     "Symbol": "AMP",
@@ -338,7 +338,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.00976872701955923,
     "Security_JA": "アメリプライズ・フィナンシャル",
-    "Daily_Change_right": -0.00605690879776903
+    "Daily_Change_right": 0.00976872701955923
   },
   {
     "Symbol": "AME",
@@ -349,7 +349,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.008723404255319197,
     "Security_JA": "アメテック",
-    "Daily_Change_right": 0.02614662960389151
+    "Daily_Change_right": -0.008723404255319197
   },
   {
     "Symbol": "AMGN",
@@ -360,7 +360,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.011674602719293194,
     "Security_JA": "アムジェン",
-    "Daily_Change_right": 0.016915195054237456
+    "Daily_Change_right": -0.011674602719293194
   },
   {
     "Symbol": "APH",
@@ -371,7 +371,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.003129577839925415,
     "Security_JA": "アンフェノール クラスA",
-    "Daily_Change_right": 0.014097744360902217
+    "Daily_Change_right": -0.003129577839925415
   },
   {
     "Symbol": "ADI",
@@ -382,7 +382,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.010671486580172335,
     "Security_JA": "アナログ・デバイシズ",
-    "Daily_Change_right": 0.049886941775014064
+    "Daily_Change_right": -0.010671486580172335
   },
   {
     "Symbol": "AON",
@@ -393,7 +393,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.007479292866856274,
     "Security_JA": "エーオン",
-    "Daily_Change_right": -0.010556450169976632
+    "Daily_Change_right": -0.007479292866856274
   },
   {
     "Symbol": "APA",
@@ -404,7 +404,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.024055871702017582,
     "Security_JA": "アパッチ",
-    "Daily_Change_right": -0.05699208443271759
+    "Daily_Change_right": -0.024055871702017582
   },
   {
     "Symbol": "APO",
@@ -415,7 +415,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.004087521038711156,
     "Security_JA": "アポロ・グローバル・マネジメント",
-    "Daily_Change_right": 0.03153712441023096
+    "Daily_Change_right": -0.004087521038711156
   },
   {
     "Symbol": "AAPL",
@@ -426,7 +426,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.008667666313133177,
     "Security_JA": "アップル",
-    "Daily_Change_right": 0.025930144267274264
+    "Daily_Change_right": -0.008667666313133177
   },
   {
     "Symbol": "AMAT",
@@ -437,7 +437,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.032507241712262616,
     "Security_JA": "アプライド・マテリアルズ",
-    "Daily_Change_right": 0.01805591177224935
+    "Daily_Change_right": 0.032507241712262616
   },
   {
     "Symbol": "APP",
@@ -448,7 +448,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.012946693969218563,
     "Security_JA": "アップラビン",
-    "Daily_Change_right": 0.02383659808191554
+    "Daily_Change_right": -0.012946693969218563
   },
   {
     "Symbol": "APTV",
@@ -459,7 +459,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.005131600728356152,
     "Security_JA": "アプティブ・ホールディングス",
-    "Daily_Change_right": 0.03650904033379684
+    "Daily_Change_right": -0.005131600728356152
   },
   {
     "Symbol": "ACGL",
@@ -470,7 +470,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.019169980626083365,
     "Security_JA": "アーチ・キャピタル・グループ",
-    "Daily_Change_right": 0.005046343975283307
+    "Daily_Change_right": -0.019169980626083365
   },
   {
     "Symbol": "ADM",
@@ -481,7 +481,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.011423675567613839,
     "Security_JA": "アーチャーダニエルズ・ミッドランド",
-    "Daily_Change_right": -0.02387885847408271
+    "Daily_Change_right": -0.011423675567613839
   },
   {
     "Symbol": "ARES",
@@ -492,7 +492,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.003920543648719314,
     "Security_JA": "アレス・マネジメント　クラスA",
-    "Daily_Change_right": 0.01342281879194633
+    "Daily_Change_right": 0.003920543648719314
   },
   {
     "Symbol": "ANET",
@@ -503,7 +503,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.025268038249782583,
     "Security_JA": "アリスタネットワークス",
-    "Daily_Change_right": 0.019998757841127875
+    "Daily_Change_right": 0.025268038249782583
   },
   {
     "Symbol": "AJG",
@@ -514,7 +514,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.01818844873957245,
     "Security_JA": "アーサー・ジェイ・ギャラガー",
-    "Daily_Change_right": -0.011022848982506241
+    "Daily_Change_right": -0.01818844873957245
   },
   {
     "Symbol": "AIZ",
@@ -525,7 +525,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.0028638375423066763,
     "Security_JA": "アシュラント",
-    "Daily_Change_right": 0.013843756955263678
+    "Daily_Change_right": -0.0028638375423066763
   },
   {
     "Symbol": "T",
@@ -536,7 +536,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.015407741450582494,
     "Security_JA": "エーティー・アンド・ティー",
-    "Daily_Change_right": 0.00416666666666678
+    "Daily_Change_right": -0.015407741450582494
   },
   {
     "Symbol": "ATO",
@@ -547,7 +547,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.012565891060114017,
     "Security_JA": "アトモス・エナジー",
-    "Daily_Change_right": -0.007660389403127981
+    "Daily_Change_right": -0.012565891060114017
   },
   {
     "Symbol": "ADSK",
@@ -558,7 +558,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.02353651176825592,
     "Security_JA": "オートデスク",
-    "Daily_Change_right": -0.004688271097219881
+    "Daily_Change_right": 0.02353651176825592
   },
   {
     "Symbol": "ADP",
@@ -569,7 +569,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.010074044225054148,
     "Security_JA": "オートマチック・データ・プロセシング",
-    "Daily_Change_right": 0.00039922151803988476
+    "Daily_Change_right": -0.010074044225054148
   },
   {
     "Symbol": "AZO",
@@ -580,7 +580,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.00536250416990992,
     "Security_JA": "オートゾーン",
-    "Daily_Change_right": 0.023812867374164985
+    "Daily_Change_right": -0.00536250416990992
   },
   {
     "Symbol": "AVB",
@@ -591,7 +591,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.005595615806172477,
     "Security_JA": "アバロンベイ・コミュニティーズ",
-    "Daily_Change_right": 0.025113482284973124
+    "Daily_Change_right": -0.005595615806172477
   },
   {
     "Symbol": "AVY",
@@ -602,7 +602,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.011527205399271377,
     "Security_JA": "エイブリー・デニソン",
-    "Daily_Change_right": 0.03734889035905443
+    "Daily_Change_right": -0.011527205399271377
   },
   {
     "Symbol": "AXON",
@@ -613,7 +613,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.011409942950285296,
     "Security_JA": "アクソン・エンタープライズ",
-    "Daily_Change_right": 0.024854991350361347
+    "Daily_Change_right": 0.011409942950285296
   },
   {
     "Symbol": "BKR",
@@ -624,7 +624,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.06900294619320829,
     "Security_JA": "ベーカー・ヒューズ",
-    "Daily_Change_right": -0.013531353135313536
+    "Daily_Change_right": 0.06900294619320829
   },
   {
     "Symbol": "BALL",
@@ -635,7 +635,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.02851711026615965,
     "Security_JA": "ボール",
-    "Daily_Change_right": 0.017516174846141812
+    "Daily_Change_right": -0.02851711026615965
   },
   {
     "Symbol": "BAC",
@@ -646,7 +646,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.008004574042309923,
     "Security_JA": "バンク・オブ・アメリカ",
-    "Daily_Change_right": 0.007475238273219932
+    "Daily_Change_right": -0.008004574042309923
   },
   {
     "Symbol": "BAX",
@@ -657,7 +657,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.013579576317218903,
     "Security_JA": "バクスター・インターナショナル",
-    "Daily_Change_right": 0.03142227122381479
+    "Daily_Change_right": -0.013579576317218903
   },
   {
     "Symbol": "BDX",
@@ -668,7 +668,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.017500807232805993,
     "Security_JA": "ベクトン・ディッキンソン",
-    "Daily_Change_right": 0.024027903371657403
+    "Daily_Change_right": -0.017500807232805993
   },
   {
     "Symbol": "BRK.B",
@@ -679,7 +679,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.0026139623844437746,
     "Security_JA": "バークシャー・ハサウェイ　クラスB",
-    "Daily_Change_right": -0.0011365549755851584
+    "Daily_Change_right": -0.0026139623844437746
   },
   {
     "Symbol": "BBY",
@@ -690,7 +690,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.01707317073170727,
     "Security_JA": "ベスト・バイ",
-    "Daily_Change_right": 0.016390907685170902
+    "Daily_Change_right": -0.01707317073170727
   },
   {
     "Symbol": "TECH",
@@ -701,7 +701,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.03802681992337163,
     "Security_JA": "テクネ",
-    "Daily_Change_right": 0.03260111576011153
+    "Daily_Change_right": 0.038122605363984575
   },
   {
     "Symbol": "BIIB",
@@ -712,7 +712,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.018628912071535022,
     "Security_JA": "バイオジェン",
-    "Daily_Change_right": 0.0075559595500510396
+    "Daily_Change_right": -0.018628912071535022
   },
   {
     "Symbol": "BLK",
@@ -723,7 +723,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.008068573381301793,
     "Security_JA": "ブラックロック・ファンディング",
-    "Daily_Change_right": 0.026528123323088983
+    "Daily_Change_right": -0.008068573381301793
   },
   {
     "Symbol": "BX",
@@ -734,7 +734,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.005558734570424202,
     "Security_JA": "ブラックストーン",
-    "Daily_Change_right": 0.007414344806056483
+    "Daily_Change_right": -0.005558734570424202
   },
   {
     "Symbol": "XYZ",
@@ -745,7 +745,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.024310024310024145,
     "Security_JA": "ブロック",
-    "Daily_Change_right": 0.03771661569826712
+    "Daily_Change_right": 0.024310024310024145
   },
   {
     "Symbol": "BK",
@@ -756,7 +756,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.010116674051100106,
     "Security_JA": "バンク・オブ・ニューヨーク・メロン",
-    "Daily_Change_right": 0.0019282112132897574
+    "Daily_Change_right": -0.010116674051100106
   },
   {
     "Symbol": "BA",
@@ -767,7 +767,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.007303010890454871,
     "Security_JA": "ボーイング",
-    "Daily_Change_right": 0.02055921052631579
+    "Daily_Change_right": -0.007303010890454871
   },
   {
     "Symbol": "BKNG",
@@ -778,7 +778,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.019801980198019802,
     "Security_JA": "ブッキング・ ホールディングス",
-    "Daily_Change_right": 0.04036627654963149
+    "Daily_Change_right": 0.019801980198019802
   },
   {
     "Symbol": "BSX",
@@ -789,7 +789,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.05510732227127413,
     "Security_JA": "ボストン・サイエンティフィック",
-    "Daily_Change_right": 0.012771996215704861
+    "Daily_Change_right": -0.05510732227127413
   },
   {
     "Symbol": "BMY",
@@ -800,7 +800,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.005252456794307052,
     "Security_JA": "ブリストル・マイヤーズ",
-    "Daily_Change_right": 0.020522388059701507
+    "Daily_Change_right": -0.005252456794307052
   },
   {
     "Symbol": "AVGO",
@@ -811,7 +811,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.006715245035004985,
     "Security_JA": "ブロードコム",
-    "Daily_Change_right": 0.02025246568123069
+    "Daily_Change_right": 0.006715245035004985
   },
   {
     "Symbol": "BR",
@@ -822,7 +822,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.00564283424174412,
     "Security_JA": "ブロードリッジ・フィナンシャル・ソリューションズ",
-    "Daily_Change_right": 0.0030784386159339984
+    "Daily_Change_right": -0.00564283424174412
   },
   {
     "Symbol": "BRO",
@@ -833,7 +833,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.024426350851221194,
     "Security_JA": "ブラウン・アンド・ブラウン",
-    "Daily_Change_right": -0.015983725661144935
+    "Daily_Change_right": -0.024426350851221194
   },
   {
     "Symbol": "BF.B",
@@ -844,7 +844,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.0031690140845070376,
     "Security_JA": "ブラウン・フォーマン クラスB",
-    "Daily_Change_right": -0.010522742701968847
+    "Daily_Change_right": -0.0031690140845070376
   },
   {
     "Symbol": "BLDR",
@@ -855,7 +855,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.0011093854004880666,
     "Security_JA": "ビルダーズ・ファーストソース",
-    "Daily_Change_right": 0.054827175208581574
+    "Daily_Change_right": -0.0011093854004880666
   },
   {
     "Symbol": "BG",
@@ -866,7 +866,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.012023414016769467,
     "Security_JA": "ブンゲ・グローバル",
-    "Daily_Change_right": -0.030485326396227946
+    "Daily_Change_right": -0.012023414016769467
   },
   {
     "Symbol": "BXP",
@@ -877,7 +877,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.012807017543859595,
     "Security_JA": "BXP",
-    "Daily_Change_right": 0.0334698237493323
+    "Daily_Change_right": 0.012807017543859595
   },
   {
     "Symbol": "CHRW",
@@ -888,7 +888,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.0038641558724284747,
     "Security_JA": "シー・エイチ・ロビンソン・ワールドワイド",
-    "Daily_Change_right": 0.0034689719729089556
+    "Daily_Change_right": -0.0038641558724284747
   },
   {
     "Symbol": "CDNS",
@@ -899,7 +899,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.05904622530461618,
     "Security_JA": "ケイデンス・デザイン・システムズ",
-    "Daily_Change_right": 0.013259056554599927
+    "Daily_Change_right": 0.05904622530461618
   },
   {
     "Symbol": "CPT",
@@ -910,7 +910,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.006638680074197079,
     "Security_JA": "カムデン・プロパティ・トラスト",
-    "Daily_Change_right": 0.032142144140547
+    "Daily_Change_right": -0.006638680074197079
   },
   {
     "Symbol": "CPB",
@@ -921,7 +921,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.01622137404580152,
     "Security_JA": "ザ・キャンベルズ",
-    "Daily_Change_right": 0.002387774594078183
+    "Daily_Change_right": -0.01622137404580152
   },
   {
     "Symbol": "COF",
@@ -932,7 +932,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.02664903626099786,
     "Security_JA": "キャピタル・ワン・フィナンシャル",
-    "Daily_Change_right": 0.028698121668078277
+    "Daily_Change_right": -0.02664903626099786
   },
   {
     "Symbol": "CAH",
@@ -943,7 +943,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.02378858929269248,
     "Security_JA": "カーディナル・ヘルス",
-    "Daily_Change_right": 0.004176442984514382
+    "Daily_Change_right": -0.02378858929269248
   },
   {
     "Symbol": "CCL",
@@ -954,7 +954,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.019512195121951337,
     "Security_JA": "カーニバル",
-    "Daily_Change_right": 0.06993775173928965
+    "Daily_Change_right": 0.019512195121951337
   },
   {
     "Symbol": "CARR",
@@ -965,7 +965,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.009262268443288922,
     "Security_JA": "キャリア・グローバル",
-    "Daily_Change_right": 0.026963657678780763
+    "Daily_Change_right": -0.009262268443288922
   },
   {
     "Symbol": "CVNA",
@@ -976,7 +976,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.01503647461664434,
     "Security_JA": "カーヴァナ",
-    "Daily_Change_right": 0.06981559187279142
+    "Daily_Change_right": 0.01503647461664434
   },
   {
     "Symbol": "CASY",
@@ -987,7 +987,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.012319262616798643,
     "Security_JA": "ケーシーズ・ゼネラル・ストアーズ",
-    "Daily_Change_right": 0.02373782588643824
+    "Daily_Change_right": 0.012319262616798643
   },
   {
     "Symbol": "CAT",
@@ -998,7 +998,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.005327809970786894,
     "Security_JA": "キャタピラー",
-    "Daily_Change_right": 0.02846012476380298
+    "Daily_Change_right": -0.005327809970786894
   },
   {
     "Symbol": "CBOE",
@@ -1009,7 +1009,7 @@
     "Exchange": "BTS",
     "Daily_Change": 0.012295081967213108,
     "Security_JA": "シービーオーイー・マーケッツ",
-    "Daily_Change_right": -0.03051263817958497
+    "Daily_Change_right": 0.012295081967213108
   },
   {
     "Symbol": "CBRE",
@@ -1020,7 +1020,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.0068314245529436084,
     "Security_JA": "CBREグループ",
-    "Daily_Change_right": 0.02510148849797009
+    "Daily_Change_right": -0.0068314245529436084
   },
   {
     "Symbol": "CDW",
@@ -1031,7 +1031,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.008426760460174439,
     "Security_JA": "CDWコープ",
-    "Daily_Change_right": 0.004875853274323049
+    "Daily_Change_right": -0.008426760460174439
   },
   {
     "Symbol": "COR",
@@ -1042,7 +1042,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.010276502135585563,
     "Security_JA": "センコア",
-    "Daily_Change_right": 0.016099512981977225
+    "Daily_Change_right": -0.010276502135585563
   },
   {
     "Symbol": "CNC",
@@ -1053,7 +1053,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.017765879776101164,
     "Security_JA": "センティーン",
-    "Daily_Change_right": -0.02128205128205124
+    "Daily_Change_right": 0.017765879776101164
   },
   {
     "Symbol": "CNP",
@@ -1064,7 +1064,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.016442797591477556,
     "Security_JA": "センターポイント・エナジー",
-    "Daily_Change_right": -0.004859986114325407
+    "Daily_Change_right": -0.016442797591477556
   },
   {
     "Symbol": "CF",
@@ -1075,7 +1075,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.03710486503702521,
     "Security_JA": "シーエフ・インダストリーズ・ホールディングス",
-    "Daily_Change_right": -0.09646379600673553
+    "Daily_Change_right": -0.03710486503702521
   },
   {
     "Symbol": "CRL",
@@ -1086,7 +1086,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.012280910933587708,
     "Security_JA": "チャールス・リバー・ラボラトリーズ",
-    "Daily_Change_right": 0.03922233525488865
+    "Daily_Change_right": 0.012280910933587708
   },
   {
     "Symbol": "SCHW",
@@ -1097,7 +1097,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.004723346828610006,
     "Security_JA": "チャールズ・シュワブ",
-    "Daily_Change_right": -0.003670913409630786
+    "Daily_Change_right": -0.004723346828610006
   },
   {
     "Symbol": "CHTR",
@@ -1108,7 +1108,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.2549838696335512,
     "Security_JA": "チャーター・コミュニケーションズ クラスA",
-    "Daily_Change_right": 0.002754587447556917
+    "Daily_Change_right": -0.2549838696335512
   },
   {
     "Symbol": "CVX",
@@ -1119,7 +1119,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.012739872068230206,
     "Security_JA": "シェブロン",
-    "Daily_Change_right": -0.022110018602179093
+    "Daily_Change_right": -0.012739872068230206
   },
   {
     "Symbol": "CMG",
@@ -1130,7 +1130,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.009144542772861424,
     "Security_JA": "チポトレ・メキシカン・グリル",
-    "Daily_Change_right": 0.021379703534777653
+    "Daily_Change_right": 0.009144542772861424
   },
   {
     "Symbol": "CB",
@@ -1141,7 +1141,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.020307618360970895,
     "Security_JA": "チャブ",
-    "Daily_Change_right": 0.0073381645453990865
+    "Daily_Change_right": -0.020307618360970895
   },
   {
     "Symbol": "CHD",
@@ -1152,7 +1152,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.004652146331148211,
     "Security_JA": "チャーチ・アンド・ドワイト",
-    "Daily_Change_right": 0.02475142796699798
+    "Daily_Change_right": 0.004652146331148211
   },
   {
     "Symbol": "CIEN",
@@ -1163,7 +1163,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.009595812736260409,
     "Security_JA": "シエナ",
-    "Daily_Change_right": 0.02475917361714157
+    "Daily_Change_right": 0.009595812736260409
   },
   {
     "Symbol": "CI",
@@ -1174,7 +1174,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.014586014586014731,
     "Security_JA": "ザ・シグナ・グループ",
-    "Daily_Change_right": 0.00821362665991237
+    "Daily_Change_right": -0.014586014586014731
   },
   {
     "Symbol": "CINF",
@@ -1185,7 +1185,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.022000237840409186,
     "Security_JA": "シンシナティ・フィナンシャル",
-    "Daily_Change_right": 0.02118021547502436
+    "Daily_Change_right": -0.022000237840409186
   },
   {
     "Symbol": "CTAS",
@@ -1196,7 +1196,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.00968359418984348,
     "Security_JA": "シンタス",
-    "Daily_Change_right": 0.009294727354664134
+    "Daily_Change_right": -0.00968359418984348
   },
   {
     "Symbol": "CSCO",
@@ -1207,7 +1207,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.00474094141550967,
     "Security_JA": "シスコシステムズ",
-    "Daily_Change_right": 0.020710059171597635
+    "Daily_Change_right": 0.00474094141550967
   },
   {
     "Symbol": "C",
@@ -1218,7 +1218,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.00412419266983104,
     "Security_JA": "シティグループ",
-    "Daily_Change_right": 0.021957631049945903
+    "Daily_Change_right": -0.00412419266983104
   },
   {
     "Symbol": "CFG",
@@ -1229,7 +1229,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.021175387448212405,
     "Security_JA": "シチズンズ・フィナンシャル・グループ",
-    "Daily_Change_right": 0.0006210215805000195
+    "Daily_Change_right": -0.021175387448212405
   },
   {
     "Symbol": "CLX",
@@ -1240,7 +1240,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.010444398935080998,
     "Security_JA": "クロロックス・カンパニー",
-    "Daily_Change_right": 0.021488571986716186
+    "Daily_Change_right": 0.010444398935080998
   },
   {
     "Symbol": "CME",
@@ -1251,7 +1251,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.0014362279749186428,
     "Security_JA": "シーエムイー・グループ",
-    "Daily_Change_right": -0.028931199783944532
+    "Daily_Change_right": -0.0014362279749186428
   },
   {
     "Symbol": "CMS",
@@ -1262,7 +1262,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.004567997911772494,
     "Security_JA": "シーエムエス・エナジー",
-    "Daily_Change_right": -0.004608884905901926
+    "Daily_Change_right": -0.004567997911772494
   },
   {
     "Symbol": "KO",
@@ -1273,7 +1273,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.004588358678552626,
     "Security_JA": "コカ・コーラ",
-    "Daily_Change_right": 0.00744878957169444
+    "Daily_Change_right": 0.004588358678552626
   },
   {
     "Symbol": "CTSH",
@@ -1284,7 +1284,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.00018148820326675154,
     "Security_JA": "コグニザント・テクノロジー・ソリューションズ クラスA",
-    "Daily_Change_right": 0.012720964810837536
+    "Daily_Change_right": 0.00018148820326675154
   },
   {
     "Symbol": "COHR",
@@ -1295,7 +1295,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.004708599857853683,
     "Security_JA": "コヒレント",
-    "Daily_Change_right": 0.051890243902438966
+    "Daily_Change_right": -0.004708599857853683
   },
   {
     "Symbol": "COIN",
@@ -1306,7 +1306,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.009296215833880682,
     "Security_JA": "コインベース・グローバル",
-    "Daily_Change_right": 0.03252764850122604
+    "Daily_Change_right": 0.009296215833880682
   },
   {
     "Symbol": "CL",
@@ -1317,7 +1317,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.011108456760630755,
     "Security_JA": "コルゲート・パルモリーブ",
-    "Daily_Change_right": 0.026189906720880143
+    "Daily_Change_right": 0.011108456760630755
   },
   {
     "Symbol": "CMCSA",
@@ -1328,7 +1328,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.1289506953223768,
     "Security_JA": "コムキャスト クラスA",
-    "Daily_Change_right": 0.009540034071550173
+    "Daily_Change_right": -0.1289506953223768
   },
   {
     "Symbol": "FIX",
@@ -1339,7 +1339,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.026940487397895153,
     "Security_JA": "コンフォート・システムズUSA",
-    "Daily_Change_right": 0.027709110381887583
+    "Daily_Change_right": -0.026940487397895153
   },
   {
     "Symbol": "CAG",
@@ -1350,7 +1350,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.016655100624566287,
     "Security_JA": "コナグラ・ブランズ",
-    "Daily_Change_right": 0.010884353741496608
+    "Daily_Change_right": -0.016655100624566287
   },
   {
     "Symbol": "COP",
@@ -1361,7 +1361,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.020985768272091334,
     "Security_JA": "コノコ・フィリップス",
-    "Daily_Change_right": -0.04548819610101166
+    "Daily_Change_right": -0.020985768272091334
   },
   {
     "Symbol": "ED",
@@ -1372,7 +1372,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.010793650793650774,
     "Security_JA": "コンソリデーテッド・エジソン",
-    "Daily_Change_right": -0.0033478103510675926
+    "Daily_Change_right": -0.010793650793650774
   },
   {
     "Symbol": "STZ",
@@ -1383,7 +1383,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.020777101249136915,
     "Security_JA": "コンステレーション･ブランズ クラスA",
-    "Daily_Change_right": -0.01199391171993911
+    "Daily_Change_right": -0.020777101249136915
   },
   {
     "Symbol": "CEG",
@@ -1394,7 +1394,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.07090890460088121,
     "Security_JA": "コンステレーション・エナジー",
-    "Daily_Change_right": -0.009794744935481738
+    "Daily_Change_right": 0.07090890460088121
   },
   {
     "Symbol": "COO",
@@ -1405,7 +1405,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.008160123171670534,
     "Security_JA": "クーパー",
-    "Daily_Change_right": 0.009801095416546654
+    "Daily_Change_right": -0.008160123171670534
   },
   {
     "Symbol": "CPRT",
@@ -1416,7 +1416,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.0239079102715467,
     "Security_JA": "コパート",
-    "Daily_Change_right": 0.005410279531109098
+    "Daily_Change_right": -0.0239079102715467
   },
   {
     "Symbol": "GLW",
@@ -1427,7 +1427,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.03769911504424771,
     "Security_JA": "コーニング",
-    "Daily_Change_right": -0.01023603082851648
+    "Daily_Change_right": 0.03769911504424771
   },
   {
     "Symbol": "CPAY",
@@ -1438,7 +1438,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.001786454844163723,
     "Security_JA": "コーペイ",
-    "Daily_Change_right": 0.007739332068539746
+    "Daily_Change_right": -0.001786454844163723
   },
   {
     "Symbol": "CTVA",
@@ -1449,7 +1449,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.0021348737912847133,
     "Security_JA": "コルテバ",
-    "Daily_Change_right": -0.010103499260719483
+    "Daily_Change_right": 0.0021348737912847133
   },
   {
     "Symbol": "CSGP",
@@ -1460,7 +1460,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.025147137506688195,
     "Security_JA": "コスター・グループ",
-    "Daily_Change_right": -0.007992007992007999
+    "Daily_Change_right": -0.025147137506688195
   },
   {
     "Symbol": "COST",
@@ -1471,7 +1471,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.003184211045170467,
     "Security_JA": "コストコ・ホールセール",
-    "Daily_Change_right": 0.012844278319709027
+    "Daily_Change_right": -0.003184211045170467
   },
   {
     "Symbol": "CTRA",
@@ -1482,7 +1482,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.0035661218424962093,
     "Security_JA": "コテラ・エナジー・インク",
-    "Daily_Change_right": -0.03378167031592112
+    "Daily_Change_right": -0.0035661218424962093
   },
   {
     "Symbol": "CRH",
@@ -1493,7 +1493,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.007169682485489957,
     "Security_JA": "CRH",
-    "Daily_Change_right": 0.023522210563133944
+    "Daily_Change_right": 0.007169682485489957
   },
   {
     "Symbol": "CRWD",
@@ -1504,7 +1504,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.006151911807629289,
     "Security_JA": "クラウドストライク・ホールディングス　クラスA",
-    "Daily_Change_right": 0.013749402199904353
+    "Daily_Change_right": 0.006151911807629289
   },
   {
     "Symbol": "CCI",
@@ -1515,7 +1515,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.013482632541133372,
     "Security_JA": "クラウン・キャッスル",
-    "Daily_Change_right": 0.02118107516979382
+    "Daily_Change_right": -0.013482632541133372
   },
   {
     "Symbol": "CSX",
@@ -1526,7 +1526,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.016673884798614185,
     "Security_JA": "シーエスエックス",
-    "Daily_Change_right": 0.014044943820224753
+    "Daily_Change_right": -0.016673884798614185
   },
   {
     "Symbol": "CMI",
@@ -1537,7 +1537,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.005814927008966024,
     "Security_JA": "カミンズ",
-    "Daily_Change_right": 0.030038266353528492
+    "Daily_Change_right": 0.005814927008966024
   },
   {
     "Symbol": "CVS",
@@ -1548,7 +1548,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.011666243976667533,
     "Security_JA": "シーブイエス・ヘルス",
-    "Daily_Change_right": 0.006641489777314636
+    "Daily_Change_right": -0.011666243976667533
   },
   {
     "Symbol": "DHR",
@@ -1559,7 +1559,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.007392059136473054,
     "Security_JA": "ダナハー",
-    "Daily_Change_right": 0.005005676540406641
+    "Daily_Change_right": -0.007392059136473054
   },
   {
     "Symbol": "DRI",
@@ -1570,7 +1570,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.006325985964218648,
     "Security_JA": "ダーデン・レストランツ",
-    "Daily_Change_right": 0.022424488965727636
+    "Daily_Change_right": -0.006325985964218648
   },
   {
     "Symbol": "DDOG",
@@ -1581,7 +1581,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.012670107930548962,
     "Security_JA": "データドッグ　クラスA",
-    "Daily_Change_right": 0.025431278853162716
+    "Daily_Change_right": 0.012670107930548962
   },
   {
     "Symbol": "DVA",
@@ -1592,7 +1592,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.020512158936979982,
     "Security_JA": "ダビータ",
-    "Daily_Change_right": -0.0014851819347870038
+    "Daily_Change_right": -0.020512158936979982
   },
   {
     "Symbol": "DECK",
@@ -1603,7 +1603,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.007613035001392697,
     "Security_JA": "デッカーズ・アウトドア",
-    "Daily_Change_right": 0.03849349210744948
+    "Daily_Change_right": 0.007613035001392697
   },
   {
     "Symbol": "DE",
@@ -1614,7 +1614,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.04951431708759196,
     "Security_JA": "ディア",
-    "Daily_Change_right": 0.010732809531145656
+    "Daily_Change_right": -0.04951431708759196
   },
   {
     "Symbol": "DELL",
@@ -1625,7 +1625,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.01861977939096831,
     "Security_JA": "デル・テクノロジーズ",
-    "Daily_Change_right": 0.017919105080532436
+    "Daily_Change_right": 0.01861977939096831
   },
   {
     "Symbol": "DAL",
@@ -1636,7 +1636,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.001170103846716371,
     "Security_JA": "デルタ航空",
-    "Daily_Change_right": 0.02618400343396764
+    "Daily_Change_right": 0.001170103846716371
   },
   {
     "Symbol": "DVN",
@@ -1647,7 +1647,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.004361370716510922,
     "Security_JA": "デボン・エナジー・コーポレーション",
-    "Daily_Change_right": -0.033857579729139456
+    "Daily_Change_right": -0.004361370716510922
   },
   {
     "Symbol": "DXCM",
@@ -1658,7 +1658,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.018022328548644377,
     "Security_JA": "デクスコム",
-    "Daily_Change_right": 0.044912624530458925
+    "Daily_Change_right": -0.018022328548644377
   },
   {
     "Symbol": "FANG",
@@ -1669,7 +1669,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.004090188659951998,
     "Security_JA": "ダイアモンドバック・エナジー",
-    "Daily_Change_right": -0.034181623359228475
+    "Daily_Change_right": -0.004090188659951998
   },
   {
     "Symbol": "DLR",
@@ -1680,7 +1680,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.0,
     "Security_JA": "デジタル・リアルティ",
-    "Daily_Change_right": 0.022959055513689992
+    "Daily_Change_right": 0.0
   },
   {
     "Symbol": "DG",
@@ -1691,7 +1691,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.011060134360150815,
     "Security_JA": "ダラー・ゼネラル",
-    "Daily_Change_right": 0.025998218190653666
+    "Daily_Change_right": -0.011060134360150815
   },
   {
     "Symbol": "DLTR",
@@ -1702,7 +1702,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.014669926650366748,
     "Security_JA": "ダラー・ツリー",
-    "Daily_Change_right": 0.06004202942059441
+    "Daily_Change_right": 0.014669926650366748
   },
   {
     "Symbol": "D",
@@ -1713,7 +1713,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.0009596928982724754,
     "Security_JA": "ドミニオン・エナジー",
-    "Daily_Change_right": -0.0009603072983353901
+    "Daily_Change_right": 0.0009596928982724754
   },
   {
     "Symbol": "DPZ",
@@ -1724,7 +1724,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.012245226778377513,
     "Security_JA": "ドミノ･ピザ",
-    "Daily_Change_right": 0.008292682926829274
+    "Daily_Change_right": -0.012245226778377513
   },
   {
     "Symbol": "DASH",
@@ -1735,7 +1735,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.0012429378531073382,
     "Security_JA": "ドアダッシュ",
-    "Daily_Change_right": 0.025427981932749533
+    "Daily_Change_right": -0.0012429378531073382
   },
   {
     "Symbol": "DOV",
@@ -1746,7 +1746,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.014770984001753253,
     "Security_JA": "ドーバー",
-    "Daily_Change_right": 0.022879021338189316
+    "Daily_Change_right": -0.014770984001753253
   },
   {
     "Symbol": "DOW",
@@ -1757,7 +1757,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.0033739942901633907,
     "Security_JA": "ダウ",
-    "Daily_Change_right": -0.10821643286573146
+    "Daily_Change_right": 0.0033739942901633907
   },
   {
     "Symbol": "DHI",
@@ -1768,7 +1768,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.02630617464377051,
     "Security_JA": "ディーアール・ホートン",
-    "Daily_Change_right": 0.045064527380537206
+    "Daily_Change_right": -0.02630617464377051
   },
   {
     "Symbol": "DTE",
@@ -1779,7 +1779,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.003527815468114045,
     "Security_JA": "ディーティーイー・エナジー・カンパニー",
-    "Daily_Change_right": 6.804109682241889e-05
+    "Daily_Change_right": -0.003527815468114045
   },
   {
     "Symbol": "DUK",
@@ -1790,7 +1790,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.006013745704467323,
     "Security_JA": "デューク・エナジー",
-    "Daily_Change_right": -0.004664541708777069
+    "Daily_Change_right": -0.006013745704467323
   },
   {
     "Symbol": "DD",
@@ -1801,7 +1801,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.000862626698296294,
     "Security_JA": "デュポン・ド・ヌムール",
-    "Daily_Change_right": 0.012834224598930511
+    "Daily_Change_right": -0.000862626698296294
   },
   {
     "Symbol": "ETN",
@@ -1812,7 +1812,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.0013663133097761699,
     "Security_JA": "イートン",
-    "Daily_Change_right": 0.03432383571410374
+    "Daily_Change_right": -0.0013663133097761699
   },
   {
     "Symbol": "EBAY",
@@ -1823,7 +1823,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.05280464216634437,
     "Security_JA": "イーベイ",
-    "Daily_Change_right": 0.026382895253040526
+    "Daily_Change_right": -0.05280464216634437
   },
   {
     "Symbol": "SATS",
@@ -1834,7 +1834,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.033080974325213924,
     "Security_JA": "エコスター クラスA",
-    "Daily_Change_right": 0.005358490566037796
+    "Daily_Change_right": -0.033080974325213924
   },
   {
     "Symbol": "ECL",
@@ -1845,7 +1845,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.0072204825934793875,
     "Security_JA": "エコラボ",
-    "Daily_Change_right": 0.02068863053894437
+    "Daily_Change_right": -0.0072204825934793875
   },
   {
     "Symbol": "EIX",
@@ -1856,7 +1856,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.021040659653113504,
     "Security_JA": "エジソン・インターナショナル",
-    "Daily_Change_right": -0.01187150837988819
+    "Daily_Change_right": -0.021040659653113504
   },
   {
     "Symbol": "EW",
@@ -1867,7 +1867,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.05556949322629211,
     "Security_JA": "エドワーズ・ライフサイエンシズ",
-    "Daily_Change_right": 0.024541429475015784
+    "Daily_Change_right": 0.05556949322629211
   },
   {
     "Symbol": "EA",
@@ -1878,7 +1878,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.0007900844402745376,
     "Security_JA": "エレクトロニック・アーツ",
-    "Daily_Change_right": 0.002261887200668771
+    "Daily_Change_right": 0.0007900844402745376
   },
   {
     "Symbol": "ELV",
@@ -1889,7 +1889,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.004418262150220998,
     "Security_JA": "エレバンス・ヘルス",
-    "Daily_Change_right": 0.0228927870305871
+    "Daily_Change_right": -0.004418262150220998
   },
   {
     "Symbol": "EME",
@@ -1900,7 +1900,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.003676512695994819,
     "Security_JA": "エムコア・グループ",
-    "Daily_Change_right": 0.01741874408330698
+    "Daily_Change_right": -0.003676512695994819
   },
   {
     "Symbol": "EMR",
@@ -1911,7 +1911,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.007652344846953127,
     "Security_JA": "エマーソン・エレクトリック",
-    "Daily_Change_right": 0.04260169551898546
+    "Daily_Change_right": -0.007652344846953127
   },
   {
     "Symbol": "ETR",
@@ -1922,7 +1922,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.0024578651685393357,
     "Security_JA": "エンタジー",
-    "Daily_Change_right": 8.657259111757341e-05
+    "Daily_Change_right": -0.0024578651685393357
   },
   {
     "Symbol": "EOG",
@@ -1933,7 +1933,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.005527750803017921,
     "Security_JA": "イーオージー・リソーシズ",
-    "Daily_Change_right": -0.04206757663906904
+    "Daily_Change_right": -0.005527750803017921
   },
   {
     "Symbol": "EPAM",
@@ -1944,7 +1944,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.0148215616461041,
     "Security_JA": "イーピーエーエム・システムズ",
-    "Daily_Change_right": 0.035722734800094635
+    "Daily_Change_right": -0.0148215616461041
   },
   {
     "Symbol": "EQT",
@@ -1955,7 +1955,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.00033938571186158367,
     "Security_JA": "イーキューティー",
-    "Daily_Change_right": 0.0015413598218872462
+    "Daily_Change_right": -0.00033938571186158367
   },
   {
     "Symbol": "EFX",
@@ -1966,7 +1966,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.014062767964328633,
     "Security_JA": "エキファックス",
-    "Daily_Change_right": 0.03067549112301714
+    "Daily_Change_right": -0.014062767964328633
   },
   {
     "Symbol": "EQIX",
@@ -1977,7 +1977,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.005854979422392358,
     "Security_JA": "エクイニクス",
-    "Daily_Change_right": 0.01654682976935269
+    "Daily_Change_right": -0.005854979422392358
   },
   {
     "Symbol": "EQR",
@@ -1988,7 +1988,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.006225059856344781,
     "Security_JA": "エクイティ・レジデンシャル",
-    "Daily_Change_right": 0.03620433129442879
+    "Daily_Change_right": -0.006225059856344781
   },
   {
     "Symbol": "ERIE",
@@ -1999,7 +1999,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.06139011651265569,
     "Security_JA": "イリー・インデムニティー・カンパニー クラスA",
-    "Daily_Change_right": 0.014672358768184988
+    "Daily_Change_right": -0.06139011651265569
   },
   {
     "Symbol": "ESS",
@@ -2010,7 +2010,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.0012154002979691142,
     "Security_JA": "エセックス・プロパティ・トラスト",
-    "Daily_Change_right": 0.028104838709677414
+    "Daily_Change_right": 0.0012154002979691142
   },
   {
     "Symbol": "EL",
@@ -2021,7 +2021,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.018586387434554808,
     "Security_JA": "エスティローダー クラスA",
-    "Daily_Change_right": 0.011414919033713822
+    "Daily_Change_right": 0.018586387434554808
   },
   {
     "Symbol": "EG",
@@ -2032,7 +2032,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.021179555884951986,
     "Security_JA": "エベレスト・リ・グループ",
-    "Daily_Change_right": 0.020556894399117284
+    "Daily_Change_right": -0.021179555884951986
   },
   {
     "Symbol": "EVRG",
@@ -2043,7 +2043,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.008059592135791875,
     "Security_JA": "エヴァージー",
-    "Daily_Change_right": 0.004512195121951275
+    "Daily_Change_right": -0.008059592135791875
   },
   {
     "Symbol": "ES",
@@ -2054,7 +2054,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.0018903591682418999,
     "Security_JA": "エバーソース・エナジー",
-    "Daily_Change_right": 0.0010118531367446252
+    "Daily_Change_right": -0.0018903591682418999
   },
   {
     "Symbol": "EXC",
@@ -2065,7 +2065,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.003636363636363673,
     "Security_JA": "エクセロン",
-    "Daily_Change_right": -0.011977306156755626
+    "Daily_Change_right": 0.003636363636363673
   },
   {
     "Symbol": "EXE",
@@ -2076,7 +2076,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.0014537902388369738,
     "Security_JA": "エクスパンド・エナジー",
-    "Daily_Change_right": -0.015817584223500474
+    "Daily_Change_right": 0.0014537902388369738
   },
   {
     "Symbol": "EXPE",
@@ -2087,7 +2087,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.0042736749610576075,
     "Security_JA": "エクスペディア・グループ",
-    "Daily_Change_right": 0.0448453405651848
+    "Daily_Change_right": 0.0042736749610576075
   },
   {
     "Symbol": "EXPD",
@@ -2098,7 +2098,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.014624373956594309,
     "Security_JA": "エクスペディターズ・インターナショナル・オブ・ワシントン",
-    "Daily_Change_right": 0.0019726549214340553
+    "Daily_Change_right": -0.014624373956594309
   },
   {
     "Symbol": "EXR",
@@ -2109,7 +2109,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.00399551380905645,
     "Security_JA": "エクストラ・スペース・ストレージ",
-    "Daily_Change_right": 0.026263767297373817
+    "Daily_Change_right": -0.00399551380905645
   },
   {
     "Symbol": "XOM",
@@ -2120,7 +2120,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.010761974357271007,
     "Security_JA": "エクソン・モービル",
-    "Daily_Change_right": -0.03645216475852081
+    "Daily_Change_right": -0.010761974357271007
   },
   {
     "Symbol": "FFIV",
@@ -2131,7 +2131,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.010903998132648767,
     "Security_JA": "F5ネットワークス",
-    "Daily_Change_right": 0.009121599688372402
+    "Daily_Change_right": 0.010903998132648767
   },
   {
     "Symbol": "FDS",
@@ -2142,7 +2142,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.01736232900736587,
     "Security_JA": "ファクトセット・リサーチ・システムズ",
-    "Daily_Change_right": 0.0037955574725037546
+    "Daily_Change_right": -0.01736232900736587
   },
   {
     "Symbol": "FICO",
@@ -2153,7 +2153,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.025475626684085935,
     "Security_JA": "フェア・アイザック",
-    "Daily_Change_right": 0.0033553596964286617
+    "Daily_Change_right": 0.025475626684085935
   },
   {
     "Symbol": "FAST",
@@ -2164,7 +2164,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.016721672167216834,
     "Security_JA": "ファスナル",
-    "Daily_Change_right": 0.02370304114490166
+    "Daily_Change_right": -0.016721672167216834
   },
   {
     "Symbol": "FRT",
@@ -2175,7 +2175,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.004125560538116536,
     "Security_JA": "フェデラル・リアルティー・インベストメント・トラスト",
-    "Daily_Change_right": 0.022628135223555022
+    "Daily_Change_right": -0.004125560538116536
   },
   {
     "Symbol": "FDX",
@@ -2186,7 +2186,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.011994193893401868,
     "Security_JA": "フェデックス",
-    "Daily_Change_right": 0.030193236714975844
+    "Daily_Change_right": -0.011994193893401868
   },
   {
     "Symbol": "FIS",
@@ -2197,7 +2197,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.00021862702230006812,
     "Security_JA": "フィディリティ・ナショナル・インフォメーション・サービシズ",
-    "Daily_Change_right": -0.0024681201151788863
+    "Daily_Change_right": -0.00021862702230006812
   },
   {
     "Symbol": "FITB",
@@ -2208,7 +2208,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.02416977795244653,
     "Security_JA": "フィフス・サード・バンコープ",
-    "Daily_Change_right": 0.016558966074313414
+    "Daily_Change_right": -0.02416977795244653
   },
   {
     "Symbol": "FSLR",
@@ -2219,7 +2219,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.012385952393088368,
     "Security_JA": "ファースト・ソーラー",
-    "Daily_Change_right": -0.006313592486303198
+    "Daily_Change_right": -0.012385952393088368
   },
   {
     "Symbol": "FE",
@@ -2230,7 +2230,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.004232164449818639,
     "Security_JA": "ファーストエナジー",
-    "Daily_Change_right": -0.00948991696322651
+    "Daily_Change_right": -0.004232164449818639
   },
   {
     "Symbol": "FISV",
@@ -2241,7 +2241,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.011535337124289094,
     "Security_JA": "フィサーブ",
-    "Daily_Change_right": 0.024503523382447167
+    "Daily_Change_right": -0.011535337124289094
   },
   {
     "Symbol": "F",
@@ -2252,7 +2252,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.008012820512820484,
     "Security_JA": "フォード・モーター",
-    "Daily_Change_right": 0.03456591639871381
+    "Daily_Change_right": -0.008012820512820484
   },
   {
     "Symbol": "FTNT",
@@ -2263,7 +2263,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.019091348477525354,
     "Security_JA": "フォーティネット",
-    "Daily_Change_right": -0.006796116504854396
+    "Daily_Change_right": 0.019091348477525354
   },
   {
     "Symbol": "FTV",
@@ -2274,7 +2274,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.0003272786777940766,
     "Security_JA": "フォーティブ",
-    "Daily_Change_right": 0.01458507963118197
+    "Daily_Change_right": -0.0003272786777940766
   },
   {
     "Symbol": "FOXA",
@@ -2285,7 +2285,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.026034402603440254,
     "Security_JA": "フォックス　クラスA",
-    "Daily_Change_right": 0.008524488530688115
+    "Daily_Change_right": -0.026034402603440254
   },
   {
     "Symbol": "FOX",
@@ -2296,7 +2296,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.02719085555940423,
     "Security_JA": "フォックス　クラスB",
-    "Daily_Change_right": 0.010880829015544087
+    "Daily_Change_right": -0.02719085555940423
   },
   {
     "Symbol": "BEN",
@@ -2307,7 +2307,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.01118568232662195,
     "Security_JA": "フランクリン・リソーシズ",
-    "Daily_Change_right": 0.027118644067796568
+    "Daily_Change_right": 0.01118568232662195
   },
   {
     "Symbol": "FCX",
@@ -2318,7 +2318,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.006994144437215351,
     "Security_JA": "フリーポートマクモラン",
-    "Daily_Change_right": 0.02826596367896884
+    "Daily_Change_right": -0.006994144437215351
   },
   {
     "Symbol": "GRMN",
@@ -2329,7 +2329,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.0054064417177915065,
     "Security_JA": "ガーミン",
-    "Daily_Change_right": 0.011575124829777584
+    "Daily_Change_right": -0.0054064417177915065
   },
   {
     "Symbol": "IT",
@@ -2340,7 +2340,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.013122476446837263,
     "Security_JA": "ガートナー",
-    "Daily_Change_right": -0.005850961229344799
+    "Daily_Change_right": 0.013122476446837263
   },
   {
     "Symbol": "GE",
@@ -2351,7 +2351,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.008004533541120804,
     "Security_JA": "GE エアロスペース（ゼネラル・エレクトリック）",
-    "Daily_Change_right": 0.019578262764423798
+    "Daily_Change_right": 0.008004533541120804
   },
   {
     "Symbol": "GEHC",
@@ -2362,7 +2362,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.015166690513664363,
     "Security_JA": "GEヘルスケア・テクノロジーズ",
-    "Daily_Change_right": 0.019945355191256744
+    "Daily_Change_right": -0.015166690513664363
   },
   {
     "Symbol": "GEV",
@@ -2373,7 +2373,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.00029577305507461147,
     "Security_JA": "GEベルノバ",
-    "Daily_Change_right": 0.02497137950772748
+    "Daily_Change_right": -0.00029577305507461147
   },
   {
     "Symbol": "GEN",
@@ -2384,7 +2384,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.01222753854332804,
     "Security_JA": "ゲンデジタル",
-    "Daily_Change_right": 0.01718907987866531
+    "Daily_Change_right": 0.01222753854332804
   },
   {
     "Symbol": "GNRC",
@@ -2395,7 +2395,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.011676893488414742,
     "Security_JA": "ジェネラック・ホールディングス",
-    "Daily_Change_right": 0.022612217347283147
+    "Daily_Change_right": 0.011676893488414742
   },
   {
     "Symbol": "GD",
@@ -2406,7 +2406,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.017257067553575353,
     "Security_JA": "ゼネラル・ダイナミックス",
-    "Daily_Change_right": 0.004090529081571732
+    "Daily_Change_right": -0.017257067553575353
   },
   {
     "Symbol": "GIS",
@@ -2417,7 +2417,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.014096419509444602,
     "Security_JA": "ゼネラル・ミルズ",
-    "Daily_Change_right": 0.005096262740656844
+    "Daily_Change_right": -0.014096419509444602
   },
   {
     "Symbol": "GM",
@@ -2428,7 +2428,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.005985736118186435,
     "Security_JA": "ゼネラルモーターズ",
-    "Daily_Change_right": 0.041896220371556644
+    "Daily_Change_right": -0.005985736118186435
   },
   {
     "Symbol": "GPC",
@@ -2439,7 +2439,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.00956371254212598,
     "Security_JA": "ジェニュイン・パーツ",
-    "Daily_Change_right": 0.02347544522396114
+    "Daily_Change_right": -0.00956371254212598
   },
   {
     "Symbol": "GILD",
@@ -2450,7 +2450,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.02424423825202021,
     "Security_JA": "ギリアド・サイエンシズ",
-    "Daily_Change_right": -0.006568025983399675
+    "Daily_Change_right": -0.02424423825202021
   },
   {
     "Symbol": "GPN",
@@ -2461,7 +2461,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.001473622163277252,
     "Security_JA": "グローバル・ペイメンツ",
-    "Daily_Change_right": 0.021597967250141178
+    "Daily_Change_right": -0.001473622163277252
   },
   {
     "Symbol": "GL",
@@ -2472,7 +2472,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.009157628109371933,
     "Security_JA": "グローブ・ライフ",
-    "Daily_Change_right": 0.014564404061998977
+    "Daily_Change_right": -0.009157628109371933
   },
   {
     "Symbol": "GDDY",
@@ -2483,7 +2483,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.0149817152294445,
     "Security_JA": "ゴーダディ クラスA",
-    "Daily_Change_right": 0.01732732019938279
+    "Daily_Change_right": 0.0149817152294445
   },
   {
     "Symbol": "GS",
@@ -2494,7 +2494,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.00471384086760441,
     "Security_JA": "ゴールドマン・サックス",
-    "Daily_Change_right": 0.028833333333333384
+    "Daily_Change_right": -0.00471384086760441
   },
   {
     "Symbol": "HAL",
@@ -2505,7 +2505,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.017906683480453996,
     "Security_JA": "ハリバートン",
-    "Daily_Change_right": -0.026212319790301444
+    "Daily_Change_right": 0.017906683480453996
   },
   {
     "Symbol": "HIG",
@@ -2516,7 +2516,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.036960103144474066,
     "Security_JA": "ハートフォード・インシュランス・グループ",
-    "Daily_Change_right": 0.011281457911483961
+    "Daily_Change_right": -0.036960103144474066
   },
   {
     "Symbol": "HAS",
@@ -2527,7 +2527,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.015531165872851522,
     "Security_JA": "ハスブロ",
-    "Daily_Change_right": 0.04070701660417795
+    "Daily_Change_right": -0.015531165872851522
   },
   {
     "Symbol": "HCA",
@@ -2538,7 +2538,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.08769487163259708,
     "Security_JA": "HCAヘルスケア",
-    "Daily_Change_right": 0.01041472555231168
+    "Daily_Change_right": -0.08769487163259708
   },
   {
     "Symbol": "DOC",
@@ -2549,7 +2549,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.001218769043266275,
     "Security_JA": "ヘルスピーク・プロパティーズ",
-    "Daily_Change_right": 0.011059371362048969
+    "Daily_Change_right": 0.001218769043266275
   },
   {
     "Symbol": "HSIC",
@@ -2560,7 +2560,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.008693428790590547,
     "Security_JA": "ヘンリー・シャイン",
-    "Daily_Change_right": 0.020981738116824307
+    "Daily_Change_right": -0.008693428790590547
   },
   {
     "Symbol": "HSY",
@@ -2571,7 +2571,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.0032274856845393263,
     "Security_JA": "ハーシー",
-    "Daily_Change_right": 0.006636705685618634
+    "Daily_Change_right": -0.0032274856845393263
   },
   {
     "Symbol": "HPE",
@@ -2582,7 +2582,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.008234872896527048,
     "Security_JA": "ヒューレット・パッカード・エンタープライズ",
-    "Daily_Change_right": 0.02124372344534572
+    "Daily_Change_right": 0.008234872896527048
   },
   {
     "Symbol": "HLT",
@@ -2593,7 +2593,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.004038530573172259,
     "Security_JA": "ヒルトン・ワールドワイド・ホールディングス",
-    "Daily_Change_right": 0.032235607482293045
+    "Daily_Change_right": 0.004038530573172259
   },
   {
     "Symbol": "HD",
@@ -2604,7 +2604,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.012552916274694374,
     "Security_JA": "ホームデポ",
-    "Daily_Change_right": 0.036333975975085274
+    "Daily_Change_right": -0.012552916274694374
   },
   {
     "Symbol": "HON",
@@ -2615,7 +2615,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.0054586171503219925,
     "Security_JA": "ハネウェル・インターナショナル",
-    "Daily_Change_right": 0.01817944023018579
+    "Daily_Change_right": -0.0054586171503219925
   },
   {
     "Symbol": "HRL",
@@ -2626,7 +2626,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.009650735294117686,
     "Security_JA": "ホーメル・フーズ",
-    "Daily_Change_right": 0.013875598086124532
+    "Daily_Change_right": -0.009650735294117686
   },
   {
     "Symbol": "HST",
@@ -2637,7 +2637,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.008068343616516455,
     "Security_JA": "ホスト・ホテルズ＆リゾーツ",
-    "Daily_Change_right": 0.026737967914438537
+    "Daily_Change_right": -0.008068343616516455
   },
   {
     "Symbol": "HWM",
@@ -2648,7 +2648,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.015112122196945072,
     "Security_JA": "ハウメット・エアロスペース",
-    "Daily_Change_right": 0.03267366720516964
+    "Daily_Change_right": -0.015112122196945072
   },
   {
     "Symbol": "HPQ",
@@ -2659,7 +2659,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.01737835153922549,
     "Security_JA": "HP",
-    "Daily_Change_right": 0.00811359026369169
+    "Daily_Change_right": -0.01737835153922549
   },
   {
     "Symbol": "HUBB",
@@ -2670,7 +2670,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.00856861163395173,
     "Security_JA": "ハベル",
-    "Daily_Change_right": 0.026566483295317345
+    "Daily_Change_right": -0.00856861163395173
   },
   {
     "Symbol": "HUM",
@@ -2681,7 +2681,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.0013026285182600658,
     "Security_JA": "ヒューマナ",
-    "Daily_Change_right": 0.02181709503885234
+    "Daily_Change_right": 0.0013026285182600658
   },
   {
     "Symbol": "HBAN",
@@ -2692,7 +2692,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.025549613784907887,
     "Security_JA": "ハンチントン・バンクシェアーズ",
-    "Daily_Change_right": 0.01689800844900429
+    "Daily_Change_right": -0.025549613784907887
   },
   {
     "Symbol": "HII",
@@ -2703,7 +2703,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.02931323283082068,
     "Security_JA": "ハンティントン・インガルス・インダストリーズ",
-    "Daily_Change_right": -0.003432869727642208
+    "Daily_Change_right": -0.02931323283082068
   },
   {
     "Symbol": "IBM",
@@ -2714,7 +2714,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.0038947550631814837,
     "Security_JA": "アイビーエム",
-    "Daily_Change_right": 0.009840637450199198
+    "Daily_Change_right": 0.0038947550631814837
   },
   {
     "Symbol": "IEX",
@@ -2725,7 +2725,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.009194734804490793,
     "Security_JA": "アイデックス",
-    "Daily_Change_right": 0.025957849633799907
+    "Daily_Change_right": -0.009194734804490793
   },
   {
     "Symbol": "IDXX",
@@ -2736,7 +2736,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.008913768206371563,
     "Security_JA": "アイデックス・ラボラトリーズ",
-    "Daily_Change_right": 0.033862619528028694
+    "Daily_Change_right": 0.008913768206371563
   },
   {
     "Symbol": "ITW",
@@ -2747,7 +2747,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.014059239190129151,
     "Security_JA": "イリノイ・ツール・ワークス",
-    "Daily_Change_right": 0.025036707955272682
+    "Daily_Change_right": -0.014059239190129151
   },
   {
     "Symbol": "INCY",
@@ -2758,7 +2758,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.008589085576620857,
     "Security_JA": "インサイト",
-    "Daily_Change_right": 0.02622744439781788
+    "Daily_Change_right": -0.008589085576620857
   },
   {
     "Symbol": "IR",
@@ -2769,7 +2769,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.013419658622719252,
     "Security_JA": "インガソール・ランド",
-    "Daily_Change_right": 0.025457153101470006
+    "Daily_Change_right": -0.013419658622719252
   },
   {
     "Symbol": "PODD",
@@ -2780,7 +2780,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.013787003797929378,
     "Security_JA": "インシュレット",
-    "Daily_Change_right": 0.011217551000148861
+    "Daily_Change_right": -0.013787003797929378
   },
   {
     "Symbol": "INTC",
@@ -2791,7 +2791,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.23599880203653795,
     "Security_JA": "インテル",
-    "Daily_Change_right": 0.0
+    "Daily_Change_right": 0.23599880203653795
   },
   {
     "Symbol": "IBKR",
@@ -2802,7 +2802,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.009486166007905123,
     "Security_JA": "インタラクティブ・ブローカーズ・グループ　クラスA",
-    "Daily_Change_right": 0.029352481733434094
+    "Daily_Change_right": 0.009486166007905123
   },
   {
     "Symbol": "ICE",
@@ -2813,7 +2813,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.006159512319024631,
     "Security_JA": "インターコンチネンタル・エクスチェンジ",
-    "Daily_Change_right": -0.015328244274809106
+    "Daily_Change_right": 0.006159512319024631
   },
   {
     "Symbol": "IFF",
@@ -2824,7 +2824,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.0028192839018889603,
     "Security_JA": "インターナショナル・フレーバー・アンド・フレグランス",
-    "Daily_Change_right": 0.05301137940605042
+    "Daily_Change_right": 0.0028192839018889603
   },
   {
     "Symbol": "IP",
@@ -2835,7 +2835,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.026535480023852136,
     "Security_JA": "インターナショナル・ペーパー",
-    "Daily_Change_right": 0.025974025974026108
+    "Daily_Change_right": -0.026535480023852136
   },
   {
     "Symbol": "INTU",
@@ -2846,7 +2846,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.03300286981476644,
     "Security_JA": "インテュイト",
-    "Daily_Change_right": 0.015861124744904514
+    "Daily_Change_right": 0.03300286981476644
   },
   {
     "Symbol": "ISRG",
@@ -2857,7 +2857,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.00710078944070848,
     "Security_JA": "インテュイティブ・サージカル",
-    "Daily_Change_right": 0.024297066014669917
+    "Daily_Change_right": 0.00710078944070848
   },
   {
     "Symbol": "IVZ",
@@ -2868,7 +2868,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.005518328734726076,
     "Security_JA": "インベスコ",
-    "Daily_Change_right": 0.0333194502290711
+    "Daily_Change_right": 0.005518328734726076
   },
   {
     "Symbol": "INVH",
@@ -2879,7 +2879,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.006227106227106289,
     "Security_JA": "インビテーション・ホームズ",
-    "Daily_Change_right": 0.02893033878949378
+    "Daily_Change_right": -0.006227106227106289
   },
   {
     "Symbol": "IQV",
@@ -2890,7 +2890,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.009957679860592447,
     "Security_JA": "アイキューヴィア・ホールディングス",
-    "Daily_Change_right": 0.02622855481244559
+    "Daily_Change_right": 0.009957679860592447
   },
   {
     "Symbol": "IRM",
@@ -2901,7 +2901,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.0007750602824664434,
     "Security_JA": "アイアン・マウンテン",
-    "Daily_Change_right": 0.002887963985390208
+    "Daily_Change_right": -0.0007750602824664434
   },
   {
     "Symbol": "JBHT",
@@ -2912,7 +2912,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.020180521067360388,
     "Security_JA": "ジェイビー・ハント・トランスポート・サービシズ",
-    "Daily_Change_right": 0.02836522322927165
+    "Daily_Change_right": -0.020180521067360388
   },
   {
     "Symbol": "JBL",
@@ -2923,7 +2923,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.009216317608483753,
     "Security_JA": "ジェイビル・サーキット",
-    "Daily_Change_right": 0.03737504030957747
+    "Daily_Change_right": 0.009216317608483753
   },
   {
     "Symbol": "JKHY",
@@ -2934,7 +2934,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.0036520584329350026,
     "Security_JA": "ジャック・ヘンリー・アンド・アソシエイツ",
-    "Daily_Change_right": -0.0005838469023678457
+    "Daily_Change_right": 0.0036520584329350026
   },
   {
     "Symbol": "J",
@@ -2945,7 +2945,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.007681454773475498,
     "Security_JA": "ジェイコブズ・ソリューションズ",
-    "Daily_Change_right": 0.02122772277227728
+    "Daily_Change_right": -0.007681454773475498
   },
   {
     "Symbol": "JNJ",
@@ -2956,7 +2956,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.01365705614567529,
     "Security_JA": "ジョンソン・エンド・ジョンソン",
-    "Daily_Change_right": -0.0015349194167305587
+    "Daily_Change_right": -0.01365705614567529
   },
   {
     "Symbol": "JCI",
@@ -2967,7 +2967,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.0013405771537430165,
     "Security_JA": "ジョンソン・コントロールズ",
-    "Daily_Change_right": 0.024136677571792026
+    "Daily_Change_right": 0.0013405771537430165
   },
   {
     "Symbol": "JPM",
@@ -2978,7 +2978,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.010940357406397462,
     "Security_JA": "ジェイピー・モルガン・チェース",
-    "Daily_Change_right": 0.0010969511211486752
+    "Daily_Change_right": -0.010940357406397462
   },
   {
     "Symbol": "KVUE",
@@ -2989,7 +2989,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.0,
     "Security_JA": "ケンビュー",
-    "Daily_Change_right": 0.008591065292096137
+    "Daily_Change_right": 0.0
   },
   {
     "Symbol": "KDP",
@@ -3000,7 +3000,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.024185068349106123,
     "Security_JA": "キューリグ・ドクターペッパー",
-    "Daily_Change_right": 0.018817204301075346
+    "Daily_Change_right": 0.024185068349106123
   },
   {
     "Symbol": "KEY",
@@ -3011,7 +3011,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.01726487960018185,
     "Security_JA": "キーコープ",
-    "Daily_Change_right": 0.005999077065066866
+    "Daily_Change_right": -0.01726487960018185
   },
   {
     "Symbol": "KEYS",
@@ -3022,7 +3022,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.0012408738060197006,
     "Security_JA": "キーサイト・テクノロジーズ",
-    "Daily_Change_right": 0.013274336283185828
+    "Daily_Change_right": 0.0012408738060197006
   },
   {
     "Symbol": "KMB",
@@ -3033,7 +3033,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.0008169100377822169,
     "Security_JA": "キンバリークラーク",
-    "Daily_Change_right": 0.00888026947024604
+    "Daily_Change_right": -0.0008169100377822169
   },
   {
     "Symbol": "KIM",
@@ -3044,7 +3044,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.006291946308724773,
     "Security_JA": "キムコ・リアルティ",
-    "Daily_Change_right": 0.018526315789473738
+    "Daily_Change_right": -0.006291946308724773
   },
   {
     "Symbol": "KMI",
@@ -3055,7 +3055,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.0003151591553734009,
     "Security_JA": "キンダー・モルガン",
-    "Daily_Change_right": 0.007234979553318779
+    "Daily_Change_right": 0.0003151591553734009
   },
   {
     "Symbol": "KKR",
@@ -3066,7 +3066,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.0018693427784336651,
     "Security_JA": "KKR",
-    "Daily_Change_right": 0.015487159380513609
+    "Daily_Change_right": 0.0018693427784336651
   },
   {
     "Symbol": "KLAC",
@@ -3077,7 +3077,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.06586318392887631,
     "Security_JA": "ケーエルエー・コーポレーション",
-    "Daily_Change_right": 0.03261953483010067
+    "Daily_Change_right": 0.06586318392887631
   },
   {
     "Symbol": "KHC",
@@ -3088,7 +3088,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.0013654984069184153,
     "Security_JA": "クラフト・ハインツ",
-    "Daily_Change_right": -0.005312084993359938
+    "Daily_Change_right": -0.0013654984069184153
   },
   {
     "Symbol": "KR",
@@ -3099,7 +3099,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.02706222865412432,
     "Security_JA": "クローガー",
-    "Daily_Change_right": 0.006197432492253235
+    "Daily_Change_right": -0.02706222865412432
   },
   {
     "Symbol": "LHX",
@@ -3110,7 +3110,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.038489491853915675,
     "Security_JA": "L3ハリス・テクノロジーズ",
-    "Daily_Change_right": -0.00865849862765627
+    "Daily_Change_right": -0.038489491853915675
   },
   {
     "Symbol": "LH",
@@ -3121,7 +3121,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.0042276913785293845,
     "Security_JA": "ラボコープ・ホールディングス",
-    "Daily_Change_right": 0.016218651449166514
+    "Daily_Change_right": -0.0042276913785293845
   },
   {
     "Symbol": "LRCX",
@@ -3132,7 +3132,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.03565903465346523,
     "Security_JA": "ラム・リサーチ",
-    "Daily_Change_right": 0.025444512568976257
+    "Daily_Change_right": 0.03565903465346523
   },
   {
     "Symbol": "LVS",
@@ -3143,7 +3143,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.016554379210779582,
     "Security_JA": "ラスベガス・サンズ",
-    "Daily_Change_right": 0.01639922412272967
+    "Daily_Change_right": 0.016554379210779582
   },
   {
     "Symbol": "LDOS",
@@ -3154,7 +3154,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.010433604336043307,
     "Security_JA": "レイドス・ホールディングス",
-    "Daily_Change_right": -0.008308301910909512
+    "Daily_Change_right": -0.010433604336043307
   },
   {
     "Symbol": "LEN",
@@ -3165,7 +3165,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.0013803355277129928,
     "Security_JA": "レナー クラスA",
-    "Daily_Change_right": 0.044932432432432536
+    "Daily_Change_right": -0.0013803355277129928
   },
   {
     "Symbol": "LII",
@@ -3176,7 +3176,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.005469240585816413,
     "Security_JA": "レノックス・インターナショナル",
-    "Daily_Change_right": 0.01646425441342178
+    "Daily_Change_right": -0.005469240585816413
   },
   {
     "Symbol": "LLY",
@@ -3187,7 +3187,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.03671334386748754,
     "Security_JA": "イーライ・リリー",
-    "Daily_Change_right": 0.025487007599641547
+    "Daily_Change_right": -0.03671334386748754
   },
   {
     "Symbol": "LIN",
@@ -3198,7 +3198,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.004408928079360723,
     "Security_JA": "リンデ",
-    "Daily_Change_right": -0.014001842874884837
+    "Daily_Change_right": 0.004408928079360723
   },
   {
     "Symbol": "LYV",
@@ -3209,7 +3209,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.022387572612753596,
     "Security_JA": "ライブ・ネーション・エンターテインメント",
-    "Daily_Change_right": -0.02509496232642133
+    "Daily_Change_right": 0.022387572612753596
   },
   {
     "Symbol": "LMT",
@@ -3220,7 +3220,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.030842409256497706,
     "Security_JA": "ロッキード・マーチン",
-    "Daily_Change_right": -0.025185599762958987
+    "Daily_Change_right": -0.030842409256497706
   },
   {
     "Symbol": "L",
@@ -3231,7 +3231,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.01636719444938626,
     "Security_JA": "ロウズ",
-    "Daily_Change_right": 0.013747268754551992
+    "Daily_Change_right": -0.01636719444938626
   },
   {
     "Symbol": "LOW",
@@ -3242,7 +3242,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.008477326194532342,
     "Security_JA": "ロウズ・カンパニーズ",
-    "Daily_Change_right": 0.03836317135549877
+    "Daily_Change_right": -0.008477326194532342
   },
   {
     "Symbol": "LULU",
@@ -3253,7 +3253,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.01510659325144723,
     "Security_JA": "ルルレモン・アスレティカ",
-    "Daily_Change_right": 0.02676160078566176
+    "Daily_Change_right": 0.01510659325144723
   },
   {
     "Symbol": "LITE",
@@ -3264,7 +3264,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.04103248355748681,
     "Security_JA": "ルメンタム・ホールディングス",
-    "Daily_Change_right": 0.0031978636027019396
+    "Daily_Change_right": 0.04103248355748681
   },
   {
     "Symbol": "LYB",
@@ -3275,7 +3275,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.012019230769230688,
     "Security_JA": "リヨンデルバセル・インダストリーズ クラスA",
-    "Daily_Change_right": -0.11980342674990051
+    "Daily_Change_right": -0.012019230769230688
   },
   {
     "Symbol": "MTB",
@@ -3286,7 +3286,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.021756941283568507,
     "Security_JA": "エム・アンド・ティー・バンク",
-    "Daily_Change_right": 0.008481216870246618
+    "Daily_Change_right": -0.021756941283568507
   },
   {
     "Symbol": "MPC",
@@ -3297,7 +3297,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.013749434644956997,
     "Security_JA": "マラソン・ペトロリアム",
-    "Daily_Change_right": -0.05547206506364927
+    "Daily_Change_right": 0.013749434644956997
   },
   {
     "Symbol": "MAR",
@@ -3308,7 +3308,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.002960026069954464,
     "Security_JA": "マリオット・インターナショナル",
-    "Daily_Change_right": 0.042795651454113987
+    "Daily_Change_right": -0.002960026069954464
   },
   {
     "Symbol": "MRSH",
@@ -3319,7 +3319,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.022469972990058023,
     "Security_JA": "マーシュ・アンド・マクレナン",
-    "Daily_Change_right": -0.03708166730569087
+    "Daily_Change_right": -0.022469972990058023
   },
   {
     "Symbol": "MLM",
@@ -3330,7 +3330,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.005800707718657649,
     "Security_JA": "マーチン・マリエッタ・マテリアルズ",
-    "Daily_Change_right": 0.023092864896871547
+    "Daily_Change_right": -0.005800707718657649
   },
   {
     "Symbol": "MAS",
@@ -3341,7 +3341,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.01618037135278513,
     "Security_JA": "マスコ",
-    "Daily_Change_right": 0.04471991212929549
+    "Daily_Change_right": -0.01618037135278513
   },
   {
     "Symbol": "MA",
@@ -3352,7 +3352,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.0035630399299335573,
     "Security_JA": "マスターカード クラスA",
-    "Daily_Change_right": 0.005322636633625161
+    "Daily_Change_right": 0.0035630399299335573
   },
   {
     "Symbol": "MKC",
@@ -3363,7 +3363,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.00693775293890922,
     "Security_JA": "マコーミック",
-    "Daily_Change_right": 0.019898629622676838
+    "Daily_Change_right": -0.00693775293890922
   },
   {
     "Symbol": "MCD",
@@ -3374,7 +3374,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.010478299672759593,
     "Security_JA": "マクドナルド",
-    "Daily_Change_right": 0.014334115194162217
+    "Daily_Change_right": -0.010478299672759593
   },
   {
     "Symbol": "MCK",
@@ -3385,7 +3385,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.009556273173065434,
     "Security_JA": "マケッソン",
-    "Daily_Change_right": -0.0011068323840708791
+    "Daily_Change_right": -0.009556273173065434
   },
   {
     "Symbol": "MDT",
@@ -3396,7 +3396,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.005609261248359148,
     "Security_JA": "メドトロニック",
-    "Daily_Change_right": 0.006304728546409714
+    "Daily_Change_right": -0.005609261248359148
   },
   {
     "Symbol": "MRK",
@@ -3407,7 +3407,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.023730588030012205,
     "Security_JA": "メルク",
-    "Daily_Change_right": 0.03126623939026502
+    "Daily_Change_right": -0.023730588030012205
   },
   {
     "Symbol": "META",
@@ -3418,7 +3418,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.024091633163923227,
     "Security_JA": "メタ・プラットフォームズ",
-    "Daily_Change_right": 0.017255898473857535
+    "Daily_Change_right": 0.024091633163923227
   },
   {
     "Symbol": "MET",
@@ -3429,7 +3429,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.021561924796213522,
     "Security_JA": "メットライフ",
-    "Daily_Change_right": 0.012842132572318003
+    "Daily_Change_right": 0.021561924796213522
   },
   {
     "Symbol": "MTD",
@@ -3440,7 +3440,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.014307633901736963,
     "Security_JA": "メトラー・トレド・インターナショナル",
-    "Daily_Change_right": 0.038533048247652704
+    "Daily_Change_right": 0.014307633901736963
   },
   {
     "Symbol": "MGM",
@@ -3451,7 +3451,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.015408320493066292,
     "Security_JA": "エムジーエム・リゾーツ・インターナショナル",
-    "Daily_Change_right": 0.0025980774227072337
+    "Daily_Change_right": 0.015408320493066292
   },
   {
     "Symbol": "MCHP",
@@ -3462,7 +3462,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.013239187996469582,
     "Security_JA": "マイクロチップ・テクノロジー",
-    "Daily_Change_right": 0.024586965005854045
+    "Daily_Change_right": -0.013239187996469582
   },
   {
     "Symbol": "MU",
@@ -3473,7 +3473,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.03113842065930416,
     "Security_JA": "マイクロン・テクノロジー",
-    "Daily_Change_right": -0.004724099468538865
+    "Daily_Change_right": 0.03113842065930416
   },
   {
     "Symbol": "MSFT",
@@ -3484,7 +3484,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.02133493686109442,
     "Security_JA": "マイクロソフト",
-    "Daily_Change_right": 0.0060200828058821435
+    "Daily_Change_right": 0.02133493686109442
   },
   {
     "Symbol": "MAA",
@@ -3495,7 +3495,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.0026984126984127255,
     "Security_JA": "ミッド・アメリカ・アパートメント・コミュニティーズ",
-    "Daily_Change_right": 0.03931762794476039
+    "Daily_Change_right": -0.0026984126984127255
   },
   {
     "Symbol": "MRNA",
@@ -3506,7 +3506,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.040113528855250796,
     "Security_JA": "モデルナ",
-    "Daily_Change_right": -0.017556693489392847
+    "Daily_Change_right": -0.040113528855250796
   },
   {
     "Symbol": "TAP",
@@ -3517,7 +3517,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.010030324236062508,
     "Security_JA": "モルソン・クアーズ・ビバレッジ",
-    "Daily_Change_right": 0.009508716323296394
+    "Daily_Change_right": -0.010030324236062508
   },
   {
     "Symbol": "MDLZ",
@@ -3528,7 +3528,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.0017328019407381982,
     "Security_JA": "モンデリーズ・インターナショナル クラスA",
-    "Daily_Change_right": 0.0031540213772559963
+    "Daily_Change_right": -0.0017328019407381982
   },
   {
     "Symbol": "MPWR",
@@ -3539,7 +3539,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.02505385731423144,
     "Security_JA": "モノリシック・パワー・システムズ",
-    "Daily_Change_right": 0.04672051097440136
+    "Daily_Change_right": 0.02505385731423144
   },
   {
     "Symbol": "MNST",
@@ -3550,7 +3550,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.008638473439917504,
     "Security_JA": "モンスター・ビバレッジ",
-    "Daily_Change_right": 0.01804670912951167
+    "Daily_Change_right": 0.008638473439917504
   },
   {
     "Symbol": "MCO",
@@ -3561,7 +3561,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.008179507018901268,
     "Security_JA": "ムーディーズ",
-    "Daily_Change_right": 0.01545426162972215
+    "Daily_Change_right": 0.008179507018901268
   },
   {
     "Symbol": "MS",
@@ -3572,7 +3572,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.003074476543864365,
     "Security_JA": "モルガン・スタンレー",
-    "Daily_Change_right": 0.008007687379884689
+    "Daily_Change_right": -0.003074476543864365
   },
   {
     "Symbol": "MOS",
@@ -3583,7 +3583,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.011532125205930853,
     "Security_JA": "モザイク",
-    "Daily_Change_right": -0.006469874646178736
+    "Daily_Change_right": -0.011532125205930853
   },
   {
     "Symbol": "MSI",
@@ -3594,7 +3594,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.011079269806169247,
     "Security_JA": "モトローラ・ソリューションズ",
-    "Daily_Change_right": -0.005624803131890384
+    "Daily_Change_right": -0.011079269806169247
   },
   {
     "Symbol": "MSCI",
@@ -3605,7 +3605,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.00889617230481085,
     "Security_JA": "エムエスシーアイ",
-    "Daily_Change_right": 0.0064613205877146
+    "Daily_Change_right": -0.00889617230481085
   },
   {
     "Symbol": "NDAQ",
@@ -3616,7 +3616,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.032858455882352935,
     "Security_JA": "ナスダック",
-    "Daily_Change_right": -0.002925621694610162
+    "Daily_Change_right": 0.032858455882352935
   },
   {
     "Symbol": "NTAP",
@@ -3627,7 +3627,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.0028597785977858676,
     "Security_JA": "ネットアップ",
-    "Daily_Change_right": 0.008198302469135747
+    "Daily_Change_right": 0.0028597785977858676
   },
   {
     "Symbol": "NFLX",
@@ -3638,7 +3638,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.00409394527041581,
     "Security_JA": "ネットフリックス",
-    "Daily_Change_right": -0.09722608776324337
+    "Daily_Change_right": -0.00409394527041581
   },
   {
     "Symbol": "NEM",
@@ -3649,7 +3649,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.08679992796686477,
     "Security_JA": "ニューモント",
-    "Daily_Change_right": 0.02724627457896132
+    "Daily_Change_right": 0.08679992796686477
   },
   {
     "Symbol": "NWSA",
@@ -3660,7 +3660,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.004180919802356497,
     "Security_JA": "ニューズ・コーポレーション クラスA",
-    "Daily_Change_right": 0.008530438154323475
+    "Daily_Change_right": -0.004180919802356497
   },
   {
     "Symbol": "NWS",
@@ -3671,7 +3671,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.005263157894736847,
     "Security_JA": "ニューズ・コーポレーション クラスB",
-    "Daily_Change_right": 0.010455311973018628
+    "Daily_Change_right": -0.005263157894736847
   },
   {
     "Symbol": "NEE",
@@ -3682,7 +3682,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.010077922077922066,
     "Security_JA": "ネクステラ・エナジー",
-    "Daily_Change_right": 0.001633453119895521
+    "Daily_Change_right": -0.010077922077922066
   },
   {
     "Symbol": "NKE",
@@ -3693,7 +3693,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.002009825815096101,
     "Security_JA": "ナイキ クラスB",
-    "Daily_Change_right": 0.007221006564551384
+    "Daily_Change_right": -0.002009825815096101
   },
   {
     "Symbol": "NI",
@@ -3704,7 +3704,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.0062124663491405505,
     "Security_JA": "ナイソース",
-    "Daily_Change_right": 0.012363788767812309
+    "Daily_Change_right": -0.0062124663491405505
   },
   {
     "Symbol": "NDSN",
@@ -3715,7 +3715,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.005179156537363811,
     "Security_JA": "ノードソン",
-    "Daily_Change_right": 0.018756776292013003
+    "Daily_Change_right": -0.005179156537363811
   },
   {
     "Symbol": "NSC",
@@ -3726,7 +3726,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.0053820308611249945,
     "Security_JA": "ノーフォーク・サザン",
-    "Daily_Change_right": -0.0008260912665631299
+    "Daily_Change_right": -0.0053820308611249945
   },
   {
     "Symbol": "NTRS",
@@ -3737,7 +3737,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.008343914384182813,
     "Security_JA": "ノーザン・トラスト",
-    "Daily_Change_right": 0.015245263762199313
+    "Daily_Change_right": -0.008343914384182813
   },
   {
     "Symbol": "NOC",
@@ -3748,7 +3748,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.02135588605656324,
     "Security_JA": "ノースロップ・グラマン",
-    "Daily_Change_right": -0.01116280452457748
+    "Daily_Change_right": -0.02135588605656324
   },
   {
     "Symbol": "NCLH",
@@ -3759,7 +3759,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.004885993485342011,
     "Security_JA": "ノルウェージャン・クルーズライン・ホールディングス",
-    "Daily_Change_right": 0.0479281078382425
+    "Daily_Change_right": 0.004885993485342011
   },
   {
     "Symbol": "NRG",
@@ -3770,7 +3770,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.03416812269462241,
     "Security_JA": "エヌアールジー・エナジー",
-    "Daily_Change_right": -0.00456973293768552
+    "Daily_Change_right": 0.03416812269462241
   },
   {
     "Symbol": "NUE",
@@ -3781,7 +3781,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.006292556938248432,
     "Security_JA": "ニューコア",
-    "Daily_Change_right": 0.02095387021110248
+    "Daily_Change_right": 0.006292556938248432
   },
   {
     "Symbol": "NVDA",
@@ -3792,7 +3792,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.043227810058104714,
     "Security_JA": "エヌビディア",
-    "Daily_Change_right": 0.016788505167633035
+    "Daily_Change_right": 0.043227810058104714
   },
   {
     "Symbol": "NVR",
@@ -3803,7 +3803,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.024750300269455346,
     "Security_JA": "エヌブイアール",
-    "Daily_Change_right": 0.044353846222695587
+    "Daily_Change_right": -0.024750300269455346
   },
   {
     "Symbol": "NXPI",
@@ -3814,7 +3814,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.011942278984906268,
     "Security_JA": "NXPセミコンダクターズ",
-    "Daily_Change_right": 0.010761240817854355
+    "Daily_Change_right": 0.011942278984906268
   },
   {
     "Symbol": "ORLY",
@@ -3825,7 +3825,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.0011797511797511737,
     "Security_JA": "オライリー・オートモーティブ",
-    "Daily_Change_right": 0.0107863229425089
+    "Daily_Change_right": -0.0011797511797511737
   },
   {
     "Symbol": "OXY",
@@ -3836,7 +3836,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.012277364689607485,
     "Security_JA": "オクシデンタル・ペトロリアム",
-    "Daily_Change_right": -0.054158607350096685
+    "Daily_Change_right": -0.012277364689607485
   },
   {
     "Symbol": "ODFL",
@@ -3847,7 +3847,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.012568453182511947,
     "Security_JA": "オールド・ドミニオン・フレイト・ラインズ",
-    "Daily_Change_right": 0.01961886032682492
+    "Daily_Change_right": -0.012568453182511947
   },
   {
     "Symbol": "OMC",
@@ -3858,7 +3858,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.014058838844051007,
     "Security_JA": "オムニコム・グループ",
-    "Daily_Change_right": -0.0011427120365668285
+    "Daily_Change_right": -0.014058838844051007
   },
   {
     "Symbol": "ON",
@@ -3869,7 +3869,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.006340764982614078,
     "Security_JA": "オン・セミコンダクター・コーポレーション",
-    "Daily_Change_right": 0.03853371700237705
+    "Daily_Change_right": 0.006340764982614078
   },
   {
     "Symbol": "OKE",
@@ -3880,7 +3880,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.0033253067308795584,
     "Security_JA": "ワンオーケー",
-    "Daily_Change_right": -0.01995071001056201
+    "Daily_Change_right": 0.0033253067308795584
   },
   {
     "Symbol": "ORCL",
@@ -3891,7 +3891,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.01701837985023826,
     "Security_JA": "オラクル",
-    "Daily_Change_right": -0.018391835819221717
+    "Daily_Change_right": -0.01701837985023826
   },
   {
     "Symbol": "OTIS",
@@ -3902,7 +3902,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.019373506101396303,
     "Security_JA": "オティス・ワールドワイド",
-    "Daily_Change_right": 0.009170900979055758
+    "Daily_Change_right": -0.019373506101396303
   },
   {
     "Symbol": "PCAR",
@@ -3913,7 +3913,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.00023627628573679718,
     "Security_JA": "パッカー",
-    "Daily_Change_right": 0.015116185575299472
+    "Daily_Change_right": 0.00023627628573679718
   },
   {
     "Symbol": "PKG",
@@ -3924,7 +3924,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.0099990698539671,
     "Security_JA": "パッケージング・コーポレーション・オブ・アメリカ",
-    "Daily_Change_right": 0.027791156921298438
+    "Daily_Change_right": -0.0099990698539671
   },
   {
     "Symbol": "PLTR",
@@ -3935,7 +3935,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.010736738009465355,
     "Security_JA": "パランティア・テクノロジーズ",
-    "Daily_Change_right": 0.025427290557579123
+    "Daily_Change_right": 0.010736738009465355
   },
   {
     "Symbol": "PANW",
@@ -3946,7 +3946,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.030771895387102267,
     "Security_JA": "パロ・アルト・ネットワークス",
-    "Daily_Change_right": 0.005270407857698961
+    "Daily_Change_right": 0.030771895387102267
   },
   {
     "Symbol": "PSKY",
@@ -3957,7 +3957,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.02661934338952963,
     "Security_JA": "パラマウント・スカイダンス B",
-    "Daily_Change_right": 0.0008525149190110645
+    "Daily_Change_right": -0.02661934338952963
   },
   {
     "Symbol": "PH",
@@ -3968,7 +3968,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.0006058241261757422,
     "Security_JA": "パーカー･ハニフィン",
-    "Daily_Change_right": 0.033228840125391804
+    "Daily_Change_right": 0.0006058241261757422
   },
   {
     "Symbol": "PAYX",
@@ -3979,7 +3979,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.012424409015942932,
     "Security_JA": "ペイチェックス",
-    "Daily_Change_right": -0.0018452187126886108
+    "Daily_Change_right": -0.012424409015942932
   },
   {
     "Symbol": "PYPL",
@@ -3990,7 +3990,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.014673366834170792,
     "Security_JA": "ペイパル・ホールディングス",
-    "Daily_Change_right": 0.020076289901626177
+    "Daily_Change_right": 0.014673366834170792
   },
   {
     "Symbol": "PNR",
@@ -4001,7 +4001,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.014036251105216578,
     "Security_JA": "ペンテア",
-    "Daily_Change_right": 0.026369168356998013
+    "Daily_Change_right": 0.014036251105216578
   },
   {
     "Symbol": "PEP",
@@ -4012,7 +4012,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.0016698779704559469,
     "Security_JA": "ペプシコ",
-    "Daily_Change_right": -0.004482889253693698
+    "Daily_Change_right": -0.0016698779704559469
   },
   {
     "Symbol": "PFE",
@@ -4023,7 +4023,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.012373453318335143,
     "Security_JA": "ファイザー",
-    "Daily_Change_right": 0.012490815576781774
+    "Daily_Change_right": 0.012373453318335143
   },
   {
     "Symbol": "PCG",
@@ -4034,7 +4034,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.013071895424836536,
     "Security_JA": "パシフィック・ガス・アンド・エレクトリック",
-    "Daily_Change_right": -0.0063327576280943826
+    "Daily_Change_right": -0.013071895424836536
   },
   {
     "Symbol": "PM",
@@ -4045,7 +4045,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.0294934688811396,
     "Security_JA": "フィリップ・モリス・インターナショナル",
-    "Daily_Change_right": 0.00992063492063481
+    "Daily_Change_right": -0.0294934688811396
   },
   {
     "Symbol": "PSX",
@@ -4056,7 +4056,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.020811132702313002,
     "Security_JA": "フィリップス66",
-    "Daily_Change_right": -0.042613114553358276
+    "Daily_Change_right": 0.020811132702313002
   },
   {
     "Symbol": "PNW",
@@ -4067,7 +4067,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.011116481391976855,
     "Security_JA": "ピナクル・ウェスト・キャピタル",
-    "Daily_Change_right": -0.0012479600652778675
+    "Daily_Change_right": -0.011116481391976855
   },
   {
     "Symbol": "PNC",
@@ -4078,7 +4078,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.023235150384290682,
     "Security_JA": "ピーエヌシー・フィナンシャル・サービシズ・グループ",
-    "Daily_Change_right": 0.02153860135411464
+    "Daily_Change_right": -0.023235150384290682
   },
   {
     "Symbol": "POOL",
@@ -4089,7 +4089,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.01692321147454961,
     "Security_JA": "プール",
-    "Daily_Change_right": 0.00877503988654502
+    "Daily_Change_right": 0.01692321147454961
   },
   {
     "Symbol": "PPG",
@@ -4100,7 +4100,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.004442832532414625,
     "Security_JA": "ピーピージー・インダストリーズ",
-    "Daily_Change_right": 0.023983594864479294
+    "Daily_Change_right": -0.004442832532414625
   },
   {
     "Symbol": "PPL",
@@ -4111,7 +4111,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.005448884276076826,
     "Security_JA": "パシフィック・パワー・アンド・ライト・コーポレーション",
-    "Daily_Change_right": -0.008134214539908497
+    "Daily_Change_right": 0.005448884276076826
   },
   {
     "Symbol": "PFG",
@@ -4122,7 +4122,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.02412371134020622,
     "Security_JA": "プリンシパル・フィナンシャル・グループ",
-    "Daily_Change_right": 0.02330283038944454
+    "Daily_Change_right": 0.02412371134020622
   },
   {
     "Symbol": "PG",
@@ -4133,7 +4133,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.02460206607570074,
     "Security_JA": "プロクター・アンド・ギャンブル",
-    "Daily_Change_right": 0.02669275382572841
+    "Daily_Change_right": 0.01695147896506759
   },
   {
     "Symbol": "PGR",
@@ -4144,7 +4144,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.02162372765791665,
     "Security_JA": "プログレッシブ",
-    "Daily_Change_right": -0.004374109205288182
+    "Daily_Change_right": -0.02162372765791665
   },
   {
     "Symbol": "PLD",
@@ -4155,7 +4155,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.0016861036953773295,
     "Security_JA": "プロロジス",
-    "Daily_Change_right": 0.020609129914890674
+    "Daily_Change_right": -0.0016861036953773295
   },
   {
     "Symbol": "PRU",
@@ -4166,7 +4166,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.0014838367779544312,
     "Security_JA": "プルデンシャル・フィナンシャル",
-    "Daily_Change_right": 0.01874123070755667
+    "Daily_Change_right": -0.0014838367779544312
   },
   {
     "Symbol": "PEG",
@@ -4177,7 +4177,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.007235528942115747,
     "Security_JA": "パブリック・サービス・エンタープライズ・グループ",
-    "Daily_Change_right": -0.005607020965382837
+    "Daily_Change_right": 0.007235528942115747
   },
   {
     "Symbol": "PTC",
@@ -4188,7 +4188,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.00986527276742969,
     "Security_JA": "ピー・ティー・シー",
-    "Daily_Change_right": 0.01063137339986981
+    "Daily_Change_right": 0.00986527276742969
   },
   {
     "Symbol": "PSA",
@@ -4199,7 +4199,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.008139759346245327,
     "Security_JA": "パブリック・ストレージ",
-    "Daily_Change_right": 0.024789553920593947
+    "Daily_Change_right": -0.008139759346245327
   },
   {
     "Symbol": "PHM",
@@ -4210,7 +4210,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.02357624004898947,
     "Security_JA": "パルト・グループ",
-    "Daily_Change_right": 0.05030297999501953
+    "Daily_Change_right": -0.02357624004898947
   },
   {
     "Symbol": "PWR",
@@ -4221,7 +4221,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.01357666077292249,
     "Security_JA": "クアンタ・サービシズ",
-    "Daily_Change_right": 0.024616117939464163
+    "Daily_Change_right": -0.01357666077292249
   },
   {
     "Symbol": "QCOM",
@@ -4232,7 +4232,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.11123553564762977,
     "Security_JA": "クアルコム",
-    "Daily_Change_right": 0.012865323120398526
+    "Daily_Change_right": 0.11123553564762977
   },
   {
     "Symbol": "DGX",
@@ -4243,7 +4243,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.016338395228787606,
     "Security_JA": "クエスト・ダイアグノスティクス",
-    "Daily_Change_right": 0.01859396218531287
+    "Daily_Change_right": -0.016338395228787606
   },
   {
     "Symbol": "Q",
@@ -4254,7 +4254,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.031042603296938517,
     "Security_JA": "キューニティ・エレクトロニクス",
-    "Daily_Change_right": 0.038004569687737855
+    "Daily_Change_right": 0.031042603296938517
   },
   {
     "Symbol": "RL",
@@ -4265,7 +4265,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.000269440103465061,
     "Security_JA": "ラルフローレン",
-    "Daily_Change_right": 0.04647011090073034
+    "Daily_Change_right": 0.000269440103465061
   },
   {
     "Symbol": "RJF",
@@ -4276,7 +4276,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 6.518479890483609e-05,
     "Security_JA": "レイモンド・ジェームズ・フィナンシャル",
-    "Daily_Change_right": 0.0058995094789870495
+    "Daily_Change_right": 6.518479890483609e-05
   },
   {
     "Symbol": "RTX",
@@ -4287,7 +4287,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.028109313998884663,
     "Security_JA": "RTX",
-    "Daily_Change_right": 0.002910390605054854
+    "Daily_Change_right": -0.028109313998884663
   },
   {
     "Symbol": "O",
@@ -4298,7 +4298,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.011704119850187267,
     "Security_JA": "リアルティー・インカム",
-    "Daily_Change_right": 0.00696163366336638
+    "Daily_Change_right": -0.011704119850187267
   },
   {
     "Symbol": "REG",
@@ -4309,7 +4309,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.006811989100817404,
     "Security_JA": "リージェンシー・センターズ",
-    "Daily_Change_right": 0.016070307595731338
+    "Daily_Change_right": -0.006811989100817404
   },
   {
     "Symbol": "REGN",
@@ -4320,7 +4320,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.018863737239236483,
     "Security_JA": "リジェネロン・ファーマシューティカルズ",
-    "Daily_Change_right": 0.006126005361930362
+    "Daily_Change_right": -0.018863737239236483
   },
   {
     "Symbol": "RF",
@@ -4331,7 +4331,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.02253521126760553,
     "Security_JA": "リジョンズ・フィナンシャル",
-    "Daily_Change_right": 0.0075214899713466074
+    "Daily_Change_right": -0.02253521126760553
   },
   {
     "Symbol": "RSG",
@@ -4342,7 +4342,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.019856101663240516,
     "Security_JA": "リパブリック・サービシズ",
-    "Daily_Change_right": -0.009539254030334827
+    "Daily_Change_right": -0.019856101663240516
   },
   {
     "Symbol": "RMD",
@@ -4353,7 +4353,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.0015489043779326839,
     "Security_JA": "レスメド",
-    "Daily_Change_right": 0.015129939480242105
+    "Daily_Change_right": 0.0015489043779326839
   },
   {
     "Symbol": "RVTY",
@@ -4364,7 +4364,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.004360298336202061,
     "Security_JA": "レビティー",
-    "Daily_Change_right": 0.04948062102088677
+    "Daily_Change_right": -0.004360298336202061
   },
   {
     "Symbol": "HOOD",
@@ -4375,7 +4375,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.014005266937993624,
     "Security_JA": "ロビンフッド・マーケッツ",
-    "Daily_Change_right": 0.044905008635578655
+    "Daily_Change_right": 0.014005266937993624
   },
   {
     "Symbol": "ROK",
@@ -4386,7 +4386,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.018903915286982508,
     "Security_JA": "ロックウェル・オートメーション",
-    "Daily_Change_right": 0.03207467540527796
+    "Daily_Change_right": -0.018903915286982508
   },
   {
     "Symbol": "ROL",
@@ -4397,7 +4397,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.006843305843130383,
     "Security_JA": "ローリンズ",
-    "Daily_Change_right": 0.00935951550743252
+    "Daily_Change_right": -0.006843305843130383
   },
   {
     "Symbol": "ROP",
@@ -4408,7 +4408,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.028480316692324648,
     "Security_JA": "ローパー・テクノロジーズ",
-    "Daily_Change_right": 0.001547474300873224
+    "Daily_Change_right": -0.028480316692324648
   },
   {
     "Symbol": "ROST",
@@ -4419,7 +4419,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.0024237616781243743,
     "Security_JA": "ロス・ストアーズ",
-    "Daily_Change_right": 0.02635491282605755
+    "Daily_Change_right": -0.0024237616781243743
   },
   {
     "Symbol": "RCL",
@@ -4430,7 +4430,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.02077333640517593,
     "Security_JA": "ロイヤル・カリビアン・クルーズ",
-    "Daily_Change_right": 0.07343485617597305
+    "Daily_Change_right": 0.02077333640517593
   },
   {
     "Symbol": "SPGI",
@@ -4441,7 +4441,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.005102157027993423,
     "Security_JA": "S&P グローバル",
-    "Daily_Change_right": 0.01323290368369233
+    "Daily_Change_right": -0.005102157027993423
   },
   {
     "Symbol": "CRM",
@@ -4452,7 +4452,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.02804385458742057,
     "Security_JA": "セールスフォース",
-    "Daily_Change_right": 0.005076702350733845
+    "Daily_Change_right": 0.02804385458742057
   },
   {
     "Symbol": "SNDK",
@@ -4463,7 +4463,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.06163465353967593,
     "Security_JA": "サンディスク",
-    "Daily_Change_right": 0.001653126257517898
+    "Daily_Change_right": 0.06163465353967593
   },
   {
     "Symbol": "SBAC",
@@ -4474,7 +4474,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.0005919854280509811,
     "Security_JA": "SBAコミュニケーションズ",
-    "Daily_Change_right": 0.006222943722943703
+    "Daily_Change_right": -0.0005919854280509811
   },
   {
     "Symbol": "SLB",
@@ -4485,7 +4485,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.025758129338691937,
     "Security_JA": "SLB",
-    "Daily_Change_right": 0.017977962497583603
+    "Daily_Change_right": 0.025758129338691937
   },
   {
     "Symbol": "STX",
@@ -4496,7 +4496,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.002331438684864376,
     "Security_JA": "シーゲイト・テクノロジー・ホールディングス",
-    "Daily_Change_right": 0.02997311069742964
+    "Daily_Change_right": -0.002331438684864376
   },
   {
     "Symbol": "SRE",
@@ -4507,7 +4507,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.0075604301991267575,
     "Security_JA": "センプラ・エナジー",
-    "Daily_Change_right": -0.01847792045098664
+    "Daily_Change_right": -0.0075604301991267575
   },
   {
     "Symbol": "NOW",
@@ -4518,7 +4518,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.06357631516867186,
     "Security_JA": "サービスナウ",
-    "Daily_Change_right": 0.0022812111157196066
+    "Daily_Change_right": 0.06357631516867186
   },
   {
     "Symbol": "SHW",
@@ -4529,7 +4529,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.00011846235858545169,
     "Security_JA": "シャーウィンウィリアムズ",
-    "Daily_Change_right": 0.03662926741465182
+    "Daily_Change_right": 0.00011846235858545169
   },
   {
     "Symbol": "SPG",
@@ -4540,7 +4540,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.012275360895610331,
     "Security_JA": "サイモン・プロパティ・グループ",
-    "Daily_Change_right": 0.024236404271169583
+    "Daily_Change_right": -0.012275360895610331
   },
   {
     "Symbol": "SWKS",
@@ -4551,7 +4551,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.034118602761982156,
     "Security_JA": "スカイワークス・ソリューションズ",
-    "Daily_Change_right": 0.004940374787052796
+    "Daily_Change_right": 0.034118602761982156
   },
   {
     "Symbol": "SJM",
@@ -4562,7 +4562,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.0012475309283709799,
     "Security_JA": "ジェイ・エム・スマッカー",
-    "Daily_Change_right": 0.01660634447519696
+    "Daily_Change_right": -0.0012475309283709799
   },
   {
     "Symbol": "SW",
@@ -4573,7 +4573,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.013820335636722662,
     "Security_JA": "スマーフィット・ウエストロックPLC",
-    "Daily_Change_right": 0.02524271844660192
+    "Daily_Change_right": -0.013820335636722662
   },
   {
     "Symbol": "SNA",
@@ -4584,7 +4584,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.031554702495201495,
     "Security_JA": "スナップオン",
-    "Daily_Change_right": 0.03655345363353859
+    "Daily_Change_right": -0.031554702495201495
   },
   {
     "Symbol": "SOLV",
@@ -4595,7 +4595,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.0063805104408352345,
     "Security_JA": "ソルベンタム",
-    "Daily_Change_right": 0.02322880371660872
+    "Daily_Change_right": -0.0063805104408352345
   },
   {
     "Symbol": "SO",
@@ -4606,7 +4606,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.004472367160046872,
     "Security_JA": "サザン",
-    "Daily_Change_right": -0.004109589041095896
+    "Daily_Change_right": -0.004472367160046872
   },
   {
     "Symbol": "LUV",
@@ -4617,7 +4617,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.04503311258278153,
     "Security_JA": "サウスウェスト航空",
-    "Daily_Change_right": 0.050947575682992866
+    "Daily_Change_right": 0.04503311258278153
   },
   {
     "Symbol": "SWK",
@@ -4628,7 +4628,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.008288383107485796,
     "Security_JA": "スタンレー・ブラック・アンド・デッカー",
-    "Daily_Change_right": 0.041916167664670725
+    "Daily_Change_right": 0.008288383107485796
   },
   {
     "Symbol": "SBUX",
@@ -4639,7 +4639,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.008740204942736633,
     "Security_JA": "スターバックス",
-    "Daily_Change_right": 0.016673444489629936
+    "Daily_Change_right": -0.008740204942736633
   },
   {
     "Symbol": "STT",
@@ -4650,7 +4650,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.0033719008264462206,
     "Security_JA": "ステート・ストリート",
-    "Daily_Change_right": 0.024876673713883024
+    "Daily_Change_right": -0.0033719008264462206
   },
   {
     "Symbol": "STLD",
@@ -4661,7 +4661,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.007731615196622886,
     "Security_JA": "スチール・ダイナミクス",
-    "Daily_Change_right": 0.023346104725415037
+    "Daily_Change_right": 0.007731615196622886
   },
   {
     "Symbol": "STE",
@@ -4672,7 +4672,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.007695060844667138,
     "Security_JA": "ステリス",
-    "Daily_Change_right": 0.02645815338455241
+    "Daily_Change_right": -0.007695060844667138
   },
   {
     "Symbol": "SYK",
@@ -4683,7 +4683,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.006491733656908802,
     "Security_JA": "ストライカー",
-    "Daily_Change_right": 0.014598971570423778
+    "Daily_Change_right": -0.006491733656908802
   },
   {
     "Symbol": "SMCI",
@@ -4694,7 +4694,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.08710280373831769,
     "Security_JA": "スーパー・マイクロ・コンピューター",
-    "Daily_Change_right": 0.005633802816901414
+    "Daily_Change_right": 0.08710280373831769
   },
   {
     "Symbol": "SYF",
@@ -4705,7 +4705,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.004176455233620561,
     "Security_JA": "シンクロニー・フィナンシャル",
-    "Daily_Change_right": 0.04217107888785422
+    "Daily_Change_right": -0.004176455233620561
   },
   {
     "Symbol": "SNPS",
@@ -4716,7 +4716,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.09624603261464369,
     "Security_JA": "シノプシス",
-    "Daily_Change_right": 0.019109146548792946
+    "Daily_Change_right": 0.09624603261464369
   },
   {
     "Symbol": "SYY",
@@ -4727,7 +4727,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.009893153937475268,
     "Security_JA": "シスコ",
-    "Daily_Change_right": 0.029979743416610385
+    "Daily_Change_right": 0.009893153937475268
   },
   {
     "Symbol": "TMUS",
@@ -4738,7 +4738,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.0220023702787653,
     "Security_JA": "Ｔモバイル",
-    "Daily_Change_right": 0.0027901785714284848
+    "Daily_Change_right": -0.0220023702787653
   },
   {
     "Symbol": "TROW",
@@ -4749,7 +4749,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.004322042416323175,
     "Security_JA": "ティー・ロウ・プライス・グループ",
-    "Daily_Change_right": 0.012845953002611007
+    "Daily_Change_right": -0.004322042416323175
   },
   {
     "Symbol": "TTWO",
@@ -4760,7 +4760,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.004049547403525461,
     "Security_JA": "テイクツー・インタラクティブ・ソフトウェア",
-    "Daily_Change_right": -0.008834665544804445
+    "Daily_Change_right": 0.004049547403525461
   },
   {
     "Symbol": "TPR",
@@ -4771,7 +4771,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.0038238306589279776,
     "Security_JA": "タペストリー",
-    "Daily_Change_right": 0.0342424845709735
+    "Daily_Change_right": -0.0038238306589279776
   },
   {
     "Symbol": "TRGP",
@@ -4782,7 +4782,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.0032512192072027056,
     "Security_JA": "タルガ・リソーシズ",
-    "Daily_Change_right": -0.0179725616112756
+    "Daily_Change_right": 0.0032512192072027056
   },
   {
     "Symbol": "TGT",
@@ -4793,7 +4793,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.006990858108627154,
     "Security_JA": "ターゲット",
-    "Daily_Change_right": 0.031716568477120545
+    "Daily_Change_right": -0.006990858108627154
   },
   {
     "Symbol": "TEL",
@@ -4804,7 +4804,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.014054103706425401,
     "Security_JA": "TEコネクティビティ・PLC",
-    "Daily_Change_right": 0.040849120433017576
+    "Daily_Change_right": -0.014054103706425401
   },
   {
     "Symbol": "TDY",
@@ -4815,7 +4815,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.004710395090142002,
     "Security_JA": "テレダイン･テクノロジーズ",
-    "Daily_Change_right": 0.00011010444192785016
+    "Daily_Change_right": -0.004710395090142002
   },
   {
     "Symbol": "TER",
@@ -4826,7 +4826,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.0426195166961769,
     "Security_JA": "テラダイン",
-    "Daily_Change_right": 0.03951683428071704
+    "Daily_Change_right": 0.0426195166961769
   },
   {
     "Symbol": "TSLA",
@@ -4837,7 +4837,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.006903564165685497,
     "Security_JA": "テスラ",
-    "Daily_Change_right": 0.030136281820519487
+    "Daily_Change_right": 0.006903564165685497
   },
   {
     "Symbol": "TXN",
@@ -4848,7 +4848,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.018034936045069734,
     "Security_JA": "テキサス・インストゥルメンツ",
-    "Daily_Change_right": 0.030121021963245176
+    "Daily_Change_right": -0.018034936045069734
   },
   {
     "Symbol": "TPL",
@@ -4859,7 +4859,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.0005465103039962479,
     "Security_JA": "テキサス・パシフィック・ランド・コーポ",
-    "Daily_Change_right": -0.008656485326201698
+    "Daily_Change_right": -0.0005465103039962479
   },
   {
     "Symbol": "TXT",
@@ -4870,7 +4870,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.026668142082549636,
     "Security_JA": "テクストロン",
-    "Daily_Change_right": 0.014844355821424654
+    "Daily_Change_right": -0.026668142082549636
   },
   {
     "Symbol": "TMO",
@@ -4881,7 +4881,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.006449539318620079,
     "Security_JA": "サーモ・フィッシャーサイエンティフィック",
-    "Daily_Change_right": 0.020542635658914773
+    "Daily_Change_right": 0.006449539318620079
   },
   {
     "Symbol": "TJX",
@@ -4892,7 +4892,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.008335964635301504,
     "Security_JA": "ティージェイエックス・カンパニーズ",
-    "Daily_Change_right": 0.020320040640081388
+    "Daily_Change_right": -0.008335964635301504
   },
   {
     "Symbol": "TKO",
@@ -4903,7 +4903,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.001288521421668684,
     "Security_JA": "TKO・グループ・ホールディングス",
-    "Daily_Change_right": 0.010138798525265693
+    "Daily_Change_right": 0.001288521421668684
   },
   {
     "Symbol": "TTD",
@@ -4914,7 +4914,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.059681697612731996,
     "Security_JA": "トレード・デスク　クラスA",
-    "Daily_Change_right": -0.012741652021089749
+    "Daily_Change_right": 0.059681697612731996
   },
   {
     "Symbol": "TSCO",
@@ -4925,7 +4925,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.03746397694524495,
     "Security_JA": "トラクター・サプライ・カンパニー",
-    "Daily_Change_right": 0.008514452162222618
+    "Daily_Change_right": -0.03746397694524495
   },
   {
     "Symbol": "TT",
@@ -4936,7 +4936,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.0018330484213128814,
     "Security_JA": "トレイン・テクノロジーズ",
-    "Daily_Change_right": 0.03441458274491067
+    "Daily_Change_right": 0.0018330484213128814
   },
   {
     "Symbol": "TDG",
@@ -4947,7 +4947,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.015080290968981546,
     "Security_JA": "トランスダイム・グループ",
-    "Daily_Change_right": 0.030653867760924332
+    "Daily_Change_right": -0.015080290968981546
   },
   {
     "Symbol": "TRV",
@@ -4958,7 +4958,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.014967624377704637,
     "Security_JA": "トラベラーズ･カンパニーズ",
-    "Daily_Change_right": 0.006592156337839739
+    "Daily_Change_right": -0.014967624377704637
   },
   {
     "Symbol": "TRMB",
@@ -4969,7 +4969,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.004624105011932996,
     "Security_JA": "トリンブル",
-    "Daily_Change_right": 0.023939707403576246
+    "Daily_Change_right": 0.004624105011932996
   },
   {
     "Symbol": "TFC",
@@ -4980,7 +4980,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.013035019455252952,
     "Security_JA": "トゥルーイスト・フィナンシャル",
-    "Daily_Change_right": 0.023062917256726694
+    "Daily_Change_right": -0.013035019455252952
   },
   {
     "Symbol": "TYL",
@@ -4991,7 +4991,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.018734735211770905,
     "Security_JA": "タイラー・テクノロジーズ",
-    "Daily_Change_right": 0.008150894538606518
+    "Daily_Change_right": 0.018734735211770905
   },
   {
     "Symbol": "TSN",
@@ -5002,7 +5002,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.01839644335428488,
     "Security_JA": "タイソン・フーズ クラスA",
-    "Daily_Change_right": 0.012970776683856714
+    "Daily_Change_right": -0.01839644335428488
   },
   {
     "Symbol": "USB",
@@ -5013,7 +5013,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.018541409147095254,
     "Security_JA": "ユー・エス・バンコープ",
-    "Daily_Change_right": 0.026135544340302866
+    "Daily_Change_right": -0.018541409147095254
   },
   {
     "Symbol": "UBER",
@@ -5024,7 +5024,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.0008032128514056529,
     "Security_JA": "ウーバー・テクノロジーズ",
-    "Daily_Change_right": 0.00836820083682009
+    "Daily_Change_right": -0.0008032128514056529
   },
   {
     "Symbol": "UDR",
@@ -5035,7 +5035,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.004010312231452119,
     "Security_JA": "UDR",
-    "Daily_Change_right": 0.03007299270072996
+    "Daily_Change_right": -0.004010312231452119
   },
   {
     "Symbol": "ULTA",
@@ -5046,7 +5046,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.010435121536390226,
     "Security_JA": "アルタ",
-    "Daily_Change_right": 0.025804538039448238
+    "Daily_Change_right": -0.010435121536390226
   },
   {
     "Symbol": "UNP",
@@ -5057,7 +5057,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.00943744009437441,
     "Security_JA": "ユニオン・パシフィック",
-    "Daily_Change_right": 0.0002788067072927597
+    "Daily_Change_right": -0.00943744009437441
   },
   {
     "Symbol": "UAL",
@@ -5068,7 +5068,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.019178082191780823,
     "Security_JA": "ユナイテッド・エアラインズ・ホールディングス",
-    "Daily_Change_right": 0.07124066084394398
+    "Daily_Change_right": 0.019178082191780823
   },
   {
     "Symbol": "UPS",
@@ -5079,7 +5079,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.006498329001114026,
     "Security_JA": "ユナイテッド･パーセル･サービス クラスB",
-    "Daily_Change_right": 0.013135351227869746
+    "Daily_Change_right": -0.006498329001114026
   },
   {
     "Symbol": "URI",
@@ -5090,7 +5090,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.012535722248120154,
     "Security_JA": "ユナイテッド・レンタルズ",
-    "Daily_Change_right": 0.024000308685642218
+    "Daily_Change_right": -0.012535722248120154
   },
   {
     "Symbol": "UNH",
@@ -5101,7 +5101,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.0010153429602888472,
     "Security_JA": "ユナイテッドヘルス・グループ",
-    "Daily_Change_right": 0.026011378002528503
+    "Daily_Change_right": 0.0010153429602888472
   },
   {
     "Symbol": "UHS",
@@ -5112,7 +5112,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.037697317584722445,
     "Security_JA": "ユニバーサル・ヘルス・サービシズ クラスB",
-    "Daily_Change_right": 0.020589716331897316
+    "Daily_Change_right": -0.037697317584722445
   },
   {
     "Symbol": "VLO",
@@ -5123,7 +5123,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.008638754650814616,
     "Security_JA": "バレロ・エナジー",
-    "Daily_Change_right": -0.0748324646314222
+    "Daily_Change_right": 0.008638754650814616
   },
   {
     "Symbol": "VTR",
@@ -5134,7 +5134,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.008320270107319398,
     "Security_JA": "ベンタス",
-    "Daily_Change_right": -0.004794760846684724
+    "Daily_Change_right": 0.008320270107319398
   },
   {
     "Symbol": "VLTO",
@@ -5145,7 +5145,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.001914630025903837,
     "Security_JA": "ヴェラルト",
-    "Daily_Change_right": 0.0048597305058537404
+    "Daily_Change_right": -0.001914630025903837
   },
   {
     "Symbol": "VRSN",
@@ -5156,7 +5156,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.02798339050370103,
     "Security_JA": "ベリサイン",
-    "Daily_Change_right": 0.0007303268212524689
+    "Daily_Change_right": -0.02798339050370103
   },
   {
     "Symbol": "VRSK",
@@ -5167,7 +5167,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.0025403635542509714,
     "Security_JA": "ベリスク・アナリティックス",
-    "Daily_Change_right": -0.0013459705008132415
+    "Daily_Change_right": 0.0025403635542509714
   },
   {
     "Symbol": "VZ",
@@ -5178,7 +5178,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.017789072426937662,
     "Security_JA": "ベライゾン・コミュニケーションズ",
-    "Daily_Change_right": -0.0049166310389056
+    "Daily_Change_right": -0.017789072426937662
   },
   {
     "Symbol": "VRTX",
@@ -5189,7 +5189,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.011054929901172149,
     "Security_JA": "バーテックス・ファーマシューティカルズ",
-    "Daily_Change_right": 0.012739584528864941
+    "Daily_Change_right": -0.011054929901172149
   },
   {
     "Symbol": "VRT",
@@ -5200,7 +5200,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.005314685314685251,
     "Security_JA": "バーティブ・ホールディングス",
-    "Daily_Change_right": 0.0449121136912249
+    "Daily_Change_right": 0.005314685314685251
   },
   {
     "Symbol": "VTRS",
@@ -5211,7 +5211,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.010847457627118653,
     "Security_JA": "ビアトリス",
-    "Daily_Change_right": 0.047822983583154885
+    "Daily_Change_right": -0.010847457627118653
   },
   {
     "Symbol": "VICI",
@@ -5222,7 +5222,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.0031567870922483286,
     "Security_JA": "VICIプロパティーズ",
-    "Daily_Change_right": 0.021478873239436726
+    "Daily_Change_right": -0.0031567870922483286
   },
   {
     "Symbol": "V",
@@ -5233,7 +5233,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.0017482517482518146,
     "Security_JA": "ビザ クラスA",
-    "Daily_Change_right": 0.00609330371310682
+    "Daily_Change_right": 0.0017482517482518146
   },
   {
     "Symbol": "VST",
@@ -5244,7 +5244,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.047816385081287854,
     "Security_JA": "ビストラ・エナジー",
-    "Daily_Change_right": -0.01250528605086687
+    "Daily_Change_right": 0.047816385081287854
   },
   {
     "Symbol": "VMC",
@@ -5255,7 +5255,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.00218646441870789,
     "Security_JA": "バルカン・マテリアルズ",
-    "Daily_Change_right": 0.020750227447687057
+    "Daily_Change_right": -0.00218646441870789
   },
   {
     "Symbol": "WRB",
@@ -5266,7 +5266,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.02804967129291456,
     "Security_JA": "ダブリューアール・バークレー",
-    "Daily_Change_right": 0.008450279161008033
+    "Daily_Change_right": -0.02804967129291456
   },
   {
     "Symbol": "GWW",
@@ -5277,7 +5277,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.014524727232146751,
     "Security_JA": "ダブリュー・ダブリュー・グレインジャー",
-    "Daily_Change_right": 0.02595454866257329
+    "Daily_Change_right": -0.014524727232146751
   },
   {
     "Symbol": "WAB",
@@ -5288,7 +5288,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.008869920207830716,
     "Security_JA": "ワブテック",
-    "Daily_Change_right": 0.03080234833659493
+    "Daily_Change_right": -0.008869920207830716
   },
   {
     "Symbol": "WMT",
@@ -5299,7 +5299,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.015981216390214447,
     "Security_JA": "ウォルマート",
-    "Daily_Change_right": 0.021470918122095874
+    "Daily_Change_right": -0.015981216390214447
   },
   {
     "Symbol": "DIS",
@@ -5310,7 +5310,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.010130246020260601,
     "Security_JA": "ウォルト・ディズニー",
-    "Daily_Change_right": 0.023002887391722814
+    "Daily_Change_right": -0.010130246020260601
   },
   {
     "Symbol": "WBD",
@@ -5321,7 +5321,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.006319702602230547,
     "Security_JA": "ワーナーブラザース・ディスカバリー・インク",
-    "Daily_Change_right": 0.002920774005111292
+    "Daily_Change_right": 0.006319702602230547
   },
   {
     "Symbol": "WM",
@@ -5332,7 +5332,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.014046391752577363,
     "Security_JA": "ウェースト・マネジメント",
-    "Daily_Change_right": -0.0005801499464478038
+    "Daily_Change_right": -0.014046391752577363
   },
   {
     "Symbol": "WAT",
@@ -5343,7 +5343,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.0042737789203084325,
     "Security_JA": "ウォーターズ",
-    "Daily_Change_right": 0.027363340020060058
+    "Daily_Change_right": -0.0042737789203084325
   },
   {
     "Symbol": "WEC",
@@ -5354,7 +5354,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.008393181621528068,
     "Security_JA": "ウィスコンシン・エナジー",
-    "Daily_Change_right": -0.004809756935497744
+    "Daily_Change_right": -0.008393181621528068
   },
   {
     "Symbol": "WFC",
@@ -5365,7 +5365,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.013538690845857699,
     "Security_JA": "ウェルズ・ファーゴ",
-    "Daily_Change_right": 0.001969230769230727
+    "Daily_Change_right": -0.013538690845857699
   },
   {
     "Symbol": "WELL",
@@ -5376,7 +5376,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.0024490971955435595,
     "Security_JA": "ウェルタワー",
-    "Daily_Change_right": -0.018600531443755446
+    "Daily_Change_right": 0.0024490971955435595
   },
   {
     "Symbol": "WST",
@@ -5387,7 +5387,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.011430416532127749,
     "Security_JA": "ウェスト・ファーマシューティカル・サービシズ",
-    "Daily_Change_right": 0.014528742448389666
+    "Daily_Change_right": -0.011430416532127749
   },
   {
     "Symbol": "WDC",
@@ -5398,7 +5398,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.0021829728120658747,
     "Security_JA": "ウェスタン・デジタル",
-    "Daily_Change_right": 0.029942768669302396
+    "Daily_Change_right": 0.0021829728120658747
   },
   {
     "Symbol": "WY",
@@ -5409,7 +5409,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.0012000000000000454,
     "Security_JA": "ウェアーハウザー",
-    "Daily_Change_right": 0.03325123152709369
+    "Daily_Change_right": 0.0012000000000000454
   },
   {
     "Symbol": "WSM",
@@ -5420,7 +5420,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.009563906647954546,
     "Security_JA": "ウィリアムズソノマ",
-    "Daily_Change_right": 0.03754569190600521
+    "Daily_Change_right": -0.009563906647954546
   },
   {
     "Symbol": "WMB",
@@ -5431,7 +5431,7 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.00739706908583393,
     "Security_JA": "ウィリアムズ・カンパニーズ",
-    "Daily_Change_right": 0.004092576912221369
+    "Daily_Change_right": 0.00739706908583393
   },
   {
     "Symbol": "WTW",
@@ -5442,7 +5442,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.010863212898346346,
     "Security_JA": "ウィリス・タワーズ・ワトソン・パブリック",
-    "Daily_Change_right": 0.006118378798634359
+    "Daily_Change_right": -0.010863212898346346
   },
   {
     "Symbol": "WDAY",
@@ -5453,7 +5453,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.044388244527775386,
     "Security_JA": "ワークデイ クラスA",
-    "Daily_Change_right": -0.008328661808280662
+    "Daily_Change_right": 0.044388244527775386
   },
   {
     "Symbol": "WYNN",
@@ -5464,7 +5464,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.0005681280181801181,
     "Security_JA": "ウィン・リゾーツ",
-    "Daily_Change_right": 0.022186856393933765
+    "Daily_Change_right": 0.0005681280181801181
   },
   {
     "Symbol": "XEL",
@@ -5475,7 +5475,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": -0.004151987921489662,
     "Security_JA": "エクセル・エナジー",
-    "Daily_Change_right": 0.00037014188772364144
+    "Daily_Change_right": -0.004151987921489662
   },
   {
     "Symbol": "XYL",
@@ -5486,7 +5486,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.0018900484838524445,
     "Security_JA": "ザイレム",
-    "Daily_Change_right": -0.03274498841945527
+    "Daily_Change_right": -0.0018900484838524445
   },
   {
     "Symbol": "YUM",
@@ -5497,7 +5497,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.0027997262489889174,
     "Security_JA": "ヤム・ブランズ",
-    "Daily_Change_right": 0.020498996990972802
+    "Daily_Change_right": -0.0027997262489889174
   },
   {
     "Symbol": "ZBRA",
@@ -5508,7 +5508,7 @@
     "Exchange": "NASDAQ",
     "Daily_Change": 0.003702560937982119,
     "Security_JA": "ゼブラ・テクノロジーズ クラスA",
-    "Daily_Change_right": 0.005964641263302501
+    "Daily_Change_right": 0.003702560937982119
   },
   {
     "Symbol": "ZBH",
@@ -5519,7 +5519,7 @@
     "Exchange": "NYSE",
     "Daily_Change": -0.012765036780614372,
     "Security_JA": "ジンマー・バイオメット・ホールディングス",
-    "Daily_Change_right": 0.0
+    "Daily_Change_right": -0.012765036780614372
   },
   {
     "Symbol": "ZTS",
@@ -5530,6 +5530,6 @@
     "Exchange": "NYSE",
     "Daily_Change": 0.006979148716181305,
     "Security_JA": "ゾエティス",
-    "Daily_Change_right": 0.02805779569892464
+    "Daily_Change_right": 0.006979148716181305
   }
 ]
