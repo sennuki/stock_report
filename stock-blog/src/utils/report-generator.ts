@@ -125,8 +125,9 @@ export function transformRawToReport(rawData: any): ReportData {
     
     if (reported.length > 0) {
       const latest = reported[0];
+      const rawDate = latest.index || "";
       earningsSurprise = {
-        date: latest.index.split(' ')[0],
+        date: typeof rawDate === 'string' ? rawDate.split(' ')[0] : String(rawDate).split(' ')[0],
         actual: parseFloat(latest['Reported EPS']),
         estimate: (latest['EPS Estimate'] !== "None" && latest['EPS Estimate'] !== "nan") ? parseFloat(latest['EPS Estimate']) : null,
         surprise_pct: (latest['Surprise(%)'] !== "None" && latest['Surprise(%)'] !== "nan") ? parseFloat(latest['Surprise(%)']) : null
@@ -140,15 +141,15 @@ export function transformRawToReport(rawData: any): ReportData {
   if (rawData.calendar && rawData.calendar['Earnings Date']) {
     const dates = rawData.calendar['Earnings Date'];
     const nextDate = Array.isArray(dates) ? dates[0] : dates;
-    if (new Date(nextDate) >= now) {
+    if (nextDate && new Date(nextDate).toString() !== 'Invalid Date' && new Date(nextDate) >= now) {
       nextEarnings = {
-        date: nextDate.split(' ')[0],
+        date: typeof nextDate === 'string' ? nextDate.split(' ')[0] : new Date(nextDate).toISOString().split('T')[0],
         estimate: rawData.calendar['EPS Average'] || info.earningsAverage || null
       };
     }
   } else if (info.nextEarningsDate) {
     const nextDate = new Date(info.nextEarningsDate * 1000);
-    if (nextDate >= now) {
+    if (nextDate.toString() !== 'Invalid Date' && nextDate >= now) {
       nextEarnings = {
         date: nextDate.toISOString().split('T')[0],
         estimate: info.earningsAverage || null
@@ -209,7 +210,7 @@ function formatFinancialChart(stmtFields: Record<string, any>, fields: string[])
   const dates = Object.keys(stmtFields[firstFieldName]).sort();
   
   return {
-    labels: dates.map(d => d.split(' ')[0]),
+    labels: dates.map(d => (typeof d === 'string' ? d.split(' ')[0] : String(d).split(' ')[0])),
     datasets: fields.map((field, i) => ({
       label: field,
       data: dates.map(d => stmtFields[field] ? stmtFields[field][d] : 0),

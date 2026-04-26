@@ -103,7 +103,7 @@ export function formatFinancialChart(financialData: any, field: string) {
   const values = dates.map(d => financialData[d][field] || 0);
 
   return {
-    labels: dates.map(d => d.split(' ')[0]), // YYYY-MM-DD
+    labels: dates.map(d => (typeof d === 'string' ? d.split(' ')[0] : String(d).split(' ')[0])), // YYYY-MM-DD
     datasets: [{
       label: field,
       data: values,
