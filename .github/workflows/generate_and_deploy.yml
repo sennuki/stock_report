@@ -77,10 +77,7 @@ jobs:
       - name: Upload Raw Data to Cloudflare R2
         run: |
           cd stock-blog
-          for file in ../code/data/raw_data/*.json; do
-            filename=$(basename "$file")
-            npx wrangler r2 object put --remote "stock-data-c1/raw/$filename" --file "$file"
-          done
+          npx --yes wrangler@4.85.0 r2 bulk put stock-data-c1 --folder ../code/data/raw_data --prefix raw/ --remote
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
