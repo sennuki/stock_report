@@ -7,6 +7,7 @@
     "paths": {
       "@/*": ["./src/*"]
     },
+    "types": ["@cloudflare/workers-types"],
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "jsx": "react-jsx",

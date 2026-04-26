@@ -1,5 +1,11 @@
 /// <reference types="astro/client" />
 
+declare module "cloudflare:workers" {
+  export interface Env {
+    STOCK_DATA: R2Bucket;
+  }
+}
+
 interface Env {
   STOCK_DATA: any; // R2Bucket type would be better but requires @cloudflare/workers-types
 }

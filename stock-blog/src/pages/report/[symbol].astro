@@ -8,6 +8,7 @@ import ChartJs from "@/components/report/ChartJs.astro";
 import PeerLinks from "@/components/report/PeerLinks.astro";
 import { calculateDCF } from "@/utils/finance";
 import { transformRawToReport } from "@/utils/report-generator";
+import { env } from "cloudflare:workers";
 
 const { symbol } = Astro.params;
 
@@ -18,9 +19,7 @@ let errorDetail: string = "";
 
 // 1. R2からデータを取得
 try {
-  // Astro v6 で環境変数にアクセスするための最新の手段
-  const runtime = Astro.locals as any;
-  const bucket = runtime?.runtime?.env?.STOCK_DATA || runtime?.env?.STOCK_DATA;
+  const bucket = (env as any)?.STOCK_DATA;
 
   if (bucket) {
     // R2から取得

@@ -1,11 +1,11 @@
 import type { APIRoute } from 'astro';
 import { transformRawToReport } from '@/utils/report-generator';
+import { env } from "cloudflare:workers";
 
-export const GET: APIRoute = async ({ params, locals }) => {
+export const GET: APIRoute = async ({ params }) => {
   const { symbol } = params;
-  const runtime = (locals as any).runtime;
 
-  if (!runtime || !runtime.env.STOCK_DATA) {
+  if (!env || !(env as any).STOCK_DATA) {
     return new Response(JSON.stringify({ error: 'R2 bucket not configured' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
@@ -13,7 +13,7 @@ export const GET: APIRoute = async ({ params, locals }) => {
   }
 
   try {
-    const object = await runtime.env.STOCK_DATA.get(`raw/${symbol}.json`);
+    const object = await (env as any).STOCK_DATA.get(`raw/${symbol}.json`);
     if (!object) {
       return new Response(JSON.stringify({ error: 'Stock data not found' }), {
         status: 404,
