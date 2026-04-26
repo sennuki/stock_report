@@ -4,21 +4,27 @@ import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import stocks from "@/data/stocks.json";
 import TradingViewWidget from "@/components/report/TradingViewWidget.astro";
+import ChartJs from "@/components/report/ChartJs.astro";
+import PeerLinks from "@/components/report/PeerLinks.astro";
 import { calculateDCF } from "@/utils/finance";
 import { transformRawToReport } from "@/utils/report-generator";
 
-// SSR mode: params are available directly
 const { symbol } = Astro.params;
 
-// Access R2 bucket via Cloudflare runtime
-const runtime = Astro.locals.runtime;
 let rawData: any = null;
 let reportData: any = null;
 let dcfResult: any = null;
+let errorDetail: string = "";
 
-if (runtime && runtime.env.STOCK_DATA) {
-  try {
-    const object = await runtime.env.STOCK_DATA.get(`raw/${symbol}.json`);
+// 1. R2からデータを取得
+try {
+  // Astro v6 で環境変数にアクセスするための最新の手段
+  const runtime = Astro.locals as any;
+  const bucket = runtime?.runtime?.env?.STOCK_DATA || runtime?.env?.STOCK_DATA;
+
+  if (bucket) {
+    // R2から取得
+    const object = await bucket.get(`reports/${symbol}.json`) || await bucket.get(`raw/${symbol}.json`);
     if (object) {
       const content = await object.text();
       // Fix potential NaN issues in JSON
@@ -29,106 +35,52 @@ if (runtime && runtime.env.STOCK_DATA) {
       
       // Use Python-calculated DCF if available, otherwise fallback to JS calculation
       dcfResult = reportData.dcf_valuation || calculateDCF(rawData);
+    } else {
+      errorDetail = `R2に ${symbol}.json が見つかりませんでした。`;
     }
-  } catch (e) {
-    console.error(`Error fetching from R2 for ${symbol}:`, e);
+  } else {
+    errorDetail = "R2バケット(STOCK_DATA)のバインドに失敗しました。wrangler.jsoncを確認してください。";
   }
+} catch (e: any) {
+  errorDetail = `システムエラー: ${e.message}`;
 }
 
-const stockInfo = (stocks as any[]).find((s: any) => s.Symbol_YF === symbol);
-const displaySecurity = stockInfo?.Security_JA || stockInfo?.Security || '';
-const title = `${symbol} (${displaySecurity}) 銘柄分析：株価・財務・ファンダメンタル分析`;
-const description = `${symbol} (${displaySecurity}) の最新株価、財務推移などのファンダメンタルデータを網羅。`;
-
-const base = import.meta.env.BASE_URL.endsWith("/")
-  ? import.meta.env.BASE_URL
-  : `${import.meta.env.BASE_URL}/`;
+const title = reportData ? `${reportData.symbol} (${reportData.security_ja || reportData.security}) 銘柄レポート` : `${symbol} 銘柄レポート`;
 ---
 
-<Layout title={title} description={description}>
+<Layout title={title}>
   <Header />
-  
-  <main id="main-content" class="w-full px-4 py-8 max-w-app mx-auto">
-    <div class="mb-6">
-       <a href={base} class="text-skin-accent hover:underline inline-flex items-center">
-         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-         </svg>
-         銘柄一覧に戻る
-       </a>
-    </div>
-
+  <main class="w-full px-4 py-8 max-w-app mx-auto">
     {!reportData ? (
-        <div class="report-content bg-skin-card p-10 rounded-lg border border-skin-line shadow-sm text-center">
-          <p class="text-xl">レポートが見つかりません: {symbol}</p>
-          <p class="mt-4 text-gray-500">R2 バケットを確認するか、データ生成を完了させてください。</p>
+      <div class="bg-skin-card p-10 rounded-lg border border-skin-line shadow-sm">
+        <h1 class="text-2xl font-bold text-center mb-4">分析レポートを表示できません</h1>
+        <div class="bg-gray-100 p-6 rounded-md font-mono text-sm overflow-auto text-red-600">
+          <p class="font-bold mb-2 uppercase">Debug Info:</p>
+          <p>{errorDetail}</p>
+          <hr class="my-4 border-gray-300" />
+          <p class="text-gray-600 text-xs italic">
+            解決しない場合は、R2に reports/{symbol}.json が存在するか確認してください。
+          </p>
         </div>
+      </div>
     ) : (
-      <div class="report-content bg-skin-card p-4 sm:p-8 rounded-lg border border-skin-line shadow-sm" data-pagefind-body>
-        <h1 class="text-3xl font-bold mb-2" data-pagefind-meta="title">銘柄分析レポート: {reportData.symbol} ({reportData.Security_JA || reportData.Security})</h1>
+      <div class="report-content bg-skin-card p-6 rounded-lg border border-skin-line shadow-sm">
+        <h1 class="text-3xl font-bold mb-6">{reportData.symbol} ({reportData.security_ja || reportData.security})</h1>
         
         <TradingViewWidget symbol={reportData.full_symbol} type="symbol-info" />
 
-        <hr class="my-8 border-skin-line" />
-
-        <section id="stock-chart">
-          <h2 class="text-2xl font-bold mb-4 border-b pb-2 flex items-center gap-2">
-            <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">overview</span>
-            {symbol}の株価推移・概要
-          </h2>
-
-          <div class="mb-8 p-6 bg-skin-fill/20 rounded-lg border border-skin-line leading-relaxed">
-            <h3 class="text-lg font-bold mb-3 flex items-center gap-2 text-skin-accent">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              会社概要
-            </h3>
-            <p class="text-skin-base whitespace-pre-wrap">{reportData.info.longBusinessSummary}</p>
-          </div>
-
-          <TradingViewWidget symbol={reportData.full_symbol} type="symbol-overview" height={650} />
+        <section class="mt-12">
+          <h2 class="text-2xl font-bold mb-4 border-b pb-2">会社概要</h2>
+          <p class="text-skin-base whitespace-pre-wrap leading-relaxed">
+            {reportData.business_summary_ja || "概要データは準備中です。"}
+          </p>
         </section>
 
-        <section id="earnings-highlights" class="mt-12">
-          <h2 class="text-2xl font-bold mb-6 border-b pb-2 flex items-center gap-2">
-            <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">ink_highlighter</span>
-            {symbol}の財務ハイライト (リアルタイム抽出)
-          </h2>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="bg-skin-fill/20 p-4 rounded-lg border border-skin-line">
-              <div class="text-sm opacity-70 mb-1">売上高成長率</div>
-              <div class={`text-2xl font-bold ${reportData.highlights.revenue_growth > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                {typeof reportData.highlights.revenue_growth === 'number' ? (reportData.highlights.revenue_growth * 100).toFixed(1) + '%' : '---'}
-              </div>
-            </div>
-            <div class="bg-skin-fill/20 p-4 rounded-lg border border-skin-line">
-              <div class="text-sm opacity-70 mb-1">ROE</div>
-              <div class="text-2xl font-bold text-skin-base">
-                {typeof reportData.highlights.roe === 'number' ? (reportData.highlights.roe * 100).toFixed(1) + '%' : '---'}
-              </div>
-            </div>
-            <div class="bg-skin-fill/20 p-4 rounded-lg border border-skin-line">
-              <div class="text-sm opacity-70 mb-1">予想PER</div>
-              <div class="text-2xl font-bold text-skin-accent">
-                {typeof reportData.highlights.pe_forward === 'number' ? reportData.highlights.pe_forward.toFixed(1) + 'x' : '---'}
-              </div>
-            </div>
-            <div class="bg-skin-fill/20 p-4 rounded-lg border border-skin-line">
-              <div class="text-sm opacity-70 mb-1">配当利回り</div>
-              <div class="text-2xl font-bold text-skin-base">
-                {typeof reportData.highlights.dividend_yield === 'number' ? (reportData.highlights.dividend_yield * 100).toFixed(2) + '%' : '---'}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="dcf-valuation" class="mt-12">
-          <h2 class="text-2xl font-bold mb-6 border-b pb-2 flex items-center gap-2">
-            <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">data_exploration</span>
-            {symbol}のDCF理論株価分析 (SSR計算)
-          </h2>
-          {dcfResult ? (
+        {dcfResult && (
+          <section id="dcf-valuation" class="mt-12">
+            <h2 class="text-2xl font-bold mb-6 border-b pb-2 flex items-center gap-2">
+              DCF理論株価分析
+            </h2>
             <div class="bg-skin-fill/20 p-6 sm:p-8 rounded-lg border-2 border-skin-accent/30 shadow-sm">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                 <div>
@@ -153,23 +105,22 @@ const base = import.meta.env.BASE_URL.endsWith("/")
                 </div>
               </div>
             </div>
-          ) : (
-            <p class="text-gray-500 italic">DCF計算に必要な指標が不足しているため、算出できません。</p>
-          )}
-        </section>
+          </section>
+        )}
+
+        {reportData.charts?.is && (
+          <section class="mt-12">
+            <h2 class="text-2xl font-bold mb-4 border-b pb-2">業績推移</h2>
+            <div class="h-[400px]">
+              <ChartJs chartData={reportData.charts.is} id="chart-is" />
+            </div>
+          </section>
+        )}
 
         <section id="fundamentals" class="mt-12">
-          <h2 class="text-2xl font-bold mb-4 border-b pb-2 flex items-center gap-2">
-            <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">finance</span>
-            {symbol}のファンダメンタルズ分析 (TradingView)
-          </h2>
-          <TradingViewWidget symbol={reportData.full_symbol} type="financials" height={950} />
+          <h2 class="text-2xl font-bold mb-4 border-b pb-2">財務分析 (TradingView)</h2>
+          <TradingViewWidget symbol={reportData.full_symbol} type="financials" height={800} />
         </section>
-
-        <div class="mt-12 p-6 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
-           <p class="font-bold">移行状況:</p>
-           <p>R2の生データからSSRで動的にDCF計算とハイライト抽出を行うようにしました。旧システムの全機能を順次TypeScriptへ移行中です。</p>
-        </div>
       </div>
     )}
   </main>

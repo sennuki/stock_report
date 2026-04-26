@@ -47,17 +47,6 @@ export default defineConfig({
     // This will be fixed in Astro 6 with Vite 7 support
     // See: https://github.com/withastro/astro/issues/14030
     plugins: [tailwindcss()],
-    optimizeDeps: {
-      exclude: ["@resvg/resvg-js"],
-    },
-    build: {
-      rollupOptions: {
-        external: ["@resvg/resvg-js", /.*\.node$/],
-      },
-    },
-    ssr: {
-      external: ["@resvg/resvg-js"],
-    },
   },
 
   image: {
