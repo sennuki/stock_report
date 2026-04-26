@@ -107,23 +107,23 @@ jobs:
           path: run_log.txt
           retention-days: 7
 
-      - name: Build and Deploy Astro to Cloudflare Pages
+      - name: Build and Deploy Astro to Cloudflare Workers
         id: deploy
         run: |
           cd stock-blog
           pnpm install
           pnpm run build
           # デプロイ実行し、出力をキャプチャ
-          DEPLOYMENT_OUTPUT=$(npx wrangler pages deploy dist --project-name stock-blog-c1 --branch ${{ github.ref_name }})
+          DEPLOYMENT_OUTPUT=$(npx wrangler deploy)
           echo "$DEPLOYMENT_OUTPUT"
           
-          # URLを抽出 (wranglerの出力から https://...pages.dev を探す)
-          DEPLOY_URL=$(echo "$DEPLOYMENT_OUTPUT" | grep -oE "https://[a-zA-Z0-9.-]+\.pages\.dev" | head -n 1)
+          # URLを抽出 (wranglerの出力から https://...workers.dev を探す)
+          DEPLOY_URL=$(echo "$DEPLOYMENT_OUTPUT" | grep -oE "https://[a-zA-Z0-9.-]+\.workers\.dev" | head -n 1)
           echo "DEPLOY_URL=$DEPLOY_URL" >> $GITHUB_OUTPUT
           
           # GitHub Job Summaryに書き込み
           echo "### 🚀 Deployment Successful!" >> $GITHUB_STEP_SUMMARY
-          echo "The Astro site has been deployed to Cloudflare Pages." >> $GITHUB_STEP_SUMMARY
+          echo "The Astro site has been deployed to Cloudflare Workers." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**URL:** [$DEPLOY_URL]($DEPLOY_URL)" >> $GITHUB_STEP_SUMMARY
           echo "**Branch:** \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
