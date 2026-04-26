@@ -2,10 +2,8 @@
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
-import stocks from "@/data/stocks.json";
 import TradingViewWidget from "@/components/report/TradingViewWidget.astro";
 import ChartJs from "@/components/report/ChartJs.astro";
-import PeerLinks from "@/components/report/PeerLinks.astro";
 import { calculateDCF } from "@/utils/finance";
 import { transformRawToReport } from "@/utils/report-generator";
 import { env } from "cloudflare:workers";
@@ -22,29 +20,37 @@ try {
   const bucket = (env as any)?.STOCK_DATA;
 
   if (bucket) {
-    // R2から取得
     const object = await bucket.get(`reports/${symbol}.json`) || await bucket.get(`raw/${symbol}.json`);
     if (object) {
       const content = await object.text();
-      // Fix potential NaN issues in JSON
       rawData = JSON.parse(content.replace(/\bNaN\b/g, "null"));
-      
-      // Transform raw data to full report format
       reportData = transformRawToReport(rawData);
-      
-      // Use Python-calculated DCF if available, otherwise fallback to JS calculation
       dcfResult = reportData.dcf_valuation || calculateDCF(rawData);
     } else {
       errorDetail = `R2に ${symbol}.json が見つかりませんでした。`;
     }
   } else {
-    errorDetail = "R2バケット(STOCK_DATA)のバインドに失敗しました。wrangler.jsoncを確認してください。";
+    errorDetail = "R2バケット(STOCK_DATA)のバインドに失敗しました。";
   }
 } catch (e: any) {
   errorDetail = `システムエラー: ${e.message}`;
 }
 
 const title = reportData ? `${reportData.symbol} (${reportData.security_ja || reportData.security}) 銘柄レポート` : `${symbol} 銘柄レポート`;
+
+// ヘルパー関数
+const formatPercent = (val: any) => {
+  if (val === null || val === undefined) return "-";
+  return (val * 100).toFixed(2) + "%";
+};
+
+const formatCurrency = (val: any) => {
+  if (val === null || val === undefined) return "-";
+  if (Math.abs(val) >= 1e12) return (val / 1e12).toFixed(2) + "T";
+  if (Math.abs(val) >= 1e9) return (val / 1e9).toFixed(2) + "B";
+  if (Math.abs(val) >= 1e6) return (val / 1e6).toFixed(2) + "M";
+  return val.toLocaleString();
+};
 ---
 
 <Layout title={title}>
@@ -56,69 +62,169 @@ const title = reportData ? `${reportData.symbol} (${reportData.security_ja || re
         <div class="bg-gray-100 p-6 rounded-md font-mono text-sm overflow-auto text-red-600">
           <p class="font-bold mb-2 uppercase">Debug Info:</p>
           <p>{errorDetail}</p>
-          <hr class="my-4 border-gray-300" />
-          <p class="text-gray-600 text-xs italic">
-            解決しない場合は、R2に reports/{symbol}.json が存在するか確認してください。
-          </p>
         </div>
       </div>
     ) : (
-      <div class="report-content bg-skin-card p-6 rounded-lg border border-skin-line shadow-sm">
-        <h1 class="text-3xl font-bold mb-6">{reportData.symbol} ({reportData.security_ja || reportData.security})</h1>
-        
-        <TradingViewWidget symbol={reportData.full_symbol} type="symbol-info" />
+      <div class="report-content flex flex-col gap-10">
+        <!-- Header Section -->
+        <div class="bg-skin-card p-6 rounded-lg border border-skin-line shadow-sm">
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+            <div>
+              <h1 class="text-4xl font-black text-skin-base">{reportData.symbol}</h1>
+              <p class="text-xl text-skin-base opacity-70">{reportData.security_ja || reportData.security}</p>
+            </div>
+            <div class="flex gap-2">
+              <span class="px-3 py-1 bg-skin-fill text-skin-base rounded border border-skin-line text-sm">{reportData.exchange}</span>
+              <span class="px-3 py-1 bg-skin-fill text-skin-base rounded border border-skin-line text-sm">{reportData.sector}</span>
+            </div>
+          </div>
+          
+          <TradingViewWidget symbol={reportData.full_symbol} type="symbol-info" />
+        </div>
 
-        <section class="mt-12">
-          <h2 class="text-2xl font-bold mb-4 border-b pb-2">会社概要</h2>
-          <p class="text-skin-base whitespace-pre-wrap leading-relaxed">
-            {reportData.business_summary_ja || "概要データは準備中です。"}
-          </p>
+        <!-- Key Metrics Grid -->
+        <section>
+          <h2 class="text-2xl font-bold mb-6 border-l-4 border-skin-accent pl-4">主要指標 (Highlights)</h2>
+          <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {[
+              { label: "PER (Forward)", value: reportData.highlights?.pe_forward?.toFixed(2) + "x" },
+              { label: "PER (TTM)", value: reportData.highlights?.pe_ttm?.toFixed(2) + "x" },
+              { label: "ROE", value: formatPercent(reportData.highlights?.roe) },
+              { label: "配当利回り", value: formatPercent(reportData.highlights?.dividend_yield) },
+              { label: "売上成長率", value: formatPercent(reportData.highlights?.revenue_growth) },
+              { label: "営業利益率", value: formatPercent(reportData.highlights?.operating_margins) },
+            ].map(item => (
+              <div class="bg-skin-card p-4 rounded-lg border border-skin-line text-center">
+                <div class="text-xs opacity-60 uppercase mb-1">{item.label}</div>
+                <div class="text-lg font-bold text-skin-accent">{item.value || "-"}</div>
+              </div>
+            ))}
+          </div>
         </section>
 
-        {dcfResult && (
-          <section id="dcf-valuation" class="mt-12">
-            <h2 class="text-2xl font-bold mb-6 border-b pb-2 flex items-center gap-2">
-              DCF理論株価分析
-            </h2>
-            <div class="bg-skin-fill/20 p-6 sm:p-8 rounded-lg border-2 border-skin-accent/30 shadow-sm">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                <div>
-                  <h3 class="text-xl font-bold mb-4 text-skin-accent">理論株価 (Fair Price)</h3>
-                  <div class="text-6xl font-black text-skin-base">${dcfResult.fair_price.toFixed(2)}</div>
-                  <div class="mt-6">
-                    <div class={`inline-flex items-center px-4 py-2 rounded-full font-bold text-lg ${dcfResult.fair_price > dcfResult.current_price ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                      乖離率: {((dcfResult.fair_price / dcfResult.current_price - 1) * 100).toFixed(1)}%
-                      ({dcfResult.fair_price > dcfResult.current_price ? '割安' : '割高'})
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+          <!-- Left Col: Summary & Ratings -->
+          <div class="lg:col-span-2 flex flex-col gap-10">
+            <section>
+              <h2 class="text-2xl font-bold mb-4 border-b pb-2 text-skin-base">会社概要</h2>
+              <p class="text-skin-base whitespace-pre-wrap leading-relaxed opacity-90">
+                {reportData.business_summary_ja || "概要データは準備中です。"}
+              </p>
+            </section>
+
+            <!-- Financial Charts -->
+            <section id="financial-charts">
+              <h2 class="text-2xl font-bold mb-6 border-b pb-2">財務推移</h2>
+              <div class="flex flex-col gap-8">
+                {reportData.charts?.is && (
+                  <div class="bg-skin-card p-6 rounded-lg border border-skin-line">
+                    <h3 class="text-lg font-bold mb-4">損益推移 (Income Statement)</h3>
+                    <div class="h-[350px]">
+                      <ChartJs chartData={reportData.charts.is} id="chart-is" />
+                    </div>
+                  </div>
+                )}
+                {reportData.charts?.bs && (
+                  <div class="bg-skin-card p-6 rounded-lg border border-skin-line">
+                    <h3 class="text-lg font-bold mb-4">資産状況 (Balance Sheet)</h3>
+                    <div class="h-[350px]">
+                      <ChartJs chartData={reportData.charts.bs} id="chart-bs" />
+                    </div>
+                  </div>
+                )}
+                {reportData.charts?.cf && (
+                  <div class="bg-skin-card p-6 rounded-lg border border-skin-line">
+                    <h3 class="text-lg font-bold mb-4">キャッシュフロー (Cash Flow)</h3>
+                    <div class="h-[350px]">
+                      <ChartJs chartData={reportData.charts.cf} id="chart-cf" />
+                    </div>
+                  </div>
+                )}
+              </div>
+            </section>
+          </div>
+
+          <!-- Right Col: Valuation & Estimates -->
+          <div class="flex flex-col gap-10">
+            <!-- DCF Result -->
+            {dcfResult && (
+              <section id="dcf-valuation">
+                <h2 class="text-2xl font-bold mb-4 border-b pb-2">理論株価 (DCF)</h2>
+                <div class="bg-skin-fill/20 p-6 rounded-lg border-2 border-skin-accent/30">
+                  <div class="text-center mb-4">
+                    <div class="text-xs opacity-60 uppercase">Estimated Fair Price</div>
+                    <div class="text-5xl font-black text-skin-base">${dcfResult.fair_price.toFixed(2)}</div>
+                  </div>
+                  <div class="flex justify-between items-center bg-skin-card p-3 rounded border border-skin-line mb-4">
+                    <span class="text-sm opacity-70">現在株価</span>
+                    <span class="font-bold">${dcfResult.current_price?.toFixed(2)}</span>
+                  </div>
+                  <div class={`text-center py-2 rounded font-bold ${dcfResult.fair_price > dcfResult.current_price ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                    {dcfResult.fair_price > dcfResult.current_price ? '割安' : '割高'} 
+                    ({Math.abs((dcfResult.fair_price / dcfResult.current_price - 1) * 100).toFixed(1)}%)
+                  </div>
+                </div>
+              </section>
+            )}
+
+            <!-- Analyst Ratings -->
+            {reportData.analyst_ratings && (
+              <section>
+                <h2 class="text-2xl font-bold mb-4 border-b pb-2">アナリスト評価</h2>
+                <div class="bg-skin-card p-4 rounded-lg border border-skin-line flex flex-col gap-4">
+                  <div class="flex justify-between items-center">
+                    <span class="opacity-70">コンセンサス</span>
+                    <span class="px-3 py-1 bg-skin-accent/10 text-skin-accent rounded-full font-bold uppercase text-sm">
+                      {reportData.analyst_ratings.recommendationKey || "-"}
+                    </span>
+                  </div>
+                  <div class="border-t pt-4 flex flex-col gap-2">
+                    <div class="flex justify-between text-sm">
+                      <span class="opacity-60">目標株価 (平均)</span>
+                      <span class="font-bold">${reportData.analyst_ratings.targetMeanPrice?.toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                      <span class="opacity-60">目標株価 (最高)</span>
+                      <span class="font-bold">${reportData.analyst_ratings.targetHighPrice?.toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                      <span class="opacity-60">目標株価 (最低)</span>
+                      <span class="font-bold">${reportData.analyst_ratings.targetLowPrice?.toFixed(2)}</span>
                     </div>
                   </div>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
-                  <div class="bg-skin-fill/30 p-4 rounded-xl border border-skin-line text-center">
-                    <div class="text-xs opacity-60 uppercase mb-1">割引率 (WACC)</div>
-                    <div class="text-xl font-bold text-skin-accent">{(dcfResult.wacc * 100).toFixed(2)}%</div>
-                  </div>
-                  <div class="bg-skin-fill/30 p-4 rounded-xl border border-skin-line text-center">
-                    <div class="text-xs opacity-60 uppercase mb-1">推定成長率</div>
-                    <div class="text-xl font-bold text-skin-accent">{(dcfResult.growth_1_5y * 100).toFixed(2)}%</div>
-                  </div>
+              </section>
+            )}
+
+            <!-- Consensus Estimates -->
+            {reportData.consensus && (
+              <section>
+                <h2 class="text-2xl font-bold mb-4 border-b pb-2">業績予想</h2>
+                <div class="bg-skin-card rounded-lg border border-skin-line overflow-hidden">
+                  <table class="w-full text-sm text-left">
+                    <thead class="bg-skin-fill/50 opacity-70">
+                      <tr>
+                        <th class="px-4 py-2 font-normal">期間</th>
+                        <th class="px-4 py-2 font-normal text-right">EPS平均</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-skin-line">
+                      <tr>
+                        <td class="px-4 py-2">今期 (0Q)</td>
+                        <td class="px-4 py-2 text-right font-bold">${reportData.consensus.earnings?.["0q"]?.avg?.toFixed(2) || "-"}</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
-              </div>
-            </div>
-          </section>
-        )}
+              </section>
+            )}
+          </div>
+        </div>
 
-        {reportData.charts?.is && (
-          <section class="mt-12">
-            <h2 class="text-2xl font-bold mb-4 border-b pb-2">業績推移</h2>
-            <div class="h-[400px]">
-              <ChartJs chartData={reportData.charts.is} id="chart-is" />
-            </div>
-          </section>
-        )}
-
-        <section id="fundamentals" class="mt-12">
-          <h2 class="text-2xl font-bold mb-4 border-b pb-2">財務分析 (TradingView)</h2>
-          <TradingViewWidget symbol={reportData.full_symbol} type="financials" height={800} />
+        <!-- TradingView Advanced -->
+        <section id="fundamentals" class="mt-10">
+          <h2 class="text-2xl font-bold mb-6 border-b pb-2">詳細分析 (TradingView)</h2>
+          <TradingViewWidget symbol={reportData.full_symbol} type="financials" height={600} />
         </section>
       </div>
     )}
