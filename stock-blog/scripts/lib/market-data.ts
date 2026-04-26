@@ -1,6 +1,6 @@
 import axios from 'axios';
 import * as cheerio from 'cheerio';
-import { parse } from 'csv-parse/sync';
+// import { parse } from 'csv-parse/sync'; // 無効化
 import * as fs from 'fs';
 import * as path from 'path';
 

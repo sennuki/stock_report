@@ -1,5 +1,5 @@
-import { fetchSp500Companies } from './lib/market-data';
-import { calculateRiskMetrics, yahooFinance } from './lib/risk-analysis';
+// import { fetchSp500Companies } from './lib/market-data.ts';
+import { calculateRiskMetrics, yahooFinance } from './lib/risk-analysis.ts';
 
 async function test() {
   console.log('--- Debugging yahooFinance object ---');

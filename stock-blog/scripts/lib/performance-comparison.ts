@@ -23,7 +23,7 @@ export async function generatePerformanceChartData(symbol: string, sectorEtfSymb
       const res = results[i];
       if (!res || !res.quotes || res.quotes.length === 0) continue;
 
-      const quotes = res.quotes.filter(q => q.close !== null) as { date: Date, close: number }[];
+      const quotes = res.quotes.filter((q: any) => q.close !== null) as { date: Date, close: number }[];
       if (quotes.length === 0) continue;
 
       const firstPrice = quotes[0].close;

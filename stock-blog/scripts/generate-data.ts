@@ -68,7 +68,7 @@ async function main() {
         generatePerformanceChartData(stock.Symbol_YF, sectorEtf)
       ]);
 
-      stock.Security_JA = monexMap[stock.Symbol] || null;
+      stock.Security_JA = monexMap[stock.Symbol];
       stock.Daily_Change = quote.regularMarketChangePercent ? quote.regularMarketChangePercent / 100 : 0;
 
       const reportPath = path.join(REPORTS_DIR, `${stock.Symbol_YF}.json`);

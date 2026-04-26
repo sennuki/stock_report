@@ -52,7 +52,7 @@ export async function calculateRiskMetrics(symbol: string): Promise<RiskMetrics 
     }
 
     // 対数収益率の計算 (nullを除外)
-    const validQuotes = history.filter(q => q.close !== null) as { date: Date, close: number }[];
+    const validQuotes = history.filter((q: any) => q.close !== null) as { date: Date, close: number }[];
     const logReturns: number[] = [];
     for (let i = 1; i < validQuotes.length; i++) {
       logReturns.push(Math.log(validQuotes[i].close / validQuotes[i - 1].close));
