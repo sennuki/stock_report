@@ -134,6 +134,10 @@ if __name__ == "__main__":
     # 1. 銘柄リスト取得
     df_sp500 = market_data.fetch_sp500_companies_optimized()
     
+    if os.environ.get("TEST_MODE", "false").lower() == "true":
+        print("TEST_MODE is enabled: Limiting to 3 stocks for testing.")
+        df_sp500 = df_sp500.head(3)
+    
     if not df_sp500.is_empty():
         # 2. 基本指標・前日比などの一括取得
         symbols = df_sp500['Symbol_YF'].to_list()
