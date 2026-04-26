@@ -1,0 +1,504 @@
+Symbol,Security,GICS Sector,GICS Sub-Industry,Symbol_YF,Exchange,Daily_Change,Security_JA,Monex,Rakuten,SBI,MUFG,Matsui,DMM,PayPay,IwaiCosmo
+A,Agilent Technologies,Health Care,Life Sciences Tools & Services,A,NYSE,0.03346508563899871,アジレント･テクノロジーズ,true,true,true,true,true,true,false,false
+AAPL,Apple Inc.,Information Technology,"Technology Hardware, Storage & Peripherals",AAPL,NASDAQ,0.014753846153846091,アップル,true,true,true,true,true,true,true,true
+ABBV,AbbVie,Health Care,Biotechnology,ABBV,NYSE,-0.0025583874406434324,アッヴィ,true,true,true,true,true,true,true,true
+ABNB,Airbnb,Consumer Discretionary,"Hotels, Resorts & Cruise Lines",ABNB,NASDAQ,0.06325518124349845,エアビーアンドビー,true,true,true,true,true,true,true,true
+ABT,Abbott Laboratories,Health Care,Health Care Equipment,ABT,NYSE,0.003241013553329528,アボット･ラボラトリーズ,true,true,true,true,true,true,true,false
+ACGL,Arch Capital Group,Financials,Property & Casualty Insurance,ACGL,NASDAQ,0.0034048699958728673,アーチ・キャピタル・グループ,true,true,true,true,true,true,false,false
+ACN,Accenture,Information Technology,IT Consulting & Other Services,ACN,NYSE,-0.002381193636639978,アクセンチュア　クラスA,true,true,true,true,true,true,true,false
+ADBE,Adobe Inc.,Information Technology,Application Software,ADBE,NASDAQ,0.013492129591071914,アドビ,true,true,true,true,true,true,true,true
+ADI,Analog Devices,Information Technology,Semiconductors,ADI,NASDAQ,0.057206560581533734,アナログ・デバイシズ,true,true,true,true,true,true,true,true
+ADM,Archer Daniels Midland,Consumer Staples,Agricultural Products & Services,ADM,NYSE,-0.04531596452328154,アーチャーダニエルズ・ミッドランド,true,true,true,true,true,true,false,true
+ADP,Automatic Data Processing,Industrials,Human Resource & Employment Services,ADP,NASDAQ,0.0062374146652913985,オートマチック・データ・プロセシング,true,true,true,true,true,true,true,false
+ADSK,Autodesk,Information Technology,Application Software,ADSK,NASDAQ,0.023450800136193356,オートデスク,true,true,true,true,true,true,true,false
+AEE,Ameren,Utilities,Multi-Utilities,AEE,NYSE,-0.00458097547830778,アメレン・コーポレーション,true,true,true,true,true,true,false,false
+AEP,American Electric Power,Utilities,Electric Utilities,AEP,NASDAQ,-0.00030093289196503196,アメリカン・エレクトリック・パワー,true,true,true,true,true,true,false,false
+AES,AES Corporation,Utilities,Independent Power Producers & Energy Traders,AES,NYSE,0.0013864818024263135,エーイーエス,true,true,true,true,true,true,false,false
+AFL,Aflac,Financials,Life & Health Insurance,AFL,NYSE,0.007146734213859164,アフラック,true,true,true,true,true,true,false,false
+AIG,American International Group,Financials,Multi-line Insurance,AIG,NYSE,0.009319419833300436,エーアイジー,true,true,true,true,true,true,false,false
+AIZ,Assurant,Financials,Multi-line Insurance,AIZ,NYSE,0.007524056694294976,アシュラント,true,true,true,true,true,true,false,false
+AJG,Arthur J. Gallagher & Co.,Financials,Insurance Brokers,AJG,NYSE,0.012817567877980524,アーサー・ジェイ・ギャラガー,true,true,true,true,true,true,true,false
+AKAM,Akamai Technologies,Information Technology,Internet Services & Infrastructure,AKAM,NASDAQ,0.022390025463166187,アカマイ・テクノロジーズ,true,true,true,true,true,true,false,false
+ALB,Albemarle Corporation,Materials,Specialty Chemicals,ALB,NYSE,0.011637285401543851,アルビマール,true,true,true,true,true,true,false,true
+ALGN,Align Technology,Health Care,Health Care Supplies,ALGN,NASDAQ,0.07365074608977044,アライン・テクノロジー,true,true,true,true,true,true,false,false
+ALL,Allstate,Financials,Property & Casualty Insurance,ALL,NYSE,-0.0019001923944799682,オールステート,true,true,true,true,true,true,false,false
+ALLE,Allegion,Industrials,Building Products,ALLE,NYSE,0.037520625582897045,アレジオン,true,true,true,true,true,true,false,false
+AMAT,Applied Materials,Information Technology,Semiconductor Materials & Equipment,AMAT,NASDAQ,0.09033050153820099,アプライド・マテリアルズ,true,true,true,true,true,true,true,true
+AMCR,Amcor,Materials,Paper & Plastic Packaging Products & Materials,AMCR,NYSE,0.06914212548015372,アムコー,true,true,true,true,true,true,false,false
+AMD,Advanced Micro Devices,Information Technology,Semiconductors,AMD,NASDAQ,0.036879880828781596,アドバンスト・マイクロ・デバイシズ,true,true,true,true,true,true,true,true
+AME,Ametek,Industrials,Electrical Components & Equipment,AME,NYSE,0.04409130574564839,アメテック,true,true,true,true,true,true,false,false
+AMGN,Amgen,Health Care,Biotechnology,AMGN,NASDAQ,0.01450000000000002,アムジェン,true,true,true,true,true,true,true,false
+AMP,Ameriprise Financial,Financials,Asset Management & Custody Banks,AMP,NYSE,0.046239631656274253,アメリプライズ・フィナンシャル,true,true,true,true,true,true,false,false
+AMT,American Tower,Real Estate,Telecom Tower REITs,AMT,NYSE,0.00419275170868985,アメリカン・タワー,false,false,false,false,false,false,false,false
+AMZN,Amazon,Consumer Discretionary,Broadline Retail,AMZN,NASDAQ,0.03241801936660887,アマゾン･ドットコム,true,true,true,true,true,true,true,true
+ANET,Arista Networks,Information Technology,Communications Equipment,ANET,NYSE,0.07831325301204822,アリスタネットワークス,true,true,true,true,true,true,true,true
+AON,Aon plc,Financials,Insurance Brokers,AON,NYSE,0.010307360850628658,エーオン,true,true,true,true,true,true,true,false
+AOS,A. O. Smith,Industrials,Building Products,AOS,NYSE,0.04376947040498446,エー・オー・スミス,true,true,true,true,true,true,false,false
+APA,APA Corporation,Energy,Oil & Gas Exploration & Production,APA,NASDAQ,-0.11801675977653632,アパッチ,true,true,true,true,true,true,false,false
+APD,Air Products,Materials,Industrial Gases,APD,NYSE,-0.032253651195403105,エアー・プロダクツ・アンド・ケミカルズ,true,true,true,true,true,true,true,false
+APH,Amphenol,Information Technology,Electronic Components,APH,NYSE,0.05165238392022435,アンフェノール クラスA,true,true,true,true,true,true,true,false
+APO,Apollo Global Management,Financials,Asset Management & Custody Banks,APO,NYSE,0.06164578587699321,アポロ・グローバル・マネジメント,true,false,true,false,true,false,false,false
+APP,AppLovin,Information Technology,Application Software,APP,NASDAQ,0.03304989767079231,アップラビン,true,true,true,true,true,true,true,true
+APTV,Aptiv,Consumer Discretionary,Automotive Parts & Equipment,APTV,NYSE,0.05906593406593402,アプティブ・ホールディングス,true,true,true,true,true,true,false,false
+ARE,Alexandria Real Estate Equities,Real Estate,Office REITs,ARE,NYSE,0.021980512123272122,アレクサンドリア・リアル・エステート・エクイティーズ,false,false,false,false,false,false,false,false
+ARES,Ares Management,Financials,Asset Management & Custody Banks,ARES,NYSE,0.048894973596714256,アレス・マネジメント　クラスA,true,true,true,true,true,true,false,false
+ATO,Atmos Energy,Utilities,Gas Utilities,ATO,NYSE,-0.007234087657003599,アトモス・エナジー,true,true,true,true,true,true,false,false
+AVB,AvalonBay Communities,Real Estate,Multi-Family Residential REITs,AVB,NYSE,0.016994633273703177,アバロンベイ・コミュニティーズ,false,false,false,false,false,false,false,false
+AVGO,Broadcom,Information Technology,Semiconductors,AVGO,NASDAQ,0.042428960685091346,ブロードコム,true,true,true,true,true,true,true,true
+AVY,Avery Dennison,Materials,Paper & Plastic Packaging Products & Materials,AVY,NYSE,0.04437552188953834,エイブリー・デニソン,true,true,true,true,true,true,false,false
+AWK,American Water Works,Utilities,Water Utilities,AWK,NYSE,-0.02515700036941264,アメリカン・ウォーター・ワークス,true,true,true,true,true,true,false,false
+AXON,Axon Enterprise,Industrials,Aerospace & Defense,AXON,NASDAQ,0.08348754257516024,アクソン・エンタープライズ,true,true,true,true,true,true,true,false
+AXP,American Express,Financials,Consumer Finance,AXP,NYSE,0.04623929118212317,アメリカン・エキスプレス,true,true,true,true,true,true,true,false
+AZO,AutoZone,Consumer Discretionary,Automotive Retail,AZO,NYSE,0.017285688152436265,オートゾーン,true,true,true,true,true,true,true,false
+BA,Boeing,Industrials,Aerospace & Defense,BA,NYSE,0.03961602461341622,ボーイング,true,true,true,true,true,true,true,true
+BAC,Bank of America,Financials,Diversified Banks,BAC,NYSE,0.034493041749502976,バンク・オブ・アメリカ,true,true,true,true,true,true,true,false
+BALL,Ball Corporation,Materials,"Metal, Glass & Plastic Containers",BALL,NYSE,0.03737135144255097,ボール,true,true,true,true,true,true,false,false
+BAX,Baxter International,Health Care,Health Care Equipment,BAX,NYSE,0.05592303066746842,バクスター・インターナショナル,true,true,true,true,true,true,false,false
+BBY,Best Buy,Consumer Discretionary,Computer & Electronics Retail,BBY,NYSE,0.020839837652200963,ベスト・バイ,true,true,true,true,true,true,false,false
+BDX,Becton Dickinson,Health Care,Health Care Equipment,BDX,NYSE,0.022003548959509577,ベクトン・ディッキンソン,true,true,true,true,true,true,true,false
+BEN,Franklin Resources,Financials,Asset Management & Custody Banks,BEN,NYSE,0.05866274179983177,フランクリン・リソーシズ,true,true,true,true,true,true,false,false
+BF.B,Brown–Forman,Consumer Staples,Distillers & Vintners,BF-B,NYSE,0.02032749858836812,ブラウン・フォーマン クラスB,true,true,false,false,true,false,false,false
+BG,Bunge Global,Consumer Staples,Agricultural Products & Services,BG,NYSE,-0.038569010980361335,ブンゲ・グローバル,true,true,true,true,true,true,false,false
+BIIB,Biogen,Health Care,Biotechnology,BIIB,NASDAQ,0.009338875918227813,バイオジェン,true,true,true,true,true,true,false,false
+BK,BNY Mellon,Financials,Asset Management & Custody Banks,BK,NYSE,0.018649981951630278,バンク・オブ・ニューヨーク・メロン,true,true,true,true,true,true,false,false
+BKNG,Booking Holdings,Consumer Discretionary,"Hotels, Resorts & Cruise Lines",BKNG,NASDAQ,0.06470215097168559,ブッキング・ ホールディングス,true,true,true,true,true,true,true,false
+BKR,Baker Hughes,Energy,Oil & Gas Equipment & Services,BKR,NASDAQ,0.008000000000000033,ベーカー・ヒューズ,true,true,true,true,true,true,false,false
+BLDR,Builders FirstSource,Industrials,Building Products,BLDR,NYSE,0.08785153280972893,ビルダーズ・ファーストソース,true,true,true,true,true,true,false,false
+BLK,BlackRock,Financials,Asset Management & Custody Banks,BLK,NYSE,0.0529743916183162,ブラックロック・ファンディング,true,true,true,true,true,true,true,false
+BMY,Bristol Myers Squibb,Health Care,Pharmaceuticals,BMY,NYSE,0.007282816022195278,ブリストル・マイヤーズ,true,true,true,true,true,true,true,false
+BR,Broadridge Financial Solutions,Industrials,Data Processing & Outsourced Services,BR,NYSE,0.012124999999999986,ブロードリッジ・フィナンシャル・ソリューションズ,true,true,true,true,true,true,false,false
+BRK.B,Berkshire Hathaway,Financials,Multi-Sector Holdings,BRK-B,NYSE,0.006673291353737417,バークシャー・ハサウェイ　クラスB,true,true,false,false,true,true,false,false
+BRO,Brown & Brown,Financials,Insurance Brokers,BRO,NYSE,0.009189514914130755,ブラウン・アンド・ブラウン,true,true,true,true,true,true,false,false
+BSX,Boston Scientific,Health Care,Health Care Equipment,BSX,NYSE,0.014953119948270243,ボストン・サイエンティフィック,true,true,true,true,true,true,true,false
+BX,Blackstone Inc.,Financials,Asset Management & Custody Banks,BX,NYSE,0.05450594287741716,ブラックストーン,true,true,true,true,true,true,true,false
+BXP,"BXP, Inc.",Real Estate,Office REITs,BXP,NYSE,0.028121376111325827,BXP,false,false,false,false,false,false,false,false
+C,Citigroup,Financials,Diversified Banks,C,NYSE,0.05824351723401977,シティグループ,true,true,true,true,true,true,true,true
+CAG,Conagra Brands,Consumer Staples,Packaged Foods & Meats,CAG,NYSE,0.010329244673983225,コナグラ・ブランズ,true,true,true,true,true,true,false,false
+CAH,Cardinal Health,Health Care,Health Care Distributors,CAH,NYSE,0.0027733383472783838,カーディナル・ヘルス,true,true,true,true,true,true,false,false
+CARR,Carrier Global,Industrials,Building Products,CARR,NYSE,0.05500450856627587,キャリア・グローバル,true,true,true,true,true,true,false,false
+CAT,Caterpillar Inc.,Industrials,Construction Machinery & Heavy Transportation Equipment,CAT,NYSE,0.06372116127607896,キャタピラー,true,true,true,true,true,true,true,true
+CB,Chubb Limited,Financials,Property & Casualty Insurance,CB,NYSE,-0.005787673324781744,チャブ,true,true,true,true,true,true,true,false
+CBOE,Cboe Global Markets,Financials,Financial Exchanges & Data,CBOE,BTS,-0.012871853546910906,シービーオーイー・マーケッツ,true,true,true,false,true,false,false,false
+CBRE,CBRE Group,Real Estate,Real Estate Services,CBRE,NYSE,0.04267497464135622,CBREグループ,true,true,true,true,true,true,false,false
+CCI,Crown Castle,Real Estate,Telecom Tower REITs,CCI,NYSE,0.0,クラウン・キャッスル,false,false,false,false,false,false,false,false
+CCL,Carnival,Consumer Discretionary,"Hotels, Resorts & Cruise Lines",CCL,NYSE,0.1342721142403807,カーニバル,true,true,true,true,true,true,true,true
+CDNS,Cadence Design Systems,Information Technology,Application Software,CDNS,NASDAQ,0.026907113210247535,ケイデンス・デザイン・システムズ,true,true,true,true,true,true,true,true
+CDW,CDW Corporation,Information Technology,Technology Distributors,CDW,NASDAQ,0.02102029266715182,CDWコープ,true,true,true,true,true,true,false,false
+CEG,Constellation Energy,Utilities,Electric Utilities,CEG,NASDAQ,0.04134565998972793,コンステレーション・エナジー,true,true,true,true,true,true,true,true
+CF,CF Industries,Materials,Fertilizers & Agricultural Chemicals,CF,NYSE,-0.11036364315879957,シーエフ・インダストリーズ・ホールディングス,true,true,true,true,true,true,false,false
+CFG,Citizens Financial Group,Financials,Regional Banks,CFG,NYSE,0.03896103896103894,シチズンズ・フィナンシャル・グループ,true,true,true,true,true,true,false,false
+CHD,Church & Dwight,Consumer Staples,Household Products,CHD,NYSE,0.013936905790838288,チャーチ・アンド・ドワイト,true,true,true,true,true,true,false,false
+CHRW,C.H. Robinson,Industrials,Air Freight & Logistics,CHRW,NASDAQ,0.03314268512944007,シー・エイチ・ロビンソン・ワールドワイド,true,true,true,true,true,true,false,false
+CHTR,Charter Communications,Communication Services,Cable & Satellite,CHTR,NASDAQ,-0.0035746201966041615,チャーター・コミュニケーションズ クラスA,true,true,true,true,true,true,true,false
+CI,Cigna,Health Care,Health Care Services,CI,NYSE,-0.004448658109685047,ザ・シグナ・グループ,true,true,true,true,true,true,true,false
+CIEN,Ciena,Information Technology,Communications Equipment,CIEN,NYSE,0.07491631332291897,シエナ,true,true,true,true,true,true,false,true
+CINF,Cincinnati Financial,Financials,Property & Casualty Insurance,CINF,NASDAQ,0.007803720814084155,シンシナティ・フィナンシャル,true,true,true,true,true,true,false,false
+CL,Colgate-Palmolive,Consumer Staples,Household Products,CL,NYSE,0.02051004450860097,コルゲート・パルモリーブ,true,true,true,true,true,true,true,false
+CLX,Clorox,Consumer Staples,Household Products,CLX,NYSE,0.048275192858182464,クロロックス・カンパニー,true,true,true,true,true,true,false,false
+CMCSA,Comcast,Communication Services,Cable & Satellite,CMCSA,NASDAQ,0.0,コムキャスト クラスA,true,true,true,true,true,true,true,false
+CME,CME Group,Financials,Financial Exchanges & Data,CME,NASDAQ,-0.029718591023246706,シーエムイー・グループ,true,true,true,true,true,true,true,false
+CMG,Chipotle Mexican Grill,Consumer Discretionary,Restaurants,CMG,NYSE,0.0467190807378289,チポトレ・メキシカン・グリル,true,true,true,true,true,true,true,false
+CMI,Cummins,Industrials,Construction Machinery & Heavy Transportation Equipment,CMI,NYSE,0.06848306332842415,カミンズ,true,true,true,true,true,true,false,false
+CMS,CMS Energy,Utilities,Multi-Utilities,CMS,NYSE,-0.006488549618320495,シーエムエス・エナジー,true,true,true,true,true,true,false,false
+CNC,Centene Corporation,Health Care,Managed Health Care,CNC,NYSE,0.02149352438688347,センティーン,true,true,true,true,true,true,false,false
+CNP,CenterPoint Energy,Utilities,Multi-Utilities,CNP,NYSE,-0.006305893143774331,センターポイント・エナジー,true,true,true,true,true,true,false,false
+COF,Capital One,Financials,Consumer Finance,COF,NYSE,0.06718274813381259,キャピタル・ワン・フィナンシャル,true,true,true,true,true,true,true,false
+COHR,Coherent Corp.,Information Technology,Electronic Components,COHR,NYSE,0.08712611235250302,コヒレント,true,true,true,true,true,true,false,true
+COIN,Coinbase,Financials,Financial Exchanges & Data,COIN,NASDAQ,0.04126498458728169,コインベース・グローバル,true,true,true,true,true,true,true,true
+COO,Cooper Companies (The),Health Care,Health Care Supplies,COO,NASDAQ,0.029859316681022083,クーパー,true,true,true,true,true,true,false,false
+COP,ConocoPhillips,Energy,Oil & Gas Exploration & Production,COP,NYSE,-0.06499962055096009,コノコ・フィリップス,true,true,true,true,true,true,true,false
+COR,Cencora,Health Care,Health Care Distributors,COR,NYSE,-0.0024459781575709256,センコア,true,true,true,true,true,true,false,false
+COST,Costco,Consumer Staples,Consumer Staples Merchandise Retail,COST,NASDAQ,0.0035876077022532257,コストコ・ホールセール,true,true,true,true,true,true,true,true
+CPAY,Corpay,Financials,Transaction & Payment Processing Services,CPAY,NYSE,0.03976716720094472,コーペイ,true,true,true,true,true,true,false,false
+CPB,Campbell's Company (The),Consumer Staples,Packaged Foods & Meats,CPB,NASDAQ,0.001920498084291306,ザ・キャンベルズ,true,true,true,true,true,true,true,false
+CPRT,Copart,Industrials,Diversified Support Services,CPRT,NASDAQ,0.02114164904862588,コパート,true,true,true,true,true,true,false,false
+CPT,Camden Property Trust,Real Estate,Multi-Family Residential REITs,CPT,NYSE,0.014772952607574805,カムデン・プロパティ・トラスト,false,false,false,false,false,false,false,false
+CRH,CRH plc,Materials,Construction Materials,CRH,NYSE,0.07546991593463677,CRH,true,true,true,true,true,false,false,false
+CRL,Charles River Laboratories,Health Care,Life Sciences Tools & Services,CRL,NYSE,0.05110521662245793,チャールス・リバー・ラボラトリーズ,true,true,true,true,true,true,false,false
+CRM,Salesforce,Information Technology,Application Software,CRM,NYSE,0.0029241364232618964,セールスフォース,true,true,true,true,true,true,true,true
+CRWD,CrowdStrike,Information Technology,Systems Software,CRWD,NASDAQ,0.032464617347541545,クラウドストライク・ホールディングス　クラスA,true,true,true,true,true,true,true,true
+CSCO,Cisco,Information Technology,Communications Equipment,CSCO,NASDAQ,0.015516856717897768,シスコシステムズ,true,true,true,true,true,true,true,true
+CSGP,CoStar Group,Real Estate,Real Estate Services,CSGP,NASDAQ,0.014690982776089297,コスター・グループ,true,true,true,true,true,true,true,false
+CSX,CSX Corporation,Industrials,Rail Transportation,CSX,NASDAQ,0.014123611781747968,シーエスエックス,true,true,true,true,true,true,true,false
+CTAS,Cintas,Industrials,Diversified Support Services,CTAS,NASDAQ,0.025340615456894512,シンタス,true,true,true,true,true,true,false,false
+CTRA,Coterra,Energy,Oil & Gas Exploration & Production,CTRA,NYSE,-0.07648238327126883,コテラ・エナジー・インク,true,true,true,true,true,true,false,false
+CTSH,Cognizant,Information Technology,IT Consulting & Other Services,CTSH,NASDAQ,0.004147015774922678,コグニザント・テクノロジー・ソリューションズ クラスA,true,true,true,true,true,true,false,false
+CTVA,Corteva,Materials,Fertilizers & Agricultural Chemicals,CTVA,NYSE,-0.01711004336106872,コルテバ,true,true,true,true,true,true,false,false
+CVNA,Carvana,Consumer Discretionary,Automotive Retail,CVNA,NYSE,0.05573770491803286,カーヴァナ,true,true,true,true,true,true,false,false
+CVS,CVS Health,Health Care,Health Care Services,CVS,NYSE,0.0,シーブイエス・ヘルス,true,true,true,true,true,true,true,false
+CVX,Chevron Corporation,Energy,Integrated Oil & Gas,CVX,NYSE,-0.04867761623579617,シェブロン,true,true,true,true,true,true,true,true
+D,Dominion Energy,Utilities,Multi-Utilities,D,NYSE,-0.004147391928537215,ドミニオン・エナジー,true,true,true,true,true,true,false,true
+DAL,Delta Air Lines,Industrials,Passenger Airlines,DAL,NYSE,0.0939500152392562,デルタ航空,true,true,true,true,true,true,true,true
+DASH,DoorDash,Consumer Discretionary,Specialized Consumer Services,DASH,NASDAQ,0.059268762026940223,ドアダッシュ,true,true,true,true,true,true,true,false
+DD,DuPont,Materials,Specialty Chemicals,DD,NYSE,0.04271908631671426,デュポン・ド・ヌムール,true,true,true,true,true,true,false,false
+DDOG,Datadog,Information Technology,Application Software,DDOG,NASDAQ,0.03020422172644582,データドッグ　クラスA,true,true,true,true,true,true,true,true
+DE,Deere & Company,Industrials,Agricultural & Farm Machinery,DE,NYSE,0.03888888888888885,ディア,true,true,true,true,true,true,true,false
+DECK,Deckers Brands,Consumer Discretionary,Footwear,DECK,NYSE,0.06303610612407733,デッカーズ・アウトドア,true,true,true,true,true,true,false,false
+DELL,Dell Technologies,Information Technology,"Technology Hardware, Storage & Peripherals",DELL,NYSE,0.05132534188755701,デル・テクノロジーズ,true,true,true,true,true,true,true,true
+DG,Dollar General,Consumer Staples,Consumer Staples Merchandise Retail,DG,NYSE,0.021120369606468133,ダラー・ゼネラル,true,true,true,true,true,true,true,false
+DGX,Quest Diagnostics,Health Care,Health Care Services,DGX,NYSE,-0.009603170570601163,クエスト・ダイアグノスティクス,true,true,true,true,true,true,false,false
+DHI,D. R. Horton,Consumer Discretionary,Homebuilding,DHI,NYSE,0.06383599620631794,ディーアール・ホートン,true,true,true,true,true,true,true,false
+DHR,Danaher Corporation,Health Care,Life Sciences Tools & Services,DHR,NYSE,0.030155489241401077,ダナハー,true,true,true,true,true,true,true,false
+DIS,Walt Disney Company (The),Communication Services,Movies & Entertainment,DIS,NYSE,0.029861140112758432,ウォルト・ディズニー,true,true,true,true,true,true,true,true
+DLR,Digital Realty,Real Estate,Data Center REITs,DLR,NYSE,0.007811643460146977,デジタル・リアルティ,false,false,false,false,false,false,false,false
+DLTR,Dollar Tree,Consumer Staples,Consumer Staples Merchandise Retail,DLTR,NASDAQ,0.02800225521518515,ダラー・ツリー,true,true,true,true,true,true,true,false
+DOC,Healthpeak Properties,Real Estate,Health Care REITs,DOC,NYSE,0.00770142180094802,ヘルスピーク・プロパティーズ,false,false,false,false,false,false,false,false
+DOV,Dover Corporation,Industrials,Industrial Machinery & Supplies & Components,DOV,NYSE,0.04650910667823072,ドーバー,true,true,true,true,true,true,false,false
+DOW,Dow Inc.,Materials,Commodity Chemicals,DOW,NYSE,-0.10140062786766478,ダウ,true,true,true,true,true,true,true,false
+DPZ,Domino's,Consumer Discretionary,Restaurants,DPZ,NASDAQ,0.010498438136629117,ドミノ･ピザ,true,true,true,true,true,true,true,false
+DRI,Darden Restaurants,Consumer Discretionary,Restaurants,DRI,NYSE,0.03341551697004671,ダーデン・レストランツ,true,true,true,true,true,true,false,false
+DTE,DTE Energy,Utilities,Multi-Utilities,DTE,NYSE,-0.0010791124300262803,ディーティーイー・エナジー・カンパニー,true,true,true,true,true,true,false,false
+DUK,Duke Energy,Utilities,Electric Utilities,DUK,NYSE,-0.0109998482779547,デューク・エナジー,true,true,true,true,true,true,true,false
+DVA,DaVita,Health Care,Health Care Services,DVA,NYSE,0.011022044088176391,ダビータ,true,true,true,true,true,true,false,false
+DVN,Devon Energy,Energy,Oil & Gas Exploration & Production,DVN,NYSE,-0.07627627627627631,デボン・エナジー・コーポレーション,true,true,true,true,true,true,true,false
+DXCM,Dexcom,Health Care,Health Care Equipment,DXCM,NASDAQ,0.031532245286008474,デクスコム,true,true,true,true,true,true,true,false
+EA,Electronic Arts,Communication Services,Interactive Home Entertainment,EA,NASDAQ,0.00009806325079681409,エレクトロニック・アーツ,true,true,true,true,true,true,false,false
+EBAY,eBay Inc.,Consumer Discretionary,Broadline Retail,EBAY,NASDAQ,0.01989376106655553,イーベイ,true,true,true,true,true,true,true,false
+ECL,Ecolab,Materials,Specialty Chemicals,ECL,NYSE,0.031857698467170056,エコラボ,true,true,true,true,true,true,false,false
+ED,Consolidated Edison,Utilities,Multi-Utilities,ED,NYSE,-0.019002271535907715,コンソリデーテッド・エジソン,true,true,true,true,true,true,false,false
+EFX,Equifax,Industrials,Research & Consulting Services,EFX,NYSE,0.029531456225252994,エキファックス,true,true,true,true,true,true,false,false
+EG,Everest Group,Financials,Reinsurance,EG,NYSE,0.004505467652269604,エベレスト・リ・グループ,true,true,true,true,true,true,false,false
+EIX,Edison International,Utilities,Electric Utilities,EIX,NYSE,0.010329155763668916,エジソン・インターナショナル,true,true,true,true,true,true,false,false
+EL,Estée Lauder Companies (The),Consumer Staples,Personal Care Products,EL,NYSE,0.04749168714760729,エスティローダー クラスA,true,true,true,true,true,true,true,false
+ELV,Elevance Health,Health Care,Managed Health Care,ELV,NYSE,0.008145463874547095,エレバンス・ヘルス,true,true,false,true,true,true,true,false
+EME,Emcor,Industrials,Construction & Engineering,EME,NYSE,0.0527437968071214,エムコア・グループ,true,true,true,true,true,true,false,false
+EMR,Emerson Electric,Industrials,Electrical Components & Equipment,EMR,NYSE,0.06587938205585268,エマーソン・エレクトリック,true,true,true,true,true,true,false,false
+EOG,EOG Resources,Energy,Oil & Gas Exploration & Production,EOG,NYSE,-0.060805657630173905,イーオージー・リソーシズ,true,true,true,true,true,true,true,false
+EPAM,EPAM Systems,Information Technology,IT Consulting & Other Services,EPAM,NYSE,0.022016092981671974,イーピーエーエム・システムズ,true,true,true,true,true,true,false,false
+EQIX,Equinix,Real Estate,Data Center REITs,EQIX,NASDAQ,0.007743549523970325,エクイニクス,false,false,false,false,false,false,false,false
+EQR,Equity Residential,Real Estate,Multi-Family Residential REITs,EQR,NYSE,0.011127719647899048,エクイティ・レジデンシャル,false,false,false,false,false,false,false,false
+EQT,EQT Corporation,Energy,Oil & Gas Exploration & Production,EQT,NYSE,-0.023397594331850298,イーキューティー,true,true,true,true,true,true,true,false
+ERIE,Erie Indemnity,Financials,Insurance Brokers,ERIE,NASDAQ,0.002011748611893458,イリー・インデムニティー・カンパニー クラスA,true,true,true,true,true,false,false,false
+ES,Eversource Energy,Utilities,Electric Utilities,ES,NYSE,0.0018707727730610112,エバーソース・エナジー,true,true,true,true,true,true,false,false
+ESS,Essex Property Trust,Real Estate,Multi-Family Residential REITs,ESS,NYSE,0.019130084575110753,エセックス・プロパティ・トラスト,false,false,false,false,false,false,false,false
+ETN,Eaton Corporation,Industrials,Electrical Components & Equipment,ETN,NYSE,0.05723193710180278,イートン,true,true,true,true,true,true,true,false
+ETR,Entergy,Utilities,Electric Utilities,ETR,NYSE,0.002283305523842899,エンタジー,true,true,true,true,true,true,false,false
+EVRG,Evergy,Utilities,Electric Utilities,EVRG,NASDAQ,-0.0028971511347176374,エヴァージー,true,true,true,true,true,true,false,false
+EW,Edwards Lifesciences,Health Care,Health Care Equipment,EW,NYSE,0.015215239980207691,エドワーズ・ライフサイエンシズ,true,true,true,true,true,true,true,false
+EXC,Exelon,Utilities,Electric Utilities,EXC,NASDAQ,-0.00560652395514778,エクセロン,true,true,true,true,true,true,false,false
+EXE,Expand Energy,Energy,Oil & Gas Exploration & Production,EXE,NASDAQ,-0.02815657804375556,エクスパンド・エナジー,true,true,false,true,true,true,false,false
+EXPD,Expeditors International,Industrials,Air Freight & Logistics,EXPD,NYSE,0.011589289420881556,エクスペディターズ・インターナショナル・オブ・ワシントン,true,true,true,true,true,true,false,false
+EXPE,Expedia Group,Consumer Discretionary,"Hotels, Resorts & Cruise Lines",EXPE,NASDAQ,0.09025858225590716,エクスペディア・グループ,true,true,true,true,true,true,false,false
+EXR,Extra Space Storage,Real Estate,Self-Storage REITs,EXR,NYSE,0.026701767581797757,エクストラ・スペース・ストレージ,false,false,false,false,false,false,false,false
+F,Ford Motor Company,Consumer Discretionary,Automobile Manufacturers,F,NYSE,0.051119791666666727,フォード・モーター,true,true,true,true,true,true,true,true
+FANG,Diamondback Energy,Energy,Oil & Gas Exploration & Production,FANG,NASDAQ,-0.0685933503836317,ダイアモンドバック・エナジー,true,true,true,true,true,true,false,false
+FAST,Fastenal,Industrials,Trading Companies & Distributors,FAST,NASDAQ,0.0393295354951797,ファスナル,true,true,true,true,true,true,false,false
+FCX,Freeport-McMoRan,Materials,Copper,FCX,NYSE,0.07356813693219233,フリーポートマクモラン,true,true,true,true,true,true,true,true
+FDS,FactSet,Financials,Financial Exchanges & Data,FDS,NYSE,-0.027284710017574727,ファクトセット・リサーチ・システムズ,true,true,true,true,true,true,false,false
+FDX,FedEx,Industrials,Air Freight & Logistics,FDX,NYSE,0.041547619047619,フェデックス,true,true,true,true,true,true,true,false
+FE,FirstEnergy,Utilities,Electric Utilities,FE,NYSE,-0.0029411764705882075,ファーストエナジー,true,true,true,true,true,true,false,false
+FFIV,"F5, Inc.",Information Technology,Communications Equipment,FFIV,NASDAQ,0.013134907796829512,F5ネットワークス,true,true,true,true,true,true,false,false
+FICO,Fair Isaac,Information Technology,Application Software,FICO,NYSE,0.03157807186159995,フェア・アイザック,true,true,true,true,true,true,true,false
+FIS,Fidelity National Information Services,Financials,Transaction & Payment Processing Services,FIS,NYSE,0.014282622808915745,フィディリティ・ナショナル・インフォメーション・サービシズ,true,true,true,true,true,true,false,false
+FISV,Fiserv,Financials,Transaction & Payment Processing Services,FISV,NASDAQ,0.04410701373825014,フィサーブ,true,true,true,true,true,true,true,false
+FITB,Fifth Third Bancorp,Financials,Regional Banks,FITB,NASDAQ,0.0405942665829671,フィフス・サード・バンコープ,true,true,true,true,true,true,false,false
+FIX,Comfort Systems USA,Industrials,Construction & Engineering,FIX,NYSE,0.08027429566096263,コンフォート・システムズUSA,true,true,true,true,true,true,false,true
+FOX,Fox Corporation (Class B),Communication Services,Broadcasting,FOX,NASDAQ,0.004279069767441802,フォックス　クラスB,true,true,true,true,true,true,false,false
+FOXA,Fox Corporation (Class A),Communication Services,Broadcasting,FOXA,NASDAQ,0.0061190276613579545,フォックス　クラスA,true,true,true,true,true,true,false,false
+FRT,Federal Realty Investment Trust,Real Estate,Retail REITs,FRT,NYSE,0.011580127007844554,フェデラル・リアルティー・インベストメント・トラスト,false,false,false,false,false,false,false,false
+FSLR,First Solar,Information Technology,Semiconductors,FSLR,NASDAQ,0.039415527013675754,ファースト・ソーラー,true,true,true,true,true,true,true,false
+FTNT,Fortinet,Information Technology,Systems Software,FTNT,NASDAQ,0.011347348303870077,フォーティネット,true,true,true,true,true,true,true,true
+FTV,Fortive,Industrials,Industrial Machinery & Supplies & Components,FTV,NYSE,0.03956391770705117,フォーティブ,true,true,true,true,true,true,false,false
+GD,General Dynamics,Industrials,Aerospace & Defense,GD,NYSE,-0.006543638607467869,ゼネラル・ダイナミックス,true,true,true,true,true,true,false,true
+GDDY,GoDaddy,Information Technology,Internet Services & Infrastructure,GDDY,NYSE,0.00612391930835741,ゴーダディ クラスA,true,true,true,true,true,true,false,false
+GE,GE Aerospace,Industrials,Aerospace & Defense,GE,NYSE,0.07013167013166996,GE エアロスペース（ゼネラル・エレクトリック）,true,true,true,true,true,true,true,true
+GEHC,GE HealthCare,Health Care,Health Care Equipment,GEHC,NASDAQ,0.05765093933744437,GEヘルスケア・テクノロジーズ,true,true,true,true,true,true,false,false
+GEN,Gen Digital,Information Technology,Systems Software,GEN,NASDAQ,0.031543274244004195,ゲンデジタル,true,true,true,true,true,true,false,false
+GEV,GE Vernova,Industrials,Heavy Electrical Equipment,GEV,NYSE,0.05077134230030196,GEベルノバ,true,true,true,true,true,true,true,true
+GILD,Gilead Sciences,Health Care,Biotechnology,GILD,NASDAQ,0.0007204610951008235,ギリアド・サイエンシズ,true,true,true,true,true,true,true,true
+GIS,General Mills,Consumer Staples,Packaged Foods & Meats,GIS,NYSE,-0.010190217391304348,ゼネラル・ミルズ,true,true,true,true,true,true,false,false
+GL,Globe Life,Financials,Life & Health Insurance,GL,NYSE,0.019410045916237594,グローブ・ライフ,true,true,true,true,true,true,false,false
+GLW,Corning Inc.,Information Technology,Electronic Components,GLW,NYSE,0.07561271209264737,コーニング,true,true,true,true,true,true,false,true
+GM,General Motors,Consumer Discretionary,Automobile Manufacturers,GM,NYSE,0.05415063221550299,ゼネラルモーターズ,true,true,true,true,true,true,true,true
+GNRC,Generac,Industrials,Electrical Components & Equipment,GNRC,NYSE,0.054945054945054944,ジェネラック・ホールディングス,true,true,true,true,true,true,false,false
+GOOG,Alphabet Inc. (Class C),Communication Services,Interactive Media & Services,GOOG,NASDAQ,0.03960681735926026,アルファベット クラスC,true,true,true,true,true,true,false,false
+GOOGL,Alphabet Inc. (Class A),Communication Services,Interactive Media & Services,GOOGL,NASDAQ,0.041412950959209174,アルファベット クラスA,true,true,true,true,true,true,true,true
+GPC,Genuine Parts Company,Consumer Discretionary,Distributors,GPC,NYSE,0.03389830508474572,ジェニュイン・パーツ,true,true,true,true,true,true,false,false
+GPN,Global Payments,Financials,Transaction & Payment Processing Services,GPN,NYSE,0.05518341307814982,グローバル・ペイメンツ,true,true,true,true,true,true,false,false
+GRMN,Garmin,Consumer Discretionary,Consumer Electronics,GRMN,NYSE,0.04144734115306503,ガーミン,true,true,true,true,true,true,false,false
+GS,Goldman Sachs,Financials,Investment Banking & Brokerage,GS,NYSE,0.05896545738587056,ゴールドマン・サックス,true,true,true,true,true,true,true,false
+GWW,W. W. Grainger,Industrials,Industrial Machinery & Supplies & Components,GWW,NYSE,0.029621441140639637,ダブリュー・ダブリュー・グレインジャー,true,true,true,true,true,true,false,false
+HAL,Halliburton,Energy,Oil & Gas Equipment & Services,HAL,NYSE,-0.041064049586776764,ハリバートン,true,true,true,true,true,true,false,false
+HAS,Hasbro,Consumer Discretionary,Leisure Products,HAS,NASDAQ,0.04580536912751676,ハスブロ,true,true,true,true,true,true,false,false
+HBAN,Huntington Bancshares,Financials,Regional Banks,HBAN,NASDAQ,0.04061712846347593,ハンチントン・バンクシェアーズ,true,true,true,true,true,true,false,false
+HCA,HCA Healthcare,Health Care,Health Care Facilities,HCA,NYSE,0.028412108337758948,HCAヘルスケア,true,true,true,true,true,true,true,false
+HD,Home Depot (The),Consumer Discretionary,Home Improvement Retail,HD,NYSE,0.05887316874235341,ホームデポ,true,true,true,true,true,true,true,false
+HIG,Hartford (The),Financials,Property & Casualty Insurance,HIG,NYSE,0.008028874484384232,ハートフォード・インシュランス・グループ,true,true,true,true,true,true,false,false
+HII,Huntington Ingalls Industries,Industrials,Aerospace & Defense,HII,NYSE,0.01702794073779463,ハンティントン・インガルス・インダストリーズ,true,true,true,true,true,true,false,false
+HLT,Hilton Worldwide,Consumer Discretionary,"Hotels, Resorts & Cruise Lines",HLT,NYSE,0.05454064072014813,ヒルトン・ワールドワイド・ホールディングス,true,true,true,true,true,true,true,false
+HOLX,Hologic,Health Care,Health Care Equipment,HOLX,NASDAQ,0.0,ホロジック,true,true,true,true,true,true,false,false
+HON,Honeywell,Industrials,Industrial Conglomerates,HON,NASDAQ,0.03341672623302354,ハネウェル・インターナショナル,true,true,true,true,true,true,true,false
+HOOD,Robinhood Markets,Financials,Investment Banking & Brokerage,HOOD,NASDAQ,0.08442211055276375,ロビンフッド・マーケッツ,true,true,true,true,true,true,true,true
+HPE,Hewlett Packard Enterprise,Information Technology,"Technology Hardware, Storage & Peripherals",HPE,NYSE,0.03917986195696305,ヒューレット・パッカード・エンタープライズ,true,true,true,true,true,true,false,false
+HPQ,HP Inc.,Information Technology,"Technology Hardware, Storage & Peripherals",HPQ,NYSE,0.019075765717356283,HP,true,true,true,true,true,true,true,false
+HRL,Hormel Foods,Consumer Staples,Packaged Foods & Meats,HRL,NYSE,0.0027972027972029035,ホーメル・フーズ,true,true,true,true,true,true,false,false
+HSIC,Henry Schein,Health Care,Health Care Distributors,HSIC,NASDAQ,0.02132701421800952,ヘンリー・シャイン,true,true,true,true,true,true,false,false
+HST,Host Hotels & Resorts,Real Estate,Hotel & Resort REITs,HST,NASDAQ,0.033263488737559015,ホスト・ホテルズ＆リゾーツ,false,false,false,false,false,false,false,false
+HSY,Hershey Company (The),Consumer Staples,Packaged Foods & Meats,HSY,NYSE,0.0025606338776693457,ハーシー,true,true,true,true,true,true,true,false
+HUBB,Hubbell Incorporated,Industrials,Industrial Machinery & Supplies & Components,HUBB,NYSE,0.051551140573992016,ハベル,true,true,true,true,true,true,false,false
+HUM,Humana,Health Care,Managed Health Care,HUM,NYSE,0.004057823991884265,ヒューマナ,true,true,true,true,true,true,true,false
+HWM,Howmet Aerospace,Industrials,Aerospace & Defense,HWM,NYSE,0.061223625116515495,ハウメット・エアロスペース,true,true,true,true,true,true,false,true
+IBKR,Interactive Brokers,Financials,Investment Banking & Brokerage,IBKR,NASDAQ,0.07766847746292771,インタラクティブ・ブローカーズ・グループ　クラスA,true,true,true,true,true,false,false,false
+IBM,IBM,Information Technology,IT Consulting & Other Services,IBM,NYSE,0.00601868853796872,アイビーエム,true,true,true,true,true,true,true,true
+ICE,Intercontinental Exchange,Financials,Financial Exchanges & Data,ICE,NYSE,-0.005772699939867757,インターコンチネンタル・エクスチェンジ,true,true,true,true,true,true,true,false
+IDXX,Idexx Laboratories,Health Care,Health Care Equipment,IDXX,NASDAQ,0.04261482254697287,アイデックス・ラボラトリーズ,true,true,true,true,true,true,false,false
+IEX,IDEX Corporation,Industrials,Industrial Machinery & Supplies & Components,IEX,NYSE,0.04159933274253239,アイデックス,true,true,true,true,true,true,false,false
+IFF,International Flavors & Fragrances,Materials,Specialty Chemicals,IFF,NYSE,0.04129751357530723,インターナショナル・フレーバー・アンド・フレグランス,true,true,true,true,true,true,false,false
+INCY,Incyte,Health Care,Biotechnology,INCY,NASDAQ,0.001120717259045832,インサイト,true,true,true,true,true,true,false,false
+INTC,Intel,Information Technology,Semiconductors,INTC,NASDAQ,0.07682857682857692,インテル,true,true,true,true,true,true,true,true
+INTU,Intuit,Information Technology,Application Software,INTU,NASDAQ,-0.02466848673946959,インテュイト,true,true,true,true,true,true,true,false
+INVH,Invitation Homes,Real Estate,Single-Family Residential REITs,INVH,NYSE,0.008196721311475304,インビテーション・ホームズ,false,false,false,false,false,false,false,false
+IP,International Paper,Materials,Paper & Plastic Packaging Products & Materials,IP,NYSE,0.05790387955993052,インターナショナル・ペーパー,true,true,true,true,true,true,false,false
+IQV,IQVIA,Health Care,Life Sciences Tools & Services,IQV,NYSE,0.02244754425038087,アイキューヴィア・ホールディングス,true,true,true,true,true,true,false,false
+IR,Ingersoll Rand,Industrials,Industrial Machinery & Supplies & Components,IR,NYSE,0.06788183532369586,インガソール・ランド,true,true,true,true,true,true,false,false
+IRM,Iron Mountain,Real Estate,Other Specialized REITs,IRM,NYSE,0.024968967822018476,アイアン・マウンテン,false,false,false,false,false,false,false,false
+ISRG,Intuitive Surgical,Health Care,Health Care Equipment,ISRG,NASDAQ,0.0291974831659124,インテュイティブ・サージカル,true,true,true,true,true,true,true,true
+IT,Gartner,Information Technology,IT Consulting & Other Services,IT,NYSE,0.014663348355418087,ガートナー,true,true,true,true,true,true,false,false
+ITW,Illinois Tool Works,Industrials,Industrial Machinery & Supplies & Components,ITW,NYSE,0.036558060531191976,イリノイ・ツール・ワークス,true,true,true,true,true,true,false,false
+IVZ,Invesco,Financials,Asset Management & Custody Banks,IVZ,NYSE,0.05797101449275364,インベスコ,true,true,true,true,true,true,false,false
+J,Jacobs Solutions,Industrials,Construction & Engineering,J,NYSE,0.030277537542259605,ジェイコブズ・ソリューションズ,true,true,true,true,true,true,false,false
+JBHT,J.B. Hunt,Industrials,Cargo Ground Transportation,JBHT,NASDAQ,0.051536447567865504,ジェイビー・ハント・トランスポート・サービシズ,true,true,true,true,true,true,false,false
+JBL,Jabil,Information Technology,Electronic Manufacturing Services,JBL,NYSE,0.05341762873373644,ジェイビル・サーキット,true,true,true,true,true,true,false,false
+JCI,Johnson Controls,Industrials,Building Products,JCI,NYSE,0.05309800976342466,ジョンソン・コントロールズ,true,true,true,true,true,true,false,false
+JKHY,Jack Henry & Associates,Financials,Transaction & Payment Processing Services,JKHY,NASDAQ,0.00360030318342593,ジャック・ヘンリー・アンド・アソシエイツ,true,true,true,true,true,true,false,false
+JNJ,Johnson & Johnson,Health Care,Pharmaceuticals,JNJ,NYSE,-0.00847279895977522,ジョンソン・エンド・ジョンソン,true,true,true,true,true,true,true,true
+JPM,JPMorgan Chase,Financials,Diversified Banks,JPM,NYSE,0.041039004707464834,ジェイピー・モルガン・チェース,true,true,true,true,true,true,true,true
+KDP,Keurig Dr Pepper,Consumer Staples,Soft Drinks & Non-alcoholic Beverages,KDP,NASDAQ,0.011189634864546532,キューリグ・ドクターペッパー,true,true,true,true,true,true,true,false
+KEY,KeyCorp,Financials,Regional Banks,KEY,NYSE,0.04199806013579047,キーコープ,true,true,true,true,true,true,false,false
+KEYS,Keysight Technologies,Information Technology,Electronic Equipment & Instruments,KEYS,NYSE,0.05580320015967525,キーサイト・テクノロジーズ,true,true,true,true,true,true,false,true
+KHC,Kraft Heinz,Consumer Staples,Packaged Foods & Meats,KHC,NASDAQ,-0.011863675582398559,クラフト・ハインツ,true,true,true,true,true,true,true,false
+KIM,Kimco Realty,Real Estate,Retail REITs,KIM,NYSE,0.01258278145695365,キムコ・リアルティ,false,false,false,false,false,false,false,false
+KKR,KKR & Co.,Financials,Asset Management & Custody Banks,KKR,NYSE,0.053774104683195545,KKR,true,false,false,false,true,false,false,false
+KLAC,KLA Corporation,Information Technology,Semiconductor Materials & Equipment,KLAC,NASDAQ,0.08284210866126493,ケーエルエー・コーポレーション,true,true,true,true,true,true,true,true
+KMB,Kimberly-Clark,Consumer Staples,Household Products,KMB,NASDAQ,0.030521225147770052,キンバリークラーク,true,true,true,true,true,true,false,false
+KMI,Kinder Morgan,Energy,Oil & Gas Storage & Transportation,KMI,NYSE,-0.026726726726726747,キンダー・モルガン,true,true,true,true,true,true,false,true
+KO,Coca-Cola Company (The),Consumer Staples,Soft Drinks & Non-alcoholic Beverages,KO,NYSE,0.0012512347711557308,コカ・コーラ,true,true,true,true,true,true,true,true
+KR,Kroger,Consumer Staples,Food Retail,KR,NYSE,-0.05125206384149709,クローガー,true,true,true,true,true,true,true,false
+KVUE,Kenvue,Consumer Staples,Personal Care Products,KVUE,NYSE,0.02540346682606101,ケンビュー,true,true,true,true,false,false,false,false
+L,Loews Corporation,Financials,Multi-line Insurance,L,NYSE,0.007737212750185264,ロウズ,true,true,true,true,true,true,false,false
+LDOS,Leidos,Industrials,Diversified Support Services,LDOS,NYSE,0.013092465537861043,レイドス・ホールディングス,true,true,true,true,true,true,false,false
+LEN,Lennar,Consumer Discretionary,Homebuilding,LEN,NYSE,0.06295258117262323,レナー クラスA,true,true,true,true,true,true,false,false
+LH,Labcorp,Health Care,Health Care Services,LH,NYSE,0.015454916966972427,ラボコープ・ホールディングス,true,true,true,true,true,true,false,false
+LHX,L3Harris,Industrials,Aerospace & Defense,LHX,NYSE,0.007683615819209117,L3ハリス・テクノロジーズ,true,true,true,true,true,true,true,false
+LII,Lennox International,Industrials,Building Products,LII,NYSE,0.061988239210029966,レノックス・インターナショナル,true,true,true,true,true,true,false,false
+LIN,Linde plc,Materials,Industrial Gases,LIN,NASDAQ,-0.012656948179300008,リンデ,true,true,true,true,true,true,true,false
+LITE,Lumentum,Information Technology,Communications Equipment,LITE,NASDAQ,0.06177137603432423,ルメンタム・ホールディングス,true,true,true,true,true,true,false,true
+LLY,Lilly (Eli),Health Care,Pharmaceuticals,LLY,NYSE,0.006218518080958837,イーライ・リリー,true,true,true,true,true,true,true,true
+LMT,Lockheed Martin,Industrials,Aerospace & Defense,LMT,NYSE,-0.0182173012585631,ロッキード・マーチン,true,true,true,true,true,true,true,true
+LNT,Alliant Energy,Utilities,Electric Utilities,LNT,NASDAQ,-0.005092911218169367,アライアント・エナジー,true,true,true,true,true,true,false,false
+LOW,Lowe's,Consumer Discretionary,Home Improvement Retail,LOW,NYSE,0.056646949613574436,ロウズ・カンパニーズ,true,true,true,true,true,true,true,false
+LRCX,Lam Research,Information Technology,Semiconductor Materials & Equipment,LRCX,NASDAQ,0.10481390684198803,ラム・リサーチ,true,true,true,true,true,true,true,true
+LULU,Lululemon Athletica,Consumer Discretionary,"Apparel, Accessories & Luxury Goods",LULU,NASDAQ,0.058306761241621714,ルルレモン・アスレティカ,true,true,true,true,true,true,true,false
+LUV,Southwest Airlines,Industrials,Passenger Airlines,LUV,NYSE,0.11129918141008716,サウスウェスト航空,true,true,true,true,true,true,false,false
+LVS,Las Vegas Sands,Consumer Discretionary,Casinos & Gaming,LVS,NYSE,0.039985190670122114,ラスベガス・サンズ,true,true,true,true,true,true,false,false
+LYB,LyondellBasell,Materials,Specialty Chemicals,LYB,NYSE,-0.11736855220533268,リヨンデルバセル・インダストリーズ クラスA,true,true,true,true,true,true,false,false
+LYV,Live Nation Entertainment,Communication Services,Movies & Entertainment,LYV,NYSE,0.03727335902457519,ライブ・ネーション・エンターテインメント,true,true,true,true,true,true,false,false
+MA,Mastercard,Financials,Transaction & Payment Processing Services,MA,NYSE,0.023340290599662947,マスターカード クラスA,true,true,true,true,true,true,true,true
+MAA,Mid-America Apartment Communities,Real Estate,Multi-Family Residential REITs,MAA,NYSE,0.009895414320193113,ミッド・アメリカ・アパートメント・コミュニティーズ,false,false,false,false,false,false,false,false
+MAR,Marriott International,Consumer Discretionary,"Hotels, Resorts & Cruise Lines",MAR,NASDAQ,0.06450004532680619,マリオット・インターナショナル,true,true,true,true,true,true,true,false
+MAS,Masco,Industrials,Building Products,MAS,NYSE,0.05989847715736039,マスコ,true,true,true,true,true,true,false,false
+MCD,McDonald's,Consumer Discretionary,Restaurants,MCD,NYSE,0.0028374610464161135,マクドナルド,true,true,true,true,true,true,true,true
+MCHP,Microchip Technology,Information Technology,Semiconductors,MCHP,NASDAQ,0.0595467338172122,マイクロチップ・テクノロジー,true,true,true,true,true,true,true,false
+MCK,McKesson Corporation,Health Care,Health Care Distributors,MCK,NYSE,0.003186944035861897,マケッソン,true,true,true,true,true,true,true,false
+MCO,Moody's Corporation,Financials,Financial Exchanges & Data,MCO,NYSE,0.0340182648401826,ムーディーズ,true,true,true,true,true,true,false,false
+MDLZ,Mondelez International,Consumer Staples,Packaged Foods & Meats,MDLZ,NASDAQ,0.00408624587028342,モンデリーズ・インターナショナル クラスA,true,true,true,true,true,true,true,false
+MDT,Medtronic,Health Care,Health Care Equipment,MDT,NYSE,0.009372830363341845,メドトロニック,true,true,true,true,true,true,true,true
+MET,MetLife,Financials,Life & Health Insurance,MET,NYSE,0.03272471910112357,メットライフ,true,true,true,true,true,true,false,false
+META,Meta Platforms,Communication Services,Interactive Media & Services,META,NASDAQ,0.04673506651595514,メタ・プラットフォームズ,true,true,true,true,true,true,true,true
+MGM,MGM Resorts,Consumer Discretionary,Casinos & Gaming,MGM,NYSE,0.018738453417788358,エムジーエム・リゾーツ・インターナショナル,true,true,true,true,true,true,false,false
+MKC,McCormick & Company,Consumer Staples,Packaged Foods & Meats,MKC,NYSE,0.011836534692277457,マコーミック,true,true,true,true,true,true,false,false
+MLM,Martin Marietta Materials,Materials,Construction Materials,MLM,NYSE,0.046792725804552356,マーチン・マリエッタ・マテリアルズ,true,true,true,true,true,true,false,false
+MMM,3M,Industrials,Industrial Conglomerates,MMM,NYSE,0.03796854430818256,スリーエム,true,true,true,true,true,true,true,true
+MNST,Monster Beverage,Consumer Staples,Soft Drinks & Non-alcoholic Beverages,MNST,NASDAQ,0.030508006626173496,モンスター・ビバレッジ,true,true,true,true,true,true,true,false
+MO,Altria,Consumer Staples,Tobacco,MO,NYSE,-0.020072441895562905,アルトリア・グループ,true,true,true,true,true,true,true,true
+MOS,Mosaic Company (The),Materials,Fertilizers & Agricultural Chemicals,MOS,NYSE,-0.002654531664770583,モザイク,true,true,true,true,true,true,false,false
+MPC,Marathon Petroleum,Energy,Oil & Gas Refining & Marketing,MPC,NYSE,-0.058267459864721635,マラソン・ペトロリアム,true,true,true,true,true,true,true,false
+MPWR,Monolithic Power Systems,Information Technology,Semiconductors,MPWR,NASDAQ,0.0676785144641627,モノリシック・パワー・システムズ,true,true,true,true,true,true,true,false
+MRK,Merck & Co.,Health Care,Pharmaceuticals,MRK,NYSE,0.001353957075788093,メルク,true,true,true,true,true,true,true,true
+MRNA,Moderna,Health Care,Biotechnology,MRNA,NASDAQ,0.026641388944322508,モデルナ,true,true,true,true,true,true,true,false
+MRSH,Marsh McLennan,Financials,Insurance Brokers,MRSH,NYSE,0.00512568052820567,マーシュ・アンド・マクレナン,true,true,true,true,true,true,true,false
+MS,Morgan Stanley,Financials,Investment Banking & Brokerage,MS,NYSE,0.060440539096360546,モルガン・スタンレー,true,true,true,true,true,true,true,true
+MSCI,MSCI Inc.,Financials,Financial Exchanges & Data,MSCI,NYSE,0.025763777225551864,エムエスシーアイ,true,true,true,true,true,true,false,false
+MSFT,Microsoft,Information Technology,Systems Software,MSFT,NASDAQ,0.02084396572564396,マイクロソフト,true,true,true,true,true,true,true,true
+MSI,Motorola Solutions,Information Technology,Communications Equipment,MSI,NYSE,0.009210080235054784,モトローラ・ソリューションズ,true,true,true,true,true,true,false,false
+MTB,M&T Bank,Financials,Regional Banks,MTB,NYSE,0.036867663005044515,エム・アンド・ティー・バンク,true,true,true,true,true,true,false,false
+MTD,Mettler Toledo,Health Care,Life Sciences Tools & Services,MTD,NYSE,0.03587795275590556,メトラー・トレド・インターナショナル,true,true,true,true,true,true,false,false
+MU,Micron Technology,Information Technology,Semiconductors,MU,NASDAQ,0.08384845595635372,マイクロン・テクノロジー,true,true,true,true,true,true,true,true
+NCLH,Norwegian Cruise Line Holdings,Consumer Discretionary,"Hotels, Resorts & Cruise Lines",NCLH,NYSE,0.11906033101975443,ノルウェージャン・クルーズライン・ホールディングス,true,true,true,true,true,true,false,false
+NDAQ,"Nasdaq, Inc.",Financials,Financial Exchanges & Data,NDAQ,NASDAQ,0.020138888888888828,ナスダック,true,true,true,true,true,true,false,false
+NDSN,Nordson Corporation,Industrials,Industrial Machinery & Supplies & Components,NDSN,NASDAQ,0.040456548762571855,ノードソン,true,true,true,true,true,true,false,false
+NEE,NextEra Energy,Utilities,Multi-Utilities,NEE,NYSE,-0.012597416462047687,ネクステラ・エナジー,true,true,true,true,true,true,true,true
+NEM,Newmont,Materials,Gold,NEM,NYSE,0.03829044919319669,ニューモント,true,true,true,true,true,true,true,true
+NFLX,Netflix,Communication Services,Movies & Entertainment,NFLX,NASDAQ,-0.00273224043715843,ネットフリックス,true,true,true,true,true,true,true,true
+NI,NiSource,Utilities,Multi-Utilities,NI,NYSE,-0.006295907660020927,ナイソース,true,true,true,true,true,true,false,false
+NKE,"Nike, Inc.",Consumer Discretionary,"Apparel, Accessories & Luxury Goods",NKE,NYSE,0.025767158585148782,ナイキ クラスB,true,true,true,true,true,true,true,true
+NOC,Northrop Grumman,Industrials,Aerospace & Defense,NOC,NYSE,-0.016625633598841446,ノースロップ・グラマン,true,true,true,true,true,true,true,true
+NOW,ServiceNow,Information Technology,Systems Software,NOW,NYSE,0.011688746957971957,サービスナウ,true,true,true,true,true,true,true,true
+NRG,NRG Energy,Utilities,Independent Power Producers & Energy Traders,NRG,NYSE,0.04259767411472632,エヌアールジー・エナジー,true,true,true,true,true,true,false,false
+NSC,Norfolk Southern,Industrials,Rail Transportation,NSC,NYSE,0.019636048526863157,ノーフォーク・サザン,true,true,true,true,true,true,false,false
+NTAP,NetApp,Information Technology,"Technology Hardware, Storage & Peripherals",NTAP,NASDAQ,0.020131134105112216,ネットアップ,true,true,true,true,true,true,false,false
+NTRS,Northern Trust,Financials,Asset Management & Custody Banks,NTRS,NASDAQ,0.04030762892261213,ノーザン・トラスト,true,true,true,true,true,true,false,false
+NUE,Nucor,Materials,Steel,NUE,NYSE,0.04063257532032795,ニューコア,true,true,true,true,true,true,false,true
+NVDA,Nvidia,Information Technology,Semiconductors,NVDA,NASDAQ,0.031807973048848914,エヌビディア,true,true,true,true,true,true,true,true
+NVR,"NVR, Inc.",Consumer Discretionary,Homebuilding,NVR,NYSE,0.02265165797937236,エヌブイアール,true,true,true,true,true,true,false,false
+NWS,News Corp (Class B),Communication Services,Publishing,NWS,NASDAQ,0.015302491103202837,ニューズ・コーポレーション クラスB,true,true,true,true,true,true,false,false
+NWSA,News Corp (Class A),Communication Services,Publishing,NWSA,NASDAQ,0.013917314776913626,ニューズ・コーポレーション クラスA,true,true,true,true,true,true,false,false
+NXPI,NXP Semiconductors,Information Technology,Semiconductors,NXPI,NASDAQ,0.054607421074210745,NXPセミコンダクターズ,true,true,true,true,true,true,true,false
+O,Realty Income,Real Estate,Retail REITs,O,NYSE,0.0022497187851518653,リアルティー・インカム,false,false,false,false,false,false,false,false
+ODFL,Old Dominion,Industrials,Cargo Ground Transportation,ODFL,NASDAQ,0.05107324184386466,オールド・ドミニオン・フレイト・ラインズ,true,true,true,true,true,true,false,false
+OKE,Oneok,Energy,Oil & Gas Storage & Transportation,OKE,NYSE,-0.05748648350435832,ワンオーケー,true,true,true,true,true,true,false,false
+OMC,Omnicom Group,Communication Services,Advertising,OMC,NYSE,0.017514871116985967,オムニコム・グループ,true,true,true,true,true,true,false,false
+ON,ON Semiconductor,Information Technology,Semiconductors,ON,NASDAQ,0.060432669697444694,オン・セミコンダクター・コーポレーション,true,true,true,true,true,true,true,true
+ORCL,Oracle Corporation,Information Technology,Application Software,ORCL,NYSE,0.02842774324229952,オラクル,true,true,true,true,true,true,true,true
+ORLY,O’Reilly Automotive,Consumer Discretionary,Automotive Retail,ORLY,NASDAQ,0.011711908931698855,オライリー・オートモーティブ,true,true,true,true,true,true,true,false
+OTIS,Otis Worldwide,Industrials,Industrial Machinery & Supplies & Components,OTIS,NYSE,0.024412180393164663,オティス・ワールドワイド,true,true,true,true,true,true,false,false
+OXY,Occidental Petroleum,Energy,Oil & Gas Exploration & Production,OXY,NYSE,-0.08603431839847472,オクシデンタル・ペトロリアム,true,true,true,true,true,true,true,false
+PANW,Palo Alto Networks,Information Technology,Systems Software,PANW,NASDAQ,0.03582151056690415,パロ・アルト・ネットワークス,true,true,true,true,true,true,true,true
+PAYX,Paychex,Industrials,Human Resource & Employment Services,PAYX,NASDAQ,0.007968562384019256,ペイチェックス,true,true,true,true,true,true,false,false
+PCAR,Paccar,Industrials,Construction Machinery & Heavy Transportation Equipment,PCAR,NASDAQ,0.046023688663282554,パッカー,true,true,true,true,true,true,false,false
+PCG,PG&E Corporation,Utilities,Multi-Utilities,PCG,NYSE,0.004256526674233784,パシフィック・ガス・アンド・エレクトリック,true,false,true,true,true,true,false,false
+PEG,Public Service Enterprise Group,Utilities,Electric Utilities,PEG,NYSE,0.007106972184781256,パブリック・サービス・エンタープライズ・グループ,true,true,true,true,true,true,false,false
+PEP,PepsiCo,Consumer Staples,Soft Drinks & Non-alcoholic Beverages,PEP,NASDAQ,-0.0011565447247332123,ペプシコ,true,true,true,true,true,true,true,true
+PFE,Pfizer,Health Care,Pharmaceuticals,PFE,NYSE,0.0023985239852397683,ファイザー,true,true,true,true,true,true,true,true
+PFG,Principal Financial Group,Financials,Life & Health Insurance,PFG,NASDAQ,0.03865583132000874,プリンシパル・フィナンシャル・グループ,true,true,true,true,true,true,false,false
+PG,Procter & Gamble,Consumer Staples,Personal Care Products,PG,NYSE,0.017692852087756544,プロクター・アンド・ギャンブル,true,true,true,true,true,true,true,true
+PGR,Progressive Corporation,Financials,Property & Casualty Insurance,PGR,NYSE,0.0024130048260096234,プログレッシブ,true,true,true,true,true,true,true,false
+PH,Parker Hannifin,Industrials,Industrial Machinery & Supplies & Components,PH,NYSE,0.06651916273261993,パーカー･ハニフィン,true,true,true,true,true,true,true,false
+PHM,PulteGroup,Consumer Discretionary,Homebuilding,PHM,NYSE,0.05056911981927181,パルト・グループ,true,true,true,true,true,true,false,false
+PKG,Packaging Corporation of America,Materials,Paper & Plastic Packaging Products & Materials,PKG,NYSE,0.032430838779421274,パッケージング・コーポレーション・オブ・アメリカ,true,true,true,true,true,true,false,false
+PLD,Prologis,Real Estate,Industrial REITs,PLD,NYSE,0.029837862182855383,プロロジス,false,false,false,false,false,false,false,false
+PLTR,Palantir Technologies,Information Technology,Application Software,PLTR,NASDAQ,0.005530752315586143,パランティア・テクノロジーズ,true,true,true,true,true,true,true,true
+PM,Philip Morris International,Consumer Staples,Tobacco,PM,NYSE,-0.004095498126865263,フィリップ・モリス・インターナショナル,true,true,true,true,true,true,true,false
+PNC,PNC Financial Services,Financials,Diversified Banks,PNC,NYSE,0.03805160807778616,ピーエヌシー・フィナンシャル・サービシズ・グループ,true,true,true,true,true,true,true,false
+PNR,Pentair,Industrials,Industrial Machinery & Supplies & Components,PNR,NYSE,0.05008040431886055,ペンテア,true,true,true,true,true,true,false,false
+PNW,Pinnacle West Capital,Utilities,Multi-Utilities,PNW,NYSE,-0.004986312084474043,ピナクル・ウェスト・キャピタル,true,true,true,true,true,true,false,false
+PODD,Insulet Corporation,Health Care,Health Care Equipment,PODD,NASDAQ,0.025338338437222142,インシュレット,true,true,true,true,true,true,false,false
+POOL,Pool Corporation,Consumer Discretionary,Distributors,POOL,NASDAQ,0.03901131625967845,プール,true,true,true,true,true,true,false,false
+PPG,PPG Industries,Materials,Specialty Chemicals,PPG,NYSE,0.06983568075117372,ピーピージー・インダストリーズ,true,true,true,true,true,true,false,false
+PPL,PPL Corporation,Utilities,Electric Utilities,PPL,NYSE,-0.00308800823468856,パシフィック・パワー・アンド・ライト・コーポレーション,true,true,true,true,true,true,false,false
+PRU,Prudential Financial,Financials,Life & Health Insurance,PRU,NYSE,0.004979466119096503,プルデンシャル・フィナンシャル,true,true,true,true,true,true,false,false
+PSA,Public Storage,Real Estate,Self-Storage REITs,PSA,NYSE,0.024709926944563733,パブリック・ストレージ,false,false,false,false,false,false,false,false
+PSKY,Paramount Skydance Corporation,Communication Services,Movies & Entertainment,PSKY,NASDAQ,0.02155963302752288,パラマウント・スカイダンス B,true,true,true,true,true,true,false,false
+PSX,Phillips 66,Energy,Oil & Gas Refining & Marketing,PSX,NYSE,-0.05329135661133373,フィリップス66,true,true,true,true,true,true,true,false
+PTC,PTC Inc.,Information Technology,Application Software,PTC,NASDAQ,0.01570316842690397,ピー・ティー・シー,true,true,true,true,true,true,false,false
+PWR,Quanta Services,Industrials,Construction & Engineering,PWR,NYSE,0.040030959195060736,クアンタ・サービシズ,true,true,true,true,true,true,true,true
+PYPL,PayPal,Financials,Transaction & Payment Processing Services,PYPL,NASDAQ,0.022286605749944285,ペイパル・ホールディングス,true,true,true,true,true,true,true,true
+Q,Qnity Electronics,Information Technology,Semiconductor Materials & Equipment,Q,NYSE,0.09631061433733923,キューニティ・エレクトロニクス,true,true,true,true,true,true,false,false
+QCOM,Qualcomm,Information Technology,Semiconductors,QCOM,NASDAQ,0.025903119206899382,クアルコム,true,true,true,true,true,true,true,true
+RCL,Royal Caribbean Group,Consumer Discretionary,"Hotels, Resorts & Cruise Lines",RCL,NYSE,0.10705614284113417,ロイヤル・カリビアン・クルーズ,true,true,true,true,true,true,true,false
+REG,Regency Centers,Real Estate,Retail REITs,REG,NASDAQ,0.00478468899521537,リージェンシー・センターズ,false,false,false,false,false,false,false,false
+REGN,Regeneron Pharmaceuticals,Health Care,Biotechnology,REGN,NASDAQ,0.0049587646494008465,リジェネロン・ファーマシューティカルズ,true,true,true,true,true,true,true,false
+RF,Regions Financial Corporation,Financials,Regional Banks,RF,NYSE,0.0398346486283353,リジョンズ・フィナンシャル,true,true,true,true,true,true,false,false
+RJF,Raymond James Financial,Financials,Investment Banking & Brokerage,RJF,NYSE,0.04122770051973595,レイモンド・ジェームズ・フィナンシャル,true,true,true,true,true,true,false,false
+RL,Ralph Lauren Corporation,Consumer Discretionary,"Apparel, Accessories & Luxury Goods",RL,NYSE,0.0757302663576804,ラルフローレン,true,true,true,true,true,true,true,false
+RMD,ResMed,Health Care,Health Care Equipment,RMD,NYSE,0.033045786330457856,レスメド,true,true,true,true,true,true,false,false
+ROK,Rockwell Automation,Industrials,Electrical Components & Equipment,ROK,NYSE,0.06435281695860515,ロックウェル・オートメーション,true,true,true,true,true,true,false,true
+ROL,"Rollins, Inc.",Industrials,Environmental & Facilities Services,ROL,NYSE,0.013687150837988816,ローリンズ,true,true,true,true,true,true,false,false
+ROP,Roper Technologies,Information Technology,Electronic Equipment & Instruments,ROP,NASDAQ,0.002926176741075193,ローパー・テクノロジーズ,true,true,true,true,true,true,false,false
+ROST,Ross Stores,Consumer Discretionary,Apparel Retail,ROST,NASDAQ,0.024637145234353258,ロス・ストアーズ,true,true,true,true,true,true,true,false
+RSG,Republic Services,Industrials,Environmental & Facilities Services,RSG,NYSE,-0.015269080678827521,リパブリック・サービシズ,true,true,true,true,true,true,false,false
+RTX,RTX Corporation,Industrials,Aerospace & Defense,RTX,NYSE,0.012808205335489214,RTX,true,true,true,true,true,true,true,true
+RVTY,Revvity,Health Care,Health Care Equipment,RVTY,NYSE,0.047044082469529507,レビティー,true,true,true,true,true,true,false,false
+SATS,EchoStar,Communication Services,Wireless Telecommunication Services,SATS,NASDAQ,0.012767492185621572,エコスター クラスA,true,true,true,true,true,true,false,false
+SBAC,SBA Communications,Real Estate,Telecom Tower REITs,SBAC,NASDAQ,-0.00461478674827561,SBAコミュニケーションズ,false,false,false,false,false,false,false,false
+SBUX,Starbucks,Consumer Discretionary,Restaurants,SBUX,NASDAQ,0.026047684066799748,スターバックス,true,true,true,true,true,true,true,true
+SCHW,Charles Schwab Corporation,Financials,Investment Banking & Brokerage,SCHW,NYSE,0.029517330047677825,チャールズ・シュワブ,true,true,true,true,true,true,true,false
+SHW,Sherwin-Williams,Materials,Specialty Chemicals,SHW,NYSE,0.06644158491527588,シャーウィンウィリアムズ,true,true,true,true,true,true,true,false
+SJM,J.M. Smucker Company (The),Consumer Staples,Packaged Foods & Meats,SJM,NYSE,0.012906001062134811,ジェイ・エム・スマッカー,true,true,true,true,true,true,false,false
+SLB,Schlumberger,Energy,Oil & Gas Equipment & Services,SLB,NYSE,0.013108242303872822,SLB,true,true,true,true,true,true,true,false
+SMCI,Supermicro,Information Technology,"Technology Hardware, Storage & Peripherals",SMCI,NASDAQ,0.039408910454344935,スーパー・マイクロ・コンピューター,true,true,true,true,true,true,false,true
+SNA,Snap-on,Industrials,Industrial Machinery & Supplies & Components,SNA,NYSE,0.03440141805290431,スナップオン,true,true,true,true,true,true,false,false
+SNDK,Sandisk,Information Technology,"Technology Hardware, Storage & Peripherals",SNDK,NASDAQ,0.12634890264490717,サンディスク,true,true,true,true,true,true,false,true
+SNPS,Synopsys,Information Technology,Application Software,SNPS,NASDAQ,0.03267152550892184,シノプシス,true,true,true,true,true,true,true,true
+SO,Southern Company,Utilities,Electric Utilities,SO,NYSE,-0.013220409006403502,サザン,true,true,true,true,true,true,true,false
+SOLV,Solventum,Health Care,Health Care Technology,SOLV,NYSE,0.03688590174427908,ソルベンタム,true,true,true,true,true,true,false,false
+SPG,Simon Property Group,Real Estate,Retail REITs,SPG,NYSE,0.01957286036626971,サイモン・プロパティ・グループ,false,false,false,false,false,false,false,false
+SPGI,S&P Global,Financials,Financial Exchanges & Data,SPGI,NYSE,0.019927451983444155,S&P グローバル,true,true,true,true,true,true,true,false
+SRE,Sempra,Utilities,Multi-Utilities,SRE,NYSE,-0.015031484866950943,センプラ・エナジー,true,true,true,true,true,true,false,false
+STE,Steris,Health Care,Health Care Equipment,STE,NYSE,0.02474682966882589,ステリス,true,true,true,true,true,true,false,false
+STLD,Steel Dynamics,Materials,Steel,STLD,NASDAQ,0.041819515774027864,スチール・ダイナミクス,true,true,true,true,true,true,false,false
+STT,State Street Corporation,Financials,Asset Management & Custody Banks,STT,NYSE,0.031933541650788794,ステート・ストリート,true,true,true,true,true,true,false,false
+STX,Seagate Technology,Information Technology,"Technology Hardware, Storage & Peripherals",STX,NASDAQ,0.0921658986175115,シーゲイト・テクノロジー・ホールディングス,true,true,true,true,true,true,true,false
+STZ,Constellation Brands,Consumer Staples,Distillers & Vintners,STZ,NYSE,-0.006877722160827024,コンステレーション･ブランズ クラスA,true,true,true,true,true,true,false,false
+SW,Smurfit Westrock,Materials,Paper & Plastic Packaging Products & Materials,SW,NYSE,0.0757073668111141,スマーフィット・ウエストロックPLC,true,true,true,true,true,true,false,false
+SWK,Stanley Black & Decker,Industrials,Industrial Machinery & Supplies & Components,SWK,NYSE,0.06772142540292768,スタンレー・ブラック・アンド・デッカー,true,true,true,true,true,true,false,false
+SWKS,Skyworks Solutions,Information Technology,Semiconductors,SWKS,NASDAQ,0.013621503814021068,スカイワークス・ソリューションズ,true,true,true,true,true,true,false,false
+SYF,Synchrony Financial,Financials,Consumer Finance,SYF,NYSE,0.0560639070442992,シンクロニー・フィナンシャル,true,true,true,true,true,true,false,false
+SYK,Stryker Corporation,Health Care,Health Care Equipment,SYK,NYSE,0.0182491643328214,ストライカー,true,true,true,true,true,true,true,false
+SYY,Sysco,Consumer Staples,Food Distributors,SYY,NYSE,0.023498088476242542,シスコ,true,true,true,true,true,true,false,false
+T,AT&T,Communication Services,Integrated Telecommunication Services,T,NYSE,-0.02836246878344637,エーティー・アンド・ティー,true,true,true,true,true,true,true,true
+TAP,Molson Coors Beverage Company,Consumer Staples,Brewers,TAP,NYSE,0.005771365149833632,モルソン・クアーズ・ビバレッジ,true,true,true,true,true,true,false,false
+TDG,TransDigm Group,Industrials,Aerospace & Defense,TDG,NYSE,0.038505604623921684,トランスダイム・グループ,true,true,true,true,true,true,false,false
+TDY,Teledyne Technologies,Information Technology,Electronic Equipment & Instruments,TDY,NYSE,0.03468121624387859,テレダイン･テクノロジーズ,true,true,true,true,true,true,false,false
+TECH,Bio-Techne,Health Care,Life Sciences Tools & Services,TECH,NASDAQ,0.036410923276983115,テクネ,true,true,true,true,true,true,false,false
+TEL,TE Connectivity,Information Technology,Electronic Manufacturing Services,TEL,NYSE,0.060858849180017084,TEコネクティビティ・PLC,true,true,true,true,true,true,false,false
+TER,Teradyne,Information Technology,Semiconductor Materials & Equipment,TER,NASDAQ,0.08574638042935584,テラダイン,true,true,true,true,true,true,false,false
+TFC,Truist Financial,Financials,Diversified Banks,TFC,NYSE,0.04150114990591678,トゥルーイスト・フィナンシャル,true,true,true,true,true,true,false,false
+TGT,Target Corporation,Consumer Staples,Consumer Staples Merchandise Retail,TGT,NYSE,0.02911646586345385,ターゲット,true,true,true,true,true,true,true,false
+TJX,TJX Companies,Consumer Discretionary,Apparel Retail,TJX,NYSE,0.014627490798324523,ティージェイエックス・カンパニーズ,true,true,true,true,true,true,true,false
+TKO,TKO Group Holdings,Communication Services,Movies & Entertainment,TKO,NYSE,0.02285447761194028,TKO・グループ・ホールディングス,true,true,true,true,true,true,false,false
+TMO,Thermo Fisher Scientific,Health Care,Life Sciences Tools & Services,TMO,NYSE,0.02639427987742598,サーモ・フィッシャーサイエンティフィック,true,true,true,true,true,true,true,false
+TMUS,T-Mobile US,Communication Services,Wireless Telecommunication Services,TMUS,NASDAQ,-0.003989229081479919,Ｔモバイル,true,true,true,true,true,true,true,false
+TPL,Texas Pacific Land Corporation,Energy,Oil & Gas Exploration & Production,TPL,NYSE,-0.006558616243135786,テキサス・パシフィック・ランド・コーポ,true,true,true,true,true,false,false,false
+TPR,"Tapestry, Inc.",Consumer Discretionary,"Apparel, Accessories & Luxury Goods",TPR,NYSE,0.08127674750356641,タペストリー,true,true,true,true,true,true,true,false
+TRGP,Targa Resources,Energy,Oil & Gas Storage & Transportation,TRGP,NYSE,-0.05217547214917523,タルガ・リソーシズ,true,true,true,true,true,true,false,false
+TRMB,Trimble Inc.,Information Technology,Electronic Equipment & Instruments,TRMB,NASDAQ,0.048707366453823585,トリンブル,true,true,true,true,true,true,false,false
+TROW,T. Rowe Price,Financials,Asset Management & Custody Banks,TROW,NASDAQ,0.0347735933647165,ティー・ロウ・プライス・グループ,true,true,true,true,true,true,false,false
+TRV,Travelers Companies (The),Financials,Property & Casualty Insurance,TRV,NYSE,0.006803931537027599,トラベラーズ･カンパニーズ,true,true,true,true,true,true,true,false
+TSCO,Tractor Supply,Consumer Discretionary,Other Specialty Retail,TSCO,NASDAQ,0.040788267644363,トラクター・サプライ・カンパニー,true,true,true,true,true,true,false,false
+TSLA,"Tesla, Inc.",Consumer Discretionary,Automobile Manufacturers,TSLA,NASDAQ,0.027924419443242487,テスラ,true,true,true,true,true,true,true,true
+TSN,Tyson Foods,Consumer Staples,Packaged Foods & Meats,TSN,NYSE,0.0010126187879731692,タイソン・フーズ クラスA,true,true,true,true,true,true,false,false
+TT,Trane Technologies,Industrials,Building Products,TT,NYSE,0.047007062637489765,トレイン・テクノロジーズ,true,true,true,true,true,true,true,false
+TTD,Trade Desk (The),Communication Services,Advertising,TTD,NASDAQ,0.005314009661835721,トレード・デスク　クラスA,true,true,true,true,true,true,true,true
+TTWO,Take-Two Interactive,Communication Services,Interactive Home Entertainment,TTWO,NASDAQ,0.024781929108052193,テイクツー・インタラクティブ・ソフトウェア,true,true,true,true,true,true,false,false
+TXN,Texas Instruments,Information Technology,Semiconductors,TXN,NASDAQ,0.03822564898490495,テキサス・インストゥルメンツ,true,true,true,true,true,true,true,false
+TXT,Textron,Industrials,Aerospace & Defense,TXT,NYSE,0.046532846715328445,テクストロン,true,true,true,true,true,true,false,false
+TYL,Tyler Technologies,Information Technology,Application Software,TYL,NYSE,-0.005064429127959238,タイラー・テクノロジーズ,true,true,true,true,true,true,false,false
+UAL,United Airlines Holdings,Industrials,Passenger Airlines,UAL,NASDAQ,0.12196105219543321,ユナイテッド・エアラインズ・ホールディングス,true,true,true,true,true,true,true,false
+UBER,Uber,Industrials,Passenger Ground Transportation,UBER,NYSE,0.035689390770946634,ウーバー・テクノロジーズ,true,true,true,true,true,true,true,true
+UDR,"UDR, Inc.",Real Estate,Multi-Family Residential REITs,UDR,NYSE,0.012572745606453443,UDR,false,false,false,false,false,false,false,false
+UHS,Universal Health Services,Health Care,Health Care Facilities,UHS,NYSE,0.021068600852665882,ユニバーサル・ヘルス・サービシズ クラスB,true,true,true,true,true,true,false,false
+ULTA,Ulta Beauty,Consumer Discretionary,Other Specialty Retail,ULTA,NASDAQ,0.017492437480036722,アルタ,true,true,true,true,true,true,true,false
+UNH,UnitedHealth Group,Health Care,Managed Health Care,UNH,NYSE,0.003785786241185336,ユナイテッドヘルス・グループ,true,true,true,true,true,true,true,true
+UNP,Union Pacific Corporation,Industrials,Rail Transportation,UNP,NYSE,0.021656982650034472,ユニオン・パシフィック,true,true,true,true,true,true,true,false
+UPS,United Parcel Service,Industrials,Air Freight & Logistics,UPS,NYSE,0.03494926719278478,ユナイテッド･パーセル･サービス クラスB,true,true,true,true,true,true,true,false
+URI,United Rentals,Industrials,Trading Companies & Distributors,URI,NYSE,0.05334770860059507,ユナイテッド・レンタルズ,true,true,true,true,true,true,true,false
+USB,U.S. Bancorp,Financials,Diversified Banks,USB,NYSE,0.03705772811918054,ユー・エス・バンコープ,true,true,true,true,true,true,true,false
+V,Visa Inc.,Financials,Transaction & Payment Processing Services,V,NYSE,0.02596265080152028,ビザ クラスA,true,true,true,true,true,true,true,false
+VICI,Vici Properties,Real Estate,Hotel & Resort REITs,VICI,NYSE,0.0037729069349622863,VICIプロパティーズ,false,false,false,false,false,false,false,false
+VLO,Valero Energy,Energy,Oil & Gas Refining & Marketing,VLO,NYSE,-0.06363076066642807,バレロ・エナジー,true,true,true,true,true,true,true,false
+VLTO,Veralto,Industrials,Environmental & Facilities Services,VLTO,NYSE,0.010076559333483566,ヴェラルト,true,true,true,true,true,true,false,false
+VMC,Vulcan Materials Company,Materials,Construction Materials,VMC,NYSE,0.04801151700557846,バルカン・マテリアルズ,true,true,true,true,true,true,false,false
+VRSK,Verisk Analytics,Industrials,Research & Consulting Services,VRSK,NASDAQ,-0.008895027624309469,ベリスク・アナリティックス,true,true,true,true,true,true,false,false
+VRSN,Verisign,Information Technology,Internet Services & Infrastructure,VRSN,NASDAQ,-0.01699727024567795,ベリサイン,true,true,true,true,true,true,false,false
+VRT,Vertiv,Industrials,Electrical Components & Equipment,VRT,NYSE,0.07933663743804804,バーティブ・ホールディングス,true,true,true,true,true,true,false,true
+VRTX,Vertex Pharmaceuticals,Health Care,Biotechnology,VRTX,NASDAQ,0.00646042699022823,バーテックス・ファーマシューティカルズ,true,true,true,true,true,true,true,false
+VST,Vistra Corp.,Utilities,Electric Utilities,VST,NYSE,0.03181936491410715,ビストラ・エナジー,true,true,true,true,true,true,true,true
+VTR,Ventas,Real Estate,Health Care REITs,VTR,NYSE,0.00011956001912966423,ベンタス,false,false,false,false,false,false,false,false
+VTRS,Viatris,Health Care,Pharmaceuticals,VTRS,NASDAQ,0.02895136778115503,ビアトリス,true,true,true,true,true,true,false,false
+VZ,Verizon,Communication Services,Integrated Telecommunication Services,VZ,NYSE,-0.025606746194981437,ベライゾン・コミュニケーションズ,true,true,true,true,true,true,true,true
+WAB,Wabtec,Industrials,Construction Machinery & Heavy Transportation Equipment,WAB,NYSE,0.047685998828353754,ワブテック,true,true,true,true,true,true,false,false
+WAT,Waters Corporation,Health Care,Life Sciences Tools & Services,WAT,NYSE,0.04533476478625806,ウォーターズ,true,true,true,true,true,true,false,false
+WBD,Warner Bros. Discovery,Communication Services,Broadcasting,WBD,NASDAQ,0.005699671172816909,ワーナーブラザース・ディスカバリー・インク,true,true,true,true,true,true,false,false
+WDAY,"Workday, Inc.",Information Technology,Application Software,WDAY,NASDAQ,-0.0032232766057564218,ワークデイ クラスA,true,true,true,true,true,true,true,false
+WDC,Western Digital,Information Technology,"Technology Hardware, Storage & Peripherals",WDC,NASDAQ,0.10150339787152206,ウェスタン・デジタル,true,true,true,true,true,true,true,false
+WEC,WEC Energy Group,Utilities,Electric Utilities,WEC,NYSE,-0.009834102958782209,ウィスコンシン・エナジー,true,true,true,true,true,true,false,false
+WELL,Welltower,Real Estate,Health Care REITs,WELL,NYSE,0.008755828951284782,ウェルタワー,false,false,false,false,false,false,false,false
+WFC,Wells Fargo,Financials,Diversified Banks,WFC,NYSE,0.04501529051987776,ウェルズ・ファーゴ,true,true,true,true,true,true,true,false
+WM,Waste Management,Industrials,Environmental & Facilities Services,WM,NYSE,-0.018001800180017954,ウェースト・マネジメント,true,true,true,true,true,true,false,false
+WMB,Williams Companies,Energy,Oil & Gas Storage & Transportation,WMB,NYSE,-0.03491356023770945,ウィリアムズ・カンパニーズ,true,true,true,true,true,true,true,false
+WMT,Walmart,Consumer Staples,Consumer Staples Merchandise Retail,WMT,NASDAQ,0.014368519879173853,ウォルマート,true,true,true,true,true,true,true,true
+WRB,W. R. Berkley Corporation,Financials,Property & Casualty Insurance,WRB,NYSE,-0.003674265146970674,ダブリューアール・バークレー,true,true,true,true,true,true,false,false
+WSM,"Williams-Sonoma, Inc.",Consumer Discretionary,Homefurnishing Retail,WSM,NYSE,0.06747068304340569,ウィリアムズソノマ,true,true,true,true,true,true,false,false
+WST,West Pharmaceutical Services,Health Care,Health Care Supplies,WST,NYSE,0.018604202814729087,ウェスト・ファーマシューティカル・サービシズ,true,true,true,true,true,true,false,false
+WTW,Willis Towers Watson,Financials,Insurance Brokers,WTW,NASDAQ,0.014689384378067584,ウィリス・タワーズ・ワトソン・パブリック,true,true,true,true,true,true,false,false
+WY,Weyerhaeuser,Real Estate,Timber REITs,WY,NYSE,0.033097418817652026,ウェアーハウザー,false,false,false,false,false,false,false,false
+WYNN,Wynn Resorts,Consumer Discretionary,Casinos & Gaming,WYNN,NASDAQ,0.07268744399083936,ウィン・リゾーツ,true,true,true,true,true,true,false,false
+XEL,Xcel Energy,Utilities,Multi-Utilities,XEL,NASDAQ,-0.00519741743233191,エクセル・エナジー,true,true,true,true,true,true,false,false
+XOM,ExxonMobil,Energy,Integrated Oil & Gas,XOM,NYSE,-0.05908730400829725,エクソン・モービル,true,true,true,true,true,true,true,true
+XYL,Xylem Inc.,Industrials,Industrial Machinery & Supplies & Components,XYL,NYSE,0.023135109036774765,ザイレム,true,true,true,true,true,true,false,false
+XYZ,"Block, Inc.",Financials,Transaction & Payment Processing Services,XYZ,NYSE,0.08136045348449487,ブロック,true,true,true,true,true,true,true,true
+YUM,Yum! Brands,Consumer Discretionary,Restaurants,YUM,NYSE,0.014719938826228268,ヤム・ブランズ,true,true,true,true,true,true,true,false
+ZBH,Zimmer Biomet,Health Care,Health Care Equipment,ZBH,NYSE,0.015754923413566713,ジンマー・バイオメット・ホールディングス,true,true,true,true,true,true,false,false
+ZBRA,Zebra Technologies,Information Technology,Electronic Equipment & Instruments,ZBRA,NASDAQ,0.05609147804809193,ゼブラ・テクノロジーズ クラスA,true,true,true,true,true,true,false,false
+ZTS,Zoetis,Health Care,Pharmaceuticals,ZTS,NYSE,0.020547945205479503,ゾエティス,true,true,true,true,true,true,true,false

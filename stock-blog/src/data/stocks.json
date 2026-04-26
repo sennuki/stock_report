@@ -1,35 +1,11 @@
 [
   {
-    "Symbol": "MMM",
-    "Security": "3M",
-    "GICS Sector": "Industrials",
-    "GICS Sub-Industry": "Industrial Conglomerates",
-    "Symbol_YF": "MMM",
-    "Exchange": "NYSE",
-    "Daily_Change": 0.007939795636564525,
-    "Security_JA": "スリーエム",
-    "Daily_Change_right": 0.007939795636564525
-  },
-  {
-    "Symbol": "AOS",
-    "Security": "A. O. Smith",
-    "GICS Sector": "Industrials",
-    "GICS Sub-Industry": "Building Products",
-    "Symbol_YF": "AOS",
-    "Exchange": "NYSE",
-    "Daily_Change": -0.010907973575050052,
-    "Security_JA": "エー・オー・スミス",
-    "Daily_Change_right": -0.010907973575050052
-  },
-  {
-    "Symbol": "ABT",
-    "Security": "Abbott Laboratories",
-    "GICS Sector": "Health Care",
-    "GICS Sub-Industry": "Health Care Equipment",
-    "Symbol_YF": "ABT",
-    "Exchange": "NYSE",
-    "Daily_Change": -0.014597750865051995,
-    "Security_JA": "アボット･ラボラトリーズ",
-    "Daily_Change_right": -0.014597750865051995
+    "Symbol": "MSFT",
+    "Symbol_YF": "MSFT",
+    "Security": "Microsoft",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Systems Software",
+    "Security_JA": null,
+    "Daily_Change": 0.0213349
   }
 ]
