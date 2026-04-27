@@ -11,11 +11,30 @@ from tqdm import tqdm
 import utils
 import market_data
 from defeatbeta_api.data.ticker import Ticker as DBTicker
+import boto3
+from botocore.exceptions import NoCredentialsError
+from dotenv import load_dotenv
 
-# 保存先ディレクトリ
-RAW_DATA_DIR = os.path.join(os.path.dirname(__file__), "raw_data")
-if not os.path.exists(RAW_DATA_DIR):
-    os.makedirs(RAW_DATA_DIR)
+load_dotenv()
+
+# R2 接続設定
+R2_ACCOUNT_ID = os.getenv("R2_ACCOUNT_ID")
+R2_ACCESS_KEY_ID = os.getenv("R2_ACCESS_KEY_ID")
+R2_SECRET_ACCESS_KEY = os.getenv("R2_SECRET_ACCESS_KEY")
+R2_BUCKET_NAME = os.getenv("R2_BUCKET_NAME", "stock-data-c1")
+
+s3_client = None
+if R2_ACCOUNT_ID and R2_ACCESS_KEY_ID and R2_SECRET_ACCESS_KEY:
+    s3_client = boto3.client(
+        's3',
+        endpoint_url=f"https://{R2_ACCOUNT_ID}.r2.cloudflarestorage.com",
+        aws_access_key_id=R2_ACCESS_KEY_ID,
+        aws_secret_access_key=R2_SECRET_ACCESS_KEY,
+        region_name="auto"
+    )
+
+# 比較用ETFリスト
+SECTOR_ETFS = ["SPY", "XLC", "XLY", "XLP", "XLE", "XLF", "XLV", "XLI", "XLK", "XLB", "XLRE", "XLU"]
 
 def clean_value(v):
     """NaN や Inf を None (null) に変換し、Timestampなどを文字列に変換する"""
@@ -75,23 +94,37 @@ def fetch_raw_data_for_ticker(symbol):
             "upgrades_downgrades": df_to_dict_safe(ticker.upgrades_downgrades)
         }
 
-        try:
-            db_ticker = DBTicker(symbol)
-            raw_payload["dcf_valuation"] = utils.calculate_dcf(symbol, ticker=db_ticker)
+        # ETFの場合はdefeatbetaを使わない
+        if symbol not in SECTOR_ETFS:
             try:
-                raw_payload["db_metrics"] = {
-                    "wacc": df_to_dict_safe(db_ticker.wacc()),
-                    "revenue_growth": df_to_dict_safe(db_ticker.annual_revenue_yoy_growth()),
-                    "fcf_growth": df_to_dict_safe(db_ticker.annual_fcf_yoy_growth())
-                }
-            except:
-                raw_payload["db_metrics"] = None
-        except Exception as e:
-            raw_payload["dcf_valuation"] = None
+                db_ticker = DBTicker(symbol)
+                raw_payload["dcf_valuation"] = utils.calculate_dcf(symbol, ticker=db_ticker)
+                try:
+                    raw_payload["db_metrics"] = {
+                        "wacc": df_to_dict_safe(db_ticker.wacc()),
+                        "revenue_growth": df_to_dict_safe(db_ticker.annual_revenue_yoy_growth()),
+                        "fcf_growth": df_to_dict_safe(db_ticker.annual_fcf_yoy_growth())
+                    }
+                except:
+                    raw_payload["db_metrics"] = None
+            except Exception as e:
+                raw_payload["dcf_valuation"] = None
 
-        file_path = os.path.join(RAW_DATA_DIR, f"{symbol}_raw.json")
-        with open(file_path, "w", encoding="utf-8") as f:
-            json.dump(raw_payload, f, ensure_ascii=False, default=str)
+        json_data = json.dumps(raw_payload, ensure_ascii=False, default=str)
+
+        if s3_client:
+            s3_client.put_object(
+                Bucket=R2_BUCKET_NAME,
+                Key=f"raw/{symbol}.json",
+                Body=json_data.encode('utf-8'),
+                ContentType='application/json'
+            )
+        else:
+            # Fallback to local save if R2 is not configured
+            raw_dir = os.path.join(os.path.dirname(__file__), "raw_data")
+            os.makedirs(raw_dir, exist_ok=True)
+            with open(os.path.join(raw_dir, f"{symbol}_raw.json"), "w", encoding="utf-8") as f:
+                f.write(json_data)
         
         return True
     except Exception as e:
@@ -100,15 +133,14 @@ def fetch_raw_data_for_ticker(symbol):
 
 def main():
     import sys
-    # 引数から銘柄を取得
     args = [a for a in sys.argv[1:] if not a.startswith('--')]
     
     if args:
         print(f"Fetching specific symbols: {args}")
         symbols = args
     elif "--test-msft-only" in sys.argv or os.getenv("TEST_MODE") == "true":
-        print("Test mode active: Fetching MSFT only.")
-        symbols = ["MSFT"]
+        print("Test mode active: Fetching MSFT and SPY only.")
+        symbols = ["MSFT", "SPY"]
     else:
         print("Fetching S&P 500 list...")
         df_sp500 = market_data.fetch_sp500_companies_optimized()
@@ -116,6 +148,11 @@ def main():
             symbols = ["AAPL", "MSFT", "GOOGL", "AMZN", "META"]
         else:
             symbols = df_sp500['Symbol_YF'].to_list()
+        
+        # 比較用のセクターETFを追加
+        for etf in SECTOR_ETFS:
+            if etf not in symbols:
+                symbols.append(etf)
     
     max_workers = 1 if len(symbols) <= 3 else int(os.getenv("MAX_WORKERS", 2))
     

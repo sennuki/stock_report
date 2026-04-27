@@ -3,7 +3,23 @@ import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import Main from "@/layouts/Main.astro";
-import stocksData from "@/data/stocks.json";
+import fallbackStocksData from "@/data/stocks.json";
+import { env } from "cloudflare:workers";
+
+let stocksData: any[] = fallbackStocksData as any[];
+
+try {
+  const bucket = (env as any)?.STOCK_DATA;
+  if (bucket) {
+    const object = await bucket.get('reports/stocks.json');
+    if (object) {
+      const text = await object.text();
+      stocksData = JSON.parse(text);
+    }
+  }
+} catch (e) {
+  console.error("Failed to load stocks from R2", e);
+}
 
 // アルファベット順（A-Z）にソート
 const sortedStocks = [...stocksData].sort((a, b) => a.Symbol.localeCompare(b.Symbol));

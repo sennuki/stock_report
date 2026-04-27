@@ -1,20 +1,18 @@
-name: Generate and Deploy Stock Reports
+name: Data Pipeline and Deploy Pages
 
 on:
   schedule:
     - cron: '0 21 * * 1-5' # 平日毎日実行
   push:
-    branches: [ master, c1 ] # masterとc1の両方で実行
-  workflow_dispatch: # 手動実行用
+    branches: [ master, c1 ]
+  workflow_dispatch:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-  build-and-deploy:
+  run-pipeline-and-deploy:
     runs-on: ubuntu-latest
-    # ブランチ名に応じて環境（Environment）を切り替える
-    environment: ${{ github.ref_name == 'master' && 'production' || 'c1' }}
     permissions:
       contents: write
       deployments: write
@@ -38,29 +36,21 @@ jobs:
           sudo apt-get install -y libcurl4
 
       - name: Install Python dependencies
-        run: uv pip install --system -r requirements.txt
-
-      - name: Restore yfinance cache
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/py-yfinance
-          key: ${{ runner.os }}-yfinance-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-yfinance-
-
-      - name: Create output directories
         run: |
-          mkdir -p stock-blog/public/reports
-          mkdir -p stock-blog/src/data/blog
-          # If stocks.json doesn't exist, create an empty array
-          [ -f stock-blog/src/data/stocks.json ] || echo "[]" > stock-blog/src/data/stocks.json
+          cd code
+          uv pip install --system -r requirements.txt
 
-      - name: Run Python report generator
-        run: PYTHONPATH=code python code/main.py
+      - name: Run Python Data Fetch (Uploads to R2)
+        run: |
+          cd code
+          python main.py
         env:
-          TEST_MODE: true
-          PYTHON_MAX_WORKERS: 1
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TEST_MODE: ${{ github.event_name == 'push' && 'true' || 'false' }} # pushの時はテストモード
+          PYTHON_MAX_WORKERS: 2
+          R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_BUCKET_NAME: "stock-data-c1"
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -71,70 +61,47 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'pnpm'
-          cache-dependency-path: stock-blog/pnpm-lock.yaml
 
-      - name: Upload Raw Data to Cloudflare R2
+      - name: Deploy Worker Processor and Trigger Batch
         run: |
-          cd stock-blog
-          node -e "
-            const fs = require('fs');
-            const path = require('path');
-            const dir = '../code/data/raw_data';
-            if (fs.existsSync(dir)) {
-              const files = fs.readdirSync(dir).filter(f => fs.statSync(path.join(dir, f)).isFile());
-              const list = files.map(f => ({ key: 'raw/' + f, file: path.join(dir, f) }));
-              fs.writeFileSync('bulk_list.json', JSON.stringify(list));
-            } else {
-              fs.writeFileSync('bulk_list.json', '[]');
-            }
-          "
-          npx --yes wrangler@4.85.0 r2 bulk put stock-data-c1 -f bulk_list.json --remote
+          cd worker-processor
+          npm ci
+          
+          # Workerをデプロイ
+          WORKER_OUTPUT=$(npx wrangler deploy)
+          echo "$WORKER_OUTPUT"
+          
+          # デプロイされたWorkerのURLを抽出して /batch を叩く
+          WORKER_URL=$(echo "$WORKER_OUTPUT" | grep -oE "https://[a-zA-Z0-9.-]+\.workers\.dev" | head -n 1)
+          if [ -n "$WORKER_URL" ]; then
+            echo "Triggering worker at $WORKER_URL/batch ..."
+            curl -X POST "$WORKER_URL/batch"
+          else
+            echo "Failed to extract Worker URL"
+            exit 1
+          fi
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
-      - name: Commit and push stocks.json
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add stock-blog/src/data/stocks.json
-          git diff --staged --quiet || (git commit -m "data: update master stock list [skip ci]" && git push origin HEAD)
-
-      - name: Upload JSON Reports Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: stock-raw-data
-          path: code/data/raw_data/
-          retention-days: 5
-
-      - name: Upload run log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: execution-log
-          path: run_log.txt
-          retention-days: 7
-
-      - name: Build and Deploy Astro to Cloudflare Workers
-        id: deploy
+      - name: Build and Deploy Astro to Cloudflare Pages
         run: |
           cd stock-blog
           pnpm install
           pnpm run build
-          # デプロイ実行し、出力をキャプチャ
-          DEPLOYMENT_OUTPUT=$(npx wrangler deploy)
-          echo "$DEPLOYMENT_OUTPUT"
           
-          # URLを抽出 (wranglerの出力から https://...workers.dev を探す)
-          DEPLOY_URL=$(echo "$DEPLOYMENT_OUTPUT" | grep -oE "https://[a-zA-Z0-9.-]+\.workers\.dev" | head -n 1)
-          echo "DEPLOY_URL=$DEPLOY_URL" >> $GITHUB_OUTPUT
+          # Pagesへデプロイ (distディレクトリ)
+          PAGES_OUTPUT=$(npx wrangler pages deploy dist --project-name stock-blog-c1 --branch ${{ github.ref_name }})
+          echo "$PAGES_OUTPUT"
+          
+          # デプロイされたPagesのURLを抽出
+          PAGES_URL=$(echo "$PAGES_OUTPUT" | grep -oE "https://[a-zA-Z0-9.-]+\.pages\.dev" | head -n 1)
           
           # GitHub Job Summaryに書き込み
-          echo "### 🚀 Deployment Successful!" >> $GITHUB_STEP_SUMMARY
-          echo "The Astro site has been deployed to Cloudflare Workers." >> $GITHUB_STEP_SUMMARY
+          echo "### 🚀 Pipeline & Deployment Successful!" >> $GITHUB_STEP_SUMMARY
+          echo "The Astro site has been deployed to Cloudflare Pages." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**URL:** [$DEPLOY_URL]($DEPLOY_URL)" >> $GITHUB_STEP_SUMMARY
+          echo "**Pages URL:** [$PAGES_URL]($PAGES_URL)" >> $GITHUB_STEP_SUMMARY
           echo "**Branch:** \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

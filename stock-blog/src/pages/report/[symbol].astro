@@ -23,9 +23,16 @@ try {
     const object = await bucket.get(`reports/${symbol}.json`) || await bucket.get(`raw/${symbol}.json`);
     if (object) {
       const content = await object.text();
-      rawData = JSON.parse(content.replace(/\bNaN\b/g, "null"));
-      reportData = transformRawToReport(rawData);
-      dcfResult = reportData.dcf_valuation || calculateDCF(rawData);
+      const parsedData = JSON.parse(content.replace(/\bNaN\b/g, "null"));
+      
+      // すでにWorkerによって処理済みのレポートJSONか判定
+      if (parsedData.charts && parsedData.highlights && parsedData.sector_etf) {
+        reportData = parsedData;
+      } else {
+        // 生の yfinance データの場合はフォールバック変換
+        reportData = transformRawToReport(parsedData);
+      }
+      dcfResult = reportData.dcf_valuation || calculateDCF(parsedData);
     } else {
       errorDetail = `R2に ${symbol}.json が見つかりませんでした。`;
     }
@@ -110,6 +117,34 @@ const formatCurrency = (val: any) => {
               <p class="text-skin-base whitespace-pre-wrap leading-relaxed opacity-90">
                 {reportData.business_summary_ja || "概要データは準備中です。"}
               </p>
+              {reportData.movement_reason && (
+                <div class="mt-4 bg-skin-accent/10 border-l-4 border-skin-accent p-4 rounded text-skin-base">
+                  <h3 class="font-bold mb-2">💡 AIトピック: 最近の株価動向</h3>
+                  <p>{reportData.movement_reason}</p>
+                </div>
+              )}
+            </section>
+
+            <!-- Performance and Risk Charts -->
+            <section id="performance-risk-charts">
+              <div class="flex flex-col gap-8">
+                {reportData.charts?.performance && (
+                  <div class="bg-skin-card p-6 rounded-lg border border-skin-line">
+                    <h3 class="text-lg font-bold mb-4">パフォーマンス比較 (vs Sector ETF)</h3>
+                    <div class="h-[350px]">
+                      <ChartJs chartData={{ type: 'line', data: reportData.charts.performance, options: { maintainAspectRatio: false, plugins: { legend: { display: true } } } }} id="chart-performance" />
+                    </div>
+                  </div>
+                )}
+                {reportData.charts?.risk_return && (
+                  <div class="bg-skin-card p-6 rounded-lg border border-skin-line">
+                    <h3 class="text-lg font-bold mb-4">リスク・リターン (S&P 500)</h3>
+                    <div class="h-[350px]">
+                      <ChartJs chartData={{ type: 'scatter', data: reportData.charts.risk_return, options: { maintainAspectRatio: false, plugins: { legend: { display: false } } } }} id="chart-risk-return" />
+                    </div>
+                  </div>
+                )}
+              </div>
             </section>
 
             <!-- Financial Charts -->
