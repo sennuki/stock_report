@@ -10,7 +10,7 @@ export const mockEnv = {
       
       const files = fs.readdirSync(rawDir);
       return {
-        objects: files.map(f => ({ key: `raw/${f.replace('_raw', '')}` }))
+        objects: files.map((f: string) => ({ key: `raw/${f.replace('_raw', '')}` }))
       };
     },
     async get(key: string) {

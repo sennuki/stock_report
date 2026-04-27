@@ -91,7 +91,10 @@ def fetch_raw_data_for_ticker(symbol):
             "earnings_dates": df_to_dict_safe(ticker.earnings_dates),
             "calendar": stringify_keys_and_clean(ticker.calendar) if ticker.calendar is not None else None,
             "analyst_ratings": df_to_dict_safe(ticker.recommendations_summary),
-            "upgrades_downgrades": df_to_dict_safe(ticker.upgrades_downgrades)
+            "upgrades_downgrades": df_to_dict_safe(ticker.upgrades_downgrades),
+            "dividends": df_to_dict_safe(ticker.dividends.to_frame() if hasattr(ticker.dividends, 'to_frame') else ticker.dividends),
+            "revenue_by_segment": df_to_dict_safe(ticker.revenue_by_segment() if callable(getattr(ticker, 'revenue_by_segment', None)) else getattr(ticker, 'revenue_by_segment', None)),
+            "revenue_by_geography": df_to_dict_safe(ticker.revenue_by_geography() if callable(getattr(ticker, 'revenue_by_geography', None)) else getattr(ticker, 'revenue_by_geography', None))
         }
 
         # ETFの場合はdefeatbetaを使わない

@@ -10,7 +10,6 @@ export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext) {
     const url = new URL(request.url);
     if (url.pathname === '/batch') {
-      // 非同期で実行開始して即レスポンスを返す（Workersのタイムアウト回避のため）
       ctx.waitUntil(processAllStocks(env));
       return new Response("Batch processing started in background.", { status: 202 });
     }
@@ -21,7 +20,6 @@ export default {
 export async function processAllStocks(env: Env) {
   console.log("--- Batch Processing Started ---");
   
-  // 1. raw/ 配下の全オブジェクトリストを取得
   const objects = await env.STOCK_DATA.list({ prefix: 'raw/' });
   
   let baseStocksList: any[] = [];
@@ -38,7 +36,6 @@ export async function processAllStocks(env: Env) {
   const riskReturnMetrics: any[] = [];
   const topMovers: string[] = [];
 
-  // R2からデータを並列（バッチ）で読み込む
   const objectKeys = objects.objects.map(o => o.key).filter(k => k.endsWith('.json') && k !== 'raw/stocks_list.json');
   console.log(`Found ${objectKeys.length} raw data files.`);
 
@@ -51,20 +48,17 @@ export async function processAllStocks(env: Env) {
         if (!obj) return;
         const text = await obj.text();
         const data = JSON.parse(text.replace(/\bNaN\b/g, "null"));
-        const symbol = data.symbol;
+        const symbol = data.symbol || key.replace('raw/', '').replace('.json', '');
         rawDataMap[symbol] = data;
 
-        // リスクとリターンを計算 (1年)
         const rr = calculateRiskReturn(data.history, symbol);
         if (rr) {
           riskReturnMetrics.push(rr);
-          
-          // 前日比の計算
           if (data.history && data.history.length >= 2) {
             const last = data.history[data.history.length - 1].Close;
             const prev = data.history[data.history.length - 2].Close;
             const change = (last - prev) / prev;
-            if (Math.abs(change) >= 0.03) { // 3%以上
+            if (Math.abs(change) >= 0.03) {
               topMovers.push(symbol);
             }
           }
@@ -75,65 +69,58 @@ export async function processAllStocks(env: Env) {
     }));
   }
 
-  // 2. Gemini AI で理由生成（トップムーバーのみ）
   const movementReasons: Record<string, string> = {};
-  if (env.GEMINI_API_KEY && topMovers.length > 0) {
-    console.log(`Generating AI reasons for ${topMovers.length} top movers...`);
-    // Gemini 2.5 Flash Lite
-    const model = 'models/gemini-2.5-flash-lite';
-    for (const symbol of topMovers.slice(0, 20)) { // 上限20件程度に制限
-      try {
-        const data = rawDataMap[symbol];
-        const lastClose = data.history[data.history.length - 1].Close;
-        const prevClose = data.history[data.history.length - 2].Close;
-        const diffPct = ((lastClose - prevClose) / prevClose * 100).toFixed(2);
-        
-        const prompt = `${symbol}の株価が直近で${diffPct}%変動しました。企業概要（${data.info?.longBusinessSummary?.substring(0, 500) || '情報なし'}）や一般的な市場動向を基に、この株価変動の主な理由や要因を日本語で推測・要約してください。100文字以内で簡潔に。`;
-        
-        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/${model}:generateContent?key=${env.GEMINI_API_KEY}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: { maxOutputTokens: 200 }
-          })
-        });
-        
-        if (res.ok) {
-          const json: any = await res.json();
-          movementReasons[symbol] = json.candidates?.[0]?.content?.parts?.[0]?.text || "AI生成に失敗しました。";
-        }
-      } catch (e) {
-        console.error(`Gemini API failed for ${symbol}:`, e);
-      }
-    }
+
+  const subIndustryMap: Record<string, any[]> = {};
+  const sectorMap: Record<string, any[]> = {};
+  
+  for (const symbol of Object.keys(rawDataMap)) {
+    const rawData = rawDataMap[symbol];
+    const metadata = baseStocksList.find(s => s.Symbol_YF === symbol || s.Symbol === symbol) || {};
+    const sector = metadata['GICS Sector'] || rawData.info?.sector || "Unknown";
+    const subInd = metadata['GICS Sub-Industry'] || rawData.info?.industry || "Unknown";
+    
+    const dailyChange = calculateDailyChange(rawData.history);
+    const peerInfo = { Symbol: metadata.Symbol || symbol, Symbol_YF: symbol, Daily_Change: dailyChange };
+    
+    if (!sectorMap[sector]) sectorMap[sector] = [];
+    sectorMap[sector].push(peerInfo);
+    
+    if (!subIndustryMap[subInd]) subIndustryMap[subInd] = [];
+    subIndustryMap[subInd].push(peerInfo);
   }
 
-  // 3. 各銘柄のレポート生成
   const updatedStocksList = [];
   
-  // ETF等のデータもあるので、全てループ
   for (const symbol of Object.keys(rawDataMap)) {
     const rawData = rawDataMap[symbol];
     const isETF = ["SPY", "XLC", "XLY", "XLP", "XLE", "XLF", "XLV", "XLI", "XLK", "XLB", "XLRE", "XLU"].includes(symbol);
-    
-    // ベースリストからメタデータを検索
     const metadata = baseStocksList.find(s => s.Symbol_YF === symbol || s.Symbol === symbol) || {};
 
     const sectorEtf = getSectorETF(metadata['GICS Sector'] || rawData.info?.sector);
     const etfRawData = rawDataMap[sectorEtf];
     
     const highlights = extractHighlights(rawData);
-    
-    // リスクリターンチャート (全500銘柄の背景 + ターゲット赤色)
-    const riskReturnChart = generateRiskReturnChart(riskReturnMetrics, symbol);
+    const earningsSurprise = extractEarningsSurprise(rawData);
+    const nextEarnings = extractNextEarnings(rawData);
+    const consensus = extractConsensus(rawData);
+    const ratingChanges = extractRatingChanges(rawData);
+    const analystRatings = extractAnalystRatings(rawData);
 
-    // 各種チャート
-    const isChart = generateFinancialChart(rawData.income_stmt || {}, ["Total Revenue", "Gross Profit", "Operating Income", "Net Income"], "bar", "group");
-    const bsChart = generateFinancialChart(rawData.balancesheet || {}, ["Total Assets", "Total Liabilities Net Minority Interest", "Stockholders Equity"], "bar", "stack");
-    const cfChart = generateFinancialChart(rawData.cashflow || {}, ["Operating Cash Flow", "Investing Cash Flow", "Financing Cash Flow", "Free Cash Flow"], "bar", "group");
-    
+    // Chart Generations (Updated for Array format)
+    const riskReturnChart = generateRiskReturnChart(riskReturnMetrics, symbol);
+    const isChart = generateFinancialChart(rawData.income_stmt || [], ["Total Revenue", "Gross Profit", "Operating Income", "Net Income"], "bar", "group");
+    const bsChart = generateFinancialChart(rawData.balancesheet || [], ["Total Assets", "Total Liabilities Net Minority Interest", "Stockholders Equity"], "bar", "stack");
+    const cfChart = generateFinancialChart(rawData.cashflow || [], ["Operating Cash Flow", "Investing Cash Flow", "Financing Cash Flow", "Free Cash Flow"], "bar", "group");
     const perfChart = generatePerformanceChart(rawData.history, etfRawData?.history, symbol, sectorEtf);
+    
+    const tpChart = generateTpChart(rawData.cashflow || [], rawData.income_stmt || []);
+    const dpsChart = generateDpsEpsChart(rawData.dividends);
+    const segmentChart = generateSegmentChart(rawData.revenue_by_segment);
+    const geoChart = generateSegmentChart(rawData.revenue_by_geography);
+
+    const sector = metadata['GICS Sector'] || rawData.info?.sector || "Unknown";
+    const subInd = metadata['GICS Sub-Industry'] || rawData.info?.industry || "Unknown";
 
     const reportData = {
       symbol: metadata.Symbol || symbol,
@@ -141,26 +128,51 @@ export async function processAllStocks(env: Env) {
       security: metadata.Security || rawData.info?.longName || rawData.info?.shortName || symbol,
       security_ja: metadata.Security_JA || null,
       business_summary_ja: rawData.info?.longBusinessSummary || null,
-      sector: metadata['GICS Sector'] || rawData.info?.sector,
-      sub_industry: metadata['GICS Sub-Industry'] || rawData.info?.industry,
+      sector: sector,
+      sub_industry: subInd,
       exchange: rawData.info?.exchange || "NASDAQ",
       full_symbol: `${rawData.info?.exchange || 'NASDAQ'}:${symbol.replace("-", ".")}`,
       sector_etf: sectorEtf,
-      is_financial: ["Financials", "Real Estate"].includes(metadata['GICS Sector'] || rawData.info?.sector),
+      is_financial: ["Financials", "Real Estate"].includes(sector),
+      is_available_monex: true,
+      is_available_rakuten: true,
+      is_available_sbi: true,
+      is_available_mufg: true,
+      is_available_matsui: true,
+      is_available_dmm: true,
+      is_available_paypay: true,
+      is_available_moomoo: true,
+      is_available_iwaicosmo: true,
       movement_reason: movementReasons[symbol] || null,
-      highlights: highlights,
+      highlights,
+      earnings_surprise: earningsSurprise,
+      next_earnings: nextEarnings,
+      consensus,
+      consensus_raw: {
+        eps_trend: rawData.info?.epsTrend || null,
+        eps_revisions: rawData.info?.epsRevisions || null
+      },
+      rating_changes: ratingChanges,
+      analyst_ratings: analystRatings,
+      peers: {
+        sub_industry: (subIndustryMap[subInd] || []).filter(s => s.Symbol_YF !== symbol),
+        sector: (sectorMap[sector] || []).filter(s => s.Symbol_YF !== symbol && !subIndustryMap[subInd]?.find(si => si.Symbol_YF === s.Symbol_YF))
+      },
       dcf_valuation: rawData.dcf_valuation || null,
       charts: {
         risk_return: riskReturnChart,
         is: isChart,
         bs: bsChart,
         cf: cfChart,
-        performance: perfChart
+        performance: perfChart,
+        tp: tpChart,
+        dps: dpsChart,
+        segment: segmentChart,
+        geo: geoChart
       },
       last_updated: new Date().toISOString()
     };
 
-    // R2に保存 (ETF自体は画面に出さないならスキップでもよいが保存しておく)
     await env.STOCK_DATA.put(`reports/${symbol}.json`, JSON.stringify(reportData), {
       httpMetadata: { contentType: 'application/json' }
     });
@@ -175,7 +187,6 @@ export async function processAllStocks(env: Env) {
     }
   }
 
-  // 4. 更新された stocks.json を保存
   if (updatedStocksList.length > 0) {
     await env.STOCK_DATA.put('reports/stocks.json', JSON.stringify(updatedStocksList, null, 2), {
       httpMetadata: { contentType: 'application/json' }
@@ -195,7 +206,6 @@ function calculateDailyChange(history: any[]) {
 
 function calculateRiskReturn(history: any[], symbol: string) {
   if (!history || history.length < 5) return null;
-  // 直近1年 (約252日)
   const lastQuotes = history.slice(-252);
   const returns = [];
   for (let i = 1; i < lastQuotes.length; i++) {
@@ -206,7 +216,6 @@ function calculateRiskReturn(history: any[], symbol: string) {
   const mean = returns.reduce((a, b) => a + b, 0) / returns.length;
   const variance = returns.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / (returns.length - 1);
   const hv = Math.sqrt(variance) * Math.sqrt(252);
-
   const totalReturn = (lastQuotes[lastQuotes.length - 1].Close / lastQuotes[0].Close) - 1;
 
   return { symbol, hv, ret: totalReturn };
@@ -214,17 +223,9 @@ function calculateRiskReturn(history: any[], symbol: string) {
 
 function getSectorETF(sector?: string) {
   const map: Record<string, string> = {
-    "Communication Services": "XLC",
-    "Consumer Discretionary": "XLY",
-    "Consumer Staples": "XLP",
-    "Energy": "XLE",
-    "Financials": "XLF",
-    "Health Care": "XLV",
-    "Industrials": "XLI",
-    "Information Technology": "XLK",
-    "Materials": "XLB",
-    "Real Estate": "XLRE",
-    "Utilities": "XLU"
+    "Communication Services": "XLC", "Consumer Discretionary": "XLY", "Consumer Staples": "XLP",
+    "Energy": "XLE", "Financials": "XLF", "Health Care": "XLV", "Industrials": "XLI",
+    "Information Technology": "XLK", "Materials": "XLB", "Real Estate": "XLRE", "Utilities": "XLU"
   };
   return sector && map[sector] ? map[sector] : "SPY";
 }
@@ -238,9 +239,115 @@ function extractHighlights(rawData: any) {
     operating_margins: info.operatingMargins,
     roe: info.returnOnEquity,
     roa: info.returnOnAssets,
+    eps_ttm: info.trailingEps,
+    eps_forward: info.forwardEps,
     pe_ttm: info.trailingPE,
     pe_forward: info.forwardPE,
     dividend_yield: info.dividendYield,
+    payout_ratio: info.payoutRatio || (info.dividendRate && info.trailingEps ? info.dividendRate / info.trailingEps : null),
+    debt_to_equity: info.debtToEquity,
+    current_ratio: info.currentRatio
+  };
+}
+
+function extractEarningsSurprise(rawData: any) {
+  const datesObj = rawData.earnings_dates || {};
+  const dates = Object.keys(datesObj).sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+  
+  for (const date of dates) {
+    const d = datesObj[date];
+    if (d && d['Reported EPS'] !== null && d['Reported EPS'] !== undefined) {
+      return {
+        date: date.split(' ')[0],
+        actual: d['Reported EPS'],
+        estimate: d['EPS Estimate'],
+        surprise_pct: d['Surprise(%)']
+      };
+    }
+  }
+  return null;
+}
+
+function extractNextEarnings(rawData: any) {
+  const datesObj = rawData.earnings_dates || {};
+  const dates = Object.keys(datesObj).sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+  const now = new Date();
+  
+  for (const date of dates) {
+    if (new Date(date) >= now) {
+      const d = datesObj[date];
+      if (d && (d['Reported EPS'] === null || d['Reported EPS'] === undefined)) {
+        return {
+          date: date.split(' ')[0],
+          estimate: d['EPS Estimate'] || rawData.info?.earningsAverage || null
+        };
+      }
+    }
+  }
+  
+  if (rawData.calendar?.['Earnings Date']) {
+    const cDates = Array.isArray(rawData.calendar['Earnings Date']) ? rawData.calendar['Earnings Date'] : [rawData.calendar['Earnings Date']];
+    if (cDates.length > 0 && new Date(cDates[0]) >= now) {
+      return {
+        date: cDates[0].split(' ')[0],
+        estimate: rawData.calendar['Earnings Average'] || rawData.calendar['EPS Estimate'] || rawData.info?.earningsAverage || null
+      };
+    }
+  }
+  
+  return null;
+}
+
+function extractConsensus(rawData: any) {
+  const info = rawData.info || {};
+  return {
+    earnings: {
+      "0q": {
+        avg: info.earningsAverage,
+        low: info.earningsLow,
+        high: info.earningsHigh,
+        growth: info.earningsGrowth,
+        numberOfAnalysts: info.numberOfAnalystOpinions
+      }
+    },
+    revenue: {
+      "0q": {
+        avg: info.revenueAverage,
+        low: info.revenueLow,
+        high: info.revenueHigh,
+        growth: info.revenueGrowth,
+        numberOfAnalysts: info.numberOfAnalystOpinions
+      }
+    }
+  };
+}
+
+function extractRatingChanges(rawData: any) {
+  const ud = rawData.upgrades_downgrades || {};
+  const dates = Object.keys(ud).sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+  return dates.slice(0, 10).map(date => {
+    return {
+      GradeDate: date.split(' ')[0],
+      Firm: ud[date]?.Firm || ud[date]?.firm,
+      ToGrade: ud[date]?.ToGrade || ud[date]?.toGrade,
+      FromGrade: ud[date]?.FromGrade || ud[date]?.fromGrade,
+      Action: ud[date]?.Action || ud[date]?.action
+    };
+  });
+}
+
+function extractAnalystRatings(rawData: any) {
+  const info = rawData.info || {};
+  const ratings = rawData.analyst_ratings || {};
+  return {
+    targetHighPrice: info.targetHighPrice,
+    targetLowPrice: info.targetLowPrice,
+    targetMeanPrice: info.targetMeanPrice,
+    targetMedianPrice: info.targetMedianPrice,
+    currentPrice: info.currentPrice,
+    numberOfAnalystOpinions: info.numberOfAnalystOpinions,
+    recommendationKey: info.recommendationKey,
+    ...ratings
   };
 }
 
@@ -265,12 +372,19 @@ function generateRiskReturnChart(allMetrics: any[], targetSymbol: string) {
       pointRadius: 8
     });
   }
-
   return { datasets };
 }
 
-function generateFinancialChart(data: any, fields: string[], type: string, barmode: string) {
-  const dates = Object.keys(data).sort();
+// Helper to extract value from Array format [ {index: 'Item', '2023-01-01': 123, ...}, ... ]
+function getValFromArray(data: any[], itemLabel: string, date: string): number {
+  const row = data.find(r => r.index === itemLabel);
+  return row ? (Number(row[date]) || 0) : 0;
+}
+
+function generateFinancialChart(data: any[], fields: string[], type: string, barmode: string) {
+  if (data.length === 0) return null;
+  // Get dates from first row (excluding 'index')
+  const dates = Object.keys(data[0]).filter(k => k !== 'index').sort();
   if (dates.length === 0) return null;
 
   const colors = [
@@ -285,7 +399,7 @@ function generateFinancialChart(data: any, fields: string[], type: string, barmo
     datasets: fields.map((field, i) => {
       return {
         label: field,
-        data: dates.map(d => data[d]?.[field] || 0),
+        data: dates.map(d => getValFromArray(data, field, d)),
         backgroundColor: colors[i % colors.length].bg,
         borderColor: colors[i % colors.length].border,
         borderWidth: 1
@@ -296,12 +410,11 @@ function generateFinancialChart(data: any, fields: string[], type: string, barmo
 
 function generatePerformanceChart(history: any[], etfHistory: any[], symbol: string, etfSymbol: string) {
   if (!history || history.length === 0) return null;
-  
   const targetData = history.slice(-252);
   if (targetData.length === 0) return null;
   
   const startClose = targetData[0].Close;
-  const dates = targetData.map(h => h.Date.split(' ')[0]);
+  const dates = targetData.map(h => (h.Date || h.index).split(' ')[0]);
   const targetReturns = targetData.map(h => (h.Close / startClose) - 1);
 
   const datasets: any[] = [
@@ -316,14 +429,13 @@ function generatePerformanceChart(history: any[], etfHistory: any[], symbol: str
   ];
 
   if (etfHistory && etfHistory.length > 0) {
-    const etfMap = new Map(etfHistory.map(h => [h.Date.split(' ')[0], h.Close]));
+    const etfMap = new Map(etfHistory.map(h => [(h.Date || h.index).split(' ')[0], h.Close]));
     let etfStartClose = etfMap.get(dates[0]);
     if (!etfStartClose) {
        for(const d of dates) {
           if (etfMap.has(d)) { etfStartClose = etfMap.get(d); break; }
        }
     }
-
     if (etfStartClose) {
       const etfReturns = dates.map(d => {
         const close = etfMap.get(d) || etfStartClose;
@@ -340,9 +452,93 @@ function generatePerformanceChart(history: any[], etfHistory: any[], symbol: str
       });
     }
   }
+  return { labels: dates, datasets };
+}
+
+function generateTpChart(cf: any[], is: any[]) {
+  if (is.length === 0 && cf.length === 0) return null;
+  const dates = Object.keys(is[0] || cf[0] || {}).filter(k => k !== 'index').sort();
+  if (dates.length === 0) return null;
+
+  const niKeys = ['Net Income', 'Net Income From Continuing Operations', 'Net Income Common Stockholders'];
+  const divKeys = ['Cash Dividends Paid', 'Common Stock Dividend Paid'];
+  const repoKeys = ['Repurchase Of Capital Stock', 'Repurchase Of Common Stock', 'Common Stock Repurchased'];
+
+  const getAnyVal = (arr: any[], keys: string[], date: string) => {
+    for (const k of keys) {
+      const v = getValFromArray(arr, k, date);
+      if (v !== 0) return v;
+    }
+    return 0;
+  };
+
+  const niData = dates.map(d => getAnyVal(is, niKeys, d) || getAnyVal(cf, niKeys, d));
+  const divData = dates.map(d => Math.abs(getAnyVal(cf, divKeys, d)));
+  const repoData = dates.map(d => Math.abs(getAnyVal(cf, repoKeys, d)));
+
+  const divRatio = niData.map((ni, i) => ni > 0 ? divData[i] / ni : 0);
+  const totalRatio = niData.map((ni, i) => ni > 0 ? (divData[i] + repoData[i]) / ni : 0);
 
   return {
-    labels: dates,
-    datasets
+    labels: dates.map(d => d.split(' ')[0]),
+    datasets: [
+      { type: 'bar', label: 'Net Income', data: niData, backgroundColor: 'rgba(44, 160, 44, 0.6)', yAxisID: 'y' },
+      { type: 'bar', label: 'Dividends Paid', data: divData, backgroundColor: 'rgba(174, 199, 232, 0.6)', yAxisID: 'y' },
+      { type: 'bar', label: 'Stock Repurchase', data: repoData, backgroundColor: 'rgba(31, 119, 180, 0.6)', yAxisID: 'y' },
+      { type: 'line', label: 'Dividend Payout Ratio', data: divRatio, borderColor: '#ffbb78', yAxisID: 'y1' },
+      { type: 'line', label: 'Total Payout Ratio', data: totalRatio, borderColor: '#ff7f0e', yAxisID: 'y1' }
+    ]
   };
+}
+
+function generateDpsEpsChart(dividends: any[]) {
+  if (!dividends || !Array.isArray(dividends) || dividends.length === 0) return null;
+  const annual: Record<string, number> = {};
+  
+  dividends.forEach(d => {
+    const dateStr = d.Date || d.index;
+    if (!dateStr) return;
+    const year = String(dateStr).substring(0, 4);
+    const val = Number(d.Dividends || d.Value || 0);
+    annual[year] = (annual[year] || 0) + val;
+  });
+  
+  const labels = Object.keys(annual).sort();
+  if (labels.length === 0) return null;
+
+  return {
+    labels,
+    datasets: [{
+      type: 'bar',
+      label: 'Annual Dividends',
+      data: labels.map(y => annual[y]),
+      backgroundColor: 'rgba(31, 119, 180, 0.8)'
+    }]
+  };
+}
+
+function generateSegmentChart(segmentData: any[]) {
+  if (!segmentData || !Array.isArray(segmentData) || segmentData.length === 0) return null;
+  
+  const segmentsArr = Object.keys(segmentData[0]).filter(k => !['Date', 'report_date', 'symbol', 'index'].includes(k));
+  if (segmentsArr.length === 0) return null;
+
+  const labels = segmentData.map(row => String(row.Date || row.report_date || row.index).split(' ')[0]);
+
+  const colors = [
+    'rgba(31, 119, 180, 0.7)', 'rgba(255, 127, 14, 0.7)', 'rgba(44, 160, 44, 0.7)',
+    'rgba(214, 39, 40, 0.7)', 'rgba(148, 103, 189, 0.7)', 'rgba(140, 86, 75, 0.7)',
+    'rgba(227, 119, 194, 0.7)', 'rgba(127, 127, 127, 0.7)', 'rgba(188, 189, 34, 0.7)',
+    'rgba(23, 190, 207, 0.7)'
+  ];
+
+  const datasets = segmentsArr.map((seg, i) => {
+    return {
+      label: seg,
+      data: segmentData.map(row => Number(row[seg]) || 0),
+      backgroundColor: colors[i % colors.length]
+    };
+  });
+
+  return { labels, datasets };
 }
