@@ -67,6 +67,9 @@ jobs:
           cd worker-processor
           npm ci
           
+          echo "Current CLOUDFLARE_ACCOUNT_ID: $CLOUDFLARE_ACCOUNT_ID"
+          npx wrangler whoami
+          
           # Workerをデプロイ
           WORKER_OUTPUT=$(npx wrangler deploy)
           echo "$WORKER_OUTPUT"
@@ -74,6 +77,8 @@ jobs:
           # デプロイされたWorkerのURLを抽出して /batch を叩く
           WORKER_URL=$(echo "$WORKER_OUTPUT" | grep -oE "https://[a-zA-Z0-9.-]+\.workers\.dev" | head -n 1)
           if [ -n "$WORKER_URL" ]; then
+            echo "Waiting for worker to be fully deployed (10s)..."
+            sleep 10
             echo "Triggering worker at $WORKER_URL/batch ..."
             curl -X POST "$WORKER_URL/batch"
           else
