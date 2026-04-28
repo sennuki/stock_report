@@ -26,9 +26,9 @@ export const PERIOD_CONFIGS = [
  */
 export async function calculateRiskMetrics(symbol: string): Promise<RiskMetrics | null> {
   try {
-    // 過去10年分のデータを取得 (chart を使用)
+    // 過去11年分のデータを取得
     const result = await yahooFinance.chart(symbol, {
-      period1: '2014-01-01',
+      period1: new Date(Date.now() - 4000 * 24 * 60 * 60 * 1000), 
       interval: '1d'
     });
     
@@ -42,17 +42,9 @@ export async function calculateRiskMetrics(symbol: string): Promise<RiskMetrics 
       Earnings_Date: null,
     };
 
-    // 前日比
-    if (history.length >= 2) {
-      const last = history[history.length - 1];
-      const prev = history[history.length - 2];
-      if (last.close !== null && prev.close !== null) {
-        results.Daily_Change = (last.close - prev.close) / prev.close;
-      }
-    }
-
-    // 対数収益率の計算 (nullを除外)
     const validQuotes = history.filter((q: any) => q.close !== null) as { date: Date, close: number }[];
+    if (validQuotes.length < 5) return null;
+
     const logReturns: number[] = [];
     for (let i = 1; i < validQuotes.length; i++) {
       logReturns.push(Math.log(validQuotes[i].close / validQuotes[i - 1].close));
@@ -62,23 +54,21 @@ export async function calculateRiskMetrics(symbol: string): Promise<RiskMetrics 
 
     for (const p of PERIOD_CONFIGS) {
       let subHistory: any[] = [];
-      let isValidPeriod = true;
 
       if (p.days === 'YTD') {
         const startOfYear = new Date(lastDate.getFullYear(), 0, 1);
         subHistory = validQuotes.filter(h => new Date(h.date) >= startOfYear);
-        if (subHistory.length < 5) subHistory = validQuotes.slice(-21);
       } else {
         const days = p.days as number;
         subHistory = validQuotes.slice(-days);
-        if (subHistory.length < days * 0.8) isValidPeriod = false;
       }
 
-      if (subHistory.length < 5 || !isValidPeriod) {
+      // 判定条件の緩和: 半分以上のデータがあれば計算を試みる
+      if (subHistory.length < 5) {
         results[`HV_${p.key}`] = null;
         results[`Ret_${p.key}`] = null;
       } else {
-        // HV (年率換算ボラティリティ)
+        // HV
         const startIndex = validQuotes.indexOf(subHistory[0]);
         const subReturns = logReturns.slice(Math.max(0, startIndex - 1), validQuotes.indexOf(subHistory[subHistory.length - 1]));
         
@@ -90,16 +80,20 @@ export async function calculateRiskMetrics(symbol: string): Promise<RiskMetrics 
           results[`HV_${p.key}`] = 0;
         }
 
-        // リターン (年率換算)
+        // リターン
         const firstPrice = subHistory[0].close;
         const lastPrice = subHistory[subHistory.length - 1].close;
         const totalRet = (lastPrice / firstPrice) - 1;
+        
+        // 期間日数を計算
         const daysDiff = (lastDate.getTime() - new Date(subHistory[0].date).getTime()) / (1000 * 60 * 60 * 24);
         
-        if (daysDiff > 5) {
+        // 1年（360日）以上の期間のみ年率換算
+        if (daysDiff >= 360) {
           const annRet = Math.pow(1 + totalRet, 365.0 / daysDiff) - 1;
-          results[`Ret_${p.key}`] = isFinite(annRet) ? annRet : 0;
+          results[`Ret_${p.key}`] = isFinite(annRet) ? annRet : totalRet;
         } else {
+          // 1年未満（1M, 3M, 6M, YTD）は単純な累積リターンを表示
           results[`Ret_${p.key}`] = totalRet;
         }
       }

@@ -2,267 +2,1523 @@
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
-import TradingViewWidget from "@/components/report/TradingViewWidget.astro";
+import stocks from "@/data/stocks.json";
+import fs from "node:fs";
+import path from "node:path";
 import ChartJs from "@/components/report/ChartJs.astro";
-import { calculateDCF } from "@/utils/finance";
-import { transformRawToReport } from "@/utils/report-generator";
-import { env } from "cloudflare:workers";
+import TradingViewWidget from "@/components/report/TradingViewWidget.astro";
+import PeerLinks from "@/components/report/PeerLinks.astro";
+
+export async function getStaticPaths() {
+  // Use stocks.json as the source of truth for symbols
+  return (stocks as any[]).map((stock: any) => ({
+    params: { symbol: stock.Symbol_YF },
+  }));
+}
 
 const { symbol } = Astro.params;
 
-let rawData: any = null;
 let reportData: any = null;
-let dcfResult: any = null;
-let errorDetail: string = "";
+let lastUpdated: string = "";
 
-// 1. R2からデータを取得
-try {
-  const bucket = (env as any)?.STOCK_DATA;
+// 堅牢なファイル検索ロジック
+const possibleRoots = [
+  '/home/linux/gemini/stock-blog',
+  process.cwd(),
+  path.join(process.cwd(), 'stock-blog')
+];
 
-  if (bucket) {
-    const object = await bucket.get(`reports/${symbol}.json`) || await bucket.get(`raw/${symbol}.json`);
-    if (object) {
-      const content = await object.text();
-      const parsedData = JSON.parse(content.replace(/\bNaN\b/g, "null"));
-      
-      // すでにWorkerによって処理済みのレポートJSONか判定
-      if (parsedData.charts && parsedData.highlights && parsedData.sector_etf) {
-        reportData = parsedData;
-      } else {
-        // 生の yfinance データの場合はフォールバック変換
-        reportData = transformRawToReport(parsedData);
-      }
-      dcfResult = reportData.dcf_valuation || calculateDCF(parsedData);
-    } else {
-      errorDetail = `R2に ${symbol}.json が見つかりませんでした。`;
-    }
-  } else {
-    errorDetail = "R2バケット(STOCK_DATA)のバインドに失敗しました。";
+let jsonPath = "";
+for (const root of possibleRoots) {
+  const testPath = path.resolve(root, "public", "reports", `${symbol}.json`);
+  if (fs.existsSync(testPath)) {
+    jsonPath = testPath;
+    break;
   }
-} catch (e: any) {
-  errorDetail = `システムエラー: ${e.message}`;
 }
 
-const title = reportData ? `${reportData.symbol} (${reportData.security_ja || reportData.security}) 銘柄レポート` : `${symbol} 銘柄レポート`;
+if (jsonPath && fs.existsSync(jsonPath)) {
+  const stats = fs.statSync(jsonPath);
+  if (stats.size > 0) {
+    lastUpdated = new Intl.DateTimeFormat("ja-JP", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }).format(stats.mtime);
 
-// ヘルパー関数
-const formatPercent = (val: any) => {
-  if (val === null || val === undefined) return "-";
-  return (val * 100).toFixed(2) + "%";
+    try {
+      let content = fs.readFileSync(jsonPath, "utf-8");
+      content = content.replace(/\bNaN\b/g, "null");
+      reportData = JSON.parse(content);
+    } catch (e) {
+      console.error(`Error parsing JSON for ${symbol}:`, e);
+      reportData = null;
+    }
+  } else {
+    console.warn(`Empty JSON file found for ${symbol}`);
+    reportData = null;
+  }
+} else {
+  // フォールバック: fetch で自身のサーバーから取得を試みる
+  try {
+    const origin = Astro.url.origin;
+    const response = await fetch(`${origin}/reports/${symbol}.json`);
+    if (response.ok) {
+      reportData = await response.json();
+      lastUpdated = "Web取得";
+    }
+  } catch(e) {
+    // 無視
+  }
+}
+
+const stockInfo = (stocks as any[]).find((s: any) => s.Symbol_YF === symbol);
+const displaySecurity = stockInfo?.Security_JA || stockInfo?.Security || '';
+const title = `${symbol} (${displaySecurity}) 銘柄分析：株価・PER・配当利回り・ファンダメンタル分析`;
+const description = `${symbol} (${displaySecurity}) の最新株価、PER、配当利回り、財務推移などのファンダメンタルデータを網羅。投資判断に役立つ分析レポートを定期的に更新しています。`;
+
+const base = import.meta.env.BASE_URL.endsWith("/")
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+
+// Helper to translate grades to "Japanese (English)"
+const translateGrade = (grade: string) => {
+  if (!grade) return "---";
+  const g = grade.toLowerCase();
+  if (g.includes('strong buy')) return `強気買い (${grade})`;
+  if (g.includes('buy') || g.includes('outperform') || g.includes('overweight')) return `買い (${grade})`;
+  if (g.includes('hold') || g.includes('neutral') || g.includes('equal-weight') || g.includes('market perform')) return `中立 (${grade})`;
+  if (g.includes('sell') || g.includes('underperform') || g.includes('underweight')) return `売り (${grade})`;
+  if (g.includes('strong sell')) return `強い売り (${grade})`;
+  return grade;
 };
 
-const formatCurrency = (val: any) => {
-  if (val === null || val === undefined) return "-";
-  if (Math.abs(val) >= 1e12) return (val / 1e12).toFixed(2) + "T";
-  if (Math.abs(val) >= 1e9) return (val / 1e9).toFixed(2) + "B";
-  if (Math.abs(val) >= 1e6) return (val / 1e6).toFixed(2) + "M";
-  return val.toLocaleString();
-};
+// Calculate Analyst Summary in frontmatter to avoid template parsing issues with "<"
+let analystSummary = null;
+if (reportData?.analyst_ratings) {
+  const r = reportData.analyst_ratings;
+  const total = (r.strongBuy || 0) + (r.buy || 0) + (r.hold || 0) + (r.sell || 0) + (r.strongSell || 0);
+  const score = total > 0 
+    ? ((r.strongBuy || 0) * 1 + (r.buy || 0) * 2 + (r.hold || 0) * 3 + (r.sell || 0) * 4 + (r.strongSell || 0) * 5) / total 
+    : 0;
+  
+  let assessment = "不明";
+  let assessmentColor = "text-gray-500";
+  if (score > 0 && score <= 1.5) { assessment = "強気買い (Strong Buy)"; assessmentColor = "text-green-600"; }
+  else if (score > 1.5 && score <= 2.5) { assessment = "買い (Buy)"; assessmentColor = "text-green-500"; }
+  else if (score > 2.5 && score <= 3.5) { assessment = "中立 (Hold)"; assessmentColor = "text-gray-500"; }
+  else if (score > 3.5 && score <= 4.5) { assessment = "売り (Sell)"; assessmentColor = "text-red-500"; }
+  else if (score > 4.5) { assessment = "強い売り (Strong Sell)"; assessmentColor = "text-red-700"; }
+
+  analystSummary = { 
+    total, 
+    score, 
+    assessment, 
+    assessmentColor, 
+    ratings: r,
+    targetHigh: r.targetHighPrice,
+    targetLow: r.targetLowPrice,
+    targetMean: r.targetMeanPrice,
+    targetMedian: r.targetMedianPrice,
+    currentPrice: r.currentPrice,
+    opinions: r.numberOfAnalystOpinions
+  };
+}
 ---
 
-<Layout title={title}>
+<Layout title={title} description={description}>
   <Header />
-  <main class="w-full px-4 py-8 max-w-app mx-auto">
-    {!reportData ? (
-      <div class="bg-skin-card p-10 rounded-lg border border-skin-line shadow-sm">
-        <h1 class="text-2xl font-bold text-center mb-4">分析レポートを表示できません</h1>
-        <div class="bg-gray-100 p-6 rounded-md font-mono text-sm overflow-auto text-red-600">
-          <p class="font-bold mb-2 uppercase">Debug Info:</p>
-          <p>{errorDetail}</p>
-        </div>
-      </div>
-    ) : (
-      <div class="report-content flex flex-col gap-10">
-        <!-- Header Section -->
-        <div class="bg-skin-card p-6 rounded-lg border border-skin-line shadow-sm">
-          <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-            <div>
-              <h1 class="text-4xl font-black text-skin-base">{reportData.symbol}</h1>
-              <p class="text-xl text-skin-base opacity-70">{reportData.security_ja || reportData.security}</p>
-            </div>
-            <div class="flex gap-2">
-              <span class="px-3 py-1 bg-skin-fill text-skin-base rounded border border-skin-line text-sm">{reportData.exchange}</span>
-              <span class="px-3 py-1 bg-skin-fill text-skin-base rounded border border-skin-line text-sm">{reportData.sector}</span>
-            </div>
-          </div>
-          
-          <TradingViewWidget symbol={reportData.full_symbol} type="symbol-info" />
-        </div>
+  
+  <main id="main-content" class="w-full px-4 py-8 max-w-app mx-auto">
+    <div class="mb-6">
+       <a href={base} class="text-skin-accent hover:underline inline-flex items-center">
+         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+         </svg>
+         銘柄一覧に戻る
+       </a>
+    </div>
 
-        <!-- Key Metrics Grid -->
-        <section>
-          <h2 class="text-2xl font-bold mb-6 border-l-4 border-skin-accent pl-4">主要指標 (Highlights)</h2>
-          <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-            {[
-              { label: "PER (Forward)", value: reportData.highlights?.pe_forward?.toFixed(2) + "x" },
-              { label: "PER (TTM)", value: reportData.highlights?.pe_ttm?.toFixed(2) + "x" },
-              { label: "ROE", value: formatPercent(reportData.highlights?.roe) },
-              { label: "配当利回り", value: formatPercent(reportData.highlights?.dividend_yield) },
-              { label: "売上成長率", value: formatPercent(reportData.highlights?.revenue_growth) },
-              { label: "営業利益率", value: formatPercent(reportData.highlights?.operating_margins) },
-            ].map(item => (
-              <div class="bg-skin-card p-4 rounded-lg border border-skin-line text-center">
-                <div class="text-xs opacity-60 uppercase mb-1">{item.label}</div>
-                <div class="text-lg font-bold text-skin-accent">{item.value || "-"}</div>
+    {!reportData ? (
+        <div class="report-content bg-skin-card p-10 rounded-lg border border-skin-line shadow-sm text-center">
+          <p class="text-xl">レポートが見つかりません: {symbol}</p>
+          <p class="mt-4 text-gray-500">データ生成プロセスを実行してください。</p>
+        </div>
+    ) : (
+      <div class="report-content bg-skin-card p-4 sm:p-8 rounded-lg border border-skin-line shadow-sm" data-pagefind-body>
+        <h1 class="text-3xl font-bold mb-2" data-pagefind-meta="title">銘柄分析レポート: {reportData.symbol} ({reportData.security_ja || reportData.security})</h1>
+        {lastUpdated && (
+          <div class="flex items-center text-sm text-gray-500 mb-6 bg-skin-fill/30 px-3 py-1.5 rounded-md border border-skin-line w-fit">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-skin-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>最終更新日: {lastUpdated} <span class="mx-2 text-skin-line">|</span> 米国市場閉場後、全銘柄を毎日自動更新</span>
+          </div>
+        )}
+
+            <TradingViewWidget symbol={reportData.full_symbol} type="symbol-info" />
+
+        <hr class="my-8 border-skin-line" />
+
+        <nav class="toc bg-skin-fill/50 p-6 rounded-lg border border-skin-line mb-10">
+            <h3 class="text-lg font-bold mb-4">目次</h3>
+            <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 list-disc pl-5">
+                <li><a href="#stock-chart" class="text-skin-accent hover:underline">{symbol}の株価推移・概要</a></li>
+                <li><a href="#risk-return" class="text-skin-accent hover:underline">{symbol}のリスク・リターン分析</a></li>
+                <li><a href="#peers" class="text-skin-accent hover:underline">{symbol}の同業種・競合</a></li>
+                <li><a href="#sector-peers" class="text-skin-accent hover:underline">{symbol}の同セクター他社</a></li>
+                <li><a href="#performance" class="text-skin-accent hover:underline">{symbol}のパフォーマンス比較</a></li>
+                <li><a href="#earnings-highlights" class="text-skin-accent hover:underline">{symbol}の直近決算・財務ハイライト</a></li>
+                <li><a href="#next-earnings" class="text-skin-accent hover:underline">{symbol}の来期業績予想</a></li>
+                <li><a href="#revenue-by-segment" class="text-skin-accent hover:underline">{symbol}のセグメント収益</a></li>
+                <li><a href="#revenue-by-geography" class="text-skin-accent hover:underline">{symbol}の地域別収益</a></li>
+                <li><a href="#fundamentals" class="text-skin-accent hover:underline">{symbol}のファンダメンタルズ分析 (概要)</a></li>
+                <li><a href="#fundamentals-detail" class="text-skin-accent hover:underline">{symbol}の財務データ推移 (詳細)</a></li>
+                <li><a href="#analyst-ratings" class="text-skin-accent hover:underline">{symbol}のアナリスト評価 (直近)</a></li>
+                <li><a href="#dcf-valuation" class="text-skin-accent hover:underline">{symbol}のDCF理論株価分析</a></li>
+                <li><a href="#japan-brokers" class="text-skin-accent hover:underline">日本の証券会社での取り扱い</a></li>
+            </ul>
+        </nav>
+
+        <section id="stock-chart">
+          <h2 class="text-2xl font-bold mb-4 border-b pb-2 flex items-center gap-2">
+            <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">overview</span>
+            {symbol}の株価推移・概要
+          </h2>
+
+          {reportData.movement_reason && (
+            <div class="mb-8 p-6 bg-skin-accent/5 rounded-lg border-l-4 border-skin-accent shadow-sm leading-relaxed">
+              <h3 class="text-lg font-bold mb-3 flex items-center gap-2 text-skin-accent">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+                直近の株価変動理由 ({reportData.movement_reason.date})
+              </h3>
+              <div class="flex items-center gap-4 mb-3">
+                <span class={`text-2xl font-black ${reportData.movement_reason.change_pct >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                  {reportData.movement_reason.change_pct >= 0 ? '+' : ''}{(reportData.movement_reason.change_pct * 100).toFixed(2)}%
+                </span>
+                <span class="text-sm opacity-60">S&P 500 変動率上位銘柄</span>
               </div>
-            ))}
+              <p class="text-skin-base whitespace-pre-wrap">{reportData.movement_reason.reason}</p>
+              <p class="text-[10px] opacity-40 mt-4 text-right italic">※Gemini AI 3.1 Flash Lite による調査・分析 (Google Search 連携)</p>
+            </div>
+          )}
+          
+          {reportData.business_summary_ja && (
+            <div class="mb-8 p-6 bg-skin-fill/20 rounded-lg border border-skin-line leading-relaxed">
+              <h3 class="text-lg font-bold mb-3 flex items-center gap-2 text-skin-accent">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                会社概要 (AI翻訳)
+              </h3>
+              <p class="text-skin-base whitespace-pre-wrap">{reportData.business_summary_ja}</p>
+            </div>
+          )}
+
+          <TradingViewWidget symbol={reportData.full_symbol} type="symbol-overview" height={650} />
+        </section>
+
+        <section id="risk-return" class="mt-12">
+          <h2 class="text-2xl font-bold mb-4 border-b pb-2 flex items-center gap-2">
+            <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">scatter_plot</span>
+            {symbol}のリスク・リターン分析
+          </h2>
+          <ChartJs chartData={reportData.charts.risk_return} id="chart-risk-return" height={550} />
+
+          <div class="mt-6 space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="bg-skin-fill/20 p-4 rounded-lg border border-skin-line">
+                <h3 class="font-bold text-sm mb-2 flex items-center gap-2 text-skin-accent">
+                  <span class="w-2 h-2 bg-skin-accent rounded-full"></span>
+                  X軸: リスク (年率ボラティリティ)
+                </h3>
+                <p class="text-xs opacity-80 leading-relaxed">
+                  株価の変動の激しさ（ヒストリカル・ボラティリティ）を示します。この値が高いほど、価格の上下動が大きく、不確実性が高いことを意味します。
+                </p>
+              </div>
+              <div class="bg-skin-fill/20 p-4 rounded-lg border border-skin-line">
+                <h3 class="font-bold text-sm mb-2 flex items-center gap-2 text-skin-accent">
+                  <span class="w-2 h-2 bg-skin-accent rounded-full"></span>
+                  Y軸: リターン (年率換算利回り)
+                </h3>
+                <p class="text-xs opacity-80 leading-relaxed">
+                  指定期間の累積リターンを1年あたりの利回りに換算した値です。配当を含まない価格変化ベースの平均的な成長力を示します。
+                </p>
+              </div>
+            </div>
+
+            <details class="group bg-skin-fill/10 border border-skin-line rounded-lg overflow-hidden">
+              <summary class="flex items-center justify-between p-3 cursor-pointer hover:bg-skin-fill/20 transition-colors text-xs font-bold opacity-70">
+                <span>算出ロジックの詳細 (Mathematical Definition)</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transform group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </summary>
+              <div class="p-4 border-t border-skin-line space-y-6 bg-skin-card/50 font-serif">
+                <div>
+                  <p class="text-xs font-bold mb-3 font-sans">■ X軸: リスク (Annualized Volatility)</p>
+                  <div class="flex justify-center py-2">
+                    <img src="https://latex.codecogs.com/svg.latex?%5Cdpi%7B130%7D%20%5Cbg%7Bwhite%7D%20Risk%20%3D%20%5Csigma_%7Bdaily%7D%20%5Ctimes%20%5Csqrt%7B252%7D" alt="Risk formula" class="dark:invert h-6" />
+                  </div>
+                  <div class="opacity-60 text-[10px] flex flex-wrap justify-center gap-x-4 gap-y-1 font-sans border-t border-skin-line/10 pt-2 text-center">
+                    <span><strong>σ_daily</strong>:日次対数リターンの標準偏差</span>
+                    <span><strong>252</strong>:年間営業日数</span>
+                  </div>
+                </div>
+                <div class="pt-4 border-t border-skin-line/30">
+                  <p class="text-xs font-bold mb-3 font-sans">■ Y軸: 年率リターン (Annualized Return)</p>
+                  <div class="flex justify-center py-2">
+                    <img src="https://latex.codecogs.com/svg.latex?%5Cdpi%7B130%7D%20%5Cbg%7Bwhite%7D%20Return%20%3D%20%281%20%2B%20R_%7Btotal%7D%20%29%5E%7B%5Cfrac%7B365%7D%7BD%7D%7D%20-%201" alt="Return formula" class="dark:invert h-8" />
+                  </div>
+                  <div class="opacity-60 text-[10px] flex flex-wrap justify-center gap-x-4 gap-y-1 font-sans border-t border-skin-line/10 pt-2 text-center">
+                    <span><strong>R_total</strong>:期間累積収益率</span>
+                    <span><strong>D</strong>:経過日数</span>
+                  </div>
+                </div>
+              </div>
+            </details>
+          </div>
+        </section>
+        <section id="peers" class="mt-12">
+          <PeerLinks title={`${symbol}の同業種・競合 (${reportData.sub_industry})`} peers={reportData.peers.sub_industry} icon="corporate_fare" />
+        </section>
+
+        <section id="sector-peers">
+          <PeerLinks title={`${symbol}の同セクター他社 (${reportData.sector})`} peers={reportData.peers.sector} collapsible={true} icon="corporate_fare" />
+        </section>
+
+        <hr class="my-12 border-skin-line" />
+
+        <section id="performance">
+          <h2 class="text-2xl font-bold mb-4 border-b pb-2 flex items-center gap-2">
+            <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">ssid_chart</span>
+            {symbol}のパフォーマンス比較
+          </h2>
+          {reportData.charts.performance ? (
+            <ChartJs chartData={reportData.charts.performance} id="chart-performance" />
+          ) : (
+            <TradingViewWidget 
+              symbol={reportData.full_symbol} 
+              type="advanced-chart" 
+              height={600} 
+              compareSymbols={[
+                { symbol: `AMEX:${reportData.sector_etf}`, position: "SameScale" },
+                { symbol: "FRED:SP500", position: "SameScale" }
+              ]}
+            />
+          )}
+        </section>
+
+        <section id="earnings-highlights" class="mt-12">
+          <h2 class="text-2xl font-bold mb-6 border-b pb-2 flex items-center gap-2">
+            <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">ink_highlighter</span>
+            {symbol}の直近決算・財務ハイライト
+          </h2>
+          {reportData.highlights ? (
+            <div class="space-y-6">
+              {/* Latest Result (Surprise) */}
+              {reportData.earnings_surprise && (
+                <div class="bg-skin-fill/30 p-5 rounded-lg border-2 border-skin-accent/30 shadow-sm">
+                  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                      <h3 class="text-lg font-bold flex items-center gap-2">
+                        <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">breaking_news</span>
+                        直近の四半期決算実績 (EPSサプライズ)
+                      </h3>
+                      <p class="text-sm opacity-70 mt-1">決算発表日: {reportData.earnings_surprise.date}</p>
+                    </div>
+                    <div class="flex items-center gap-6">
+                      <div class="text-center">
+                        <div class="text-xs opacity-60 uppercase tracking-wider mb-1">市場予想</div>
+                        <div class="text-xl font-bold opacity-80">
+                          {typeof reportData.earnings_surprise.estimate === 'number' ? `$${reportData.earnings_surprise.estimate.toFixed(2)}` : '---'}
+                        </div>
+                      </div>
+                      <div class="text-2xl font-light opacity-30">→</div>
+                      <div class="text-center">
+                        <div class="text-xs opacity-60 uppercase tracking-wider mb-1">実績 (EPS)</div>
+                        <div class={`text-2xl font-bold ${(typeof reportData.earnings_surprise.actual === 'number' && typeof reportData.earnings_surprise.estimate === 'number' && reportData.earnings_surprise.actual >= reportData.earnings_surprise.estimate) ? 'text-green-600' : 'text-red-600'}`}>
+                          {typeof reportData.earnings_surprise.actual === 'number' ? `$${reportData.earnings_surprise.actual.toFixed(2)}` : '---'}
+                        </div>
+                      </div>
+                      <div class={`px-3 py-1.5 rounded-md font-bold text-sm ${(typeof reportData.earnings_surprise.surprise_pct === 'number' && reportData.earnings_surprise.surprise_pct >= 0) ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                        {typeof reportData.earnings_surprise.surprise_pct === 'number' ? `${reportData.earnings_surprise.surprise_pct >= 0 ? '+' : ''}${reportData.earnings_surprise.surprise_pct.toFixed(2)}%` : '---'}
+                        <span class="ml-1">{(typeof reportData.earnings_surprise.surprise_pct === 'number' && reportData.earnings_surprise.surprise_pct >= 0) ? 'Beat!' : 'Miss'}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-skin-fill/20 p-4 rounded-lg border border-skin-line">
+                  <div class="text-sm opacity-70 mb-1 flex items-center gap-1.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    売上高成長率 (YoY)
+                  </div>
+                  <div class={`text-2xl font-bold ${reportData.highlights.revenue_growth > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    {typeof reportData.highlights.revenue_growth === 'number' ? (reportData.highlights.revenue_growth * 100).toFixed(1) + '%' : '---'}
+                  </div>
+                </div>
+
+                <div class="bg-skin-fill/20 p-4 rounded-lg border border-skin-line">
+                  <div class="text-sm opacity-70 mb-1 flex items-center gap-1.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    </svg>
+                    利益成長率 (YoY)
+                  </div>
+                  <div class={`text-2xl font-bold ${reportData.highlights.earnings_growth > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    {typeof reportData.highlights.earnings_growth === 'number' ? (reportData.highlights.earnings_growth * 100).toFixed(1) + '%' : '---'}
+                  </div>
+                </div>
+
+                <div class="bg-skin-fill/20 p-4 rounded-lg border border-skin-line">
+                  <div class="text-sm opacity-70 mb-1 flex items-center gap-1.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h2a2 2 0 002-2zM9 19h10a2 2 0 002-2v-3a2 2 0 00-2-2h-3z" />
+                    </svg>
+                    営業利益率
+                  </div>
+                  <div class="text-2xl font-bold text-skin-base">
+                    {typeof reportData.highlights.operating_margins === 'number' ? (reportData.highlights.operating_margins * 100).toFixed(1) + '%' : '---'}
+                  </div>
+                </div>
+
+                <div class="bg-skin-fill/20 p-4 rounded-lg border border-skin-line">
+                  <div class="text-sm opacity-70 mb-1 flex items-center gap-1.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+                    </svg>
+                    ROE (自己資本利益率)
+                  </div>
+                  <div class="text-2xl font-bold text-skin-base">
+                    {typeof reportData.highlights.roe === 'number' ? (reportData.highlights.roe * 100).toFixed(1) + '%' : '---'}
+                  </div>
+                </div>
+
+                <div class="bg-skin-fill/20 p-4 rounded-lg border border-skin-line">
+                  <div class="text-sm opacity-70 mb-1">予想PER</div>
+                  <div class="text-2xl font-bold text-skin-accent">
+                    {typeof reportData.highlights.pe_forward === 'number' ? reportData.highlights.pe_forward.toFixed(1) + 'x' : '---'}
+                  </div>
+                  <div class="text-xs opacity-50 mt-1">実績PER: {typeof reportData.highlights.pe_ttm === 'number' ? reportData.highlights.pe_ttm.toFixed(1) + 'x' : '---'}</div>
+                </div>
+
+                <div class="bg-skin-fill/20 p-4 rounded-lg border border-skin-line">
+                  <div class="text-sm opacity-70 mb-1">EPS (直近12ヶ月)</div>
+                  <div class="text-2xl font-bold text-skin-base">
+                    {typeof reportData.highlights.eps_ttm === 'number' ? '$' + reportData.highlights.eps_ttm.toFixed(2) : '---'}
+                  </div>
+                  <div class="text-xs opacity-50 mt-1">予想EPS: {typeof reportData.highlights.eps_forward === 'number' ? '$' + reportData.highlights.eps_forward.toFixed(2) : '---'}</div>
+                </div>
+
+                <div class="bg-skin-fill/20 p-4 rounded-lg border border-skin-line">
+                  <div class="text-sm opacity-70 mb-1">配当利回り</div>
+                  <div class="text-2xl font-bold text-skin-base">
+                    {typeof reportData.highlights.dividend_yield === 'number' ? (reportData.highlights.dividend_yield * 100).toFixed(2) + '%' : '実績なし'}
+                  </div>
+                  <div class="text-xs opacity-50 mt-1">配当性向: {typeof reportData.highlights.payout_ratio === 'number' ? (reportData.highlights.payout_ratio * 100).toFixed(1) + '%' : '---'}</div>
+                </div>
+
+                <div class="bg-skin-fill/20 p-4 rounded-lg border border-skin-line">
+                  <div class="text-sm opacity-70 mb-1">負債比率 (D/E)</div>
+                  <div class="text-2xl font-bold text-skin-base">
+                    {typeof reportData.highlights.debt_to_equity === 'number' ? reportData.highlights.debt_to_equity.toFixed(1) + '%' : '---'}
+                  </div>
+                  <div class="text-xs opacity-50 mt-1">流動比率: {typeof reportData.highlights.current_ratio === 'number' ? reportData.highlights.current_ratio.toFixed(2) : '---'}</div>
+                </div>
+              </div>
+              <div class="mt-6 p-4 bg-red-50/30 dark:bg-red-900/20 border border-red-200/50 dark:border-red-800/30 rounded-lg text-xs text-red-800/80 dark:text-red-200/80">
+                <p class="font-bold flex items-center gap-1 mb-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                  財務データに関する重要事項
+                </p>
+                <p>
+                  本レポートに使用されている財務データは外部API（yfinance）を通じて自動取得されており、時期や項目の分類方法により実際の決算数値と異なる場合があります。
+                  特に合併・分社化、会計方針の変更があった銘柄では正確な推移が表示されない可能性があります。投資判断の際は必ず公式サイトのIR情報を併せてご確認ください。
+                </p>
+              </div>              <p class="text-xs text-gray-500 mt-4 italic">
+                ※YoY (Year over Year): 前年同期比。前年の同じ時期と比較した成長率を示します。季節的な変動を排除して、企業の純粋な成長性を判断するための重要な指標です。
+              </p>
+            </div>
+          ) : (
+            <p class="text-gray-500 italic">ハイライトデータは現在利用できません。データ生成を再実行してください。</p>
+          )}
+        </section>
+
+        <section id="next-earnings" class="mt-12">
+          <h2 class="text-2xl font-bold mb-6 border-b pb-2 flex items-center gap-2">
+            <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">trending_up</span>
+            {symbol}の来期業績予想 (コンセンサス)
+          </h2>
+          
+          {(reportData.next_earnings || reportData.consensus) ? (
+            <div class="space-y-6">
+              {reportData.next_earnings && (
+                <div class="bg-skin-fill/20 p-6 sm:p-8 rounded-lg border border-skin-line shadow-sm flex flex-col md:flex-row justify-between items-center gap-8">
+                  <div class="flex-grow">
+                    <div class="flex items-center gap-3 mb-4">
+                      <div class="p-3 bg-skin-accent/10 rounded-full text-skin-accent">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 class="text-xl font-bold">次回決算発表予定</h3>
+                        <p class="text-gray-500">{reportData.next_earnings.date} (予定)</p>
+                      </div>
+                    </div>
+                    <p class="text-sm opacity-80 leading-relaxed">
+                      市場アナリストによる次回の四半期決算予想（コンセンサス）です。実績がこの予想を上回る（ポジティブサプライズ）か、下回るかが、発表直後の株価に大きく影響します。
+                    </p>
+                  </div>
+
+                  <div class="flex items-center gap-8 bg-skin-fill/30 p-6 rounded-xl border border-skin-line min-w-[280px] justify-center">
+                    <div class="text-center">
+                      <div class="text-xs opacity-60 uppercase tracking-wider mb-2">市場予想 (EPS)</div>
+                      <div class="text-4xl font-black text-skin-accent">
+                        {typeof reportData.next_earnings.estimate === 'number' ? `$${reportData.next_earnings.estimate.toFixed(2)}` : '---'}
+                      </div>
+                      {reportData.earnings_surprise && typeof reportData.next_earnings.estimate === 'number' && typeof reportData.earnings_surprise.actual === 'number' && (
+                        <div class={`mt-3 inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold ${reportData.next_earnings.estimate > reportData.earnings_surprise.actual ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                          {reportData.next_earnings.estimate > reportData.earnings_surprise.actual ? '↑ 前期比 増益予想' : '↓ 前期比 減益予想'}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Detailed Consensus Grid */}
+              {reportData.consensus && (
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* EPS Consensus */}
+                  <div class="bg-skin-fill/10 p-6 rounded-lg border border-skin-line">
+                    <h4 class="font-bold mb-4 flex items-center gap-2">
+                      <span class="material-symbols-outlined text-blue-500" aria-hidden="true">attach_money</span> 1株あたり利益 (EPS) 予想 [来期通期]
+                    </h4>
+                    <div class="space-y-4">
+                      <div class="flex justify-between items-center py-2 border-b border-skin-line/30">
+                        <span class="text-sm opacity-70">コンセンサス (平均)</span>
+                        <span class="font-bold text-lg text-skin-accent">
+                          {reportData.consensus.earnings?.["+1y"]?.avg ? `$${reportData.consensus.earnings["+1y"].avg.toFixed(2)}` : 
+                           reportData.consensus.earnings?.["0y"]?.avg ? `$${reportData.consensus.earnings["0y"].avg.toFixed(2)} (今期)` : 
+                           reportData.consensus.earnings?.["0q"]?.avg ? `$${reportData.consensus.earnings["0q"].avg.toFixed(2)} (四半期)` : '---'}
+                        </span>
+                      </div>
+                      <div class="flex justify-between items-center py-2 border-b border-skin-line/30">
+                        <span class="text-sm opacity-70">予想レンジ (Low - High)</span>
+                        <span class="text-sm font-medium">
+                          {reportData.consensus.earnings?.["+1y"]?.low ? `$${reportData.consensus.earnings["+1y"].low.toFixed(2)}` : 
+                           reportData.consensus.earnings?.["0y"]?.low ? `$${reportData.consensus.earnings["0y"].low.toFixed(2)}` : '---'} - 
+                          {reportData.consensus.earnings?.["+1y"]?.high ? `$${reportData.consensus.earnings["+1y"].high.toFixed(2)}` : 
+                           reportData.consensus.earnings?.["0y"]?.high ? `$${reportData.consensus.earnings["0y"].high.toFixed(2)}` : '---'}
+                        </span>
+                      </div>
+                      <div class="flex justify-between items-center py-2 border-b border-skin-line/30">
+                        <span class="text-sm opacity-70">前年比成長率 (YoY)</span>
+                        <span class={`font-bold ${(reportData.consensus.earnings?.["+1y"]?.growth || reportData.consensus.earnings?.["0y"]?.growth || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                          {reportData.consensus.earnings?.["+1y"]?.growth ? `${(reportData.consensus.earnings["+1y"].growth * 100).toFixed(1)}%` : 
+                           reportData.consensus.earnings?.["0y"]?.growth ? `${(reportData.consensus.earnings["0y"].growth * 100).toFixed(1)}%` : '---'}
+                        </span>
+                      </div>
+                      <div class="flex justify-between items-center py-2">
+                        <span class="text-sm opacity-70">アナリスト数</span>
+                        <span class="text-sm">{reportData.consensus.earnings?.["+1y"]?.numberOfAnalysts || reportData.consensus.earnings?.["0y"]?.numberOfAnalysts || '---'}人</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Revenue Consensus */}
+                  <div class="bg-skin-fill/10 p-6 rounded-lg border border-skin-line">
+                    <h4 class="font-bold mb-4 flex items-center gap-2">
+                      <span class="material-symbols-outlined text-green-500" aria-hidden="true">money_bag</span> 売上高予想 [来期通期]
+                    </h4>
+                    <div class="space-y-4">
+                      <div class="flex justify-between items-center py-2 border-b border-skin-line/30">
+                        <span class="text-sm opacity-70">コンセンサス (平均)</span>
+                        <span class="font-bold text-lg text-skin-accent">
+                          {reportData.consensus.revenue?.["+1y"]?.avg ? `$${(reportData.consensus.revenue["+1y"].avg / 1e9).toFixed(2)}B` : 
+                           reportData.consensus.revenue?.["0y"]?.avg ? `$${(reportData.consensus.revenue["0y"].avg / 1e9).toFixed(2)}B (今期)` : 
+                           reportData.consensus.revenue?.["0q"]?.avg ? `$${(reportData.consensus.revenue["0q"].avg / 1e9).toFixed(2)}B (四半期)` : '---'}
+                        </span>
+                      </div>
+                      <div class="flex justify-between items-center py-2 border-b border-skin-line/30">
+                        <span class="text-sm opacity-70">予想レンジ (Low - High)</span>
+                        <span class="text-sm font-medium">
+                          {reportData.consensus.revenue?.["+1y"]?.low ? `$${(reportData.consensus.revenue["+1y"].low / 1e9).toFixed(1)}B` : 
+                           reportData.consensus.revenue?.["0y"]?.low ? `$${(reportData.consensus.revenue["0y"].low / 1e9).toFixed(1)}B` : '---'} - 
+                          {reportData.consensus.revenue?.["+1y"]?.high ? `$${(reportData.consensus.revenue["+1y"].high / 1e9).toFixed(1)}B` : 
+                           reportData.consensus.revenue?.["0y"]?.high ? `$${(reportData.consensus.revenue["0y"].high / 1e9).toFixed(1)}B` : '---'}
+                        </span>
+                      </div>
+                      <div class="flex justify-between items-center py-2 border-b border-skin-line/30">
+                        <span class="text-sm opacity-70">前年比成長率 (YoY)</span>
+                        <span class={`font-bold ${(reportData.consensus.revenue?.["+1y"]?.growth || reportData.consensus.revenue?.["0y"]?.growth || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                          {reportData.consensus.revenue?.["+1y"]?.growth ? `${(reportData.consensus.revenue["+1y"].growth * 100).toFixed(1)}%` : 
+                           reportData.consensus.revenue?.["0y"]?.growth ? `${(reportData.consensus.revenue["0y"].growth * 100).toFixed(1)}%` : '---'}
+                        </span>
+                      </div>
+                      <div class="flex justify-between items-center py-2">
+                        <span class="text-sm opacity-70">アナリスト数</span>
+                        <span class="text-sm">{reportData.consensus.revenue?.["+1y"]?.numberOfAnalysts || reportData.consensus.revenue?.["0y"]?.numberOfAnalysts || '---'}人</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <p class="text-gray-500 italic">来期業績のコンセンサスデータは現在利用できません。</p>
+          )}
+        </section>
+
+        <section id="fundamentals" class="mt-12">
+          <h2 class="text-2xl font-bold mb-4 border-b pb-2 flex items-center gap-2">
+            <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">finance</span>
+            {symbol}のファンダメンタルズ分析
+          </h2>
+          <TradingViewWidget symbol={reportData.full_symbol} type="financials" height={950} />
+        </section>
+
+        <section id="fundamentals-detail" class="mt-12">
+          <h2 class="text-2xl font-bold mb-8 border-b pb-2 flex items-center gap-2">
+            <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">monitoring</span>
+            {symbol}の財務データ推移 (詳細分析)
+          </h2>
+
+          {reportData.charts.segment && (
+            <div id="revenue-by-segment" class="scroll-mt-20 my-24">
+              <ChartJs chartData={reportData.charts.segment} id="chart-segment" title="セグメント収益" />
+            </div>
+          )}
+
+          {reportData.charts.geo && (
+            <div id="revenue-by-geography" class="scroll-mt-20 my-24">
+              <ChartJs chartData={reportData.charts.geo} id="chart-geo" title="地域別収益" />
+            </div>
+          )}
+
+          <div id="balance-sheet" class="scroll-mt-20 my-24">
+            <ChartJs chartData={reportData.charts.bs} id="chart-bs" title="貸借対照表" />
+          </div>
+
+          <div id="income-statement" class="scroll-mt-20 my-24">
+            <ChartJs chartData={reportData.charts.is} id="chart-is" title="損益計算書" />
+          </div>
+
+          <div id="cash-flow" class="scroll-mt-20 my-24">
+            <ChartJs chartData={reportData.charts.cf} id="chart-cf" title="キャッシュフロー" />
+            {reportData.is_financial && (
+              <div class="mt-4 p-4 bg-skin-fill/30 border border-skin-line rounded-lg text-sm text-gray-500 italic">
+                <p class="flex items-center gap-2 mb-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-skin-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <strong>金融・不動産セクターのキャッシュフローに関する注意点:</strong>
+                </p>
+                <p>
+                  金融（銀行、証券など）や一部の不動産セクターでは、営業キャッシュフローおよびフリーキャッシュフローに「顧客からの預り金」や「担保金」の増減が含まれる場合があります。
+                  そのため、純利益と比べてキャッシュフローが極端に大きく（あるいは小さく）表示されることがありますが、これは業種特有の会計上の特性によるものです。
+                  これらの業種では、FCFよりも純利益や営業利益の推移、または自己資本比率やROEなどの指標を重視して分析することをお勧めします。
+                </p>
+              </div>
+            )}
+          </div>
+
+          <div id="shareholder-return" class="scroll-mt-20 my-24">
+            <ChartJs chartData={reportData.charts.tp} id="chart-tp" title="株主還元" />
+          </div>
+
+          <div id="dividend-history" class="scroll-mt-20 my-24">
+            <ChartJs chartData={reportData.charts.dps} id="chart-dps" title="1株あたり配当金" />
+            {(!reportData.charts.dps || !reportData.charts.dps.error) && (
+              <p class="text-sm text-gray-500 mt-24 block relative z-10">※「権利落日別」タブでは、当時の株価に基づいた予想配当利回り（年換算）も表示しています。</p>
+            )}
           </div>
         </section>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
-          <!-- Left Col: Summary & Ratings -->
-          <div class="lg:col-span-2 flex flex-col gap-10">
-            <section>
-              <h2 class="text-2xl font-bold mb-4 border-b pb-2 text-skin-base">会社概要</h2>
-              <p class="text-skin-base whitespace-pre-wrap leading-relaxed opacity-90">
-                {reportData.business_summary_ja || "概要データは準備中です。"}
-              </p>
-              {reportData.movement_reason && (
-                <div class="mt-4 bg-skin-accent/10 border-l-4 border-skin-accent p-4 rounded text-skin-base">
-                  <h3 class="font-bold mb-2">💡 AIトピック: 最近の株価動向</h3>
-                  <p>{reportData.movement_reason}</p>
+        <section id="dcf-valuation" class="mt-12">
+          <h2 class="text-2xl font-bold mb-6 border-b pb-2 flex items-center gap-2">
+            <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">data_exploration</span>
+            {symbol}のDCF理論株価分析
+          </h2>
+          {reportData.dcf_valuation && typeof reportData.dcf_valuation.fair_price === 'number' ? (
+            <div class="space-y-10">
+              {/* Main Summary Card */}
+              <div class="bg-skin-fill/20 p-6 sm:p-8 rounded-lg border-2 border-skin-accent/30 shadow-sm text-center md:text-left">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                  <div>
+                    <h3 class="text-xl font-bold mb-4 flex items-center justify-center md:justify-start gap-2 text-skin-accent">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      理論株価 (Fair Price)
+                    </h3>
+                    <div class="flex items-baseline justify-center md:justify-start gap-2">
+                      <span class="text-6xl font-black text-skin-base">${reportData.dcf_valuation.fair_price.toFixed(2)}</span>
+                    </div>
+                    <div class="mt-6 flex flex-col items-center md:items-start gap-3">
+                      <div class="flex items-center gap-4 text-sm">
+                        <span class="opacity-70 text-lg">現在価格: <span class="font-bold text-skin-base">${reportData.dcf_valuation.current_price.toFixed(2)}</span></span>
+                      </div>
+                      <div class={`inline-flex items-center px-4 py-2 rounded-full font-bold text-lg ${reportData.dcf_valuation.fair_price > reportData.dcf_valuation.current_price ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                        乖離率: {((reportData.dcf_valuation.fair_price / reportData.dcf_valuation.current_price - 1) * 100).toFixed(1)}%
+                        ({reportData.dcf_valuation.fair_price > reportData.dcf_valuation.current_price ? '割安' : '割高'})
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-skin-fill/30 p-4 rounded-xl border border-skin-line text-center">
+                      <div class="text-xs opacity-60 uppercase mb-1">割引率 (WACC)</div>
+                      <div class="text-xl font-bold text-skin-accent">{reportData.dcf_valuation.wacc_details?.wacc ? (reportData.dcf_valuation.wacc_details.wacc * 100).toFixed(2) + '%' : '---'}</div>
+                    </div>
+                    <div class="bg-skin-fill/30 p-4 rounded-xl border border-skin-line text-center">
+                      <div class="text-xs opacity-60 uppercase mb-1">期待成長率(1-5Y)</div>
+                      <div class="text-xl font-bold text-skin-accent">{reportData.dcf_valuation.growth_1_5y ? (reportData.dcf_valuation.growth_1_5y * 100).toFixed(2) + '%' : '---'}</div>
+                    </div>
+                    <div class="bg-skin-fill/30 p-4 rounded-xl border border-skin-line text-center">
+                      <div class="text-xs opacity-60 uppercase mb-1">企業価値 (EV)</div>
+                      <div class="text-lg font-bold">{reportData.dcf_valuation.enterprise_value ? '$' + (reportData.dcf_valuation.enterprise_value / 1e9).toFixed(1) + 'B' : '---'}</div>
+                    </div>
+                    <div class="bg-skin-fill/30 p-4 rounded-xl border border-skin-line text-center">
+                      <div class="text-xs opacity-60 uppercase mb-1">株主価値</div>
+                      <div class="text-lg font-bold">{reportData.dcf_valuation.equity_value ? '$' + (reportData.dcf_valuation.equity_value / 1e9).toFixed(1) + 'B' : '---'}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Details Tables Grid */}
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* WACC Components */}
+                {reportData.dcf_valuation.wacc_details && (
+                  <div class="space-y-4">
+                    <h3 class="text-lg font-bold flex items-center gap-2">
+                      <span class="material-symbols-outlined text-blue-500" aria-hidden="true">percent_discount</span>
+                      割引率 (WACC) の構成要素
+                    </h3>
+                    <div class="overflow-hidden rounded-lg border border-skin-line">
+                      <table class="min-w-full divide-y divide-skin-line text-sm">
+                        <tbody class="divide-y divide-skin-line">
+                          <tr class="bg-skin-fill/5"><td class="px-4 py-2 opacity-70">ベータ (β)</td><td class="px-4 py-2 text-right font-medium">{reportData.dcf_valuation.wacc_details.beta?.toFixed(4)}</td></tr>
+                          <tr><td class="px-4 py-2 opacity-70">リスクフリーレート (10Y)</td><td class="px-4 py-2 text-right font-medium">{(reportData.dcf_valuation.wacc_details.risk_free_rate * 100).toFixed(2)}%</td></tr>
+                          <tr class="bg-skin-fill/5"><td class="px-4 py-2 opacity-70">市場期待リターン (S&P500)</td><td class="px-4 py-2 text-right font-medium">{(reportData.dcf_valuation.wacc_details.market_return * 100).toFixed(2)}%</td></tr>
+                          <tr><td class="px-4 py-2 opacity-70">株主資本コスト (Cost of Equity)</td><td class="px-4 py-2 text-right font-medium">{(reportData.dcf_valuation.wacc_details.cost_of_equity * 100).toFixed(2)}%</td></tr>
+                          <tr class="bg-skin-fill/5"><td class="px-4 py-2 opacity-70">負債コスト (Cost of Debt)</td><td class="px-4 py-2 text-right font-medium">{(reportData.dcf_valuation.wacc_details.cost_of_debt * 100).toFixed(2)}%</td></tr>
+                          <tr><td class="px-4 py-2 opacity-70">実効税率</td><td class="px-4 py-2 text-right font-medium">{(reportData.dcf_valuation.wacc_details.tax_rate * 100).toFixed(1)}%</td></tr>
+                          <tr class="bg-skin-fill/5 font-bold text-skin-accent"><td class="px-4 py-2">WACC (加重平均資本コスト)</td><td class="px-4 py-2 text-right">{(reportData.dcf_valuation.wacc_details.wacc * 100).toFixed(2)}%</td></tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* Growth Estimations */}
+                {reportData.dcf_valuation.cagr_details && (
+                  <div class="space-y-4">
+                    <h3 class="text-lg font-bold flex items-center gap-2">
+                      <span class="material-symbols-outlined text-green-500" aria-hidden="true">show_chart</span>
+                      成長率の推定 (3Y CAGR)
+                    </h3>
+                    <div class="overflow-hidden rounded-lg border border-skin-line">
+                      <table class="min-w-full divide-y divide-skin-line text-sm">
+                        <tbody class="divide-y divide-skin-line">
+                          <tr class="bg-skin-fill/5"><td class="px-4 py-2 opacity-70">売上高 CAGR</td><td class="px-4 py-2 text-right font-medium">{(reportData.dcf_valuation.cagr_details.revenue * 100).toFixed(2)}%</td></tr>
+                          <tr><td class="px-4 py-2 opacity-70">フリーキャッシュフロー CAGR</td><td class="px-4 py-2 text-right font-medium">{(reportData.dcf_valuation.cagr_details.fcf * 100).toFixed(2)}%</td></tr>
+                          <tr class="bg-skin-fill/5"><td class="px-4 py-2 opacity-70">EBITDA CAGR</td><td class="px-4 py-2 text-right font-medium">{(reportData.dcf_valuation.cagr_details.ebitda * 100).toFixed(2)}%</td></tr>
+                          <tr><td class="px-4 py-2 opacity-70">純利益 CAGR</td><td class="px-4 py-2 text-right font-medium">{(reportData.dcf_valuation.cagr_details.net_income * 100).toFixed(2)}%</td></tr>
+                          <tr class="bg-skin-fill/5 font-bold"><td class="px-4 py-2 opacity-70 text-skin-base">将来成長率 (1-5年) <span class="text-[10px] font-normal opacity-50 block leading-tight">※売上40%, FCF30%, EBITDA20%, NI10%の加重平均</span></td><td class="px-4 py-2 text-right text-skin-accent">{(reportData.dcf_valuation.growth_1_5y * 100).toFixed(2)}%</td></tr>
+                          <tr><td class="px-4 py-2 opacity-70">将来成長率 (6-10年) <span class="text-[10px] font-normal opacity-50 block leading-tight">※Decay Factor 0.9を適用</span></td><td class="px-4 py-2 text-right font-medium">{(reportData.dcf_valuation.growth_6_10y * 100).toFixed(2)}%</td></tr>
+                          <tr class="bg-skin-fill/5"><td class="px-4 py-2 opacity-70">永続成長率 (Terminal)</td><td class="px-4 py-2 text-right font-medium">{(reportData.dcf_valuation.terminal_growth * 100).toFixed(2)}%</td></tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Cash Flow Projections Table */}
+              {reportData.dcf_valuation.projections && (
+                <div class="space-y-4">
+                  <h3 class="text-lg font-bold flex items-center gap-2">
+                    <span class="material-symbols-outlined text-purple-500" aria-hidden="true">calendar_today</span>
+                    10年間のフリーキャッシュフロー予測 (USD)
+                  </h3>
+                  <div class="overflow-x-auto rounded-lg border border-skin-line">
+                    <table class="min-w-full divide-y divide-skin-line text-xs">
+                      <thead class="bg-skin-fill/20">
+                        <tr>
+                          <th class="px-3 py-3 text-left font-bold">年</th>
+                          {reportData.dcf_valuation.projections.map((p: any) => (
+                            <th class="px-3 py-3 text-right font-bold">{p.year}年目</th>
+                          ))}
+                          <th class="px-3 py-3 text-right font-bold bg-skin-accent/10">TV</th>
+                        </tr>
+                      </thead>
+                      <tbody class="divide-y divide-skin-line">
+                        <tr>
+                          <td class="px-3 py-3 font-medium bg-skin-fill/5">予想FCF</td>
+                          {reportData.dcf_valuation.projections.map((p: any) => (
+                            <td class="px-3 py-3 text-right">${(p.fcf / 1e9).toFixed(2)}B</td>
+                          ))}
+                          <td class="px-3 py-3 text-right font-bold bg-skin-fill/10">${(reportData.dcf_valuation.terminal_value / 1e9).toFixed(1)}B</td>
+                        </tr>
+                        <tr>
+                          <td class="px-3 py-3 font-medium bg-skin-fill/5">現在価値 (割引後)</td>
+                          {reportData.dcf_valuation.projections.map((p: any) => (
+                            <td class="px-3 py-3 text-right font-medium text-skin-accent">${(p.discounted_fcf / 1e9).toFixed(2)}B</td>
+                          ))}
+                          <td class="px-3 py-3 text-right font-bold bg-skin-accent/10 text-skin-accent">${(reportData.dcf_valuation.npv_tv / 1e9).toFixed(2)}B</td>
+                        </tr>
+                        <tr class="bg-skin-fill/10">
+                          <td class="px-3 py-2 font-medium">成長率仮定</td>
+                          {reportData.dcf_valuation.projections.map((p: any) => (
+                            <td class="px-3 py-2 text-right opacity-60">{(p.growth_rate * 100).toFixed(1)}%</td>
+                          ))}
+                          <td class="px-3 py-2 text-right opacity-60">{(reportData.dcf_valuation.terminal_growth * 100).toFixed(1)}%</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="flex justify-end gap-6 text-sm py-2 px-1">
+                    <div class="flex gap-2 items-center"><span class="w-3 h-3 bg-skin-accent opacity-20 rounded"></span> <span class="opacity-70">TV = 継続価値 (Terminal Value)</span></div>
+                    <div class="flex gap-2 items-center font-bold"><span>合計現在価値 (EV):</span> <span class="text-skin-accent">{reportData.dcf_valuation.enterprise_value ? '$' + (reportData.dcf_valuation.enterprise_value / 1e9).toFixed(2) + 'B' : '---'}</span></div>
+                  </div>
                 </div>
               )}
-            </section>
 
-            <!-- Performance and Risk Charts -->
-            <section id="performance-risk-charts">
-              <div class="flex flex-col gap-8">
-                {reportData.charts?.performance && (
-                  <div class="bg-skin-card p-6 rounded-lg border border-skin-line">
-                    <h3 class="text-lg font-bold mb-4">パフォーマンス比較 (vs Sector ETF)</h3>
-                    <div class="h-[350px]">
-                      <ChartJs chartData={{ type: 'line', data: reportData.charts.performance, options: { maintainAspectRatio: false, plugins: { legend: { display: true } } } }} id="chart-performance" />
-                    </div>
-                  </div>
-                )}
-                {reportData.charts?.risk_return && (
-                  <div class="bg-skin-card p-6 rounded-lg border border-skin-line">
-                    <h3 class="text-lg font-bold mb-4">リスク・リターン (S&P 500)</h3>
-                    <div class="h-[350px]">
-                      <ChartJs chartData={{ type: 'scatter', data: reportData.charts.risk_return, options: { maintainAspectRatio: false, plugins: { legend: { display: false } } } }} id="chart-risk-return" />
-                    </div>
-                  </div>
-                )}
+              {/* Adjustment Details */}
+              <div class="bg-skin-fill/5 p-4 rounded-lg border border-skin-line flex flex-wrap gap-x-12 gap-y-2 text-sm justify-center lg:justify-start">
+                <div class="flex gap-2"><span class="opacity-60">企業価値 (EV):</span> <span class="font-bold">${(reportData.dcf_valuation.enterprise_value / 1e9).toFixed(2)}B</span></div>
+                <div class="flex gap-2 text-green-600"><span class="opacity-60 text-skin-base">+ 現金等:</span> <span class="font-bold">${(reportData.dcf_valuation.cash_value / 1e9).toFixed(2)}B</span></div>
+                <div class="flex gap-2 text-red-600"><span class="opacity-60 text-skin-base">- 総負債:</span> <span class="font-bold">${(reportData.dcf_valuation.total_debt / 1e9).toFixed(2)}B</span></div>
+                <div class="flex gap-2 border-l border-skin-line pl-6 ml-auto"><span class="opacity-60">株主価値:</span> <span class="font-bold text-skin-accent">${(reportData.dcf_valuation.equity_value / 1e9).toFixed(2)}B</span></div>
+                <div class="flex gap-2"><span class="opacity-60">発行済株式数:</span> <span class="font-bold">{(reportData.dcf_valuation.shares / 1e6).toFixed(1)}M</span></div>
               </div>
-            </section>
 
-            <!-- Financial Charts -->
-            <section id="financial-charts">
-              <h2 class="text-2xl font-bold mb-6 border-b pb-2">財務推移</h2>
-              <div class="flex flex-col gap-8">
-                {reportData.charts?.is && (
-                  <div class="bg-skin-card p-6 rounded-lg border border-skin-line">
-                    <h3 class="text-lg font-bold mb-4">損益推移 (Income Statement)</h3>
-                    <div class="h-[350px]">
-                      <ChartJs chartData={reportData.charts.is} id="chart-is" />
-                    </div>
-                  </div>
-                )}
-                {reportData.charts?.bs && (
-                  <div class="bg-skin-card p-6 rounded-lg border border-skin-line">
-                    <h3 class="text-lg font-bold mb-4">資産状況 (Balance Sheet)</h3>
-                    <div class="h-[350px]">
-                      <ChartJs chartData={reportData.charts.bs} id="chart-bs" />
-                    </div>
-                  </div>
-                )}
-                {reportData.charts?.cf && (
-                  <div class="bg-skin-card p-6 rounded-lg border border-skin-line">
-                    <h3 class="text-lg font-bold mb-4">キャッシュフロー (Cash Flow)</h3>
-                    <div class="h-[350px]">
-                      <ChartJs chartData={reportData.charts.cf} id="chart-cf" />
-                    </div>
-                  </div>
-                )}
-              </div>
-            </section>
-          </div>
-
-          <!-- Right Col: Valuation & Estimates -->
-          <div class="flex flex-col gap-10">
-            <!-- DCF Result -->
-            {dcfResult && (
-              <section id="dcf-valuation">
-                <h2 class="text-2xl font-bold mb-4 border-b pb-2">理論株価 (DCF)</h2>
-                <div class="bg-skin-fill/20 p-6 rounded-lg border-2 border-skin-accent/30">
-                  <div class="text-center mb-4">
-                    <div class="text-xs opacity-60 uppercase">Estimated Fair Price</div>
-                    <div class="text-5xl font-black text-skin-base">${dcfResult.fair_price.toFixed(2)}</div>
-                  </div>
-                  <div class="flex justify-between items-center bg-skin-card p-3 rounded border border-skin-line mb-4">
-                    <span class="text-sm opacity-70">現在株価</span>
-                    <span class="font-bold">${dcfResult.current_price?.toFixed(2)}</span>
-                  </div>
-                  <div class={`text-center py-2 rounded font-bold ${dcfResult.fair_price > dcfResult.current_price ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                    {dcfResult.fair_price > dcfResult.current_price ? '割安' : '割高'} 
-                    ({Math.abs((dcfResult.fair_price / dcfResult.current_price - 1) * 100).toFixed(1)}%)
-                  </div>
-                </div>
-              </section>
-            )}
-
-            <!-- Analyst Ratings -->
-            {reportData.analyst_ratings && (
-              <section>
-                <h2 class="text-2xl font-bold mb-4 border-b pb-2">アナリスト評価</h2>
-                <div class="bg-skin-card p-4 rounded-lg border border-skin-line flex flex-col gap-4">
-                  <div class="flex justify-between items-center">
-                    <span class="opacity-70">コンセンサス</span>
-                    <span class="px-3 py-1 bg-skin-accent/10 text-skin-accent rounded-full font-bold uppercase text-sm">
-                      {reportData.analyst_ratings.recommendationKey || "-"}
+              {/* Rigorous Methodology Section */}
+              <div class="mt-8">
+                <details class="group bg-skin-fill/10 border border-skin-line rounded-lg overflow-hidden">
+                  <summary class="flex items-center justify-between p-4 cursor-pointer hover:bg-skin-fill/20 transition-colors">
+                    <span class="font-bold flex items-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-skin-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                      </svg>
+                      DCF算出ロジックの数学的定義 (Technical Methodology)
                     </span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transform group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </summary>
+                  <div class="p-6 border-t border-skin-line space-y-8 bg-skin-card/50">
+                    
+                    <div>
+                      <h4 class="font-bold text-skin-accent mb-3 border-l-4 border-skin-accent pl-2">1. 割引率 (Discount Rate) の定義</h4>
+                      <p class="text-sm mb-4">本モデルでは、資本資産価格モデル (CAPM) に基づき株主資本コストを算出し、有利子負債コストと加重平均した <strong>WACC</strong> を割引率として採用しています。</p>
+                      
+                      <div class="bg-skin-fill/20 p-6 rounded-md space-y-8 overflow-x-auto text-center font-serif">
+                        <div class="space-y-4 text-left">
+                          <p class="text-skin-accent font-bold text-xs uppercase tracking-widest font-sans">■ 株主資本コスト (Cost of Equity)</p>
+                          <div class="flex justify-center py-2">
+                            <img src="https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Cbg%7Bwhite%7D%20R_e%20%3D%20R_f%20%2B%20%5Cbeta%20%5Ctimes%20%28R_m%20-%20R_f%29" alt="R_e formula" class="dark:invert h-8" />
+                          </div>
+                          <div class="opacity-60 text-[10px] flex flex-wrap justify-center gap-x-4 gap-y-1 font-sans border-t border-skin-line/10 pt-2">
+                            <span><strong>R_f</strong>:リスクフリーレート</span>
+                            <span><strong>β</strong>:5年ベータ値</span>
+                            <span><strong>R_m</strong>:市場期待リターン</span>
+                          </div>
+                        </div>
+                        <div class="space-y-4 pt-6 border-t border-skin-line/30 text-left">
+                          <p class="text-skin-accent font-bold text-xs uppercase tracking-widest font-sans">■ 加重平均資本コスト (WACC)</p>
+                          <div class="flex justify-center py-2">
+                            <img src="https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Cbg%7Bwhite%7D%20WACC%20%3D%20%5Cfrac%7BE%7D%7BV%7D%20R_e%20%2B%20%5Cfrac%7BD%7D%7BV%7D%20R_d%20%281%20-%20%5Ctau%29" alt="WACC formula" class="dark:invert h-10" />
+                          </div>
+                          <div class="opacity-60 text-[10px] flex flex-wrap justify-center gap-x-4 gap-y-1 font-sans border-t border-skin-line/10 pt-2">
+                            <span><strong>E</strong>:時価総額</span>
+                            <span><strong>D</strong>:有利子負債</span>
+                            <span><strong>R_d</strong>:負債利子率</span>
+                            <span><strong>τ</strong>:実効税率</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h4 class="font-bold text-skin-accent mb-3 border-l-4 border-skin-accent pl-2">2. 将来キャッシュフロー (FCF) の予測</h4>
+                      <p class="text-sm mb-4">予測期間10年間の成長率は、過去3年間の実績に基づく<strong>多要素加重平均成長率</strong>を用いています。</p>
+                      
+                      <div class="bg-skin-fill/20 p-6 rounded-md space-y-8 overflow-x-auto text-center font-serif">
+                        <div class="space-y-4 text-left">
+                          <p class="text-skin-accent font-bold text-xs uppercase tracking-widest font-sans">■ 予測成長率 (Years 1-5)</p>
+                          <div class="flex justify-center py-2">
+                            <img src="https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Cbg%7Bwhite%7D%20g_%7B1-5%7D%20%3D%200.4g_%7Brev%7D%20%2B%200.3g_%7Bfcf%7D%20%2B%200.2g_%7Bebitda%7D%20%2B%200.1g_%7Bni%7D" alt="Weighted growth formula" class="dark:invert h-8" />
+                          </div>
+                          <div class="opacity-60 text-[10px] flex flex-wrap justify-center gap-x-4 gap-y-1 font-sans border-t border-skin-line/10 pt-2 text-center">
+                            <span><strong>g_rev</strong>:売上</span>
+                            <span><strong>g_fcf</strong>:FCF</span>
+                            <span><strong>g_ebitda</strong>:EBITDA</span>
+                            <span><strong>g_ni</strong>:純利益のCAGR</span>
+                          </div>
+                        </div>
+                        <div class="space-y-4 pt-6 border-t border-skin-line/30 text-left">
+                          <p class="text-skin-accent font-bold text-xs uppercase tracking-widest font-sans">■ 減衰予測成長率 (Years 6-10)</p>
+                          <div class="flex justify-center py-2">
+                            <img src="https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Cbg%7Bwhite%7D%20g_%7B6-10%7D%20%3D%20%5Cmax%28g_%7B1-5%7D%20%5Ctimes%200.9%5E5%2C%20R_f%29" alt="Decay growth formula" class="dark:invert h-8" />
+                          </div>
+                          <p class="opacity-60 text-[10px] italic font-sans leading-relaxed text-center border-t border-skin-line/10 pt-2 w-full">※6年目以降は減衰係数 0.9を適用し、リスクフリーレートに向けて収束させます。</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h4 class="font-bold text-skin-accent mb-3 border-l-4 border-skin-accent pl-2">3. 企業価値 (Enterprise Value) の現在価値換算</h4>
+                      <p class="text-sm mb-4">予測期間のFCF合計と、それ以降の継続価値 (Terminal Value) をWACCで割引きます。</p>
+                      
+                      <div class="bg-skin-fill/20 p-6 rounded-md space-y-8 overflow-x-auto text-center font-serif">
+                        <div class="space-y-4 text-left">
+                          <p class="text-skin-accent font-bold text-xs uppercase tracking-widest font-sans">■ 継続価値 (Terminal Value)</p>
+                          <div class="flex justify-center py-2">
+                            <img src="https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Cbg%7Bwhite%7D%20TV%20%3D%20%5Cfrac%7BFCF_%7B10%7D%20%281%20%2B%20g_%7Btrm%7D%29%7D%7BWACC%20-%20g_%7Btrm%7D%7D" alt="Terminal Value formula" class="dark:invert h-12" />
+                          </div>
+                          <div class="opacity-60 text-[10px] flex flex-wrap justify-center gap-x-4 gap-y-1 font-sans border-t border-skin-line/10 pt-2 text-center">
+                            <span><strong>g_trm</strong>:永続成長率（リスクフリーレートを採用）</span>
+                          </div>
+                        </div>
+                        <div class="space-y-4 pt-6 border-t border-skin-line/30 text-left">
+                          <p class="text-skin-accent font-bold text-xs uppercase tracking-widest font-sans">■ 企業価値 (Enterprise Value)</p>
+                          <div class="flex justify-center py-2">
+                            <img src="https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Cbg%7Bwhite%7D%20EV%20%3D%20%5Csum_%7Bt%3D1%7D%5E%7B10%7D%20%5Cfrac%7BFCF_t%7D%7B%281%2BWACC%29%5Et%7D%20%2B%20%5Cfrac%7BTV%7D%7B%281%2BWACC%29%5E%7B10%7D%7D" alt="EV formula" class="dark:invert h-12" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h4 class="font-bold text-skin-accent mb-3 border-l-4 border-skin-accent pl-2">4. 理論株価 (Fair Price) への調整</h4>
+                      <p class="text-sm mb-4">企業価値 (EV) から現金・負債を調整し、株主価値を発行済株式数で除して算出します。</p>
+                      
+                      <div class="bg-skin-fill/20 p-6 rounded-md space-y-6 overflow-x-auto text-center font-serif">
+                        <div class="flex flex-col items-center gap-6">
+                          <img src="https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Cbg%7Bwhite%7D%20EquityValue%20%3D%20EV%20%2B%20Cash%20-%20Debt" alt="Equity Value" class="dark:invert h-6" />
+                          <img src="https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Cbg%7Bwhite%7D%20FairPrice%20%3D%20%5Cfrac%7BEquity%20Value%7D%7BShares%20Outstanding%7D" alt="Fair Price formula" class="dark:invert h-10" />
+                        </div>
+                      </div>
+                    </div>
+
                   </div>
-                  <div class="border-t pt-4 flex flex-col gap-2">
-                    <div class="flex justify-between text-sm">
-                      <span class="opacity-60">目標株価 (平均)</span>
-                      <span class="font-bold">${reportData.analyst_ratings.targetMeanPrice?.toFixed(2)}</span>
+                </details>
+              </div>
+
+              <div class="p-4 bg-skin-fill/10 border border-skin-line rounded-lg text-xs leading-relaxed opacity-80">
+                <p class="font-bold mb-2 flex items-center gap-1 text-skin-accent">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  詳細なDCF分析モデルについて
+                </p>
+                <p>
+                  このDCFモデルは、DefeatBeta APIのExcelテンプレートと同じロジックを用いて計算されています。
+                  <strong>割引率 (WACC)</strong> は、キャップM（CAPM）モデルに基づき、銘柄独自のベータ値と市場のリスクプレミアムから算出されています。
+                  <strong>成長率</strong> は過去3年間の実績（CAGR）を重み付けして予測のベースとしています。
+                  <strong>※重要：</strong> DCF法による理論株価は、将来のキャッシュフロー予測という「仮定」に強く依存します。成長率が1%変化するだけで理論株価は数十パーセント変動する場合があるため、投資判断の際の「目安」の一つとしてご活用ください。
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div class="p-8 bg-skin-fill/10 border border-skin-line rounded-lg text-center italic text-gray-500">
+              この銘柄のDCF分析データは現在利用できません（金融セクターや指標不足など）。
+            </div>
+          )}
+        </section>
+
+        <hr class="my-12 border-skin-line" />
+
+        <section id="analyst-ratings" class="mt-12">
+          <h2 class="text-2xl font-bold mb-6 border-b pb-2 flex items-center gap-2">
+            <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">target</span>
+            {symbol}のアナリスト評価 (直近)
+          </h2>
+          {analystSummary ? (
+            <div class="space-y-8">
+              {/* Consolidated Summary & Target Price Block */}
+              <div class="bg-skin-fill/20 p-6 sm:p-8 rounded-lg border border-skin-line shadow-sm">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 divide-y lg:divide-y-0 lg:divide-x divide-skin-line/50">
+                  
+                  {/* Left Column: Target Price */}
+                  <div class="pb-8 lg:pb-0 lg:pr-12">
+                    <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+                      <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">target</span> 目標株価 (Target Price)
+                    </h3>
+                    <div class="space-y-6">
+                      <div class="flex justify-between items-end border-b border-skin-line/30 pb-4">
+                        <div>
+                          <div class="text-sm opacity-70 mb-1">平均目標株価</div>
+                          <div class="text-3xl font-bold text-skin-accent">{typeof analystSummary.targetMean === 'number' ? `$${analystSummary.targetMean.toFixed(2)}` : '---'}</div>
+                        </div>
+                        <div class="text-right">
+                          <div class="text-sm opacity-70 mb-1">現在価格</div>
+                          <div class="text-xl font-bold opacity-80">{typeof analystSummary.currentPrice === 'number' ? `$${analystSummary.currentPrice.toFixed(2)}` : '---'}</div>
+                        </div>
+                      </div>
+                      
+                      {typeof analystSummary.currentPrice === 'number' && typeof analystSummary.targetMean === 'number' && (
+                        <div class="bg-skin-fill/20 px-4 py-3 rounded-md flex justify-between items-center">
+                          <span class="text-sm font-medium">現在価格からの乖離</span>
+                          <span class={`text-xl font-bold ${analystSummary.targetMean > analystSummary.currentPrice ? 'text-green-600' : 'text-red-600'}`}>
+                            {analystSummary.targetMean > analystSummary.currentPrice ? '+' : ''}{((analystSummary.targetMean / analystSummary.currentPrice - 1) * 100).toFixed(1)}%
+                            <span class="text-xs ml-1">{analystSummary.targetMean > analystSummary.currentPrice ? '上昇余地' : '下落予想'}</span>
+                          </span>
+                        </div>
+                      )}
+                      
+                      <div class="grid grid-cols-2 gap-4 text-center">
+                        <div class="bg-skin-fill/30 p-3 rounded-md">
+                          <div class="text-xs opacity-70 mb-1">最高</div>
+                          <div class="text-lg font-bold text-green-600">{typeof analystSummary.targetHigh === 'number' ? `$${analystSummary.targetHigh.toFixed(2)}` : '---'}</div>
+                        </div>
+                        <div class="bg-skin-fill/30 p-3 rounded-md">
+                          <div class="text-xs opacity-70 mb-1">最低</div>
+                          <div class="text-lg font-bold text-red-600">{typeof analystSummary.targetLow === 'number' ? `$${analystSummary.targetLow.toFixed(2)}` : '---'}</div>
+                        </div>
+                      </div>
+
+                      <div class="flex justify-between text-sm opacity-60 px-1 pt-2">
+                        <span>アナリスト予想数: {analystSummary.opinions || '---'}人</span>
+                        <span>中央値: {typeof analystSummary.targetMedian === 'number' ? `$${analystSummary.targetMedian.toFixed(2)}` : '---'}</span>
+                      </div>
                     </div>
-                    <div class="flex justify-between text-sm">
-                      <span class="opacity-60">目標株価 (最高)</span>
-                      <span class="font-bold">${reportData.analyst_ratings.targetHighPrice?.toFixed(2)}</span>
-                    </div>
-                    <div class="flex justify-between text-sm">
-                      <span class="opacity-60">目標株価 (最低)</span>
-                      <span class="font-bold">${reportData.analyst_ratings.targetLowPrice?.toFixed(2)}</span>
+                  </div>
+
+                  {/* Right Column: Overall Rating & Distribution */}
+                  <div class="pt-8 lg:pt-0 lg:pl-12">
+                    <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+                      <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">align_horizontal_left</span>
+                      総合評価と推奨分布
+                    </h3>
+                    <div class="space-y-6">
+                      <div class="flex justify-between items-center border-b border-skin-line/30 pb-4">
+                        <div>
+                          <div class="text-sm opacity-70 mb-1">総合評価</div>
+                          <div class={`text-2xl font-bold ${analystSummary.assessmentColor}`}>{analystSummary.assessment}</div>
+                        </div>
+                        <div class="text-right">
+                          <div class="text-sm opacity-70 mb-1">平均スコア</div>
+                          <div class="text-2xl font-bold text-skin-base">{typeof analystSummary.score === 'number' ? analystSummary.score.toFixed(2) : '---'} <span class="text-xs font-normal opacity-50">/ 5.0</span></div>
+                        </div>
+                      </div>
+
+                      <div class="space-y-3">
+                        {[
+                          { label: "強気買い", key: "strongBuy", color: "bg-green-600" },
+                          { label: "買い", key: "buy", color: "bg-green-400" },
+                          { label: "中立", key: "hold", color: "bg-gray-400" },
+                          { label: "売り", key: "sell", color: "bg-red-400" },
+                          { label: "強い売り", key: "strongSell", color: "bg-red-600" }
+                        ].map((rating) => (
+                          <div class="flex items-center gap-3">
+                            <span class="text-xs w-16 shrink-0 opacity-80">{rating.label}</span>
+                            <div class="flex-grow h-2 bg-skin-fill/50 rounded-full overflow-hidden">
+                               <div 
+                                 class={`h-full ${rating.color}`} 
+                                 style={`width: ${analystSummary.total > 0 ? (analystSummary.ratings[rating.key] || 0) / analystSummary.total * 100 : 0}%`}
+                               ></div>
+                            </div>
+                            <span class="text-xs font-medium w-6 text-right">{analystSummary.ratings[rating.key] || 0}</span>
+                          </div>
+                        ))}
+                      </div>
+                      <div class="text-right text-xs opacity-60">
+                        推奨アナリスト合計: {analystSummary.total}人
+                      </div>
                     </div>
                   </div>
                 </div>
-              </section>
-            )}
+              </div>
 
-            <!-- Consensus Estimates -->
-            {reportData.consensus && (
-              <section>
-                <h2 class="text-2xl font-bold mb-4 border-b pb-2">業績予想</h2>
-                <div class="bg-skin-card rounded-lg border border-skin-line overflow-hidden">
-                  <table class="w-full text-sm text-left">
-                    <thead class="bg-skin-fill/50 opacity-70">
+              {/* Recent Analyst Rating Changes */}
+              {reportData.rating_changes && reportData.rating_changes.length > 0 && (
+                <div class="mt-12 overflow-x-auto bg-skin-fill/10 p-4 rounded-lg border border-skin-line">
+                  <h3 class="text-xl font-bold mb-4 px-2 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">note_stack</span> 最近のレーティング変更
+                  </h3>
+                  <table class="min-w-full divide-y divide-skin-line text-sm">
+                    <thead class="bg-skin-fill/20">
                       <tr>
-                        <th class="px-4 py-2 font-normal">期間</th>
-                        <th class="px-4 py-2 font-normal text-right">EPS平均</th>
+                        <th scope="col" class="px-4 py-3 text-left font-semibold">日付</th>
+                        <th scope="col" class="px-4 py-3 text-left font-semibold">調査会社</th>
+                        <th scope="col" class="px-4 py-3 text-left font-semibold">格付け</th>
+                        <th scope="col" class="px-4 py-3 text-left font-semibold">アクション</th>
+                        <th scope="col" class="px-4 py-3 text-right font-semibold">判定時株価</th>
+                        <th scope="col" class="px-4 py-3 text-right font-semibold">目標株価 (旧→新)</th>
+                        <th scope="col" class="px-4 py-3 text-right font-semibold">判定時乖離</th>
+                        <th scope="col" class="px-4 py-3 text-right font-semibold text-skin-accent bg-skin-fill/5">現在比</th>
                       </tr>
                     </thead>
                     <tbody class="divide-y divide-skin-line">
-                      <tr>
-                        <td class="px-4 py-2">今期 (0Q)</td>
-                        <td class="px-4 py-2 text-right font-bold">${reportData.consensus.earnings?.["0q"]?.avg?.toFixed(2) || "-"}</td>
-                      </tr>
+                      {reportData.rating_changes.map((change: any) => {
+                        const currentPrice = reportData.analyst_ratings?.currentPrice;
+                        const basePrice = change.PriceAtRating;
+                        const targetPrice = change.currentPriceTarget;
+                        const upsideAtRating = (basePrice > 0 && targetPrice > 0) ? (targetPrice / basePrice - 1) * 100 : null;
+                        const upsideCurrent = (currentPrice > 0 && targetPrice > 0) ? (targetPrice / currentPrice - 1) * 100 : null;
+                        
+                        return (
+                        <tr class="hover:bg-skin-fill/10">
+                          <td class="px-4 py-3 whitespace-nowrap opacity-80">{change.GradeDate}</td>
+                          <td class="px-4 py-3 font-medium">{change.Firm}</td>
+                          <td class="px-4 py-3">
+                            <span class={`font-bold ${
+                              change.ToGrade?.toLowerCase().includes('buy') || change.ToGrade?.toLowerCase().includes('outperform') || change.ToGrade?.toLowerCase().includes('overweight') 
+                              ? 'text-green-600' : 
+                              change.ToGrade?.toLowerCase().includes('sell') || change.ToGrade?.toLowerCase().includes('underperform') || change.ToGrade?.toLowerCase().includes('underweight')
+                              ? 'text-red-600' : 'text-skin-base opacity-70'
+                            }`}>
+                              {translateGrade(change.ToGrade)}
+                            </span>
+                          </td>
+                          <td class="px-4 py-3 italic opacity-70">
+                            {(() => {
+                              const action = change.Action?.toLowerCase();
+                              let text = change.Action || '---';
+                              let colorClass = '';
+                              
+                              if (action === 'up') {
+                                text = `格上げ (up)`;
+                                colorClass = 'text-green-600 font-semibold not-italic';
+                              } else if (action === 'down') {
+                                text = `格下げ (down)`;
+                                colorClass = 'text-red-600 font-semibold not-italic';
+                              } else if (action === 'main') {
+                                text = `維持 (main)`;
+                              } else if (action === 'reit') {
+                                text = `再確認 (reit)`;
+                              } else if (action === 'init') {
+                                text = `新規開始 (init)`;
+                              }
+                              
+                              return <span class={colorClass}>{text}</span>;
+                            })()}
+                          </td>
+                          <td class="px-4 py-3 text-right whitespace-nowrap opacity-70">
+                            {change.PriceAtRating ? `$${change.PriceAtRating.toFixed(2)}` : '---'}
+                          </td>
+                          <td class="px-4 py-3 text-right whitespace-nowrap">
+                            <div class="flex items-center justify-end gap-1.5">
+                              {change.priorPriceTarget > 0 && (
+                                <span class="text-xs opacity-50">${change.priorPriceTarget}</span>
+                              )}
+                              {change.priorPriceTarget > 0 && change.currentPriceTarget > 0 && (
+                                <span class="text-xs opacity-30">→</span>
+                              )}
+                              {change.currentPriceTarget > 0 ? (
+                                <span class={`font-bold ${
+                                  change.priorPriceTarget > 0
+                                  ? (change.currentPriceTarget > change.priorPriceTarget ? 'text-green-600' : change.priorPriceTarget > change.currentPriceTarget ? 'text-red-600' : '')
+                                  : ''
+                                }`}>
+                                  ${change.currentPriceTarget}
+                                </span>
+                              ) : (
+                                !(change.priorPriceTarget > 0) ? (
+                                  <span class="opacity-30">---</span>
+                                ) : null
+                              )}
+                            </div>
+                          </td>
+                          <td class="px-4 py-3 text-right whitespace-nowrap">
+                            {upsideAtRating !== null ? (
+                              <div class="flex flex-col items-end">
+                                <span class={`font-bold ${upsideAtRating > 0 ? 'text-green-600' : upsideAtRating < 0 ? 'text-red-600' : ''}`}>
+                                  {upsideAtRating > 0 ? '+' : ''}{upsideAtRating.toFixed(1)}%
+                                </span>
+                                <span class="text-[10px] opacity-40 leading-none mt-0.5">判定時</span>
+                              </div>
+                            ) : (
+                              <span class="opacity-30">---</span>
+                            )}
+                          </td>
+                          <td class="px-4 py-3 text-right whitespace-nowrap bg-skin-fill/5">
+                            {upsideCurrent !== null ? (
+                              <span class={`font-bold ${upsideCurrent > 0 ? 'text-green-600' : upsideCurrent < 0 ? 'text-red-600' : ''}`}>
+                                {upsideCurrent > 0 ? '+' : ''}{upsideCurrent.toFixed(1)}%
+                              </span>
+                            ) : (
+                              <span class="opacity-30">---</span>
+                            )}
+                          </td>
+                        </tr>
+                      )})}
                     </tbody>
                   </table>
                 </div>
-              </section>
-            )}
-          </div>
-        </div>
+              )}
 
-        <!-- TradingView Advanced -->
-        <section id="fundamentals" class="mt-10">
-          <h2 class="text-2xl font-bold mb-6 border-b pb-2">詳細分析 (TradingView)</h2>
-          <TradingViewWidget symbol={reportData.full_symbol} type="financials" height={600} />
+              <p class="text-xs text-gray-400 mt-8">
+                ※平均スコアは 1.0(強気買い)から5.0(強い売り)の範囲で算出しています。<br />
+                ※アナリストの推奨評価の合計人数を表示しています。投資の最終判断はご自身で行ってください。
+              </p>
+            </div>
+          ) : (
+            <p class="text-gray-500">アナリスト評価データは現在利用できません。</p>
+          )}
         </section>
+
+        <section id="japan-brokers" class="mt-20 border-t-2 border-skin-accent/20 pt-10 pb-8">
+          <h2 class="text-2xl font-bold mb-2 flex items-center gap-2">
+             <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">price_change</span> 日本の証券会社での購入可否
+          </h2>
+          <p class="text-xs text-gray-500 mb-6 italic flex items-center gap-1">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            本セクションには広告・プロモーションが含まれる場合があります。
+          </p>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class={`p-6 rounded-lg border-2 flex flex-col justify-between bg-transparent ${reportData.is_available_monex ? 'border-green-500/30' : 'border-gray-300'}`}>
+              <div class="flex items-center gap-4 mb-6">
+                <div class={`p-3 rounded-full ${reportData.is_available_monex ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
+                   {reportData.is_available_monex ? (
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                     </svg>
+                   ) : (
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                     </svg>
+                   )}
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold text-skin-base">マネックス証券</h3>
+                  <p class="text-sm opacity-70">Monex Securities</p>
+                </div>
+              </div>
+              <div class="flex flex-col gap-3">
+                <span class={`w-full text-center py-2 rounded-full font-bold text-sm ${reportData.is_available_monex ? 'bg-green-600 text-white' : 'bg-gray-400 text-white'}`}>
+                  {reportData.is_available_monex ? '購入可能' : '取扱なし'}
+                </span>
+                <div class="mt-2 pt-3 border-t border-skin-line/50">
+                  <a href="https://h.accesstrade.net/sp/cc?rk=0100h3pw00oqmq" rel="nofollow" referrerpolicy="no-referrer-when-downgrade" target="_blank" class="text-xs text-skin-accent hover:underline flex items-center justify-center gap-1">
+                    米国株(PR)<img src="https://h.accesstrade.net/sp/rr?rk=0100h3pw00oqmq" width="1" height="1" alt="">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div class={`p-6 rounded-lg border-2 flex flex-col justify-between bg-transparent ${reportData.is_available_rakuten ? 'border-green-500/30' : 'border-gray-300'}`}>
+              <div class="flex items-center gap-4 mb-6">
+                <div class={`p-3 rounded-full ${reportData.is_available_rakuten ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
+                   {reportData.is_available_rakuten ? (
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                     </svg>
+                   ) : (
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                     </svg>
+                   )}
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold text-skin-base">楽天証券</h3>
+                  <p class="text-sm opacity-70">Rakuten Securities</p>
+                </div>
+              </div>
+              <div class="flex flex-col gap-3">
+                <span class={`w-full text-center py-2 rounded-full font-bold text-sm ${reportData.is_available_rakuten ? 'bg-green-600 text-white' : 'bg-gray-400 text-white'}`}>
+                  {reportData.is_available_rakuten ? '購入可能' : '取扱なし'}
+                </span>
+                <div class="mt-2 pt-3 border-t border-skin-line/50">
+                  <a href="https://www.rakuten-sec.co.jp/web/market/search/us_search/result.html?all=on&vall=on&forwarding=na&target=0&theme=na&returns=na&head_office=na&name=&code=&sector=na&pageNo=&c=us&p=result&r1=on" target="_blank" rel="noopener noreferrer" class="text-xs text-skin-accent hover:underline flex items-center justify-center gap-1">
+                    公式サイトを確認
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div class={`p-6 rounded-lg border-2 flex flex-col justify-between bg-transparent ${reportData.is_available_sbi ? 'border-green-500/30' : 'border-gray-300'}`}>
+              <div class="flex items-center gap-4 mb-6">
+                <div class={`p-3 rounded-full ${reportData.is_available_sbi ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
+                   {reportData.is_available_sbi ? (
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                     </svg>
+                   ) : (
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                     </svg>
+                   )}
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold text-skin-base">SBI証券</h3>
+                  <p class="text-sm opacity-70">SBI Securities</p>
+                </div>
+              </div>
+              <div class="flex flex-col gap-3">
+                <span class={`w-full text-center py-2 rounded-full font-bold text-sm ${reportData.is_available_sbi ? 'bg-green-600 text-white' : 'bg-gray-400 text-white'}`}>
+                  {reportData.is_available_sbi ? '購入可能' : '取扱なし'}
+                </span>
+                <div class="mt-2 pt-3 border-t border-skin-line/50">
+                  <a href="https://search.sbisec.co.jp/v2/popwin/info/stock/pop6040_usequity_list.html#us" target="_blank" rel="noopener noreferrer" class="text-xs text-skin-accent hover:underline flex items-center justify-center gap-1">
+                    公式サイトを確認
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div class={`p-6 rounded-lg border-2 flex flex-col justify-between bg-transparent ${reportData.is_available_mufg ? 'border-green-500/30' : 'border-gray-300'}`}>
+              <div class="flex items-center gap-4 mb-6">
+                <div class={`p-3 rounded-full ${reportData.is_available_mufg ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
+                   {reportData.is_available_mufg ? (
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                     </svg>
+                   ) : (
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                     </svg>
+                   )}
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold text-skin-base leading-tight">三菱UFJ<br/>eスマート証券</h3>
+                  <p class="text-xs opacity-70 mt-1">Mitsubishi UFJ eSmart Securities</p>
+                </div>
+              </div>
+              <div class="flex flex-col gap-3">
+                <span class={`w-full text-center py-2 rounded-full font-bold text-sm ${reportData.is_available_mufg ? 'bg-green-600 text-white' : 'bg-gray-400 text-white'}`}>
+                  {reportData.is_available_mufg ? '購入可能' : '取扱なし'}
+                </span>
+                <div class="mt-2 pt-3 border-t border-skin-line/50">
+                  <a href="https://kabu.com/item/foreign_stock/us_stock/meigara.html" target="_blank" rel="noopener noreferrer" class="text-xs text-skin-accent hover:underline flex items-center justify-center gap-1">
+                    公式サイトを確認
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div class={`p-6 rounded-lg border-2 flex flex-col justify-between bg-transparent ${reportData.is_available_matsui ? 'border-green-500/30' : 'border-gray-300'}`}>
+              <div class="flex items-center gap-4 mb-6">
+                <div class={`p-3 rounded-full ${reportData.is_available_matsui ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
+                   {reportData.is_available_matsui ? (
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                     </svg>
+                   ) : (
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                     </svg>
+                   )}
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold text-skin-base">松井証券</h3>
+                  <p class="text-sm opacity-70">Matsui Securities</p>
+                </div>
+              </div>
+              <div class="flex flex-col gap-3">
+                <span class={`w-full text-center py-2 rounded-full font-bold text-sm ${reportData.is_available_matsui ? 'bg-green-600 text-white' : 'bg-gray-400 text-white'}`}>
+                  {reportData.is_available_matsui ? '購入可能' : '取扱なし'}
+                </span>
+                <div class="mt-2 pt-3 border-t border-skin-line/50 text-center">
+                  <a href="https://h.accesstrade.net/sp/cc?rk=0100p10300oqmq" rel="nofollow" referrerpolicy="no-referrer-when-downgrade" class="text-[10px] text-skin-accent hover:underline leading-tight flex items-center justify-center gap-1">
+                    松井証券の米国株?業界最安水準の手数料?（PR）
+                    <img src="https://h.accesstrade.net/sp/rr?rk=0100p10300oqmq" width="1" height="1" alt="" class="inline">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div class={`p-6 rounded-lg border-2 flex flex-col justify-between bg-transparent ${reportData.is_available_dmm ? 'border-green-500/30' : 'border-gray-300'}`}>
+              <div class="flex items-center gap-4 mb-6">
+                <div class={`p-3 rounded-full ${reportData.is_available_dmm ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
+                   {reportData.is_available_dmm ? (
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                     </svg>
+                   ) : (
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                     </svg>
+                   )}
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold text-skin-base">DMM株</h3>
+                  <p class="text-sm opacity-70">DMM.com Securities</p>
+                </div>
+              </div>
+              <div class="flex flex-col gap-3">
+                <span class={`w-full text-center py-2 rounded-full font-bold text-sm ${reportData.is_available_dmm ? 'bg-green-600 text-white' : 'bg-gray-400 text-white'}`}>
+                  {reportData.is_available_dmm ? '購入可能' : '取扱なし'}
+                </span>
+                <div class="mt-2 pt-3 border-t border-skin-line/50 text-center">
+                  <a href="https://h.accesstrade.net/sp/cc?rk=0100mkk300oqmq" rel="nofollow" referrerpolicy="no-referrer-when-downgrade" class="text-xs text-skin-accent hover:underline flex items-center justify-center gap-1">
+                    DMM 株（PR）
+                    <img src="https://h.accesstrade.net/sp/rr?rk=0100mkk300oqmq" width="1" height="1" alt="" class="inline">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div class={`p-6 rounded-lg border-2 flex flex-col justify-between bg-transparent ${reportData.is_available_paypay ? 'border-green-500/30' : 'border-gray-300'}`}>
+              <div class="flex items-center gap-4 mb-6">
+                <div class={`p-3 rounded-full ${reportData.is_available_paypay ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
+                   {reportData.is_available_paypay ? (
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                     </svg>
+                   ) : (
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                     </svg>
+                   )}
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold text-skin-base">PayPay証券</h3>
+                  <p class="text-sm opacity-70">PayPay Securities</p>
+                </div>
+              </div>
+              <div class="flex flex-col gap-3">
+                <span class={`w-full text-center py-2 rounded-full font-bold text-sm ${reportData.is_available_paypay ? 'bg-green-600 text-white' : 'bg-gray-400 text-white'}`}>
+                  {reportData.is_available_paypay ? '購入可能' : '取扱なし'}
+                </span>
+                <div class="mt-2 pt-3 border-t border-skin-line/50">
+                  <a href="https://www.paypay-sec.co.jp/us-stock/list/" target="_blank" rel="noopener noreferrer" class="text-xs text-skin-accent hover:underline flex items-center justify-center gap-1">
+                    公式サイトを確認
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div class={`p-6 rounded-lg border-2 flex flex-col justify-between bg-transparent ${reportData.is_available_moomoo ? 'border-green-500/30' : 'border-gray-300'}`}>
+              <div class="flex items-center gap-4 mb-6">
+                <div class={`p-3 rounded-full ${reportData.is_available_moomoo ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
+                   {reportData.is_available_moomoo ? (
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                     </svg>
+                   ) : (
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                     </svg>
+                   )}
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold text-skin-base leading-tight">moomoo証券</h3>
+                  <p class="text-sm opacity-70 mt-1">moomoo Securities</p>
+                </div>
+              </div>
+              <div class="flex flex-col gap-3">
+                <span class={`w-full text-center py-2 rounded-full font-bold text-sm ${reportData.is_available_moomoo ? 'bg-green-600 text-white' : 'bg-gray-400 text-white'}`}>
+                  {reportData.is_available_moomoo ? '購入可能' : '取扱なし'}
+                </span>
+                <div class="mt-2 pt-3 border-t border-skin-line/50 text-center">
+                  <a href="https://h.accesstrade.net/sp/cc?rk=0100pd0z00oqmq" rel="nofollow" referrerpolicy="no-referrer-when-downgrade" class="text-xs text-skin-accent hover:underline flex items-center justify-center gap-1">
+                    moomoo証券（PR）
+                    <img src="https://h.accesstrade.net/sp/rr?rk=0100pd0z00oqmq" width="1" height="1" alt="" class="inline">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* 岩井コスモ証券 */}
+            <div class={`p-6 rounded-lg border-2 flex flex-col justify-between bg-transparent ${reportData.is_available_iwaicosmo ? 'border-green-500/30' : 'border-gray-300'}`}>
+              <div class="flex items-center gap-4 mb-4">
+                <div class={`p-3 rounded-full ${reportData.is_available_iwaicosmo ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
+                   {reportData.is_available_iwaicosmo ? (
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                     </svg>
+                   ) : (
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                     </svg>
+                   )}
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold text-skin-base leading-tight">岩井コスモ証券</h3>
+                  <p class="text-sm opacity-70 mt-1">IwaiCosmo Securities</p>
+                </div>
+              </div>
+              <div class="flex flex-col gap-3">
+                <span class={`w-full text-center py-2 rounded-full font-bold text-sm ${reportData.is_available_iwaicosmo ? 'bg-green-600 text-white' : 'bg-gray-400 text-white'}`}>
+                  {reportData.is_available_iwaicosmo ? '購入可能' : '取扱なし'}
+                </span>
+                <div class="mt-2 pt-3 border-t border-skin-line/50">
+                  <a href="https://www.iwaicosmo.co.jp/investment/list/" target="_blank" rel="noopener noreferrer" class="text-xs text-skin-accent hover:underline flex items-center justify-center gap-1">
+                    公式サイトを確認
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <p class="text-xs text-gray-500 mt-6 bg-skin-fill/50 p-4 rounded border border-skin-line italic">
+            ※本データは各証券会社が公開している「取扱銘柄リスト」に基づき自動判定されています。最新の取扱状況や、売買停止・特定口座の対応状況については必ず各証券会社の公式サイトをご確認ください。
+          </p>
+        </section>
+
+        <!-- トップに戻るボタン -->
+        <div class="mt-12 mb-20 text-center">
+          <a href="#" class="px-6 py-2 bg-skin-card border border-skin-line rounded-full text-sm font-bold hover:text-skin-accent hover:border-skin-accent transition-all inline-flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
+            </svg>
+            ページトップへ戻る
+          </a>
+        </div>
       </div>
     )}
   </main>
   <Footer />
 </Layout>
+
+<style>
+  .report-content {
+    color: var(--color-text-base);
+  }
+  .report-content h2 {
+    margin-top: 2.5rem;
+    color: var(--color-text-base);
+  }
+  .scroll-mt-20 {
+    scroll-margin-top: 5rem;
+  }
+  .list-circle {
+    list-style-type: circle;
+  }
+</style>
