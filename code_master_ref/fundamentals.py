@@ -576,18 +576,18 @@ def get_geo_chart_data(df_geo):
     colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd',
               '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
 
-    # 四半期トレース (Default visible)
+    # 四半期トレース (Hidden by default)
     for i, col in enumerate(active_cols_q):
         fig.add_trace(go.Bar(
             name=f"{col} (四半期)",
             x=df_q['Date'],
             y=df_q[col],
             marker_color=colors[i % len(colors)],
-            visible=True,
+            visible=False,
             hovertemplate='日付: %{x}<br>地域: ' + col + '<br>収益: $%{y:,.0f}<extra></extra>'
         ))
 
-    # 通年トレース (Hidden by default)
+    # 通年トレース (Visible by default)
     num_q = len(active_cols_q)
     for i, col in enumerate(active_cols_a):
         fig.add_trace(go.Bar(
@@ -595,7 +595,7 @@ def get_geo_chart_data(df_geo):
             x=df_a['Year'],
             y=df_a[col],
             marker_color=colors[i % len(colors)],
-            visible=False,
+            visible=True,
             hovertemplate='年度: %{x}<br>地域: ' + col + '<br>収益: $%{y:,.0f}<extra></extra>'
         ))
 
@@ -1131,18 +1131,18 @@ def get_segment_chart_data(df_segment):
     colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd',
               '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
 
-    # 四半期トレース (Default visible)
+    # 四半期トレース (Hidden by default)
     for i, col in enumerate(active_seg_cols_q):
         fig.add_trace(go.Bar(
             name=f"{col} (四半期)",
             x=df_q['Date'],
             y=df_q[col],
             marker_color=colors[i % len(colors)],
-            visible=True,
+            visible=False,
             hovertemplate='日付: %{x}<br>セグメント: ' + col + '<br>収益: $%{y:,.0f}<extra></extra>'
         ))
 
-    # 通年トレース (Hidden by default)
+    # 通年トレース (Visible by default)
     num_q = len(active_seg_cols_q)
     for i, col in enumerate(active_seg_cols_a):
         fig.add_trace(go.Bar(
@@ -1150,7 +1150,7 @@ def get_segment_chart_data(df_segment):
             x=df_a['Year'],
             y=df_a[col],
             marker_color=colors[i % len(colors)],
-            visible=False,
+            visible=True,
             hovertemplate='年度: %{x}<br>セグメント: ' + col + '<br>収益: $%{y:,.0f}<extra></extra>'
         ))
 

@@ -96,9 +96,29 @@ async function main() {
       const riskReturnData = formatRiskReturnGroups(riskMetricsList, [stock.Symbol, `Sector ${targetEtf}`, 'S&P 500']);
 
       // 3. データの統合 (Astroレイアウトの期待値に合わせる)
-      const is = convertDBFinancials(dbData.financials?.income_statement);
-      const bs = convertDBFinancials(dbData.financials?.balance_sheet);
-      const cf = convertDBFinancials(dbData.financials?.cash_flow);
+      const is = convertDBFinancials(dbData.financials?.income_statement, 
+        ["Total Revenue", "Gross Profit", "Operating Income", "Net Income", "Net Income Common Stockholders"]);
+      
+      // BSは借方・貸方の指定に合わせて構成
+      // 貸方 (Left/group-0): 固定資産、流動資産
+      // 借方 (Right/group-1): 純資産、固定負債、流動負債
+      const bs = convertDBFinancials(dbData.financials?.balance_sheet,
+        [
+          "Total non-current assets", "Total Current Assets",
+          "Stockholders' Equity", "Total Non Current Liabilities", 
+          "Total Current Liabilities"
+        ],
+        {
+          "Total non-current assets": "0",
+          "Total Current Assets": "0",
+          "Stockholders' Equity": "1",
+          "Total Non Current Liabilities": "1",
+          "Total Current Liabilities": "1"
+        }
+      );
+      
+      const cf = convertDBFinancials(dbData.financials?.cash_flow,
+        ["Operating Cash Flow", "Investing Cash Flow", "Financing Cash Flow", "Free Cash Flow", "Cash Dividends Paid", "Common Stock Dividend Paid", "Repurchase of Capital Stock"]);
       
       // 取引所マッピング (TradingView 互換)
       const exchangeMap: Record<string, string> = {
@@ -123,7 +143,7 @@ async function main() {
         exchange: exchange,
         full_symbol: `${exchange}:${stock.Symbol.replace('-', '.')}`,
         is_financial: isFinancial,
-        
+
         // 証券会社フラグ
         is_available_monex: brokerages.monex.has(stock.Symbol),
         is_available_rakuten: brokerages.rakuten.has(stock.Symbol),
@@ -132,7 +152,7 @@ async function main() {
 
         // DefeatBeta由来の詳細なDCF
         dcf_valuation: dbData.dcf,
-        
+
         charts: {
           risk_return: riskReturnData,
           performance: perfData,
@@ -195,7 +215,7 @@ async function main() {
 }
 
 // 補助関数: DefeatBeta (Split形式) から ChartJs (Plotly風) 用に変換
-function convertDBFinancials(splitData: any) {
+function convertDBFinancials(splitData: any, allowedKeys?: string[], offsetGroupMap?: Record<string, string>) {
   if (!splitData || !splitData.columns || !splitData.data) return null;
   
   const columns = splitData.columns; // ["Breakdown", "2025-06-30", ...]
@@ -204,13 +224,20 @@ function convertDBFinancials(splitData: any) {
   // マッピング: 英語名 -> 日本語名 (ChartJs.astro のロジック用)
   const translationMap: Record<string, string> = {
     "Total Assets": "総資産",
+    "Current Assets": "流動資産",
     "Total Current Assets": "流動資産",
-    "Total Non Current Assets": "固定資産",
-    "Total Liabilities Net Minority Interest": "負債合計",
+    "Total Current Liabilities": "流動負債",
     "Current Liabilities": "流動負債",
+    "Total Non Current Assets": "固定資産",
+    "Total non-current assets": "固定資産",
+    "Total Liabilities Net Minority Interest": "負債合計",
+    "Total Liabilities": "負債合計",
     "Total Non Current Liabilities Net Minority Interest": "固定負債",
+    "Total Non Current Liabilities": "固定負債",
     "Stockholders Equity": "純資産",
+    "Stockholders' Equity": "純資産",
     "Total Equity Gross Minority Interest": "純資産",
+    "Total Equity": "純資産",
     "Total Revenue": "売上高",
     "Gross Profit": "売上総利益",
     "Operating Income": "営業利益",
@@ -225,17 +252,58 @@ function convertDBFinancials(splitData: any) {
     "Repurchase of Capital Stock": "自社株買い"
   };
 
-  const traces = splitData.data.map((row: any) => {
+  // 個別カラーマッピング
+  const colorMap: Record<string, string> = {
+    "固定資産": "#1f77b4",
+    "流動資産": "#aec7e8",
+    "純資産": "#2ca02c",
+    "固定負債": "#ff7f0e",
+    "流動負債": "#ffbb78",
+    "売上高": "#1f77b4",
+    "売上総利益": "#ff7f0e",
+    "営業利益": "#2ca02c",
+    "純利益": "#d62728",
+    "営業CF": "#1f77b4",
+    "投資CF": "#ff7f0e",
+    "財務CF": "#2ca02c",
+    "フリーCF": "#d62728",
+    "配当金支払": "#aec7e8",
+    "自社株買い": "#ffbb78"
+  };
+
+  const filteredRows = splitData.data.filter((row: any) => !allowedKeys || allowedKeys.includes(row[0]));
+  
+  // 全ての項目でデータが空(null or 0)のインデックスを特定して除外
+  const validIndices: number[] = [];
+  for (let i = 0; i < dates.length; i++) {
+    const rawValIdx = dates.length - 1 - i + 1; // 元のrow内でのインデックス
+    const hasData = filteredRows.some((row: any) => {
+      const v = row[rawValIdx];
+      return v !== null && v !== 0 && v !== "*";
+    });
+    if (hasData) validIndices.push(i);
+  }
+
+  const finalDates = validIndices.map(i => dates[i]);
+
+  const traces = filteredRows.map((row: any) => {
     const name = row[0];
-    const values = row.slice(1).map((v: any) => (v === "*" || v === null) ? null : parseFloat(v)).reverse();
+    const rawValues = row.slice(1).reverse();
+    const values = validIndices.map(i => {
+      const v = rawValues[i];
+      return (v === "*" || v === null) ? null : parseFloat(v);
+    });
     
+    const translatedName = translationMap[name] || name;
     return {
-      name: translationMap[name] || name,
+      name: translatedName,
       originalName: name, // 元の名前を保持
-      x: dates,
+      x: finalDates,
       y: values,
       type: 'bar',
-      visible: true
+      visible: true,
+      offsetgroup: offsetGroupMap ? offsetGroupMap[name] : undefined,
+      marker: { color: colorMap[translatedName] }
     };
   });
 
@@ -243,36 +311,75 @@ function convertDBFinancials(splitData: any) {
 }
 
 function convertDBSegments(splitData: any, title: string) {
-  if (!splitData) return null;
+  if (!splitData || !splitData.columns || !splitData.data) return null;
   
-  // ChartJs.astro が期待する Plotly 形式に変換
-  // data: [{ name, x: [labels], y: [values], type: 'bar' }]
-  if (splitData.labels && splitData.datasets) {
-    return {
-      data: splitData.datasets.map((ds: any, i: number) => ({
-        name: i === 0 ? title : `${title} ${i}`,
-        x: splitData.labels,
-        y: ds.data,
-        type: 'bar'
-      }))
-    };
-  }
+  const columns = splitData.columns; // ["symbol", "report_date", "Mac", "Services", ...]
+  const segmentCols = columns.filter((c: string) => c !== 'symbol' && c !== 'report_date');
+  const colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd',
+                  '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'];
+  
+  const segmentIndices = segmentCols.map((c: string) => columns.indexOf(c));
 
-  // フォールバック: Split 形式の場合
-  if (splitData.columns && splitData.data) {
-    const labels = splitData.columns.filter((c: string) => c !== 'symbol' && c !== 'report_date');
-    const data = splitData.data[splitData.data.length - 1]?.slice(2) || [];
-    return {
-      data: [{
-        name: title,
-        x: labels,
-        y: data,
-        type: 'bar'
-      }]
-    };
-  }
+  // 1. 四半期トレースの準備 (データのない日付を除外)
+  const validIndicesQ: number[] = [];
+  splitData.data.forEach((row: any, i: number) => {
+    const hasData = segmentIndices.some(idx => {
+      const v = row[idx];
+      return v !== null && v !== 0 && v !== "*";
+    });
+    if (hasData) validIndicesQ.push(i);
+  });
 
-  return null;
+  const qTraces = segmentCols.map((col, i) => {
+    const colIdx = columns.indexOf(col);
+    const dates = validIndicesQ.map(idx => splitData.data[idx][1]);
+    const values = validIndicesQ.map(idx => splitData.data[idx][colIdx]);
+    
+    return {
+      name: `${col} (四半期)`,
+      x: dates,
+      y: values,
+      type: 'bar',
+      marker: { color: colors[i % colors.length] },
+      visible: false, // 四半期はデフォルト非表示
+      _stack: 'segment'
+    };
+  });
+
+  // 2. 通年データの集計 (年度ごと)
+  const annualMap: Record<string, Record<string, number>> = {};
+  splitData.data.forEach((row: any) => {
+    const year = row[1].substring(0, 4);
+    if (!annualMap[year]) {
+      annualMap[year] = {};
+      segmentCols.forEach(col => annualMap[year][col] = 0);
+    }
+    segmentCols.forEach(col => {
+      const colIdx = columns.indexOf(col);
+      annualMap[year][col] += (row[colIdx] || 0);
+    });
+  });
+
+  // データが完全に空の年度を除外
+  const years = Object.keys(annualMap).sort().filter(y => {
+    return segmentCols.some(col => annualMap[y][col] !== 0);
+  });
+
+  const aTraces = segmentCols.map((col, i) => {
+    return {
+      name: `${col} (通年)`,
+      x: years,
+      y: years.map(y => annualMap[y][col]),
+      type: 'bar',
+      marker: { color: colors[i % colors.length] },
+      visible: true, // 通年はデフォルト表示
+      _stack: 'segment'
+    };
+  });
+
+  return {
+    data: [...qTraces, ...aTraces]
+  };
 }
 
 /**
