@@ -26,6 +26,10 @@ def main(symbol):
         is_annual = db_ticker.annual_income_statement().df()
         bs_annual = db_ticker.annual_balance_sheet().df()
         cf_annual = db_ticker.annual_cash_flow().df()
+
+        is_quarterly = db_ticker.quarterly_income_statement().df()
+        bs_quarterly = db_ticker.quarterly_balance_sheet().df()
+        cf_quarterly = db_ticker.quarterly_cash_flow().df()
         
         # 2. セグメント・地域別収益
         rev_segment = db_ticker.revenue_by_segment()
@@ -40,7 +44,10 @@ def main(symbol):
             "financials": {
                 "income_statement": format_df_to_dict(is_annual),
                 "balance_sheet": format_df_to_dict(bs_annual),
-                "cash_flow": format_df_to_dict(cf_annual)
+                "cash_flow": format_df_to_dict(cf_annual),
+                "income_statement_quarterly": format_df_to_dict(is_quarterly),
+                "balance_sheet_quarterly": format_df_to_dict(bs_quarterly),
+                "cash_flow_quarterly": format_df_to_dict(cf_quarterly)
             },
             "segments": format_df_to_dict(rev_segment),
             "geography": format_df_to_dict(rev_geo),

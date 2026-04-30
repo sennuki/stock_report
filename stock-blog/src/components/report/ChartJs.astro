@@ -506,11 +506,11 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
         backgroundColor: baseColor,
         borderColor: baseColor,
         borderWidth: type === 'line' ? 2 : (type === 'scatter' ? 1 : 0),
-        // スキャッターチャートならドットを表示、ラインチャートなら非表示
+        // スキャッターチャートならドットを表示、ラインチャートでもmodeにmarkersがあれば表示
         pointRadius: isScatterChart 
           ? (name.includes('S&P500銘柄') ? 2.5 : 7) 
-          : 0,
-        pointHoverRadius: isScatterChart ? 10 : 6,
+          : (d.mode && d.mode.includes('markers') ? 4 : 0),
+        pointHoverRadius: isScatterChart ? 10 : (d.mode && d.mode.includes('markers') ? 7 : 6),
         pointBorderWidth: (isScatterChart && !name.includes('S&P500銘柄')) ? 2 : 0,
         pointBorderColor: '#fff',
         pointStyle: 'circle',

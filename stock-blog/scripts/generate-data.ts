@@ -42,7 +42,7 @@ async function main() {
       try {
         const pythonPath = path.join(process.cwd(), '../code_master_ref/.venv/bin/python3');
         const output = execSync(`${pythonPath} ${PYTHON_SCRIPT} ${stock.Symbol}`, { encoding: 'utf-8', cwd: path.dirname(PYTHON_SCRIPT) });
-        
+
         // JSONの開始位置を探す (ゴミが混ざっていた場合への対策)
         const jsonStart = output.indexOf('{');
         if (jsonStart !== -1) {
@@ -65,61 +65,94 @@ async function main() {
         'Utilities': 'XLU',
         'Real Estate': 'XLRE',
         'Materials': 'XLB',
-        'Homebuilding': 'XHB' // Sub-Industry 用
+        'Homebuilding': 'XHB'
       };
 
       const targetEtf = sectorEtfMap[stock['GICS Sub-Industry']] || sectorEtfMap[stock['GICS Sector']] || 'SPY';
 
-      // 2. YFinance (TypeScript) から詳細データを取得
+      // 2. YFinance (TypeScript) から詳細データを取得 (個別失敗を許容)
       const [quote, summary, riskMetricsList, perfData, chartResult] = await Promise.all([
-        yahooFinance.quote(stock.Symbol_YF),
+        yahooFinance.quote(stock.Symbol_YF).catch(e => {
+          console.error(`    - Quote fetch failed for ${stock.Symbol}:`, e.message);
+          return { regularMarketPrice: 0, regularMarketChangePercent: 0, exchange: 'NMS' };
+        }),
         yahooFinance.quoteSummary(stock.Symbol_YF, {
           modules: ['financialData', 'defaultKeyStatistics', 'recommendationTrend']
-        }).catch(() => ({})),
+        }).catch(e => {
+          console.error(`    - Summary fetch failed for ${stock.Symbol}:`, e.message);
+          return {};
+        }),
         Promise.all([
-          calculateRiskMetrics(stock.Symbol_YF),
-          calculateRiskMetrics(targetEtf),
-          calculateRiskMetrics('SPY')
-        ]),
-        generatePerformanceChartData(stock.Symbol_YF, targetEtf),
+          calculateRiskMetrics(stock.Symbol_YF).catch(() => null),
+          calculateRiskMetrics(targetEtf).catch(() => null),
+          calculateRiskMetrics('SPY').catch(() => null)
+        ]).catch(() => [null, null, null]),
+        generatePerformanceChartData(stock.Symbol_YF, targetEtf).catch(e => {
+          console.error(`    - Performance data fetch failed for ${stock.Symbol}:`, e.message);
+          return null;
+        }),
         yahooFinance.chart(stock.Symbol_YF, { 
           period1: '2010-01-01', 
           interval: '1d' 
-        }).catch(() => ({ events: { dividends: [] } }))
+        }).catch(e => {
+          console.error(`    - Chart fetch failed for ${stock.Symbol}:`, e.message);
+          return { events: { dividends: [] } };
+        })
       ]);
 
-      const dividends = chartResult.events?.dividends || [];
-      const financialData = summary.financialData || {};
-      const stats = summary.defaultKeyStatistics || {};
+      const dividends = (chartResult as any)?.events?.dividends || [];
+      const financialData = (summary as any).financialData || {};
 
       // リスク・リターンの統合 (全期間タブ対応)
       const riskReturnData = formatRiskReturnGroups(riskMetricsList, [stock.Symbol, `Sector ${targetEtf}`, 'S&P 500']);
 
       // 3. データの統合 (Astroレイアウトの期待値に合わせる)
-      const is = convertDBFinancials(dbData.financials?.income_statement, 
-        ["Total Revenue", "Gross Profit", "Operating Income", "Net Income", "Net Income Common Stockholders"]);
-      
-      // BSは借方・貸方の指定に合わせて構成
-      // 貸方 (Left/group-0): 固定資産、流動資産
-      // 借方 (Right/group-1): 純資産、固定負債、流動負債
-      const bs = convertDBFinancials(dbData.financials?.balance_sheet,
-        [
-          "Total non-current assets", "Total Current Assets",
-          "Stockholders' Equity", "Total Non Current Liabilities", 
-          "Total Current Liabilities"
-        ],
-        {
-          "Total non-current assets": "0",
-          "Total Current Assets": "0",
-          "Stockholders' Equity": "1",
-          "Total Non Current Liabilities": "1",
-          "Total Current Liabilities": "1"
-        }
-      );
-      
-      const cf = convertDBFinancials(dbData.financials?.cash_flow,
-        ["Operating Cash Flow", "Investing Cash Flow", "Financing Cash Flow", "Free Cash Flow", "Cash Dividends Paid", "Common Stock Dividend Paid", "Repurchase of Capital Stock"]);
-      
+      // IS, BS, CFを年次・四半期それぞれ生成して結合
+      const is_a = convertDBFinancials(dbData.financials?.income_statement,
+        ["Total Revenue", "Gross Profit", "Operating Income", "Net Income", "Net Income Common Stockholders"], undefined, '通年', true);
+      const is_q = convertDBFinancials(dbData.financials?.income_statement_quarterly,
+        ["Total Revenue", "Gross Profit", "Operating Income", "Net Income", "Net Income Common Stockholders"], undefined, '四半期', false);
+      const is = { data: [...addMarginRatiosToIS(is_a).data, ...addMarginRatiosToIS(is_q).data] };
+
+      const bsCols = [
+        "Total non-current assets", "Total Current Assets",
+        "Stockholders' Equity", "Total Non Current Liabilities", 
+        "Total Current Liabilities"
+      ];
+      const bsMap = {
+        "Total non-current assets": "0",
+        "Total Current Assets": "0",
+        "Stockholders' Equity": "1",
+        "Total Non Current Liabilities": "1",
+        "Total Current Liabilities": "1"
+      };
+      const bs_a = convertDBFinancials(dbData.financials?.balance_sheet, bsCols, bsMap, '通年', true);
+      const bs_q = convertDBFinancials(dbData.financials?.balance_sheet_quarterly, bsCols, bsMap, '四半期', false);
+      const bs = { data: [...bs_a.data, ...bs_q.data] };
+
+      const cfCols = ["Net Income", "Net Income Common Stockholders", "Net Income from Continuing Operations", "Operating Cash Flow", "Investing Cash Flow", "Financing Cash Flow", "Free Cash Flow", "Cash Dividends Paid", "Common Stock Dividend Paid", "Repurchase of Capital Stock"];
+      const cf_a_full = convertDBFinancials(dbData.financials?.cash_flow, cfCols, undefined, '通年', true);
+      const cf_q_full = convertDBFinancials(dbData.financials?.cash_flow_quarterly, cfCols, undefined, '四半期', false);
+
+      const cfFilter = (t: any) => t.name.includes("純利益") || t.name.includes("営業CF") || t.name.includes("投資CF") || t.name.includes("財務CF") || t.name.includes("フリーCF");
+      const cfSort = (a: any, b: any) => {
+        const order = ["純利益", "営業CF", "投資CF", "財務CF", "フリーCF"];
+        const nameA = a.name.split(' (')[0];
+        const nameB = b.name.split(' (')[0];
+        return order.indexOf(nameA) - order.indexOf(nameB);
+      };
+      const cf = { data: [
+        ...cf_a_full.data.filter(cfFilter).sort(cfSort),
+        ...cf_q_full.data.filter(cfFilter).sort(cfSort)
+      ]};
+
+      const tp_a = generatePayoutChart(is_a, cf_a_full, '通年', true);
+      const tp_q = generatePayoutChart(is_q, cf_q_full, '四半期', false);
+      const tp = { 
+        data: [...tp_a.data, ...tp_q.data],
+        layout: tp_a.layout
+      };
+
       // 取引所マッピング (TradingView 互換)
       const exchangeMap: Record<string, string> = {
         'NMS': 'NASDAQ',
@@ -129,7 +162,7 @@ async function main() {
         'PCX': 'NYSE',
         'ASE': 'AMEX'
       };
-      const exchange = exchangeMap[quote.exchange] || quote.exchange;
+      const exchange = exchangeMap[(quote as any).exchange] || (quote as any).exchange;
       const isFinancial = ["Financials", "Real Estate"].includes(stock['GICS Sector']);
 
       const reportData = {
@@ -159,7 +192,7 @@ async function main() {
           is: is,
           bs: bs,
           cf: cf,
-          tp: generatePayoutChart(is, cf),
+          tp: tp,
           dps: generateDividendChart(dividends),
           segment: convertDBSegments(dbData.segments, 'セグメント別収益'),
           geo: convertDBSegments(dbData.geography, '地域別収益')
@@ -169,22 +202,22 @@ async function main() {
           revenue_growth: financialData.revenueGrowth,
           roe: financialData.returnOnEquity,
           operating_margins: financialData.operatingMargins,
-          pe_forward: quote.forwardPE,
-          pe_ttm: quote.trailingPE,
-          dividend_yield: quote.dividendYield,
+          pe_forward: (quote as any).forwardPE,
+          pe_ttm: (quote as any).trailingPE,
+          dividend_yield: (quote as any).dividendYield,
           debt_to_equity: financialData.debtToEquity,
           earnings_growth: financialData.earningsGrowth,
           profit_margins: financialData.profitMargins
         },
 
         analyst_ratings: {
-          recommendationKey: quote.averageAnalystRating?.split(' - ')[1] || "hold",
+          recommendationKey: (quote as any).averageAnalystRating?.split(' - ')[1] || "hold",
           targetMeanPrice: financialData.targetMeanPrice,
           targetHighPrice: financialData.targetHighPrice,
           targetLowPrice: financialData.targetLowPrice,
           targetMedianPrice: financialData.targetMedianPrice,
           numberOfAnalystOpinions: financialData.numberOfAnalystOpinions,
-          currentPrice: quote.regularMarketPrice
+          currentPrice: (quote as any).regularMarketPrice
         },
 
         peers: {
@@ -200,11 +233,11 @@ async function main() {
       };
 
       fs.writeFileSync(path.join(REPORTS_DIR, `${stock.Symbol_YF}.json`), JSON.stringify(reportData, null, 2));
-      console.log(`  - [${stock.Symbol}] Successfully saved report and updating stocks list.`);
-      updatedStocks.push({ ...stock, Daily_Change: quote.regularMarketChangePercent / 100 });
+      console.log(`  - [${stock.Symbol}] Successfully saved report.`);
+      updatedStocks.push({ ...stock, Daily_Change: (quote as any).regularMarketChangePercent / 100 });
 
     } catch (e) {
-      console.error(`Failed to process ${stock.Symbol}:`, e);
+      console.error(`    - Unexpected error processing ${stock.Symbol}:`, e);
     }
     
     await new Promise(resolve => setTimeout(resolve, 500));
@@ -215,11 +248,17 @@ async function main() {
 }
 
 // 補助関数: DefeatBeta (Split形式) から ChartJs (Plotly風) 用に変換
-function convertDBFinancials(splitData: any, allowedKeys?: string[], offsetGroupMap?: Record<string, string>) {
-  if (!splitData || !splitData.columns || !splitData.data) return null;
+function convertDBFinancials(splitData: any, allowedKeys?: string[], offsetGroupMap?: Record<string, string>, suffix: string = '', visible: boolean = true) {
+  if (!splitData || !splitData.columns || !splitData.data) return { data: [] };
   
-  const columns = splitData.columns; // ["Breakdown", "2025-06-30", ...]
-  const dates = columns.slice(1).reverse(); // 過去から現在の順に並べる
+  const columns = splitData.columns; // ["Breakdown", "TTM", "2025-06-30", ...]
+  
+  // TTM (Trailing Twelve Months) は四半期データに混ざることがあるため除外
+  const dataColIndices = columns.map((c, i) => i)
+    .filter(i => i > 0 && columns[i] !== 'TTM')
+    .reverse(); // 過去から現在へ
+
+  const dates = dataColIndices.map(i => columns[i]);
   
   // マッピング: 英語名 -> 日本語名 (ChartJs.astro のロジック用)
   const translationMap: Record<string, string> = {
@@ -243,6 +282,8 @@ function convertDBFinancials(splitData: any, allowedKeys?: string[], offsetGroup
     "Operating Income": "営業利益",
     "Net Income": "純利益",
     "Net Income Common Stockholders": "純利益",
+    "Net Income Continuous Operations": "純利益",
+    "Net Income from Continuing Operations": "純利益",
     "Operating Cash Flow": "営業CF",
     "Investing Cash Flow": "投資CF",
     "Financing Cash Flow": "財務CF",
@@ -274,34 +315,35 @@ function convertDBFinancials(splitData: any, allowedKeys?: string[], offsetGroup
   const filteredRows = splitData.data.filter((row: any) => !allowedKeys || allowedKeys.includes(row[0]));
   
   // 全ての項目でデータが空(null or 0)のインデックスを特定して除外
-  const validIndices: number[] = [];
+  const validRelativeIndices: number[] = [];
   for (let i = 0; i < dates.length; i++) {
-    const rawValIdx = dates.length - 1 - i + 1; // 元のrow内でのインデックス
+    const colIdx = dataColIndices[i];
     const hasData = filteredRows.some((row: any) => {
-      const v = row[rawValIdx];
+      const v = row[colIdx];
       return v !== null && v !== 0 && v !== "*";
     });
-    if (hasData) validIndices.push(i);
+    if (hasData) validRelativeIndices.push(i);
   }
 
-  const finalDates = validIndices.map(i => dates[i]);
+  const finalDates = validRelativeIndices.map(i => dates[i]);
 
   const traces = filteredRows.map((row: any) => {
     const name = row[0];
-    const rawValues = row.slice(1).reverse();
-    const values = validIndices.map(i => {
-      const v = rawValues[i];
+    const values = validRelativeIndices.map(i => {
+      const colIdx = dataColIndices[i];
+      const v = row[colIdx];
       return (v === "*" || v === null) ? null : parseFloat(v);
     });
     
     const translatedName = translationMap[name] || name;
+    const finalName = suffix ? `${translatedName} (${suffix})` : translatedName;
     return {
-      name: translatedName,
+      name: finalName,
       originalName: name, // 元の名前を保持
       x: finalDates,
       y: values,
       type: 'bar',
-      visible: true,
+      visible: visible,
       offsetgroup: offsetGroupMap ? offsetGroupMap[name] : undefined,
       marker: { color: colorMap[translatedName] }
     };
@@ -320,14 +362,21 @@ function convertDBSegments(splitData: any, title: string) {
   
   const segmentIndices = segmentCols.map((c: string) => columns.indexOf(c));
 
-  // 1. 四半期トレースの準備 (データのない日付を除外)
+  // 1. 四半期トレースの準備 (データのない日付、またはデータが不十分な期間を除外)
   const validIndicesQ: number[] = [];
   splitData.data.forEach((row: any, i: number) => {
-    const hasData = segmentIndices.some(idx => {
+    // 2017年以前の不十分なデータを除外 (ユーザー要望)
+    const year = parseInt(row[1].substring(0, 4));
+    if (year < 2017) return;
+
+    const hasSignificantData = segmentCols.some(col => {
+      // 'Corporate and Other' しかデータがない場合は不十分とみなす (MSFTの古いデータ対策)
+      if (col === 'Corporate and Other') return false;
+      const idx = columns.indexOf(col);
       const v = row[idx];
       return v !== null && v !== 0 && v !== "*";
     });
-    if (hasData) validIndicesQ.push(i);
+    if (hasSignificantData) validIndicesQ.push(i);
   });
 
   const qTraces = segmentCols.map((col, i) => {
@@ -360,9 +409,15 @@ function convertDBSegments(splitData: any, title: string) {
     });
   });
 
-  // データが完全に空の年度を除外
+  // データが完全に空の年度、または不十分な年度(2017年以前など)を除外
   const years = Object.keys(annualMap).sort().filter(y => {
-    return segmentCols.some(col => annualMap[y][col] !== 0);
+    const yearInt = parseInt(y);
+    if (yearInt < 2017) return false;
+
+    return segmentCols.some(col => {
+      if (col === 'Corporate and Other') return false;
+      return annualMap[y][col] !== 0;
+    });
   });
 
   const aTraces = segmentCols.map((col, i) => {
@@ -385,46 +440,63 @@ function convertDBSegments(splitData: any, title: string) {
 /**
  * 株主還元 (Total Payout) チャートデータの生成
  */
-function generatePayoutChart(isData: any, cfData: any) {
-  if (!isData || !cfData) return null;
+function generatePayoutChart(isData: any, cfData: any, suffix: string = '', visible: boolean = true) {
+  if (!isData || !cfData || !isData.data || !cfData.data) return { data: [] };
 
   const dates = isData.data[0]?.x || [];
-  const netIncomeTrace = isData.data.find((t: any) => t.name === "純利益");
+  const niName = suffix ? `純利益 (${suffix})` : "純利益 ";
+  const divName = suffix ? `配当金 (${suffix})` : "配当金";
+  const buyName = suffix ? `自社株買い (${suffix})` : "自社株買い";
+  const ratioName = suffix ? `総還元性向 (${suffix})` : "総還元性向";
+
+  const netIncomeTrace = isData.data.find((t: any) => t.name === (suffix ? `純利益 (${suffix})` : "純利益"));
   
   // キャッシュフローから配当と自社株買いを探す
-  const dividendsTrace = cfData.data.find((t: any) => t.name === "配当金支払" || t.originalName === "Cash Dividends Paid");
-  const buybacksTrace = cfData.data.find((t: any) => t.name === "自社株買い" || t.originalName === "Repurchase of Capital Stock");
+  const dividendsTrace = cfData.data.find((t: any) => t.name === (suffix ? `配当金支払 (${suffix})` : "配当金支払") || t.originalName === "Cash Dividends Paid");
+  const buybacksTrace = cfData.data.find((t: any) => t.name === (suffix ? `自社株買い (${suffix})` : "自社株買い") || t.originalName === "Repurchase of Capital Stock");
 
-  if (!netIncomeTrace || (!dividendsTrace && !buybacksTrace)) return null;
+  if (!netIncomeTrace || (!dividendsTrace && !buybacksTrace)) return { data: [] };
 
   const traces: any[] = [];
   
-  if (dividendsTrace) {
-    traces.push({
-      name: "配当金",
-      x: dates,
-      y: dividendsTrace.y.map((v: number | null) => v ? Math.abs(v) : 0),
-      type: 'bar'
-    });
-  }
-
-  if (buybacksTrace) {
-    traces.push({
-      name: "自社株買い",
-      x: dates,
-      y: buybacksTrace.y.map((v: number | null) => v ? Math.abs(v) : 0),
-      type: 'bar'
-    });
-  }
-
+  // 1. 純利益 (左側: group-0)
   traces.push({
-    name: "純利益",
+    name: niName,
     x: dates,
     y: netIncomeTrace.y,
-    type: 'line'
+    type: 'bar',
+    offsetgroup: '0',
+    visible: visible,
+    marker: { color: "#ef4444" }
   });
 
-  // 総還元性向の計算
+  // 2. 配当金 (右側下: group-1)
+  if (dividendsTrace) {
+    traces.push({
+      name: divName,
+      x: dates,
+      y: dividendsTrace.y.map((v: number | null) => v ? Math.abs(v) : 0),
+      type: 'bar',
+      offsetgroup: '1',
+      visible: visible,
+      marker: { color: "#22c55e" }
+    });
+  }
+
+  // 3. 自社株買い (右側上: group-1)
+  if (buybacksTrace) {
+    traces.push({
+      name: buyName,
+      x: dates,
+      y: buybacksTrace.y.map((v: number | null) => v ? Math.abs(v) : 0),
+      type: 'bar',
+      offsetgroup: '1',
+      visible: visible,
+      marker: { color: "#3b82f6" }
+    });
+  }
+
+  // 4. 総還元性向 (第2軸: 折れ線)
   const payoutRatio = dates.map((_: any, i: number) => {
     const ni = netIncomeTrace.y[i];
     if (!ni || ni <= 0) return null;
@@ -434,14 +506,23 @@ function generatePayoutChart(isData: any, cfData: any) {
   });
 
   traces.push({
-    name: "総還元性向",
+    name: ratioName,
     x: dates,
     y: payoutRatio,
-    type: 'line',
-    yaxis: 'y2'
+    type: 'scatter',
+    mode: 'lines+markers',
+    yaxis: 'y2',
+    visible: visible,
+    marker: { color: "#ff6b01" }
   });
 
-  return { data: traces };
+  return { 
+    data: traces,
+    layout: {
+      barmode: 'group',
+      yaxis2: { title: '総還元性向', overlaying: 'y', side: 'right', tickformat: '.0%' }
+    }
+  };
 }
 
 /**
@@ -533,6 +614,44 @@ function formatRiskReturnGroups(metricsList: any[], symbols: string[]) {
       hovermode: 'closest'
     }
   };
+}
+
+function addMarginRatiosToIS(is: any) {
+  if (!is || !is.data || is.data.length === 0) return is;
+
+  // 最初のトレース名からサフィックスを抽出 (例: "売上高 (通年)" -> " (通年)")
+  const firstLabel = is.data[0].name;
+  const suffixMatch = firstLabel.match(/\s\([^)]+\)$/);
+  const suffix = suffixMatch ? suffixMatch[0] : '';
+
+  const rev = is.data.find((t: any) => t.name === `売上高${suffix}`);
+  const gross = is.data.find((t: any) => t.name === `売上総利益${suffix}`);
+  const op = is.data.find((t: any) => t.name === `営業利益${suffix}`);
+  const net = is.data.find((t: any) => t.name === `純利益${suffix}`);
+
+  if (!rev) return is;
+
+  const margins = [
+    { source: gross, name: `売上総利益率${suffix}`, color: "#60a5fa" }, // Light Blue
+    { source: op, name: `営業利益率${suffix}`, color: "#34d399" },    // Emerald/Green
+    { source: net, name: `純利益率${suffix}`, color: "#f87171" }      // Light Red/Rose
+  ];
+
+  margins.forEach(m => {
+    if (!m.source) return;
+    is.data.push({
+      name: m.name,
+      x: rev.x,
+      y: m.source.y.map((v: number | null, i: number) => (v !== null && rev.y[i]) ? v / rev.y[i] : null),
+      type: 'scatter',
+      mode: 'lines+markers',
+      yaxis: 'y2', // Plotly format for secondary Y axis
+      marker: { color: m.color },
+      line: { color: m.color, width: 2 }
+    });
+  });
+
+  return is;
 }
 
 // 古い formatRiskReturn は削除または置換
