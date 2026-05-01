@@ -14,7 +14,11 @@ export interface StockInfo {
  */
 export async function fetchSp500Companies(): Promise<StockInfo[]> {
   try {
-    const response = await fetch('https://en.wikipedia.org/wiki/List_of_S%26P_500_companies');
+    const response = await fetch('https://en.wikipedia.org/wiki/List_of_S%26P_500_companies', {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+      }
+    });
     const text = await response.text();
     
     // シンプルな正規表現によるパース (Wikiのテーブル構造に依存)

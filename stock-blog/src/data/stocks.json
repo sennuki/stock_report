@@ -6,7 +6,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Systems Software",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0
+    "Daily_Change": 0.013099083000000001
   },
   {
     "Symbol": "AAPL",
@@ -15,7 +15,7 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Technology Hardware Storage & Peripherals",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0
+    "Daily_Change": 0.045146312999999993
   },
   {
     "Symbol": "PHM",
@@ -24,6 +24,6 @@
     "GICS Sector": "Consumer Discretionary",
     "GICS Sub-Industry": "Homebuilding",
     "Exchange": "NYSE",
-    "Daily_Change": 0
+    "Daily_Change": -0.010951324
   }
 ]

@@ -77,7 +77,7 @@ async function main() {
           return { regularMarketPrice: 0, regularMarketChangePercent: 0, exchange: 'NMS' };
         }),
         yahooFinance.quoteSummary(stock.Symbol_YF, {
-          modules: ['financialData', 'defaultKeyStatistics', 'recommendationTrend']
+          modules: ['financialData', 'defaultKeyStatistics', 'recommendationTrend', 'upgradeDowngradeHistory']
         }).catch((e: any) => {
           console.error(`    - Summary fetch failed for ${stock.Symbol}:`, e.message);
           return {};
@@ -102,6 +102,8 @@ async function main() {
 
       const dividends = (chartResult as any)?.events?.dividends || [];
       const financialData = (summary as any).financialData || {};
+      const recommendationTrend = (summary as any).recommendationTrend?.trend?.[0] || {};
+      const upgradeDowngradeHistory = (summary as any).upgradeDowngradeHistory?.history || [];
 
       // リスク・リターンの統合 (全期間タブ対応)
       const riskReturnData = formatRiskReturnGroups(riskMetricsList, [stock.Symbol, `Sector ${targetEtf}`, 'S&P 500']);
@@ -212,6 +214,11 @@ async function main() {
 
         analyst_ratings: {
           recommendationKey: (quote as any).averageAnalystRating?.split(' - ')[1] || "hold",
+          strongBuy: recommendationTrend.strongBuy || 0,
+          buy: recommendationTrend.buy || 0,
+          hold: recommendationTrend.hold || 0,
+          sell: recommendationTrend.sell || 0,
+          strongSell: recommendationTrend.strongSell || 0,
           targetMeanPrice: financialData.targetMeanPrice,
           targetHighPrice: financialData.targetHighPrice,
           targetLowPrice: financialData.targetLowPrice,
@@ -219,6 +226,16 @@ async function main() {
           numberOfAnalystOpinions: financialData.numberOfAnalystOpinions,
           currentPrice: (quote as any).regularMarketPrice
         },
+
+        rating_changes: upgradeDowngradeHistory.slice(0, 10).map((h: any) => ({
+          GradeDate: h.epochGradeDate instanceof Date ? h.epochGradeDate.toISOString().split('T')[0] : (typeof h.epochGradeDate === 'string' ? h.epochGradeDate.split('T')[0] : h.epochGradeDate),
+          Firm: h.firm,
+          ToGrade: h.toGrade,
+          FromGrade: h.fromGrade,
+          Action: h.action,
+          currentPriceTarget: h.currentPriceTarget,
+          priorPriceTarget: h.priorPriceTarget
+        })),
 
         peers: {
           sub_industry: allStocks
@@ -441,7 +458,6 @@ function convertDBSegments(splitData: any, _title: string) {
 function generatePayoutChart(isData: any, cfData: any, suffix: string = '', visible: boolean = true) {
   if (!isData || !cfData || !isData.data || !cfData.data) return { data: [] };
 
-  const dates = isData.data[0]?.x || [];
   const niName = suffix ? `純利益 (${suffix})` : "純利益 ";
   const divName = suffix ? `配当金 (${suffix})` : "配当金";
   const buyName = suffix ? `自社株買い (${suffix})` : "自社株買い";
@@ -455,13 +471,30 @@ function generatePayoutChart(isData: any, cfData: any, suffix: string = '', visi
 
   if (!netIncomeTrace || (!dividendsTrace && !buybacksTrace)) return { data: [] };
 
+  // データが存在する日付のみをフィルタリング
+  const dates = (isData.data[0]?.x || []).filter((d: string) => {
+    const ni = netIncomeTrace.x.indexOf(d) !== -1 && netIncomeTrace.y[netIncomeTrace.x.indexOf(d)] !== null;
+    const div = dividendsTrace && dividendsTrace.x.indexOf(d) !== -1 && dividendsTrace.y[dividendsTrace.x.indexOf(d)] !== null;
+    const buy = buybacksTrace && buybacksTrace.x.indexOf(d) !== -1 && buybacksTrace.y[buybacksTrace.x.indexOf(d)] !== null;
+    return ni && (div || buy);
+  });
+
+  if (dates.length === 0) return { data: [] };
+
   const traces: any[] = [];
   
+  // Helper to get value by date from a trace
+  const getValueByDate = (trace: any, date: string) => {
+    const idx = trace.x.indexOf(date);
+    return idx !== -1 ? trace.y[idx] : null;
+  };
+
   // 1. 純利益 (左側: group-0)
+  const niValues = dates.map((d: string) => getValueByDate(netIncomeTrace, d));
   traces.push({
     name: niName,
     x: dates,
-    y: netIncomeTrace.y,
+    y: niValues,
     type: 'bar',
     offsetgroup: '0',
     visible: visible,
@@ -473,7 +506,10 @@ function generatePayoutChart(isData: any, cfData: any, suffix: string = '', visi
     traces.push({
       name: divName,
       x: dates,
-      y: dividendsTrace.y.map((v: number | null) => v ? Math.abs(v) : 0),
+      y: dates.map((d: string) => {
+        const v = getValueByDate(dividendsTrace, d);
+        return v ? Math.abs(v) : 0;
+      }),
       type: 'bar',
       offsetgroup: '1',
       visible: visible,
@@ -486,7 +522,10 @@ function generatePayoutChart(isData: any, cfData: any, suffix: string = '', visi
     traces.push({
       name: buyName,
       x: dates,
-      y: buybacksTrace.y.map((v: number | null) => v ? Math.abs(v) : 0),
+      y: dates.map((d: string) => {
+        const v = getValueByDate(buybacksTrace, d);
+        return v ? Math.abs(v) : 0;
+      }),
       type: 'bar',
       offsetgroup: '1',
       visible: visible,
@@ -495,11 +534,11 @@ function generatePayoutChart(isData: any, cfData: any, suffix: string = '', visi
   }
 
   // 4. 総還元性向 (第2軸: 折れ線)
-  const payoutRatio = dates.map((_: any, i: number) => {
-    const ni = netIncomeTrace.y[i];
+  const payoutRatio = dates.map((d: string) => {
+    const ni = getValueByDate(netIncomeTrace, d);
     if (!ni || ni <= 0) return null;
-    const div = dividendsTrace ? Math.abs(dividendsTrace.y[i] || 0) : 0;
-    const buy = buybacksTrace ? Math.abs(buybacksTrace.y[i] || 0) : 0;
+    const div = dividendsTrace ? Math.abs(getValueByDate(dividendsTrace, d) || 0) : 0;
+    const buy = buybacksTrace ? Math.abs(getValueByDate(buybacksTrace, d) || 0) : 0;
     return (div + buy) / ni;
   });
 
@@ -578,7 +617,8 @@ function generateDividendChart(dividends: any[], chartResult: any) {
       x: rawDivX,
       y: rawDivY,
       type: 'bar',
-      visible: true
+      visible: true,
+      marker: { color: "#1f77b4" }
     },
     {
       name: "配当利回り (権利落日別)",
