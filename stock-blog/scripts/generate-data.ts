@@ -48,7 +48,7 @@ async function main() {
         if (jsonStart !== -1) {
           dbData = JSON.parse(output.substring(jsonStart));
         }
-      } catch (e) {
+      } catch (e: any) {
         console.error(`  - DefeatBeta error for ${stock.Symbol}:`, e);
       }
 
@@ -72,13 +72,13 @@ async function main() {
 
       // 2. YFinance (TypeScript) から詳細データを取得 (個別失敗を許容)
       const [quote, summary, riskMetricsList, perfData, chartResult] = await Promise.all([
-        yahooFinance.quote(stock.Symbol_YF).catch(e => {
+        yahooFinance.quote(stock.Symbol_YF).catch((e: any) => {
           console.error(`    - Quote fetch failed for ${stock.Symbol}:`, e.message);
           return { regularMarketPrice: 0, regularMarketChangePercent: 0, exchange: 'NMS' };
         }),
         yahooFinance.quoteSummary(stock.Symbol_YF, {
           modules: ['financialData', 'defaultKeyStatistics', 'recommendationTrend']
-        }).catch(e => {
+        }).catch((e: any) => {
           console.error(`    - Summary fetch failed for ${stock.Symbol}:`, e.message);
           return {};
         }),
@@ -87,14 +87,14 @@ async function main() {
           calculateRiskMetrics(targetEtf).catch(() => null),
           calculateRiskMetrics('SPY').catch(() => null)
         ]).catch(() => [null, null, null]),
-        generatePerformanceChartData(stock.Symbol_YF, targetEtf).catch(e => {
+        generatePerformanceChartData(stock.Symbol_YF, targetEtf).catch((e: any) => {
           console.error(`    - Performance data fetch failed for ${stock.Symbol}:`, e.message);
           return null;
         }),
         yahooFinance.chart(stock.Symbol_YF, { 
           period1: '2010-01-01', 
           interval: '1d' 
-        }).catch(e => {
+        }).catch((e: any) => {
           console.error(`    - Chart fetch failed for ${stock.Symbol}:`, e.message);
           return { events: { dividends: [] } };
         })
@@ -236,7 +236,7 @@ async function main() {
       console.log(`  - [${stock.Symbol}] Successfully saved report.`);
       updatedStocks.push({ ...stock, Daily_Change: (quote as any).regularMarketChangePercent / 100 });
 
-    } catch (e) {
+    } catch (e: any) {
       console.error(`    - Unexpected error processing ${stock.Symbol}:`, e);
     }
     
@@ -254,11 +254,11 @@ function convertDBFinancials(splitData: any, allowedKeys?: string[], offsetGroup
   const columns = splitData.columns; // ["Breakdown", "TTM", "2025-06-30", ...]
   
   // TTM (Trailing Twelve Months) は四半期データに混ざることがあるため除外
-  const dataColIndices = columns.map((c, i) => i)
-    .filter(i => i > 0 && columns[i] !== 'TTM')
+  const dataColIndices = columns.map((_c: any, i: number) => i)
+    .filter((i: number) => i > 0 && columns[i] !== 'TTM')
     .reverse(); // 過去から現在へ
 
-  const dates = dataColIndices.map(i => columns[i]);
+  const dates = dataColIndices.map((i: number) => columns[i]);
   
   // マッピング: 英語名 -> 日本語名 (ChartJs.astro のロジック用)
   const translationMap: Record<string, string> = {
@@ -352,15 +352,13 @@ function convertDBFinancials(splitData: any, allowedKeys?: string[], offsetGroup
   return { data: traces };
 }
 
-function convertDBSegments(splitData: any, title: string) {
+function convertDBSegments(splitData: any, _title: string) {
   if (!splitData || !splitData.columns || !splitData.data) return null;
   
   const columns = splitData.columns; // ["symbol", "report_date", "Mac", "Services", ...]
   const segmentCols = columns.filter((c: string) => c !== 'symbol' && c !== 'report_date');
   const colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd',
                   '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'];
-  
-  const segmentIndices = segmentCols.map((c: string) => columns.indexOf(c));
 
   // 1. 四半期トレースの準備 (データのない日付、またはデータが不十分な期間を除外)
   const validIndicesQ: number[] = [];
@@ -369,7 +367,7 @@ function convertDBSegments(splitData: any, title: string) {
     const year = parseInt(row[1].substring(0, 4));
     if (year < 2017) return;
 
-    const hasSignificantData = segmentCols.some(col => {
+    const hasSignificantData = segmentCols.some((col: string) => {
       // 'Corporate and Other' しかデータがない場合は不十分とみなす (MSFTの古いデータ対策)
       if (col === 'Corporate and Other') return false;
       const idx = columns.indexOf(col);
@@ -379,7 +377,7 @@ function convertDBSegments(splitData: any, title: string) {
     if (hasSignificantData) validIndicesQ.push(i);
   });
 
-  const qTraces = segmentCols.map((col, i) => {
+  const qTraces = segmentCols.map((col: string, i: number) => {
     const colIdx = columns.indexOf(col);
     const dates = validIndicesQ.map(idx => splitData.data[idx][1]);
     const values = validIndicesQ.map(idx => splitData.data[idx][colIdx]);
@@ -401,9 +399,9 @@ function convertDBSegments(splitData: any, title: string) {
     const year = row[1].substring(0, 4);
     if (!annualMap[year]) {
       annualMap[year] = {};
-      segmentCols.forEach(col => annualMap[year][col] = 0);
+      segmentCols.forEach((col: string) => annualMap[year][col] = 0);
     }
-    segmentCols.forEach(col => {
+    segmentCols.forEach((col: string) => {
       const colIdx = columns.indexOf(col);
       annualMap[year][col] += (row[colIdx] || 0);
     });
@@ -414,13 +412,13 @@ function convertDBSegments(splitData: any, title: string) {
     const yearInt = parseInt(y);
     if (yearInt < 2017) return false;
 
-    return segmentCols.some(col => {
+    return segmentCols.some((col: string) => {
       if (col === 'Corporate and Other') return false;
       return annualMap[y][col] !== 0;
     });
   });
 
-  const aTraces = segmentCols.map((col, i) => {
+  const aTraces = segmentCols.map((col: string, i: number) => {
     return {
       name: `${col} (通年)`,
       x: years,
@@ -606,13 +604,13 @@ function generateDividendChart(dividends: any[], chartResult: any) {
   const lastAmount = lastYearDivs.length > 0 ? lastYearDivs[lastYearDivs.length - 1].amount : 0;
 
   const getPriceAtYearStart = (year: number) => {
-    const firstQuote = quotes.find(q => q.date && new Date(q.date).getFullYear() === year && q.adjclose !== null);
+    const firstQuote = quotes.find((q: any) => q.date && new Date(q.date).getFullYear() === year && q.adjclose !== null);
     return firstQuote ? firstQuote.adjclose : null;
   };
 
-  const actualY = [];
-  const estimatedY = [];
-  const yieldsY = [];
+  const actualY: (number | null)[] = [];
+  const estimatedY: (number | null)[] = [];
+  const yieldsY: (number | null)[] = [];
 
   recentYears.forEach(year => {
     const yearDivs = dividends.filter(d => new Date(d.date).getFullYear() === year);
@@ -761,11 +759,6 @@ function addMarginRatiosToIS(is: any) {
   });
 
   return is;
-}
-
-// 古い formatRiskReturn は削除または置換
-function formatRiskReturn(metrics: any) {
-  return formatRiskReturnGroups([metrics], [metrics.Symbol]);
 }
 
 main().catch(console.error);

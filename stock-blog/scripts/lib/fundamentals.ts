@@ -24,7 +24,7 @@ export async function getFinancialData(symbol: string) {
   }
 }
 
-function formatFinancials(statements: any[], keyField: string) {
+function formatFinancials(statements: any[], _keyField: string) {
   if (!statements) return { annual: {} };
   const annual: any = {};
   statements.forEach((s: any) => {
@@ -42,7 +42,7 @@ function formatFinancials(statements: any[], keyField: string) {
 /**
  * 簡易DCF計算 (Python版のロジックを移植)
  */
-export function calculateDCF(symbol: string, financialData: any) {
+export function calculateDCF(_symbol: string, financialData: any) {
   try {
     const price = financialData.financialData?.currentPrice;
     const fcf = financialData.financialData?.freeCashflow;

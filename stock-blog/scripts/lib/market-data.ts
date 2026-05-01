@@ -1,6 +1,3 @@
-import * as fs from 'fs';
-import * as path from 'path';
-
 export interface StockInfo {
   Symbol: string;
   Symbol_YF: string;

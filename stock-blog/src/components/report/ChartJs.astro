@@ -325,7 +325,7 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
 
       // Recalculate scales for scatter charts
       if (isScatterChart) {
-        const visibleDatasets = chart.data.datasets.filter((ds: any, i: number) => chart.isDatasetVisible(i));
+        const visibleDatasets = chart.data.datasets.filter((_ds: any, i: number) => chart.isDatasetVisible(i));
         if (visibleDatasets.length > 0) {
           const yValues = visibleDatasets.flatMap((ds: any) => ds.data.map((p: any) => p.y)).filter((v: any) => v !== null && !isNaN(v));
           const xValues = visibleDatasets.flatMap((ds: any) => ds.data.map((p: any) => p.x)).filter((v: any) => v !== null && !isNaN(v));
@@ -519,9 +519,6 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
       // Prioritize marker color from Plotly (explicitly set for segments)
       let baseColor = d.marker?.color || d.line?.color || (isDark ? '#ff6b01' : '#006cac');
       if (isScatterChart && name.includes('S&P') && !name.includes('銘柄')) baseColor = '#22c55e';
-
-      const nameMatch = name.match(/\(([^)]+)\)$/);
-      const isPerformanceChart = name.includes('リターン') || (nameMatch && ['(1ヶ月)', '(3ヶ月)', '(6ヶ月)', '(年初来)', '(1年)', '(3年)', '(5年)', '(10年)', '(全期間)'].some(p => name.endsWith(p)));
 
       const s: any = {
         label: name,
