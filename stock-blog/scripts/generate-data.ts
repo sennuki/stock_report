@@ -538,7 +538,7 @@ function generateDividendChart(dividends: any[]) {
     x: sortedDivs.map(d => d.date.toISOString().split('T')[0]),
     y: sortedDivs.map(d => d.amount),
     type: 'bar',
-    visible: true
+    visible: true // 権利落日別をデフォルトで表示
   }];
 
   // 年間推移の集計
@@ -557,7 +557,7 @@ function generateDividendChart(dividends: any[]) {
     x: recentYears.map(String),
     y: recentYears.map(y => annualDivs[y]),
     type: 'bar',
-    visible: false
+    visible: false // 年間推移はタブ切り替えで表示
   }];
 
   return { 

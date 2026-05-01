@@ -86,7 +86,30 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
     if (!plotlyData || !plotlyData.data) return;
     const { isDark, textColor, gridColor } = getThemeColors();
     const yAxisPosition = wrapper.dataset.yAxisPosition || 'left';
-    const config = transformPlotlyToChartJs(plotlyData, isDark, textColor, gridColor, yAxisPosition, canvas.id);
+    
+    // 事前にグループとデフォルトグループを判定しておく（transformPlotlyToChartJsで使用）
+    const datasets = plotlyData.data || [];
+    const groups = new Set<string>();
+    datasets.forEach((d: any) => {
+      const match = (d.name || "").match(/\(([^)]+)\)$/);
+      if (match) groups.add(match[1]);
+    });
+    
+    let defaultGroup = null;
+    if (groups.size > 1) {
+      const order = ["1ヶ月", "3ヶ月", "6ヶ月", "年初来", "1年", "3年", "5年", "10年", "通年", "四半期", "年間推移", "権利落日別"];
+      const groupList = Array.from(groups).sort((a, b) => {
+        const indexA = order.indexOf(a);
+        const indexB = order.indexOf(b);
+        if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+        if (indexA !== -1) return -1;
+        if (indexB !== -1) return 1;
+        return a.localeCompare(b);
+      });
+      defaultGroup = groupList.includes('1年') ? '1年' : groupList[0];
+    }
+
+    const config = transformPlotlyToChartJs(plotlyData, isDark, textColor, gridColor, yAxisPosition, canvas.id, defaultGroup);
     if (!config) {
       if (canvas.id === 'chart-performance') console.warn('ChartJs: Config transformation failed for performance chart');
       return;
@@ -99,7 +122,9 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
     // 既存のチャートを確実に破棄
     const existingChart = Chart.getChart(canvas);
     if (existingChart) existingChart.destroy();
-    if ((canvas as any)._chart_instance) (canvas as any)._chart_instance.destroy();
+    if ((canvas as any)._chart_instance && typeof (canvas as any)._chart_instance.destroy === 'function') {
+      (canvas as any)._chart_instance.destroy();
+    }
     
     const chart = new Chart(canvas, {
       ...config as any,
@@ -127,8 +152,9 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
                 const dataValue = dataset.data[index];
                 if (dataValue === null || dataValue === 0) return;
 
-                // 棒の高さがラベルを表示するのに十分か確認
-                if (Math.abs(element.height) < 12) return;
+                // 棒の高さがラベルを表示するのに十分か確認 (Chart.js 4の要素プロパティを使用)
+                const height = element.height || (element.y - element.base);
+                if (Math.abs(height) < 12) return;
 
                 const label = formatYValueAbbreviated(dataValue, false);
                 
@@ -138,11 +164,10 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 
-                // 積み上げ棒の中央に描画
+                // 棒の中央に描画
                 const x = element.x;
-                const y = element.y + (element.height / 2);
+                const y = element.y + (height / 2);
                 
-                // 文字が重ならないように、非常に狭い棒の場合は描画しない等の処理も可能
                 ctx.fillText(label, x, y);
               });
             });
@@ -203,7 +228,9 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
       ]
     });
     (canvas as any)._chart_instance = chart;
-    setupControls(wrapper, chart, plotlyData);
+    
+    // 最後にコントロールをセットアップし、初期グループがある場合は適用する
+    setupControls(wrapper, chart, plotlyData, defaultGroup);
   }
 
   function formatYValueAbbreviated(v: any, isPercent: boolean, isPerformance: boolean = false, canvasId: string = '') {
@@ -236,7 +263,7 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
     return Math.round(v / 1e6).toLocaleString() + 'M';
   }
 
-  function setupControls(wrapper: HTMLElement, chart: any, plotlyData: any) {
+  function setupControls(wrapper: HTMLElement, chart: any, plotlyData: any, defaultGroup: string | null = null) {
     const controlsContainer = wrapper.querySelector('.chart-controls');
     if (!controlsContainer) return;
 
@@ -264,7 +291,7 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
       });
 
       if (!isScatterChart && groupTraces.length > 0) {
-        // Find the trace with most points to use as labels (avoiding truncation if Target has less data than S&P 500)
+        // Find the trace with most points to use as labels
         let bestTraceIdx = -1;
         let maxLen = -1;
         
@@ -334,26 +361,16 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
         return a.localeCompare(b);
       });
       
-      // Determine default active group
-      let defaultGroup = groupList.includes('1年') ? '1年' : groupList[0];
-      
-      chart._activeGroup = defaultGroup;
+      // Use provided defaultGroup or calculate it
+      let activeGroup = defaultGroup || (groupList.includes('1年') ? '1年' : groupList[0]);
+      chart._activeGroup = activeGroup;
 
-      // Ensure initial visibility is synced with the default group
+      // Ensure initial visibility is synced with the active group
       chart.data.datasets.forEach((ds: any, idx: number) => {
-        const inActiveGroup = ds.label.includes(`(${defaultGroup})`);
-        
-        // _periodVisible が設定されている場合はそれに従い、なければ visible 設定に従う
-        let shouldBeVisible = false;
-        if (inActiveGroup) {
-          if (ds._periodVisible !== undefined) {
-            shouldBeVisible = ds._periodVisible;
-          } else {
-            shouldBeVisible = ds.hidden !== true;
-          }
-        }
-        
-        chart.setDatasetVisibility(idx, shouldBeVisible);
+        const inActiveGroup = ds.label.includes(`(${activeGroup})`);
+        // For grouped charts, being in the active group is the primary visibility trigger.
+        // This ensures the chart isn't blank if the underlying data had visible:false for the default group.
+        chart.setDatasetVisibility(idx, inActiveGroup);
       });
 
       const groupControls = document.createElement('div');
@@ -379,10 +396,6 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
           chart.data.datasets.forEach((ds: any, idx: number) => {
             const inActiveGroup = ds.label.includes(`(${groupName})`);
             const isUserHidden = chart._userHiddenLabels && chart._userHiddenLabels.has(ds.label);
-            
-            // For grouped charts, being in the active group is the primary visibility trigger.
-            // We ignore the initial plotlyData.visible (ds._periodVisible) here because 
-            // the tabs themselves represent the visibility toggle.
             chart.setDatasetVisibility(idx, inActiveGroup && !isUserHidden);
           });
 
@@ -393,7 +406,7 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
       });
       controlsContainer.appendChild(groupControls);
 
-      // Perform initial labels/data synchronization for the default group
+      // Perform initial labels/data synchronization for the active group
       updateLabelsAndScales();
       chart.update();
     }
@@ -472,17 +485,31 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
     }
   }
 
-  function transformPlotlyToChartJs(plotlyData: any, isDark: boolean, textColor: string, gridColor: string, yAxisPosition: string = 'left', canvasId: string = '') {
+  function transformPlotlyToChartJs(plotlyData: any, isDark: boolean, textColor: string, gridColor: string, yAxisPosition: string = 'left', canvasId: string = '', defaultGroup: string | null = null) {
     const data = plotlyData.data || [];
     const layout = plotlyData.layout || {};
     if (data.length === 0) return null;
 
     const isScatterChart = data.some((d: any) => d.type === 'scatter' && d.mode && d.mode.includes('markers')) && !data.some((d: any) => d.type === 'bar');
 
-    // Determine global labels for synchronized category axis (before allSeries)
-    const initialVisibleTraces = data.filter((d: any) => d.visible !== false);
-    const firstTrace = initialVisibleTraces[0] || data[0];
-    const labels = !isScatterChart ? (firstTrace?.x || []) : [];
+    // Determine global labels for synchronized category axis
+    let labels = [];
+    if (!isScatterChart) {
+      // 特定の初期グループ（defaultGroup）が指定されている場合は、そのグループのトレースからラベルを取得する
+      let bestTrace = null;
+      let maxLen = -1;
+      
+      data.forEach((d: any) => {
+        const inActiveGroup = defaultGroup ? (d.name || "").includes(`(${defaultGroup})`) : (d.visible !== false);
+        if (inActiveGroup && d.x && d.x.length > maxLen) {
+          maxLen = d.x.length;
+          bestTrace = d;
+        }
+      });
+      
+      if (!bestTrace && data.length > 0) bestTrace = data[0];
+      labels = bestTrace ? (bestTrace.x || []) : [];
+    }
 
     const allSeries = data.map((d: any, idx: number) => {
       const name = d.name || '';
