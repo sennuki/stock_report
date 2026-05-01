@@ -133,28 +133,6 @@
           "_periodVisible": false
         },
         {
-          "name": "Sector XLK (1ヶ月)",
-          "x": [
-            0.1885838393864854
-          ],
-          "y": [
-            0.1822696291631407
-          ],
-          "text": [
-            "Sector XLK"
-          ],
-          "type": "scatter",
-          "mode": "markers+text",
-          "marker": {
-            "size": 8,
-            "color": "#006cac",
-            "symbol": "diamond"
-          },
-          "textposition": "top center",
-          "visible": false,
-          "_periodVisible": false
-        },
-        {
           "name": "S&P 500 (1ヶ月)",
           "x": [
             0.11622339412489942
@@ -193,28 +171,6 @@
             "size": 12,
             "color": "#ff6b01",
             "symbol": "circle"
-          },
-          "textposition": "top center",
-          "visible": false,
-          "_periodVisible": false
-        },
-        {
-          "name": "Sector XLK (3ヶ月)",
-          "x": [
-            0.2607090993360515
-          ],
-          "y": [
-            0.10856265351053951
-          ],
-          "text": [
-            "Sector XLK"
-          ],
-          "type": "scatter",
-          "mode": "markers+text",
-          "marker": {
-            "size": 8,
-            "color": "#006cac",
-            "symbol": "diamond"
           },
           "textposition": "top center",
           "visible": false,
@@ -265,28 +221,6 @@
           "_periodVisible": false
         },
         {
-          "name": "Sector XLK (6ヶ月)",
-          "x": [
-            0.23276354216843673
-          ],
-          "y": [
-            0.04889354841169724
-          ],
-          "text": [
-            "Sector XLK"
-          ],
-          "type": "scatter",
-          "mode": "markers+text",
-          "marker": {
-            "size": 8,
-            "color": "#006cac",
-            "symbol": "diamond"
-          },
-          "textposition": "top center",
-          "visible": false,
-          "_periodVisible": false
-        },
-        {
           "name": "S&P 500 (6ヶ月)",
           "x": [
             0.13409115491179244
@@ -325,28 +259,6 @@
             "size": 12,
             "color": "#ff6b01",
             "symbol": "circle"
-          },
-          "textposition": "top center",
-          "visible": false,
-          "_periodVisible": false
-        },
-        {
-          "name": "Sector XLK (年初来)",
-          "x": [
-            0.24320757349210975
-          ],
-          "y": [
-            0.10533608195968114
-          ],
-          "text": [
-            "Sector XLK"
-          ],
-          "type": "scatter",
-          "mode": "markers+text",
-          "marker": {
-            "size": 8,
-            "color": "#006cac",
-            "symbol": "diamond"
           },
           "textposition": "top center",
           "visible": false,
@@ -397,28 +309,6 @@
           "_periodVisible": true
         },
         {
-          "name": "Sector XLK (1年)",
-          "x": [
-            0.20375912738124563
-          ],
-          "y": [
-            0.5192646480231886
-          ],
-          "text": [
-            "Sector XLK"
-          ],
-          "type": "scatter",
-          "mode": "markers+text",
-          "marker": {
-            "size": 8,
-            "color": "#006cac",
-            "symbol": "diamond"
-          },
-          "textposition": "top center",
-          "visible": true,
-          "_periodVisible": true
-        },
-        {
           "name": "S&P 500 (1年)",
           "x": [
             0.1248032315009322
@@ -457,28 +347,6 @@
             "size": 12,
             "color": "#ff6b01",
             "symbol": "circle"
-          },
-          "textposition": "top center",
-          "visible": false,
-          "_periodVisible": false
-        },
-        {
-          "name": "Sector XLK (3年)",
-          "x": [
-            0.23316770750948876
-          ],
-          "y": [
-            0.2957556444355054
-          ],
-          "text": [
-            "Sector XLK"
-          ],
-          "type": "scatter",
-          "mode": "markers+text",
-          "marker": {
-            "size": 8,
-            "color": "#006cac",
-            "symbol": "diamond"
           },
           "textposition": "top center",
           "visible": false,
@@ -529,28 +397,6 @@
           "_periodVisible": false
         },
         {
-          "name": "Sector XLK (5年)",
-          "x": [
-            0.24703864215895618
-          ],
-          "y": [
-            0.17284451603474915
-          ],
-          "text": [
-            "Sector XLK"
-          ],
-          "type": "scatter",
-          "mode": "markers+text",
-          "marker": {
-            "size": 8,
-            "color": "#006cac",
-            "symbol": "diamond"
-          },
-          "textposition": "top center",
-          "visible": false,
-          "_periodVisible": false
-        },
-        {
           "name": "S&P 500 (5年)",
           "x": [
             0.17083492873604347
@@ -589,28 +435,6 @@
             "size": 12,
             "color": "#ff6b01",
             "symbol": "circle"
-          },
-          "textposition": "top center",
-          "visible": false,
-          "_periodVisible": false
-        },
-        {
-          "name": "Sector XLK (10年)",
-          "x": [
-            0.24399002912135
-          ],
-          "y": [
-            0.21998222494439768
-          ],
-          "text": [
-            "Sector XLK"
-          ],
-          "type": "scatter",
-          "mode": "markers+text",
-          "marker": {
-            "size": 8,
-            "color": "#006cac",
-            "symbol": "diamond"
           },
           "textposition": "top center",
           "visible": false,
@@ -11935,7 +11759,102 @@
           "label": "配当金 (権利落日別)"
         },
         {
-          "name": "配当金 (年間推移)",
+          "name": "配当利回り (権利落日別)",
+          "x": [
+            "2016-05-17",
+            "2016-08-16",
+            "2016-11-15",
+            "2017-02-14",
+            "2017-05-16",
+            "2017-08-15",
+            "2017-11-15",
+            "2018-02-14",
+            "2018-05-16",
+            "2018-08-15",
+            "2018-11-14",
+            "2019-02-20",
+            "2019-05-15",
+            "2019-08-14",
+            "2019-11-20",
+            "2020-02-19",
+            "2020-05-20",
+            "2020-08-19",
+            "2020-11-18",
+            "2021-02-17",
+            "2021-05-19",
+            "2021-08-18",
+            "2021-11-17",
+            "2022-02-16",
+            "2022-05-18",
+            "2022-08-17",
+            "2022-11-16",
+            "2023-02-15",
+            "2023-05-17",
+            "2023-08-16",
+            "2023-11-15",
+            "2024-02-14",
+            "2024-05-15",
+            "2024-08-15",
+            "2024-11-21",
+            "2025-02-20",
+            "2025-05-15",
+            "2025-08-21",
+            "2025-11-20",
+            "2026-02-19"
+          ],
+          "y": [
+            0.03217585533319235,
+            0.028118664289672312,
+            0.02952250023733095,
+            0.026754161783970873,
+            0.024746734622693736,
+            0.023334724476600892,
+            0.022063172137280825,
+            0.020066534579263468,
+            0.01867604388834217,
+            0.016788239317824076,
+            0.018777197147720373,
+            0.01831694405092023,
+            0.015516762653813307,
+            0.014546443281306574,
+            0.014392764551885071,
+            0.011467212156493184,
+            0.01153514517912535,
+            0.01018812918785424,
+            0.011084806707637989,
+            0.009559395822770617,
+            0.009579740946140166,
+            0.00799565578525113,
+            0.007575305949939092,
+            0.008559723837743614,
+            0.010066435174174318,
+            0.008761026932959654,
+            0.01154754748114643,
+            0.010338685508898241,
+            0.008848219936375067,
+            0.008653158468820647,
+            0.008255143593345499,
+            0.007438634894268232,
+            0.007186730341089691,
+            0.007208729320661739,
+            0.008119079902251405,
+            0.008039354571198622,
+            0.007369377678763518,
+            0.006611545817949508,
+            0.007625584079473744,
+            0.002283792650491467
+          ],
+          "type": "scatter",
+          "mode": "lines+markers",
+          "yaxis": "y2",
+          "visible": true,
+          "marker": {
+            "color": "#ff6b01"
+          },
+          "label": "配当利回り (権利落日別)"
+        },
+        {
+          "name": "実績配当 (年間推移)",
           "x": [
             "2016",
             "2017",
@@ -11964,9 +11883,95 @@
           ],
           "type": "bar",
           "visible": false,
-          "label": "配当金 (年間推移)"
+          "offsetgroup": "annual",
+          "marker": {
+            "color": "#1f77b4"
+          },
+          "label": "実績配当 (年間推移)"
+        },
+        {
+          "name": "推定配当 (年間推移)",
+          "x": [
+            "2016",
+            "2017",
+            "2018",
+            "2019",
+            "2020",
+            "2021",
+            "2022",
+            "2023",
+            "2024",
+            "2025",
+            "2026"
+          ],
+          "y": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            2.73
+          ],
+          "type": "bar",
+          "visible": false,
+          "offsetgroup": "annual",
+          "marker": {
+            "color": "#aec7e8"
+          },
+          "label": "推定配当 (年間推移)"
+        },
+        {
+          "name": "配当利回り (年間推移)",
+          "x": [
+            "2016",
+            "2017",
+            "2018",
+            "2019",
+            "2020",
+            "2021",
+            "2022",
+            "2023",
+            "2024",
+            "2025",
+            "2026"
+          ],
+          "y": [
+            0.03070547462640043,
+            0.02830636883682476,
+            0.02180794074501134,
+            0.02002179292646415,
+            0.013735685834919548,
+            0.011036121999415588,
+            0.007859863519273261,
+            0.011951024480308652,
+            0.008447859045209012,
+            0.008201297014417006,
+            0.007714103350231313
+          ],
+          "type": "scatter",
+          "mode": "lines+markers",
+          "yaxis": "y2",
+          "visible": false,
+          "marker": {
+            "color": "#ff6b01"
+          },
+          "label": "配当利回り (年間推移)"
         }
-      ]
+      ],
+      "layout": {
+        "barmode": "stack",
+        "yaxis2": {
+          "title": "配当利回り",
+          "overlaying": "y",
+          "side": "right",
+          "tickformat": ".1%"
+        }
+      }
     },
     "segment": {
       "data": [
@@ -12310,25 +12315,10 @@
     },
     "geo": null
   },
-  "highlights": {
-    "revenue_growth": 0.183,
-    "roe": 0.34013999,
-    "operating_margins": 0.46326,
-    "pe_forward": 21.130917,
-    "pe_ttm": 24.27262,
-    "dividend_yield": 0.89,
-    "debt_to_equity": 30.271,
-    "earnings_growth": 0.234,
-    "profit_margins": 0.39341998
-  },
+  "highlights": {},
   "analyst_ratings": {
-    "recommendationKey": "Strong Buy",
-    "targetMeanPrice": 570.7213,
-    "targetHighPrice": 730,
-    "targetLowPrice": 392,
-    "targetMedianPrice": 577.5,
-    "numberOfAnalystOpinions": 54,
-    "currentPrice": 407.78
+    "recommendationKey": "hold",
+    "currentPrice": 0
   },
   "peers": {
     "sub_industry": [],

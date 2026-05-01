@@ -513,7 +513,7 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
 
     const allSeries = data.map((d: any, idx: number) => {
       const name = d.name || '';
-      const isRatio = name.includes('率') || name.includes('性向');
+      const isRatio = name.includes('率') || name.includes('性向') || name.includes('利回り');
       const type = (d.type === 'bar') ? 'bar' : (isScatterChart ? 'scatter' : (isRatio ? 'line' : 'line'));
       
       // Prioritize marker color from Plotly (explicitly set for segments)
@@ -568,6 +568,8 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
       else if (name.includes('純資産')) s._originalOrder = 1;
       else if (name.includes('固定負債')) s._originalOrder = 2;
       else if (name.includes('流動負債')) s._originalOrder = 3;
+      else if (name.includes('実績')) s._originalOrder = 1; // Base of stack
+      else if (name.includes('推定')) s._originalOrder = 2; // Top of stack
       else if (name.includes('配当金')) s._originalOrder = 1; // Base of stack
       else if (name.includes('自社株買い')) s._originalOrder = 2; // Top of stack
       else s._originalOrder = 9;

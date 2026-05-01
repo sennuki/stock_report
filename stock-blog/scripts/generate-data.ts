@@ -193,7 +193,7 @@ async function main() {
           bs: bs,
           cf: cf,
           tp: tp,
-          dps: generateDividendChart(dividends),
+          dps: generateDividendChart(dividends, chartResult),
           segment: convertDBSegments(dbData.segments, 'セグメント別収益'),
           geo: convertDBSegments(dbData.geography, '地域別収益')
         },
@@ -528,43 +528,152 @@ function generatePayoutChart(isData: any, cfData: any, suffix: string = '', visi
 /**
  * 配当履歴チャートデータの生成
  */
-function generateDividendChart(dividends: any[]) {
+function generateDividendChart(dividends: any[], chartResult: any) {
   if (!dividends || !Array.isArray(dividends) || dividends.length === 0) return null;
 
-  // 権利落日別の生データ (過去10年程度)
-  const sortedDivs = [...dividends].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).slice(-40);
-  const rawTraces = [{
-    name: "配当金 (権利落日別)",
-    x: sortedDivs.map(d => d.date.toISOString().split('T')[0]),
-    y: sortedDivs.map(d => d.amount),
-    type: 'bar',
-    visible: true // 権利落日別をデフォルトで表示
-  }];
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const quotes = chartResult?.quotes || [];
 
-  // 年間推移の集計
-  const annualDivs: Record<number, number> = {};
+  // ヘルパー: 指定された日付またはその直近の株価を取得
+  const getPriceAtDate = (targetDate: Date) => {
+    const targetTime = targetDate.getTime();
+    // 権利落日は取引日であるはずだが、念のため最も近い過去の取引日を探す
+    let closestQuote = null;
+    let minDiff = Infinity;
+    
+    for (const q of quotes) {
+      if (!q.date || q.adjclose === null) continue;
+      const qTime = new Date(q.date).getTime();
+      const diff = Math.abs(targetTime - qTime);
+      if (diff < minDiff && qTime <= targetTime) {
+        minDiff = diff;
+        closestQuote = q;
+      }
+      if (qTime > targetTime) break;
+    }
+    return closestQuote ? closestQuote.adjclose : null;
+  };
+
+  // 年ごとの配当回数を集計 (利回り計算用)
+  const frequencyMap: Record<number, number> = {};
   dividends.forEach(d => {
-    const year = new Date(d.date).getFullYear();
-    annualDivs[year] = (annualDivs[year] || 0) + d.amount;
+    const y = new Date(d.date).getFullYear();
+    frequencyMap[y] = (frequencyMap[y] || 0) + 1;
   });
 
-  const years = Object.keys(annualDivs).map(Number).sort((a, b) => a - b);
-  // 現在の年は未完了の可能性があるため、直近10年分
-  const recentYears = years.slice(-11); 
+  // 1. 権利落日別の生データ (過去10年程度)
+  const sortedDivs = [...dividends].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).slice(-40);
   
-  const annualTraces = [{
-    name: "配当金 (年間推移)",
-    x: recentYears.map(String),
-    y: recentYears.map(y => annualDivs[y]),
-    type: 'bar',
-    visible: false // 年間推移はタブ切り替えで表示
-  }];
+  const rawDivX = sortedDivs.map(d => d.date.toISOString().split('T')[0]);
+  const rawDivY = sortedDivs.map(d => d.amount);
+  const rawYieldY = sortedDivs.map(d => {
+    const price = getPriceAtDate(new Date(d.date));
+    const year = new Date(d.date).getFullYear();
+    const freq = frequencyMap[year] || 4;
+    return price ? (d.amount * freq) / price : null;
+  });
+
+  const rawTraces = [
+    {
+      name: "配当金 (権利落日別)",
+      x: rawDivX,
+      y: rawDivY,
+      type: 'bar',
+      visible: true
+    },
+    {
+      name: "配当利回り (権利落日別)",
+      x: rawDivX,
+      y: rawYieldY,
+      type: 'scatter',
+      mode: 'lines+markers',
+      yaxis: 'y2',
+      visible: true,
+      marker: { color: "#ff6b01" }
+    }
+  ];
+
+  // 2. 年間推移の集計と推定
+  const yearsSet = new Set(dividends.map(d => new Date(d.date).getFullYear()));
+  const years = Array.from(yearsSet).sort((a, b) => a - b);
+  const recentYears = years.filter(y => y > currentYear - 11 && y <= currentYear);
+
+  // 推定ロジック: 前年の配当回数を基準にする
+  const lastFullYear = currentYear - 1;
+  const frequency = frequencyMap[lastFullYear] || 4; 
+  const lastYearDivs = dividends.filter(d => new Date(d.date).getFullYear() === lastFullYear);
+  const lastAmount = lastYearDivs.length > 0 ? lastYearDivs[lastYearDivs.length - 1].amount : 0;
+
+  const getPriceAtYearStart = (year: number) => {
+    const firstQuote = quotes.find(q => q.date && new Date(q.date).getFullYear() === year && q.adjclose !== null);
+    return firstQuote ? firstQuote.adjclose : null;
+  };
+
+  const actualY = [];
+  const estimatedY = [];
+  const yieldsY = [];
+
+  recentYears.forEach(year => {
+    const yearDivs = dividends.filter(d => new Date(d.date).getFullYear() === year);
+    const actualSum = yearDivs.reduce((sum, d) => sum + d.amount, 0);
+    let totalForYear = actualSum;
+    
+    if (year < currentYear) {
+      actualY.push(actualSum);
+      estimatedY.push(0);
+    } else {
+      actualY.push(actualSum);
+      const remainingCount = Math.max(0, frequency - yearDivs.length);
+      const estimate = remainingCount * (actualSum > 0 ? (yearDivs[yearDivs.length - 1].amount) : lastAmount);
+      estimatedY.push(estimate);
+      totalForYear += estimate;
+    }
+
+    const startPrice = getPriceAtYearStart(year);
+    yieldsY.push(startPrice ? totalForYear / startPrice : null);
+  });
+
+  const annualTraces = [
+    {
+      name: "実績配当 (年間推移)",
+      x: recentYears.map(String),
+      y: actualY,
+      type: 'bar',
+      visible: false,
+      offsetgroup: 'annual',
+      marker: { color: "#1f77b4" }
+    },
+    {
+      name: "推定配当 (年間推移)",
+      x: recentYears.map(String),
+      y: estimatedY,
+      type: 'bar',
+      visible: false,
+      offsetgroup: 'annual',
+      marker: { color: "#aec7e8" }
+    },
+    {
+      name: "配当利回り (年間推移)",
+      x: recentYears.map(String),
+      y: yieldsY,
+      type: 'scatter',
+      mode: 'lines+markers',
+      yaxis: 'y2',
+      visible: false,
+      marker: { color: "#ff6b01" }
+    }
+  ];
 
   return { 
     data: [
       ...rawTraces.map(t => ({ ...t, name: t.name, label: t.name })),
       ...annualTraces.map(t => ({ ...t, name: t.name, label: t.name }))
-    ]
+    ],
+    layout: {
+      barmode: 'stack',
+      yaxis2: { title: '配当利回り', overlaying: 'y', side: 'right', tickformat: '.1%' }
+    }
   };
 }
 
