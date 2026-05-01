@@ -104,6 +104,26 @@ async function main() {
       const financialData = (summary as any).financialData || {};
       const recommendationTrend = (summary as any).recommendationTrend?.trend?.[0] || {};
       const upgradeDowngradeHistory = (summary as any).upgradeDowngradeHistory?.history || [];
+      const quotes = (chartResult as any)?.quotes || [];
+
+      // ヘルパー: 指定された日付またはその直近の株価を取得
+      const getPriceAtDate = (targetDate: Date) => {
+        const targetTime = targetDate.getTime();
+        let closestQuote = null;
+        let minDiff = Infinity;
+        
+        for (const q of quotes) {
+          if (!q.date || q.adjclose === null) continue;
+          const qTime = new Date(q.date).getTime();
+          const diff = Math.abs(targetTime - qTime);
+          if (diff < minDiff && qTime <= targetTime) {
+            minDiff = diff;
+            closestQuote = q;
+          }
+          if (qTime > targetTime) break;
+        }
+        return closestQuote ? closestQuote.adjclose : null;
+      };
 
       // リスク・リターンの統合 (全期間タブ対応)
       const riskReturnData = formatRiskReturnGroups(riskMetricsList, [stock.Symbol, `Sector ${targetEtf}`, 'S&P 500']);
@@ -195,7 +215,7 @@ async function main() {
           bs: bs,
           cf: cf,
           tp: tp,
-          dps: generateDividendChart(dividends, chartResult),
+          dps: generateDividendChart(dividends, chartResult, getPriceAtDate),
           segment: convertDBSegments(dbData.segments, 'セグメント別収益'),
           geo: convertDBSegments(dbData.geography, '地域別収益')
         },
@@ -227,15 +247,20 @@ async function main() {
           currentPrice: (quote as any).regularMarketPrice
         },
 
-        rating_changes: upgradeDowngradeHistory.slice(0, 10).map((h: any) => ({
-          GradeDate: h.epochGradeDate instanceof Date ? h.epochGradeDate.toISOString().split('T')[0] : (typeof h.epochGradeDate === 'string' ? h.epochGradeDate.split('T')[0] : h.epochGradeDate),
-          Firm: h.firm,
-          ToGrade: h.toGrade,
-          FromGrade: h.fromGrade,
-          Action: h.action,
-          currentPriceTarget: h.currentPriceTarget,
-          priorPriceTarget: h.priorPriceTarget
-        })),
+        rating_changes: upgradeDowngradeHistory.slice(0, 10).map((h: any) => {
+          const ratingDate = h.epochGradeDate instanceof Date ? h.epochGradeDate : new Date(h.epochGradeDate);
+          const priceAtRating = getPriceAtDate(ratingDate);
+          return {
+            GradeDate: ratingDate.toISOString().split('T')[0],
+            Firm: h.firm,
+            ToGrade: h.toGrade,
+            FromGrade: h.fromGrade,
+            Action: h.action,
+            currentPriceTarget: h.currentPriceTarget,
+            priorPriceTarget: h.priorPriceTarget,
+            PriceAtRating: priceAtRating
+          };
+        }),
 
         peers: {
           sub_industry: allStocks
@@ -565,32 +590,12 @@ function generatePayoutChart(isData: any, cfData: any, suffix: string = '', visi
 /**
  * 配当履歴チャートデータの生成
  */
-function generateDividendChart(dividends: any[], chartResult: any) {
+function generateDividendChart(dividends: any[], chartResult: any, getPriceAtDate: (d: Date) => number | null) {
   if (!dividends || !Array.isArray(dividends) || dividends.length === 0) return null;
 
   const now = new Date();
   const currentYear = now.getFullYear();
   const quotes = chartResult?.quotes || [];
-
-  // ヘルパー: 指定された日付またはその直近の株価を取得
-  const getPriceAtDate = (targetDate: Date) => {
-    const targetTime = targetDate.getTime();
-    // 権利落日は取引日であるはずだが、念のため最も近い過去の取引日を探す
-    let closestQuote = null;
-    let minDiff = Infinity;
-    
-    for (const q of quotes) {
-      if (!q.date || q.adjclose === null) continue;
-      const qTime = new Date(q.date).getTime();
-      const diff = Math.abs(targetTime - qTime);
-      if (diff < minDiff && qTime <= targetTime) {
-        minDiff = diff;
-        closestQuote = q;
-      }
-      if (qTime > targetTime) break;
-    }
-    return closestQuote ? closestQuote.adjclose : null;
-  };
 
   // 年ごとの配当回数を集計 (利回り計算用)
   const frequencyMap: Record<number, number> = {};
