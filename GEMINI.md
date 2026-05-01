@@ -14,3 +14,6 @@
 3. **Behavioral Correction:**
    - I have a tendency to rely on older training data regarding API capabilities. 
    - I MUST treat the results of `google_web_search` as the ground truth for any information related to the 2026 technology landscape.
+
+4. **Chart Layout Conventions:**
+   - **Income Statement:** ALWAYS position the "Net Income" (純利益) bar on the far right of the chart. In visualization components like `ChartJs.astro`, ensure its priority (e.g., `groupPriority`) is set higher than other metrics such as Revenue or Operating Income to maintain this order.

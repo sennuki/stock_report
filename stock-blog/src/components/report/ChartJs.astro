@@ -554,7 +554,7 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
       else if (name.includes('純利益') && !isRatio) s.stack = offsetGroup || (data.some((os: any) => os.name && os.name.includes('営業CF')) ? 'net_income_cf' : 'net_income_is');
       else if (canvasId === 'chart-segment') s.stack = offsetGroup || 'segment';
       else if (canvasId === 'chart-geo') s.stack = offsetGroup || 'geography';
-      else if (type === 'bar') s.stack = offsetGroup || name.replace(' (Q)', '').replace(' (年間推移)', '');
+      else if (type === 'bar') s.stack = offsetGroup || name.replace(/\s?\([^)]+\)$/, '');
 
       return s;
       });
@@ -570,7 +570,7 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
         const groupPriority: any = { 
           'group-0': 10, 'assets': 10,
           'group-1': 60, 'liabilities': 60,
-          'net_income_cf': 5, '売上高': 10, '売上総利益': 20, '営業利益': 30, 'net_income_is': 50, 
+          'net_income_cf': 5, '売上高': 10, '売上総利益': 20, '営業利益': 30, 'net_income_is': 100, 
           '営業CF': 10, '投資CF': 20, '財務CF': 30, 'フリーCF': 40, 'payout': 70, 'segment': 80, 'geography': 90
         };
         const pA = groupPriority[a.stack] || 99;
