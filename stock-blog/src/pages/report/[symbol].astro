@@ -711,7 +711,7 @@ if (reportData?.analyst_ratings) {
                       <table class="min-w-full divide-y divide-skin-line text-sm">
                         <tbody class="divide-y divide-skin-line">
                           <tr class="bg-skin-fill/5"><td class="px-4 py-2 opacity-70">ベータ (β)</td><td class="px-4 py-2 text-right font-medium">{reportData.dcf_valuation.wacc_details.beta?.toFixed(4)}</td></tr>
-                          <tr><td class="px-4 py-2 opacity-70">リスクフリーレート (10Y)</td><td class="px-4 py-2 text-right font-medium">{(reportData.dcf_valuation.wacc_details.risk_free_rate * 100).toFixed(2)}%</td></tr>
+                          <tr><td class="px-4 py-2 opacity-70">リスクフリーレート (5年平均)</td><td class="px-4 py-2 text-right font-medium">{(reportData.dcf_valuation.wacc_details.risk_free_rate * 100).toFixed(2)}%</td></tr>
                           <tr class="bg-skin-fill/5"><td class="px-4 py-2 opacity-70">市場期待リターン (S&P500)</td><td class="px-4 py-2 text-right font-medium">{(reportData.dcf_valuation.wacc_details.market_return * 100).toFixed(2)}%</td></tr>
                           <tr><td class="px-4 py-2 opacity-70">株主資本コスト (Cost of Equity)</td><td class="px-4 py-2 text-right font-medium">{(reportData.dcf_valuation.wacc_details.cost_of_equity * 100).toFixed(2)}%</td></tr>
                           <tr class="bg-skin-fill/5"><td class="px-4 py-2 opacity-70">負債コスト (Cost of Debt)</td><td class="px-4 py-2 text-right font-medium">{(reportData.dcf_valuation.wacc_details.cost_of_debt * 100).toFixed(2)}%</td></tr>
@@ -746,6 +746,45 @@ if (reportData?.analyst_ratings) {
                     </div>
                   </div>
                 )}
+              </div>
+
+              {/* US 10Y Treasury Yield History & Average */}
+              <div class="mt-8 p-6 bg-skin-fill/5 border border-skin-line rounded-lg">
+                <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                  <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">account_balance</span>
+                  リスクフリーレートの算出根拠 (US 10Y Treasury Yield)
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                  <div class="overflow-hidden rounded-lg border border-skin-line">
+                    <table class="min-w-full divide-y divide-skin-line text-xs">
+                      <thead class="bg-skin-fill/20">
+                        <tr>
+                          <th class="px-4 py-2 text-left font-bold">年 (Year)</th>
+                          <th class="px-4 py-2 text-right font-bold">利回り (Yield)</th>
+                        </tr>
+                      </thead>
+                      <tbody class="divide-y divide-skin-line">
+                        <tr><td class="px-4 py-2">2021</td><td class="px-4 py-2 text-right font-medium">1.46%</td></tr>
+                        <tr class="bg-skin-fill/5"><td class="px-4 py-2">2022</td><td class="px-4 py-2 text-right font-medium">2.95%</td></tr>
+                        <tr><td class="px-4 py-2">2023</td><td class="px-4 py-2 text-right font-medium">3.96%</td></tr>
+                        <tr class="bg-skin-fill/5"><td class="px-4 py-2">2024</td><td class="px-4 py-2 text-right font-medium">4.21%</td></tr>
+                        <tr><td class="px-4 py-2">2025</td><td class="px-4 py-2 text-right font-medium">4.29%</td></tr>
+                        <tr class="bg-skin-accent/10 font-bold"><td class="px-4 py-2">直近5年平均 (Avg)</td><td class="px-4 py-2 text-right">3.52%</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="text-sm space-y-3 opacity-90 leading-relaxed">
+                    <p>
+                      本モデルでは、リスクフリーレートとして<strong>米国10年国債利回り（US 10Y Treasury Yield）の過去5年間平均値</strong>を採用しています。
+                    </p>
+                    <p>
+                      スポット（現在）の利回りは市場環境やインフレ期待によって短期的に大きく変動しますが、企業価値の算定においては、より長期的かつ安定的な金利水準を前提とすることで、一時的なノイズを排除した本源的価値を算出することが可能です。
+                    </p>
+                    <p class="text-xs italic opacity-70">
+                      ※平均値（3.52%）を割引率（WACC）の算出および永続成長率（Terminal Growth）の基準値として使用しています。
+                    </p>
+                  </div>
+                </div>
               </div>
 
               {/* Cash Flow Projections Table */}
