@@ -213,12 +213,10 @@ def calculate_dcf(symbol, ticker=None):
             "net_income": ni_cagr
         }
         
-        # 将来成長率 (1-5年) - defeatbetaの重み付け
-        growth_1_5y = (rev_cagr * 0.4 + fcf_cagr * 0.3 + ebitda_cagr * 0.2 + ni_cagr * 0.1)
-        
-        # 将来成長率 (6-10年) - Decay Factor 0.9
-        decay_factor = 0.9
-        growth_6_10y = max(growth_1_5y * (decay_factor ** 5), risk_free_rate)
+        # 将来成長率 (1-5年) - defeatbetaの最新の重み付け (2026年改定版)
+        # FCF: 40%, Revenue: 20%, EBITDA: 20%, Net Income: 20%
+        raw_growth_1_5y = (rev_cagr * 0.2 + fcf_cagr * 0.4 + ebitda_cagr * 0.2 + ni_cagr * 0.2)
+        growth_1_5y = min(max(raw_growth_1_5y, 0.05), 0.20)
         
         # 永続成長率
         terminal_growth = risk_free_rate
@@ -234,7 +232,12 @@ def calculate_dcf(symbol, ticker=None):
         
         # 1-10年目の予測
         for i in range(1, 11):
-            rate = growth_1_5y if i <= 5 else growth_6_10y
+            if i <= 5:
+                rate = growth_1_5y
+            else:
+                # 6年目以降はTerminal Growthに向けて線形に漸減させる
+                rate = growth_1_5y - (i - 5) * (growth_1_5y - terminal_growth) / 5
+            
             current_fcf *= (1 + rate)
             discounted_fcf = current_fcf / ((1 + wacc) ** i)
             projections.append({
@@ -243,6 +246,9 @@ def calculate_dcf(symbol, ticker=None):
                 "discounted_fcf": float(discounted_fcf),
                 "growth_rate": float(rate)
             })
+        
+        # 互換性のために10年目の成長率を growth_6_10y として保持
+        growth_6_10y = projections[-1]["growth_rate"]
             
         # 継続価値 (Terminal Value)
         tv = (current_fcf * (1 + terminal_growth)) / (wacc - terminal_growth)

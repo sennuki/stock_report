@@ -737,8 +737,9 @@ if (reportData?.analyst_ratings) {
                           <tr><td class="px-4 py-2 opacity-70">フリーキャッシュフロー CAGR</td><td class="px-4 py-2 text-right font-medium">{(reportData.dcf_valuation.cagr_details.fcf * 100).toFixed(2)}%</td></tr>
                           <tr class="bg-skin-fill/5"><td class="px-4 py-2 opacity-70">EBITDA CAGR</td><td class="px-4 py-2 text-right font-medium">{(reportData.dcf_valuation.cagr_details.ebitda * 100).toFixed(2)}%</td></tr>
                           <tr><td class="px-4 py-2 opacity-70">純利益 CAGR</td><td class="px-4 py-2 text-right font-medium">{(reportData.dcf_valuation.cagr_details.net_income * 100).toFixed(2)}%</td></tr>
-                          <tr class="bg-skin-fill/5 font-bold"><td class="px-4 py-2 opacity-70 text-skin-base">将来成長率 (1-5年) <span class="text-[10px] font-normal opacity-50 block leading-tight">※売上40%, FCF30%, EBITDA20%, NI10%の加重平均</span></td><td class="px-4 py-2 text-right text-skin-accent">{(reportData.dcf_valuation.growth_1_5y * 100).toFixed(2)}%</td></tr>
-                          <tr><td class="px-4 py-2 opacity-70">将来成長率 (6-10年) <span class="text-[10px] font-normal opacity-50 block leading-tight">※Decay Factor 0.9を適用</span></td><td class="px-4 py-2 text-right font-medium">{(reportData.dcf_valuation.growth_6_10y * 100).toFixed(2)}%</td></tr>
+                          <tr class="bg-skin-fill/5 font-bold"><td class="px-4 py-2 opacity-70 text-skin-base">将来成長率 (1-5年) <span class="text-[10px] font-normal opacity-50 block leading-tight">※FCF40%, 売上20%, EBITDA20%, NI20%の加重平均</span></td><td class="px-4 py-2 text-right text-skin-accent">{(reportData.dcf_valuation.growth_1_5y * 100).toFixed(2)}%</td></tr>
+                          <tr><td class="px-4 py-2 opacity-70">将来成長率 (6-10年) <span class="text-[10px] font-normal opacity-50 block leading-tight">※年ごとに Decay Factor 0.9 を乗じて漸減</span></td><td class="px-4 py-2 text-right font-medium">{(reportData.dcf_valuation.growth_6_10y * 100).toFixed(2)}%</td></tr>
+
                           <tr class="bg-skin-fill/5"><td class="px-4 py-2 opacity-70">永続成長率 (Terminal)</td><td class="px-4 py-2 text-right font-medium">{(reportData.dcf_valuation.terminal_growth * 100).toFixed(2)}%</td></tr>
                         </tbody>
                       </table>

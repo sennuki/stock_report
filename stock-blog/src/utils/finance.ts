@@ -40,7 +40,8 @@ export function calculateDCF(rawData: any): DCFResult | null {
     // 3. 成長率の推定 (直近の成長率から)
     const revGrowth = info.revenueGrowth || 0.05;
     const earningsGrowth = info.earningsGrowth || 0.05;
-    const growth_1_5y = (revGrowth * 0.6 + earningsGrowth * 0.4);
+    const rawGrowth_1_5y = (revGrowth * 0.6 + earningsGrowth * 0.4);
+    const growth_1_5y = Math.min(Math.max(rawGrowth_1_5y, 0.05), 0.20);
     
     // 4. キャッシュフロー予測 (TTM FCF)
     const freeCashFlow = info.freeCashflow || 0;
@@ -49,21 +50,20 @@ export function calculateDCF(rawData: any): DCFResult | null {
     let totalNPV = 0;
     let lastFCF = freeCashFlow;
 
-    // 1-5年目の予測
-    for (let i = 1; i <= 5; i++) {
-      lastFCF *= (1 + growth_1_5y);
-      totalNPV += lastFCF / Math.pow(1 + wacc, i);
-    }
+    const terminalGrowth = riskFreeRate; // 永続成長率 (Risk Free Rate)
 
-    // 6-10年目 (減衰させる)
-    const growth_6_10y = growth_1_5y * 0.5;
-    for (let i = 6; i <= 10; i++) {
-      lastFCF *= (1 + growth_6_10y);
+    // 1-10年目の予測
+    for (let i = 1; i <= 10; i++) {
+      let rate = growth_1_5y;
+      if (i > 5) {
+        // 6年目以降はTerminal Growthに向けて線形に漸減させる
+        rate = growth_1_5y - (i - 5) * (growth_1_5y - terminalGrowth) / 5;
+      }
+      lastFCF *= (1 + rate);
       totalNPV += lastFCF / Math.pow(1 + wacc, i);
     }
 
     // 継続価値 (Terminal Value)
-    const terminalGrowth = 0.02; // 永続成長率 2%
     const terminalValue = (lastFCF * (1 + terminalGrowth)) / (wacc - terminalGrowth);
     const npvTerminalValue = terminalValue / Math.pow(1 + wacc, 10);
 

@@ -46,8 +46,10 @@ export function calculateDCF(_symbol: string, financialData: any) {
   try {
     const price = financialData.financialData?.currentPrice;
     const fcf = financialData.financialData?.freeCashflow;
-    const growth = financialData.financialData?.revenueGrowth || 0.05;
+    const rawGrowth = financialData.financialData?.revenueGrowth || 0.05;
+    const growth = Math.min(Math.max(rawGrowth, 0.05), 0.20);
     const wacc = 0.08; // 簡易的な割引率
+    const terminalGrowth = 0.04; // 簡易的なRisk Free Rate
     
     if (!price || !fcf) return null;
 
@@ -55,12 +57,17 @@ export function calculateDCF(_symbol: string, financialData: any) {
     let totalValue = 0;
     let currentFCF = fcf;
     for (let i = 1; i <= 10; i++) {
-      currentFCF *= (1 + growth);
+      let rate = growth;
+      if (i > 5) {
+        // 6年目以降はTerminal Growthに向けて線形に漸減させる
+        rate = growth - (i - 5) * (growth - terminalGrowth) / 5;
+      }
+      currentFCF *= (1 + rate);
       totalValue += currentFCF / Math.pow(1 + wacc, i);
     }
 
     // 終端価値
-    const terminalValue = (currentFCF * (1 + 0.02)) / (wacc - 0.02);
+    const terminalValue = (currentFCF * (1 + terminalGrowth)) / (wacc - terminalGrowth);
     totalValue += terminalValue / Math.pow(1 + wacc, 10);
 
     const shares = financialData.stats?.sharesOutstanding;
