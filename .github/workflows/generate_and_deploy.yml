@@ -93,7 +93,7 @@ jobs:
       - name: Build and Deploy Astro to Cloudflare Workers
         run: |
           cd stock-blog
-          export NODE_OPTIONS="--max-old-space-size=4096"
+          export NODE_OPTIONS="--max-old-space-size=6144"
           pnpm install
           pnpm run build
           
