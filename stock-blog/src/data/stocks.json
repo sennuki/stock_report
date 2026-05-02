@@ -1,1 +1,29 @@
-[]
+[
+  {
+    "Symbol": "MSFT",
+    "Symbol_YF": "MSFT",
+    "Security": "Microsoft Corp",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Systems Software",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.0163423
+  },
+  {
+    "Symbol": "AAPL",
+    "Symbol_YF": "AAPL",
+    "Security": "Apple Inc",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Technology Hardware Storage & Peripherals",
+    "Exchange": "NASDAQ",
+    "Daily_Change": 0.0323936
+  },
+  {
+    "Symbol": "PHM",
+    "Symbol_YF": "PHM",
+    "Security": "PulteGroup Inc",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Homebuilding",
+    "Exchange": "NYSE",
+    "Daily_Change": -0.0257437
+  }
+]
