@@ -181,10 +181,13 @@ def calculate_dcf(symbol, ticker=None):
             return None
         last_wacc_data = df_wacc.iloc[-1]
         
+        # リスクフリーレートをExcelのAvg (Last 5Y) である 0.035159 に差し替え
+        risk_free_rate = 0.035159
+
         wacc_details = {
             "wacc": float(last_wacc_data['wacc']),
             "beta": float(last_wacc_data.get('beta_5y', 0)),
-            "risk_free_rate": float(last_wacc_data.get('treasure_10y_yield', 0.04)),
+            "risk_free_rate": risk_free_rate,
             "market_return": float(last_wacc_data.get('sp500_10y_cagr', 0.10)),
             "tax_rate": float(last_wacc_data.get('tax_rate_for_calcs', 0.21)),
             "cost_of_equity": float(last_wacc_data.get('cost_of_equity', 0)),
@@ -192,10 +195,8 @@ def calculate_dcf(symbol, ticker=None):
             "weight_of_equity": float(last_wacc_data.get('weight_of_equity', 0)),
             "weight_of_debt": float(last_wacc_data.get('weight_of_debt', 0))
         }
-        
+
         wacc = wacc_details["wacc"]
-        risk_free_rate = wacc_details["risk_free_rate"]
-        
         # 2. 成長率の取得 (3Y CAGR)
         def get_cagr(growth_df):
             if growth_df is None or growth_df.empty: return 0
