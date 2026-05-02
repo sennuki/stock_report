@@ -94,7 +94,7 @@ jobs:
         run: |
           cd stock-blog
           export NODE_OPTIONS="--max-old-space-size=6144"
-          pnpm install
+          pnpm install --no-frozen-lockfile
           pnpm run build
           
           # Workerとしてデプロイ (wrangler.jsonc の設定を使用)
