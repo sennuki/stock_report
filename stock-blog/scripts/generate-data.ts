@@ -203,7 +203,12 @@ async function main() {
         is_available_monex: brokerages.monex.has(stock.Symbol),
         is_available_rakuten: brokerages.rakuten.has(stock.Symbol),
         is_available_sbi: brokerages.sbi.has(stock.Symbol),
+        is_available_mufg: brokerages.mufg.has(stock.Symbol),
+        is_available_matsui: brokerages.matsui.has(stock.Symbol),
+        is_available_dmm: brokerages.dmm.has(stock.Symbol),
+        is_available_paypay: brokerages.paypay.has(stock.Symbol),
         is_available_moomoo: brokerages.moomoo.has(stock.Symbol),
+        is_available_iwaicosmo: brokerages.iwaicosmo.has(stock.Symbol),
 
         // DefeatBeta由来の詳細なDCF
         dcf_valuation: dbData.dcf,
@@ -558,7 +563,29 @@ function generatePayoutChart(isData: any, cfData: any, suffix: string = '', visi
     });
   }
 
-  // 4. 総還元性向 (第2軸: 折れ線)
+  // 4. 配当性向 (第2軸: 折れ線)
+  if (dividendsTrace) {
+    const divRatioName = suffix ? `配当性向 (${suffix})` : "配当性向";
+    const dividendRatio = dates.map((d: string) => {
+      const ni = getValueByDate(netIncomeTrace, d);
+      if (!ni || ni <= 0) return null;
+      const div = Math.abs(getValueByDate(dividendsTrace, d) || 0);
+      return div / ni;
+    });
+
+    traces.push({
+      name: divRatioName,
+      x: dates,
+      y: dividendRatio,
+      type: 'scatter',
+      mode: 'lines+markers',
+      yaxis: 'y2',
+      visible: visible,
+      marker: { color: "#ffbb78" }
+    });
+  }
+
+  // 5. 総還元性向 (第2軸: 折れ線)
   const payoutRatio = dates.map((d: string) => {
     const ni = getValueByDate(netIncomeTrace, d);
     if (!ni || ni <= 0) return null;
