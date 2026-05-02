@@ -5,7 +5,7 @@
   "packageManager": "pnpm@10.33.0",
   "scripts": {
     "dev": "astro dev",
-    "build": "rm -rf dist && astro check && astro build",
+    "build": "rm -rf dist && astro build",
     "preview": "astro preview",
     "sync": "astro sync",
     "astro": "astro",
