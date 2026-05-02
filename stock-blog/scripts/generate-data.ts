@@ -9,6 +9,21 @@ const REPORTS_DIR = path.join(process.cwd(), 'public/reports');
 const STOCKS_JSON_PATH = path.join(process.cwd(), 'src/data/stocks.json');
 const PYTHON_SCRIPT = path.join(process.cwd(), '../code_master_ref/export_stock_data.py');
 
+// キャッシュ: SPYやセクターETFの重複取得を避ける
+const metricCache = new Map<string, any>();
+const performanceCache = new Map<string, any>();
+
+async function retry<T>(fn: () => Promise<T>, retries = 2, delay = 2000): Promise<T> {
+  try {
+    return await fn();
+  } catch (e: any) {
+    if (retries <= 0) throw e;
+    console.warn(`    - Retrying fetch due to error: ${e.message}. Retries left: ${retries}`);
+    await new Promise(resolve => setTimeout(resolve, delay));
+    return retry(fn, retries - 1, delay * 2);
+  }
+}
+
 async function main() {
   console.log('--- Hybrid Data Pipeline (TypeScript + DefeatBeta Python) Started ---');
 
@@ -71,34 +86,97 @@ async function main() {
       const targetEtf = sectorEtfMap[stock['GICS Sub-Industry']] || sectorEtfMap[stock['GICS Sector']] || 'SPY';
 
       // 2. YFinance (TypeScript) から詳細データを取得 (個別失敗を許容)
-      const [quote, summary, riskMetricsList, perfData, chartResult] = await Promise.all([
-        yahooFinance.quote(stock.Symbol_YF).catch((e: any) => {
-          console.error(`    - Quote fetch failed for ${stock.Symbol}:`, e.message);
-          return { regularMarketPrice: 0, regularMarketChangePercent: 0, exchange: 'NMS' };
-        }),
-        yahooFinance.quoteSummary(stock.Symbol_YF, {
-          modules: ['financialData', 'defaultKeyStatistics', 'recommendationTrend', 'upgradeDowngradeHistory']
-        }).catch((e: any) => {
-          console.error(`    - Summary fetch failed for ${stock.Symbol}:`, e.message);
-          return {};
-        }),
-        Promise.all([
-          calculateRiskMetrics(stock.Symbol_YF).catch(() => null),
-          calculateRiskMetrics(targetEtf).catch(() => null),
-          calculateRiskMetrics('SPY').catch(() => null)
-        ]).catch(() => [null, null, null]),
-        generatePerformanceChartData(stock.Symbol_YF, targetEtf).catch((e: any) => {
-          console.error(`    - Performance data fetch failed for ${stock.Symbol}:`, e.message);
-          return null;
-        }),
-        yahooFinance.chart(stock.Symbol_YF, { 
-          period1: '2010-01-01', 
-          interval: '1d' 
-        }).catch((e: any) => {
-          console.error(`    - Chart fetch failed for ${stock.Symbol}:`, e.message);
-          return { events: { dividends: [] } };
-        })
-      ]);
+      // Node.jsの接続が不安定なため、Python側で取得したデータを優先的に使用し、失敗した場合はPythonデータをフォールバックとする
+      
+      const pyYfData = dbData.yf_data || {};
+      const pyInfo = pyYfData.info || {};
+      
+      console.log(`    - Fetching quote...`);
+      let quote = await retry(() => yahooFinance.quote(stock.Symbol_YF)).catch((e: any) => {
+        console.warn(`    - Quote fetch failed for ${stock.Symbol}, using Python fallback:`, e.message);
+        return {
+          regularMarketPrice: pyInfo.currentPrice || pyInfo.regularMarketPrice || 0,
+          regularMarketChangePercent: pyInfo.regularMarketChangePercent || 0,
+          exchange: pyInfo.exchange || 'NMS',
+          forwardPE: pyInfo.forwardPE,
+          trailingPE: pyInfo.trailingPE,
+          dividendYield: pyInfo.dividendYield,
+          averageAnalystRating: pyInfo.recommendationKey ? `0 - ${pyInfo.recommendationKey}` : undefined
+        };
+      });
+
+      console.log(`    - Fetching summary...`);
+      let summary = await retry(() => yahooFinance.quoteSummary(stock.Symbol_YF, {
+        modules: ['financialData', 'defaultKeyStatistics', 'recommendationTrend', 'upgradeDowngradeHistory']
+      })).catch((e: any) => {
+        console.warn(`    - Summary fetch failed for ${stock.Symbol}, using Python fallback:`, e.message);
+        return {
+          financialData: {
+            currentPrice: pyInfo.currentPrice,
+            targetMedianPrice: pyInfo.targetMedianPrice,
+            targetMeanPrice: pyInfo.targetMeanPrice,
+            targetHighPrice: pyInfo.targetHighPrice,
+            targetLowPrice: pyInfo.targetLowPrice,
+            numberOfAnalystOpinions: pyInfo.numberOfAnalystOpinions,
+            totalCash: pyInfo.totalCash,
+            totalDebt: pyInfo.totalDebt,
+            revenuePerShare: pyInfo.revenuePerShare,
+            returnOnEquity: pyInfo.returnOnEquity,
+            grossProfits: pyInfo.grossProfits,
+            freeCashflow: pyInfo.freeCashflow,
+            operatingCashflow: pyInfo.operatingCashflow,
+            revenueGrowth: pyInfo.revenueGrowth,
+            ebitda: pyInfo.ebitda,
+            operatingMargins: pyInfo.operatingMargins,
+            profitMargins: pyInfo.profitMargins,
+            debtToEquity: pyInfo.debtToEquity,
+            earningsGrowth: pyInfo.earningsGrowth,
+          },
+          defaultKeyStatistics: {
+            enterpriseValue: pyInfo.enterpriseValue,
+            forwardPE: pyInfo.forwardPE,
+            profitMargins: pyInfo.profitMargins,
+            enterpriseToEbitda: pyInfo.enterpriseToEbitda,
+            enterpriseToRevenue: pyInfo.enterpriseToRevenue,
+            bookValue: pyInfo.bookValue,
+            priceToBook: pyInfo.priceToBook,
+            forwardEps: pyInfo.forwardEps,
+            trailingEps: pyInfo.trailingEps,
+          }
+        };
+      });
+
+      console.log(`    - Fetching risk metrics...`);
+      let riskMetricsList = await Promise.all([
+        retry(() => calculateRiskMetrics(stock.Symbol_YF)).then(res => res || pyYfData.risk_metrics?.[stock.Symbol_YF] || null),
+        metricCache.has(targetEtf) ? Promise.resolve(metricCache.get(targetEtf)) : 
+          retry(() => calculateRiskMetrics(targetEtf)).then(res => { 
+            const finalRes = res || pyYfData.risk_metrics?.[targetEtf] || null;
+            if (finalRes) metricCache.set(targetEtf, finalRes); 
+            return finalRes; 
+          }),
+        metricCache.has('SPY') ? Promise.resolve(metricCache.get('SPY')) : 
+          retry(() => calculateRiskMetrics('SPY')).then(res => { 
+            const finalRes = res || pyYfData.risk_metrics?.['SPY'] || null;
+            if (finalRes) metricCache.set('SPY', finalRes); 
+            return finalRes; 
+          })
+      ]).catch(() => [pyYfData.risk_metrics?.[stock.Symbol_YF] || null, pyYfData.risk_metrics?.[targetEtf] || null, pyYfData.risk_metrics?.['SPY'] || null]);
+
+      console.log(`    - Fetching performance data...`);
+      let perfData = await retry(() => generatePerformanceChartData(stock.Symbol_YF, targetEtf)).catch((e: any) => {
+        console.warn(`    - Performance data fetch failed for ${stock.Symbol}, using Python fallback:`, e.message);
+        return null; // TODO: Implement Python-based performance data formatting if needed
+      });
+
+      console.log(`    - Fetching chart data...`);
+      let chartResult = await retry(() => yahooFinance.chart(stock.Symbol_YF, { 
+        period1: '2010-01-01', 
+        interval: '1d' 
+      })).catch((e: any) => {
+        console.warn(`    - Chart fetch failed for ${stock.Symbol}, using Python fallback:`, e.message);
+        return { events: { dividends: [] } };
+      });
 
       const dividends = (chartResult as any)?.events?.dividends || [];
       const financialData = (summary as any).financialData || {};

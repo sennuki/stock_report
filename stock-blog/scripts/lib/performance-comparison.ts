@@ -32,13 +32,18 @@ export async function generatePerformanceChartData(symbol: string, sectorEtfSymb
   ];
 
   try {
-    // 10年分のデータを一括取得
-    const results = await Promise.all(
-      symbols.map(s => 
-        yahooFinance.chart(s, { period1: new Date(Date.now() - 3650 * 24 * 60 * 60 * 1000), interval: '1d' })
-          .catch(() => null)
-      )
-    );
+    // 順次取得して ConnectTimeoutError を防止
+    const results = [];
+    for (const s of symbols) {
+      const res = await yahooFinance.chart(s, { 
+        period1: new Date(Date.now() - 3650 * 24 * 60 * 60 * 1000), 
+        interval: '1d' 
+      }).catch((e: any) => {
+        console.error(`      - Chart fetch failed for ${s} in performance comparison:`, e.message);
+        return null;
+      });
+      results.push(res);
+    }
 
     const validResults = results.filter(r => r && r.quotes && r.quotes.length > 0);
     if (validResults.length === 0) return null;
