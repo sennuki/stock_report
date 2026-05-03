@@ -194,31 +194,62 @@ def calculate_dcf(symbol, ticker=None):
         }
         
         wacc = wacc_details["wacc"]
-        risk_free_rate = wacc_details["risk_free_rate"]
-        
-        # 2. 成長率の取得 (3Y CAGR)
-        def get_cagr(growth_df):
-            if growth_df is None or growth_df.empty: return 0
-            return float(growth_df['yoy_growth'].tail(3).mean())
 
-        rev_cagr = get_cagr(db_ticker.annual_revenue_yoy_growth())
-        fcf_cagr = get_cagr(db_ticker.annual_fcf_yoy_growth())
-        ebitda_cagr = get_cagr(db_ticker.annual_ebitda_yoy_growth())
-        ni_cagr = get_cagr(db_ticker.annual_net_income_yoy_growth())
-        
+        # リスクフリーレート: 直近5年の10年国債利回り平均 (Excelの L9 相当)
+        try:
+            treasure_df = db_ticker.treasure.daily_treasure_yield()
+            treasure_df['report_date'] = pd.to_datetime(treasure_df['report_date'])
+            five_years_ago = pd.Timestamp.now() - pd.DateOffset(years=5)
+            recent_treasure = treasure_df[treasure_df['report_date'] >= five_years_ago]
+            risk_free_rate = float(recent_treasure['bc10_year'].mean()) if not recent_treasure.empty else float(last_wacc_data.get('treasure_10y_yield', 0.04))
+        except Exception:
+            risk_free_rate = float(last_wacc_data.get('treasure_10y_yield', 0.04))
+        wacc_details["risk_free_rate"] = risk_free_rate
+
+        # 2. 成長率の取得: 実値ベースの3Y CAGR (YoY平均ではなく (end/start)^(1/n)-1)
+        def get_3y_cagr(growth_df):
+            """DataFrame の実値列から 3Y CAGR を計算。負値・データ不足は None を返す。"""
+            if growth_df is None or growth_df.empty:
+                return None
+            recent = growth_df.tail(3)
+            if len(recent) < 2:
+                return None
+            metric_col = [c for c in recent.columns
+                          if c not in ('symbol', 'report_date', 'yoy_growth')
+                          and not c.startswith('prev_year_')]
+            if not metric_col:
+                return None
+            col = metric_col[0]
+            v_start = float(recent.iloc[0][col])
+            v_end   = float(recent.iloc[-1][col])
+            n = len(recent) - 1  # 期間数
+            if v_start <= 0 or v_end <= 0:
+                return None  # Turned Positive / Negative → 除外
+            return (v_end / v_start) ** (1.0 / n) - 1
+
+        rev_cagr    = get_3y_cagr(db_ticker.annual_revenue_yoy_growth())
+        fcf_cagr    = get_3y_cagr(db_ticker.annual_fcf_yoy_growth())
+        ebitda_cagr = get_3y_cagr(db_ticker.annual_ebitda_yoy_growth())
+        ni_cagr     = get_3y_cagr(db_ticker.annual_net_income_yoy_growth())
+
         cagr_details = {
-            "revenue": rev_cagr,
-            "fcf": fcf_cagr,
-            "ebitda": ebitda_cagr,
+            "revenue":    rev_cagr,
+            "fcf":        fcf_cagr,
+            "ebitda":     ebitda_cagr,
             "net_income": ni_cagr
         }
-        
-        # 将来成長率 (1-5年) - defeatbetaの最新の重み付け (2026年改定版)
-        # FCF: 40%, Revenue: 20%, EBITDA: 20%, Net Income: 20%
-        raw_growth_1_5y = (rev_cagr * 0.2 + fcf_cagr * 0.4 + ebitda_cagr * 0.2 + ni_cagr * 0.2)
+
+        # 将来成長率 (1-5年): Rev40% FCF30% EBITDA20% NI10%、N/A指標は除外して正規化
+        weights = {"revenue": 0.4, "fcf": 0.3, "ebitda": 0.2, "net_income": 0.1}
+        values  = {"revenue": rev_cagr, "fcf": fcf_cagr, "ebitda": ebitda_cagr, "net_income": ni_cagr}
+        total_w = sum(w for k, w in weights.items() if values[k] is not None)
+        if total_w > 0:
+            raw_growth_1_5y = sum(values[k] * weights[k] for k in weights if values[k] is not None) / total_w
+        else:
+            raw_growth_1_5y = 0.05
         growth_1_5y = min(max(raw_growth_1_5y, 0.05), 0.20)
-        
-        # 永続成長率
+
+        # 永続成長率 = 5年平均リスクフリーレート
         terminal_growth = risk_free_rate
         
         # 3. キャッシュフロー予測
@@ -299,7 +330,7 @@ def calculate_dcf(symbol, ticker=None):
             "cash_value": float(cash_value),
             "total_debt": float(total_debt),
             "wacc_details": wacc_details,
-            "cagr_details": cagr_details,
+            "cagr_details": {k: (float(v) if v is not None else None) for k, v in cagr_details.items()},
             "projections": projections,
             "terminal_value": float(tv),
             "npv_tv": float(npv_tv),

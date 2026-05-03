@@ -619,3 +619,7 @@ violations {
 [2026-04-12 20:52:56] [DEBUG  ] [AIG   ] Error fetching yfinance earnings_dates: ['Earnings Date']
 [2026-04-12 20:52:57] [DEBUG  ] [SRE   ] Error fetching yfinance earnings_dates: ['Earnings Date']
 [2026-04-12 21:17:12] [DEBUG  ] [XLU   ] Error fetching yfinance earnings_dates: ['Earnings Date']
+[2026-05-02 22:31:59] [DEBUG  ] [PHM   ] Error fetching yfinance earnings_dates: ['Earnings Date']
+[2026-05-02 22:34:40] [DEBUG  ] [SPY   ] Error fetching yfinance earnings_dates: ['Earnings Date']
+[2026-05-02 22:35:12] [DEBUG  ] [PHM   ] Error fetching yfinance earnings_dates: ['Earnings Date']
+[2026-05-03 17:04:55] [DEBUG  ] [MSFT  ] Error fetching yfinance earnings_dates: Failed to perform, curl: (28) Operation timed out after 30000 milliseconds with 0 bytes received. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.

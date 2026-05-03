@@ -425,16 +425,16 @@ function convertDBFinancials(splitData: any, allowedKeys?: string[], offsetGroup
     "純資産": "#2ca02c",
     "固定負債": "#ff7f0e",
     "流動負債": "#ffbb78",
-    "売上高": "#1f77b4",
-    "売上総利益": "#ff7f0e",
-    "営業利益": "#2ca02c",
-    "純利益": "#d62728",
-    "営業CF": "#1f77b4",
-    "投資CF": "#ff7f0e",
-    "財務CF": "#2ca02c",
-    "フリーCF": "#d62728",
+    "売上高": "#aec7e8",
+    "売上総利益": "#1f77b4",
+    "営業利益": "#ffbb78",
+    "純利益": "#2ca02c",
+    "営業CF": "#aec7e8",
+    "投資CF": "#1f77b4",
+    "財務CF": "#ffbb78",
+    "フリーCF": "#9467bd",
     "配当金支払": "#aec7e8",
-    "自社株買い": "#ffbb78"
+    "自社株買い": "#1f77b4"
   };
 
   const filteredRows = splitData.data.filter((row: any) => !allowedKeys || allowedKeys.includes(row[0]));
@@ -566,7 +566,7 @@ function convertDBSegments(splitData: any, _title: string) {
 function generatePayoutChart(isData: any, cfData: any, suffix: string = '', visible: boolean = true) {
   if (!isData || !cfData || !isData.data || !cfData.data) return { data: [] };
 
-  const niName = suffix ? `純利益 (${suffix})` : "純利益 ";
+  const niName = suffix ? `純利益 (${suffix})` : "純利益";
   const divName = suffix ? `配当金 (${suffix})` : "配当金";
   const buyName = suffix ? `自社株買い (${suffix})` : "自社株買い";
   const ratioName = suffix ? `総還元性向 (${suffix})` : "総還元性向";
@@ -606,7 +606,7 @@ function generatePayoutChart(isData: any, cfData: any, suffix: string = '', visi
     type: 'bar',
     offsetgroup: '0',
     visible: visible,
-    marker: { color: "#ef4444" }
+    marker: { color: "#2ca02c" }
   });
 
   // 2. 配当金 (右側下: group-1)
@@ -621,7 +621,7 @@ function generatePayoutChart(isData: any, cfData: any, suffix: string = '', visi
       type: 'bar',
       offsetgroup: '1',
       visible: visible,
-      marker: { color: "#22c55e" }
+      marker: { color: "#aec7e8" }
     });
   }
 
@@ -637,7 +637,7 @@ function generatePayoutChart(isData: any, cfData: any, suffix: string = '', visi
       type: 'bar',
       offsetgroup: '1',
       visible: visible,
-      marker: { color: "#3b82f6" }
+      marker: { color: "#1f77b4" }
     });
   }
 
@@ -680,7 +680,7 @@ function generatePayoutChart(isData: any, cfData: any, suffix: string = '', visi
     mode: 'lines+markers',
     yaxis: 'y2',
     visible: visible,
-    marker: { color: "#ff6b01" }
+    marker: { color: "#ff7f0e" }
   });
 
   return { 
@@ -889,9 +889,9 @@ function addMarginRatiosToIS(is: any) {
   if (!rev) return is;
 
   const margins = [
-    { source: gross, name: `売上総利益率${suffix}`, color: "#60a5fa" }, // Light Blue
-    { source: op, name: `営業利益率${suffix}`, color: "#34d399" },    // Emerald/Green
-    { source: net, name: `純利益率${suffix}`, color: "#f87171" }      // Light Red/Rose
+    { source: gross, name: `売上総利益率${suffix}`, color: "#1f77b4" },
+    { source: op, name: `営業利益率${suffix}`, color: "#ffbb78" },
+    { source: net, name: `純利益率${suffix}`, color: "#2ca02c" }
   ];
 
   margins.forEach(m => {

@@ -137,21 +137,40 @@ function formatFinancialChart(stmt: any[], fields: string[]) {
   const sortedStmt = [...stmt].sort((a, b) => new Date(a.index || a.Date).getTime() - new Date(b.index || b.Date).getTime());
   const dates = sortedStmt.map(s => (s.index || s.Date || "").toString().split(' ')[0]);
 
-  const colors = [
+  // プロジェクト標準のカラーマッピング
+  const colorMap: Record<string, { bg: string, border: string }> = {
+    // Income Statement
+    "Total Revenue": { bg: 'rgba(174, 199, 232, 0.5)', border: 'rgb(174, 199, 232)' },
+    "Gross Profit": { bg: 'rgba(31, 119, 180, 0.5)', border: 'rgb(31, 119, 180)' },
+    "Operating Income": { bg: 'rgba(255, 187, 120, 0.5)', border: 'rgb(255, 187, 120)' },
+    "Net Income": { bg: 'rgba(44, 160, 44, 0.5)', border: 'rgb(44, 160, 44)' },
+    // Balance Sheet
+    "Total Assets": { bg: 'rgba(31, 119, 180, 0.5)', border: 'rgb(31, 119, 180)' },
+    "Total Liabilities Net Minority Interest": { bg: 'rgba(255, 127, 14, 0.5)', border: 'rgb(255, 127, 14)' },
+    "Stockholders Equity": { bg: 'rgba(44, 160, 44, 0.5)', border: 'rgb(44, 160, 44)' },
+    // Cash Flow
+    "Operating Cash Flow": { bg: 'rgba(174, 199, 232, 0.5)', border: 'rgb(174, 199, 232)' },
+    "Investing Cash Flow": { bg: 'rgba(31, 119, 180, 0.5)', border: 'rgb(31, 119, 180)' },
+    "Financing Cash Flow": { bg: 'rgba(255, 187, 120, 0.5)', border: 'rgb(255, 187, 120)' },
+    "Free Cash Flow": { bg: 'rgba(148, 103, 189, 0.5)', border: 'rgb(148, 103, 189)' }
+  };
+
+  const defaultColors = [
     { bg: 'rgba(54, 162, 235, 0.5)', border: 'rgb(54, 162, 235)' },
-    { bg: 'rgba(255, 99, 132, 0.5)', border: 'rgb(255, 99, 132)' },
-    { bg: 'rgba(75, 192, 192, 0.5)', border: 'rgb(75, 192, 192)' },
-    { bg: 'rgba(255, 159, 64, 0.5)', border: 'rgb(255, 159, 64)' }
+    { bg: 'rgba(255, 99, 132, 0.5)', border: 'rgb(255, 99, 132)' }
   ];
 
   return {
     labels: dates,
-    datasets: fields.map((field, i) => ({
-      label: field,
-      data: sortedStmt.map(s => s[field] || 0),
-      backgroundColor: colors[i % colors.length].bg,
-      borderColor: colors[i % colors.length].border,
-      borderWidth: 1
-    }))
+    datasets: fields.map((field, i) => {
+      const color = colorMap[field] || defaultColors[i % defaultColors.length];
+      return {
+        label: field,
+        data: sortedStmt.map(s => s[field] || 0),
+        backgroundColor: color.bg,
+        borderColor: color.border,
+        borderWidth: 1
+      };
+    })
   };
 }
