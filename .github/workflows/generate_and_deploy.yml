@@ -77,14 +77,14 @@ jobs:
         run: |
           cd worker-processor
           npm ci
-          
+
           echo "Current CLOUDFLARE_ACCOUNT_ID: $CLOUDFLARE_ACCOUNT_ID"
           npx wrangler whoami
-          
+
           # Workerをデプロイ
           WORKER_OUTPUT=$(npx wrangler deploy)
           echo "$WORKER_OUTPUT"
-          
+
           # デプロイされたWorkerのURLを抽出して /batch を叩く
           WORKER_URL=$(echo "$WORKER_OUTPUT" | grep -oE "https://[a-zA-Z0-9.-]+\.workers\.dev" | head -n 1)
           if [ -n "$WORKER_URL" ]; then
@@ -92,10 +92,34 @@ jobs:
             sleep 10
             echo "Triggering worker at $WORKER_URL/batch ..."
             curl -X POST "$WORKER_URL/batch"
+            echo "WORKER_URL=$WORKER_URL" >> $GITHUB_ENV
           else
             echo "Failed to extract Worker URL"
             exit 1
           fi
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Wait for batch and sync stocks list to build
+        run: |
+          cd worker-processor
+          # バッチ完了を最大5分ポーリングして待機し、stocks.json をビルドに取り込む
+          MAX_ATTEMPTS=10
+          WAIT_SECS=30
+          for i in $(seq 1 $MAX_ATTEMPTS); do
+            if npx wrangler r2 object get stock-data-c1 reports/stocks.json \
+               --file=../stock-blog/src/data/stocks.json 2>/dev/null; then
+              COUNT=$(python3 -c "import json; print(len(json.load(open('../stock-blog/src/data/stocks.json'))))" 2>/dev/null || echo 0)
+              echo "stocks.json downloaded: $COUNT stocks"
+              if [ "$COUNT" -gt 10 ]; then
+                echo "Batch complete."
+                break
+              fi
+            fi
+            echo "Batch not ready yet (attempt $i/$MAX_ATTEMPTS). Waiting ${WAIT_SECS}s..."
+            sleep $WAIT_SECS
+          done
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
