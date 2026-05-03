@@ -2,6 +2,8 @@
 import os
 import json
 import time
+import datetime
+import threading
 import pandas as pd
 import yfinance as yf
 import polars as pl
@@ -16,6 +18,33 @@ from botocore.exceptions import NoCredentialsError
 from dotenv import load_dotenv
 
 load_dotenv()
+
+# --- 当日取得済み銘柄の差分管理 ---
+# GitHub Actions キャッシュと組み合わせることで、当日中の再実行・リトライ時に
+# 取得済み銘柄をスキップし、yfinance への重複リクエストを防ぐ。
+_STATUS_PATH = os.path.join(os.path.dirname(__file__), "data", "fetch_status.json")
+_status_lock = threading.Lock()
+
+def _load_status() -> dict:
+    os.makedirs(os.path.dirname(_STATUS_PATH), exist_ok=True)
+    if os.path.exists(_STATUS_PATH):
+        try:
+            with open(_STATUS_PATH, "r") as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return {}
+
+def _save_status(status: dict):
+    tmp = _STATUS_PATH + ".tmp"
+    with open(tmp, "w") as f:
+        json.dump(status, f)
+    os.replace(tmp, _STATUS_PATH)
+
+def _is_fetched_today(status: dict, symbol: str) -> bool:
+    today = datetime.date.today().isoformat()
+    entry = status.get(symbol)
+    return bool(entry and entry.get("date") == today and entry.get("success"))
 
 # R2 接続設定
 R2_ACCOUNT_ID = os.getenv("R2_ACCOUNT_ID")
@@ -137,7 +166,7 @@ def fetch_raw_data_for_ticker(symbol):
 def main():
     import sys
     args = [a for a in sys.argv[1:] if not a.startswith('--')]
-    
+
     if args:
         print(f"Fetching specific symbols: {args}")
         symbols = args
@@ -151,25 +180,42 @@ def main():
             symbols = ["AAPL", "MSFT", "GOOGL", "AMZN", "META"]
         else:
             symbols = df_sp500['Symbol_YF'].to_list()
-        
-        # 比較用のセクターETFを追加
         for etf in SECTOR_ETFS:
             if etf not in symbols:
                 symbols.append(etf)
-    
-    max_workers = 1 if len(symbols) <= 3 else int(os.getenv("MAX_WORKERS", 2))
-    
+
+    # 当日取得済みの銘柄をスキップ（同日リトライ・再実行対策）
+    fetch_status = _load_status()
+    today = datetime.date.today().isoformat()
+    pending = [s for s in symbols if not _is_fetched_today(fetch_status, s)]
+    skipped = len(symbols) - len(pending)
+    if skipped > 0:
+        print(f"Skipping {skipped} symbols already fetched today. {len(pending)} remaining.")
+    if not pending:
+        print("All symbols already fetched today. Nothing to do.")
+        return
+
+    max_workers = 1 if len(pending) <= 3 else int(os.getenv("MAX_WORKERS", 2))
+
+    def _fetch_and_record(s):
+        success = fetch_raw_data_for_ticker(s)
+        with _status_lock:
+            fetch_status[s] = {"date": today, "success": bool(success)}
+            _save_status(fetch_status)
+        return success
+
     if max_workers == 1:
-        for s in symbols:
+        for s in pending:
             print(f"Processing {s}...")
-            fetch_raw_data_for_ticker(s)
+            _fetch_and_record(s)
     else:
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            futures = {executor.submit(fetch_raw_data_for_ticker, s): s for s in symbols}
-            for future in tqdm(as_completed(futures), total=len(symbols)):
+            futures = {executor.submit(_fetch_and_record, s): s for s in pending}
+            for future in tqdm(as_completed(futures), total=len(pending)):
                 try:
                     future.result()
-                except: pass
+                except Exception:
+                    pass
 
 if __name__ == "__main__":
     main()

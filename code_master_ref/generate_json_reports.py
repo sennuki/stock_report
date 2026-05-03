@@ -34,7 +34,30 @@ from utils import get_gemini_client
 gemini_client = get_gemini_client()
 GEMINI_MODEL_NAME = "models/gemma-4-26b-a4b-it"
 
-translation_cache = {}
+# --- 永続化翻訳キャッシュ ---
+# 起動時にファイルから読み込み、翻訳のたびにファイルへ書き込む。
+# これにより毎回500個のJSONファイルを読む必要がなくなる。
+_CACHE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+_TRANSLATION_CACHE_PATH = os.path.join(_CACHE_DIR, "translation_cache.json")
+
+def _load_translation_cache() -> dict:
+    os.makedirs(_CACHE_DIR, exist_ok=True)
+    if os.path.exists(_TRANSLATION_CACHE_PATH):
+        try:
+            with open(_TRANSLATION_CACHE_PATH, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return {}
+
+def _save_translation_cache(cache: dict):
+    os.makedirs(_CACHE_DIR, exist_ok=True)
+    tmp = _TRANSLATION_CACHE_PATH + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(cache, f, ensure_ascii=False)
+    os.replace(tmp, _TRANSLATION_CACHE_PATH)
+
+translation_cache = _load_translation_cache()
 initial_translation_counter = 0
 translation_lock = threading.Lock()
 MAX_INITIAL_TRANSLATIONS = 250
@@ -44,26 +67,26 @@ from google.genai import types
 def translate_summary(symbol, summary):
     if not summary or not gemini_client:
         return None
-    
+
     if symbol in translation_cache:
         return translation_cache[symbol]
-        
+
     for attempt in range(2):
         try:
-            # 原文に忠実な翻訳を指示するプロンプト
             prompt = f"以下の英文の会社概要を、内容を省略・補完することなく、原文に忠実かつ正確な日本語に翻訳してください。専門用語は日本の投資家が理解できる適切な用語を用い、自然な日本語の文章として整えてください。情報の追加や主観的な要約は行わないでください。\n\n{summary}"
             response = gemini_client.models.generate_content(
                 model=GEMINI_MODEL_NAME,
                 contents=prompt,
                 config=types.GenerateContentConfig(
                     system_instruction="あなたはプロの翻訳者および証券アナリストです。提供されたテキストを、正確かつ忠実に日本語へ翻訳してください。",
-                    thinking_config=types.ThinkingConfig(
-                        thinking_level="MINIMAL",
-                    ),
+                    thinking_config=types.ThinkingConfig(thinking_level="MINIMAL"),
                 )
             )
-            translation_cache[symbol] = response.text
-            return response.text
+            result = response.text.strip()
+            with translation_lock:
+                translation_cache[symbol] = result
+                _save_translation_cache(translation_cache)
+            return result
         except Exception as e:
             if "429" in str(e):
                 print(f"Rate limited for {symbol}, waiting longer...")
@@ -157,18 +180,24 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, force_transla
     ticker_obj = utils.get_ticker(chart_target_symbol)
     info = utils.safe_get(ticker_obj, 'info', default={})
     
-    # Check if we already have a translation to save API tokens
-    business_summary_ja = None
     output_path = os.path.join(output_dir, f"{chart_target_symbol}.json")
-    if os.path.exists(output_path):
+
+    # 翻訳: まず永続キャッシュ（メモリ上）を参照。
+    # キャッシュにない場合のみ既存JSONを読む（初回移行用フォールバック）。
+    business_summary_ja = translation_cache.get(chart_target_symbol)
+    if not business_summary_ja and os.path.exists(output_path):
         try:
             with open(output_path, "r", encoding="utf-8") as f:
                 old_data = json.load(f)
                 business_summary_ja = old_data.get("business_summary_ja")
-                # Format existing summary just in case
                 if business_summary_ja:
-                    business_summary_ja = utils.format_summary(business_summary_ja)
-        except: pass
+                    with translation_lock:
+                        translation_cache[chart_target_symbol] = business_summary_ja
+                        _save_translation_cache(translation_cache)
+        except Exception:
+            pass
+    if business_summary_ja:
+        business_summary_ja = utils.format_summary(business_summary_ja)
 
     # If force_translate is True OR we don't have a translation yet, call Gemini
     if (not business_summary_ja or force_translate) and info.get("longBusinessSummary"):

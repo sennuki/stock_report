@@ -2,6 +2,7 @@
 import os
 import json
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from google import genai
 from dotenv import load_dotenv
 import yfinance as yf
@@ -37,22 +38,18 @@ def get_recent_news(symbol):
     except:
         return ""
 
-def generate_styled_reason(client, symbol, stats, original_reason):
+def generate_styled_reason(client, symbol, stats, original_reason, recent_news=""):
     """
-    指定されたニューススタイルで株価変動理由を生成する
+    指定されたニューススタイルで株価変動理由を生成する。
+    recent_news は呼び出し元で取得済みのものを渡す（yfinance呼び出しを含まない）。
     """
-    # 前日比の符号に応じた語句の選択
     is_up = stats['diff_pct'] >= 0
     up_down_word = "高" if is_up else "安"
-    
-    # ニュース風の演出用の一時的な価格
+
     intraday_price = stats.get('high', stats['close']) if is_up else stats.get('low', stats['close'])
     prev_close = stats['close'] / (1 + stats['diff_pct']) if stats['diff_pct'] != -1 else stats['close']
     intraday_diff = intraday_price - prev_close
     intraday_pct = intraday_diff / prev_close if prev_close != 0 else 0
-    
-    # 最新ニュースの補強
-    recent_news = get_recent_news(symbol)
     
     prompt = f"""
 以下の銘柄情報と背景理由を元に、プロの証券アナリストが執筆する金融ニュース記事のようなスタイルで文章を作成してください。
@@ -106,75 +103,82 @@ def generate_styled_reason(client, symbol, stats, original_reason):
 
 def process_top_movers(df_metrics):
     """
-    上昇・下落トップ10銘柄に対して理由を生成し、結果を辞書で返す
+    上昇・下落トップ10銘柄に対して理由を生成し、結果を辞書で返す。
+
+    Phase 1 (逐次): yfinance でデータ取得 → rate limit 対策で 2 秒待機
+    Phase 2 (並列): Gemini API 呼び出しのみを ThreadPoolExecutor で並列化
     """
     client = get_gemini_client()
     if not client:
         print("Skipping reason generation: Gemini API Key not found.")
         return {}
 
-    # 上昇率・下落率でソート
     df_sorted = df_metrics.sort("Daily_Change", descending=True)
     top_gainers = df_sorted.head(10).to_dicts()
     top_losers = df_sorted.tail(10).sort("Daily_Change").to_dicts()
-    
-    results = {}
+
     today_str = time.strftime("%Y-%m-%d")
     today_ja = time.strftime("%m月%d日")
 
-    # 処理対象をまとめる
     movers = []
     for i, row in enumerate(top_gainers):
-        row['rank'] = i + 1
-        row['type'] = 'gain'
-        movers.append(row)
+        row['rank'] = i + 1; row['type'] = 'gain'; movers.append(row)
     for i, row in enumerate(top_losers):
-        row['rank'] = i + 1
-        row['type'] = 'loss'
-        movers.append(row)
+        row['rank'] = i + 1; row['type'] = 'loss'; movers.append(row)
 
-    print(f"Generating professional reasons for {len(movers)} top movers using {GEMINI_MODEL}...")
-    
+    # --- Phase 1: yfinance データ収集（逐次・2秒スリープ） ---
+    print(f"Phase 1: Collecting market data for {len(movers)} movers (sequential)...")
+    movers_data = []  # list of (row, stats, recent_news)
     for row in movers:
         symbol = row['Symbol']
-        print(f"Processing {symbol} (Rank {row['rank']} {row['type']})...")
-        
+        print(f"  [{symbol}] fetching price + news...")
         try:
             ticker = yf.Ticker(symbol)
             hist = ticker.history(period="5d")
-            if hist.empty: continue
-            
+            if hist.empty:
+                continue
+
             last_close = hist.iloc[-1]['Close']
             prev_close = hist.iloc[-2]['Close']
-            high_val = hist.iloc[-1]['High']
-            low_val = hist.iloc[-1]['Low']
-            
             stats = {
                 "date": today_str,
                 "date_ja": today_ja,
                 "close": last_close,
-                "high": high_val,
-                "low": low_val,
+                "high": hist.iloc[-1]['High'],
+                "low": hist.iloc[-1]['Low'],
                 "diff": last_close - prev_close,
                 "diff_pct": row['Daily_Change'],
                 "ytd_pct": row.get('Ret_YTD', 0.0),
                 "rank": row['rank']
             }
-            
-            reason_text = generate_styled_reason(client, symbol, stats, "")
-            
-            if reason_text:
-                results[symbol] = {
-                    "date": today_str,
-                    "change_pct": row['Daily_Change'],
-                    "reason": reason_text
-                }
-                print(f"Successfully generated reason for {symbol}")
-            
-            # APIクォータ対策: 5秒待機
-            time.sleep(5)
+            recent_news = get_recent_news(symbol)
+            movers_data.append((row, stats, recent_news))
+            time.sleep(2)
         except Exception as e:
-            print(f"Failed to fetch detailed data for {symbol}: {e}")
+            print(f"  [{symbol}] data fetch failed: {e}")
             continue
-            
+
+    # --- Phase 2: Gemini 呼び出し（並列・yfinance なし） ---
+    print(f"Phase 2: Generating AI analysis for {len(movers_data)} movers (parallel, max_workers=3)...")
+    results = {}
+    with ThreadPoolExecutor(max_workers=3) as executor:
+        future_map = {
+            executor.submit(generate_styled_reason, client, row['Symbol'], stats, "", recent_news): (row, stats)
+            for row, stats, recent_news in movers_data
+        }
+        for future in as_completed(future_map):
+            row, _ = future_map[future]
+            symbol = row['Symbol']
+            try:
+                reason_text = future.result()
+                if reason_text:
+                    results[symbol] = {
+                        "date": today_str,
+                        "change_pct": row['Daily_Change'],
+                        "reason": reason_text
+                    }
+                    print(f"  [{symbol}] done")
+            except Exception as e:
+                print(f"  [{symbol}] generation failed: {e}")
+
     return results

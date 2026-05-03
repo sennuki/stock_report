@@ -41,6 +41,16 @@ jobs:
           cd code
           uv pip install --system -r requirements.txt
 
+      - name: Set current date for cache key
+        run: echo "TODAY=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+
+      - name: Restore fetch status cache (same-day retry skip)
+        uses: actions/cache@v4
+        with:
+          path: code/data/fetch_status.json
+          key: fetch-status-${{ runner.os }}-${{ env.TODAY }}
+          restore-keys: fetch-status-${{ runner.os }}-
+
       - name: Run Python Data Fetch (Uploads to R2)
         run: |
           cd code
