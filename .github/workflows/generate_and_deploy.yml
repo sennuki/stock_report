@@ -63,6 +63,16 @@ jobs:
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
           R2_BUCKET_NAME: "stock-data-c1"
 
+      - name: Upload raw data to R2 (via Cloudflare API)
+        run: |
+          cd worker-processor
+          npm ci
+          node upload-raw-to-r2.mjs
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          R2_BUCKET_NAME: "stock-data-c1"
+
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
