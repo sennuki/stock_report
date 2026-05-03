@@ -114,19 +114,23 @@ jobs:
       - name: Wait for batch and sync stocks list to build
         run: |
           cd worker-processor
+          STOCKS_FILE=../stock-blog/src/data/stocks.json
           # バッチ完了を最大5分ポーリングして待機し、stocks.json をビルドに取り込む
           MAX_ATTEMPTS=10
           WAIT_SECS=30
           for i in $(seq 1 $MAX_ATTEMPTS); do
+            TMP=$(mktemp)
             if npx wrangler r2 object get stock-data-c1/reports/stocks.json \
-               --file=../stock-blog/src/data/stocks.json 2>/dev/null; then
-              COUNT=$(python3 -c "import json; print(len(json.load(open('../stock-blog/src/data/stocks.json'))))" 2>/dev/null || echo 0)
+               --file="$TMP" --remote 2>/dev/null; then
+              COUNT=$(python3 -c "import json; print(len(json.load(open('$TMP'))))" 2>/dev/null || echo 0)
               echo "stocks.json downloaded: $COUNT stocks"
               if [ "$COUNT" -gt 10 ]; then
+                mv "$TMP" "$STOCKS_FILE"
                 echo "Batch complete."
                 break
               fi
             fi
+            rm -f "$TMP"
             echo "Batch not ready yet (attempt $i/$MAX_ATTEMPTS). Waiting ${WAIT_SECS}s..."
             sleep $WAIT_SECS
           done
