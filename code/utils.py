@@ -206,7 +206,7 @@ def calculate_dcf(symbol, ticker=None):
             risk_free_rate = float(last_wacc_data.get('treasure_10y_yield', 0.04))
         wacc_details["risk_free_rate"] = risk_free_rate
 
-        # 2. 成長率の取得: 実値ベースの3Y CAGR (YoY平均ではなく (end/start)^(1/n)-1)
+        # 2. 成長率の取得
         def get_3y_cagr(growth_df):
             """DataFrame の実値列から 3Y CAGR を計算。負値・データ不足は None を返す。"""
             if growth_df is None or growth_df.empty:
@@ -222,9 +222,9 @@ def calculate_dcf(symbol, ticker=None):
             col = metric_col[0]
             v_start = float(recent.iloc[0][col])
             v_end   = float(recent.iloc[-1][col])
-            n = len(recent) - 1  # 期間数
+            n = len(recent) - 1
             if v_start <= 0 or v_end <= 0:
-                return None  # Turned Positive / Negative → 除外
+                return None
             return (v_end / v_start) ** (1.0 / n) - 1
 
         rev_cagr    = get_3y_cagr(db_ticker.annual_revenue_yoy_growth())
@@ -232,22 +232,49 @@ def calculate_dcf(symbol, ticker=None):
         ebitda_cagr = get_3y_cagr(db_ticker.annual_ebitda_yoy_growth())
         ni_cagr     = get_3y_cagr(db_ticker.annual_net_income_yoy_growth())
 
+        # EPS 9Y CAGR (defeatbeta Excel 新方式: MIN(MAX(EPS 9Y CAGR, 5%), 20%))
+        eps_9y_cagr = None
+        try:
+            ttm_eps_df = db_ticker.ttm_eps()
+            if not ttm_eps_df.empty:
+                ttm_eps_df['report_date'] = pd.to_datetime(ttm_eps_df['report_date'])
+                ttm_eps_df = ttm_eps_df.sort_values('report_date').reset_index(drop=True)
+                eps_col = [c for c in ttm_eps_df.columns
+                           if c not in ('symbol', 'report_date')][0]
+                valid_eps = ttm_eps_df.dropna(subset=[eps_col])
+                valid_eps = valid_eps[valid_eps[eps_col] > 0].reset_index(drop=True)
+                if len(valid_eps) >= 2:
+                    latest_eps  = float(valid_eps.iloc[-1][eps_col])
+                    latest_date = valid_eps.iloc[-1]['report_date']
+                    nine_years_ago = latest_date - pd.DateOffset(years=9)
+                    historical = valid_eps[valid_eps['report_date'] >= nine_years_ago]
+                    if not historical.empty:
+                        oldest_eps  = float(historical.iloc[0][eps_col])
+                        oldest_date = historical.iloc[0]['report_date']
+                        years_diff  = round((latest_date - oldest_date).days / 365.25)
+                        if years_diff > 0 and oldest_eps > 0 and latest_eps > 0:
+                            eps_9y_cagr = (latest_eps / oldest_eps) ** (1.0 / years_diff) - 1
+        except Exception:
+            pass
+
         cagr_details = {
-            "revenue":    rev_cagr,
-            "fcf":        fcf_cagr,
-            "ebitda":     ebitda_cagr,
-            "net_income": ni_cagr
+            "revenue":      rev_cagr,
+            "fcf":          fcf_cagr,
+            "ebitda":       ebitda_cagr,
+            "net_income":   ni_cagr,
+            "eps_9y_cagr":  eps_9y_cagr,
         }
 
-        # 将来成長率 (1-5年): Rev40% FCF30% EBITDA20% NI10%、N/A指標は除外して正規化
-        weights = {"revenue": 0.4, "fcf": 0.3, "ebitda": 0.2, "net_income": 0.1}
-        values  = {"revenue": rev_cagr, "fcf": fcf_cagr, "ebitda": ebitda_cagr, "net_income": ni_cagr}
-        total_w = sum(w for k, w in weights.items() if values[k] is not None)
-        if total_w > 0:
-            raw_growth_1_5y = sum(values[k] * weights[k] for k in weights if values[k] is not None) / total_w
+        # 将来成長率 (1-5年): EPS 9Y CAGR を 5%〜20% にクリップ (defeatbeta Excel 方式)
+        if eps_9y_cagr is not None:
+            growth_1_5y = min(max(eps_9y_cagr, 0.05), 0.20)
         else:
-            raw_growth_1_5y = 0.05
-        growth_1_5y = min(max(raw_growth_1_5y, 0.05), 0.20)
+            # フォールバック: Rev/FCF/EBITDA/NI 加重平均
+            weights = {"revenue": 0.4, "fcf": 0.3, "ebitda": 0.2, "net_income": 0.1}
+            values  = {"revenue": rev_cagr, "fcf": fcf_cagr, "ebitda": ebitda_cagr, "net_income": ni_cagr}
+            total_w = sum(w for k, w in weights.items() if values[k] is not None)
+            raw = sum(values[k] * weights[k] for k in weights if values[k] is not None) / total_w if total_w > 0 else 0.05
+            growth_1_5y = min(max(raw, 0.05), 0.20)
 
         # 永続成長率 = 5年平均リスクフリーレート
         terminal_growth = risk_free_rate
@@ -278,8 +305,8 @@ def calculate_dcf(symbol, ticker=None):
                 "growth_rate": float(rate)
             })
         
-        # 互換性のために10年目の成長率を growth_6_10y として保持
-        growth_6_10y = projections[-1]["growth_rate"]
+        # 6年目の成長率を growth_6_10y として保持 (Excel の C13 = C12-(C12-C14)/5 に相当)
+        growth_6_10y = growth_1_5y - (growth_1_5y - terminal_growth) / 5
             
         # 継続価値 (Terminal Value)
         tv = (current_fcf * (1 + terminal_growth)) / (wacc - terminal_growth)
