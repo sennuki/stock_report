@@ -1,29 +1,5052 @@
 [
   {
-    "Symbol": "MSFT",
-    "Symbol_YF": "MSFT",
-    "Security": "Microsoft Corp",
-    "GICS Sector": "Information Technology",
-    "GICS Sub-Industry": "Systems Software",
-    "Exchange": "NASDAQ",
-    "Daily_Change": 0.0163423
+    "Symbol": "A",
+    "Symbol_YF": "A",
+    "Security": "Agilent Technologies",
+    "Security_JA": "アジレント･テクノロジーズ",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Life Sciences Tools & Services",
+    "Exchange": "NYSE",
+    "Daily_Change": null
   },
   {
     "Symbol": "AAPL",
     "Symbol_YF": "AAPL",
     "Security": "Apple Inc",
+    "Security_JA": null,
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Technology Hardware Storage & Peripherals",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.0323936
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ABBV",
+    "Symbol_YF": "ABBV",
+    "Security": "AbbVie",
+    "Security_JA": "アッヴィ",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Biotechnology",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ABNB",
+    "Symbol_YF": "ABNB",
+    "Security": "Airbnb",
+    "Security_JA": "エアビーアンドビー",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Hotels, Resorts & Cruise Lines",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ABT",
+    "Symbol_YF": "ABT",
+    "Security": "Abbott Laboratories",
+    "Security_JA": "アボット･ラボラトリーズ",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Equipment",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ACGL",
+    "Symbol_YF": "ACGL",
+    "Security": "Arch Capital Group",
+    "Security_JA": "アーチ・キャピタル・グループ",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Property & Casualty Insurance",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ACN",
+    "Symbol_YF": "ACN",
+    "Security": "Accenture",
+    "Security_JA": "アクセンチュア　クラスA",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "IT Consulting & Other Services",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ADBE",
+    "Symbol_YF": "ADBE",
+    "Security": "Adobe Inc.",
+    "Security_JA": "アドビ",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Application Software",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ADI",
+    "Symbol_YF": "ADI",
+    "Security": "Analog Devices",
+    "Security_JA": "アナログ・デバイシズ",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Semiconductors",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ADM",
+    "Symbol_YF": "ADM",
+    "Security": "Archer Daniels Midland",
+    "Security_JA": "アーチャーダニエルズ・ミッドランド",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Agricultural Products & Services",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ADP",
+    "Symbol_YF": "ADP",
+    "Security": "Automatic Data Processing",
+    "Security_JA": "オートマチック・データ・プロセシング",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Human Resource & Employment Services",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ADSK",
+    "Symbol_YF": "ADSK",
+    "Security": "Autodesk",
+    "Security_JA": "オートデスク",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Application Software",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "AEE",
+    "Symbol_YF": "AEE",
+    "Security": "Ameren",
+    "Security_JA": "アメレン・コーポレーション",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Multi-Utilities",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "AEP",
+    "Symbol_YF": "AEP",
+    "Security": "American Electric Power",
+    "Security_JA": "アメリカン・エレクトリック・パワー",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Electric Utilities",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "AES",
+    "Symbol_YF": "AES",
+    "Security": "AES Corporation",
+    "Security_JA": "エーイーエス",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Independent Power Producers & Energy Traders",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "AFL",
+    "Symbol_YF": "AFL",
+    "Security": "Aflac",
+    "Security_JA": "アフラック",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Life & Health Insurance",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "AIG",
+    "Symbol_YF": "AIG",
+    "Security": "American International Group",
+    "Security_JA": "エーアイジー",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Multi-line Insurance",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "AIZ",
+    "Symbol_YF": "AIZ",
+    "Security": "Assurant",
+    "Security_JA": "アシュラント",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Multi-line Insurance",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "AJG",
+    "Symbol_YF": "AJG",
+    "Security": "Arthur J. Gallagher & Co.",
+    "Security_JA": "アーサー・ジェイ・ギャラガー",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Insurance Brokers",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "AKAM",
+    "Symbol_YF": "AKAM",
+    "Security": "Akamai Technologies",
+    "Security_JA": "アカマイ・テクノロジーズ",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Internet Services & Infrastructure",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ALB",
+    "Symbol_YF": "ALB",
+    "Security": "Albemarle Corporation",
+    "Security_JA": "アルビマール",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Specialty Chemicals",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ALGN",
+    "Symbol_YF": "ALGN",
+    "Security": "Align Technology",
+    "Security_JA": "アライン・テクノロジー",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Supplies",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ALL",
+    "Symbol_YF": "ALL",
+    "Security": "Allstate",
+    "Security_JA": "オールステート",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Property & Casualty Insurance",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ALLE",
+    "Symbol_YF": "ALLE",
+    "Security": "Allegion",
+    "Security_JA": "アレジオン",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Building Products",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "AMAT",
+    "Symbol_YF": "AMAT",
+    "Security": "Applied Materials",
+    "Security_JA": "アプライド・マテリアルズ",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Semiconductor Materials & Equipment",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "AMCR",
+    "Symbol_YF": "AMCR",
+    "Security": "Amcor",
+    "Security_JA": "アムコー",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Paper & Plastic Packaging Products & Materials",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "AMD",
+    "Symbol_YF": "AMD",
+    "Security": "Advanced Micro Devices",
+    "Security_JA": "アドバンスト・マイクロ・デバイシズ",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Semiconductors",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "AME",
+    "Symbol_YF": "AME",
+    "Security": "Ametek",
+    "Security_JA": "アメテック",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Electrical Components & Equipment",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "AMGN",
+    "Symbol_YF": "AMGN",
+    "Security": "Amgen",
+    "Security_JA": "アムジェン",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Biotechnology",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "AMP",
+    "Symbol_YF": "AMP",
+    "Security": "Ameriprise Financial",
+    "Security_JA": "アメリプライズ・フィナンシャル",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Asset Management & Custody Banks",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "AMT",
+    "Symbol_YF": "AMT",
+    "Security": "American Tower Corp",
+    "Security_JA": "アメリカン・タワー",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Telecom Tower REITs",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "AMZN",
+    "Symbol_YF": "AMZN",
+    "Security": "Amazon.com Inc",
+    "Security_JA": "アマゾン・ドット・コム",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Broadline Retail",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ANET",
+    "Symbol_YF": "ANET",
+    "Security": "Arista Networks",
+    "Security_JA": "アリスタネットワークス",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Communications Equipment",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "AON",
+    "Symbol_YF": "AON",
+    "Security": "Aon plc",
+    "Security_JA": "エーオン",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Insurance Brokers",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "AOS",
+    "Symbol_YF": "AOS",
+    "Security": "A. O. Smith",
+    "Security_JA": "エー・オー・スミス",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Building Products",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "APA",
+    "Symbol_YF": "APA",
+    "Security": "APA Corporation",
+    "Security_JA": "アパッチ",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Exploration & Production",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "APD",
+    "Symbol_YF": "APD",
+    "Security": "Air Products",
+    "Security_JA": "エアー・プロダクツ・アンド・ケミカルズ",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Industrial Gases",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "APH",
+    "Symbol_YF": "APH",
+    "Security": "Amphenol",
+    "Security_JA": "アンフェノール クラスA",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Electronic Components",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "APO",
+    "Symbol_YF": "APO",
+    "Security": "Apollo Global Management",
+    "Security_JA": "アポロ・グローバル・マネジメント",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Asset Management & Custody Banks",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "APP",
+    "Symbol_YF": "APP",
+    "Security": "AppLovin",
+    "Security_JA": "アップラビン",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Application Software",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "APTV",
+    "Symbol_YF": "APTV",
+    "Security": "Aptiv",
+    "Security_JA": "アプティブ・ホールディングス",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Automotive Parts & Equipment",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ARE",
+    "Symbol_YF": "ARE",
+    "Security": "Alexandria Real Estate Equities",
+    "Security_JA": "アレクサンドリア・リアル・エステート・エクイティーズ",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Office REITs",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ARES",
+    "Symbol_YF": "ARES",
+    "Security": "Ares Management",
+    "Security_JA": "アレス・マネジメント　クラスA",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Asset Management & Custody Banks",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ATO",
+    "Symbol_YF": "ATO",
+    "Security": "Atmos Energy",
+    "Security_JA": "アトモス・エナジー",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Gas Utilities",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "AVB",
+    "Symbol_YF": "AVB",
+    "Security": "AvalonBay Communities",
+    "Security_JA": "アバロンベイ・コミュニティーズ",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Multi-Family Residential REITs",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "AVGO",
+    "Symbol_YF": "AVGO",
+    "Security": "Broadcom",
+    "Security_JA": "ブロードコム",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Semiconductors",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "AVY",
+    "Symbol_YF": "AVY",
+    "Security": "Avery Dennison",
+    "Security_JA": "エイブリー・デニソン",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Paper & Plastic Packaging Products & Materials",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "AWK",
+    "Symbol_YF": "AWK",
+    "Security": "American Water Works",
+    "Security_JA": "アメリカン・ウォーター・ワークス",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Water Utilities",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "AXON",
+    "Symbol_YF": "AXON",
+    "Security": "Axon Enterprise",
+    "Security_JA": "アクソン・エンタープライズ",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Aerospace & Defense",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "AXP",
+    "Symbol_YF": "AXP",
+    "Security": "American Express",
+    "Security_JA": "アメリカン・エキスプレス",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Consumer Finance",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "AZO",
+    "Symbol_YF": "AZO",
+    "Security": "AutoZone",
+    "Security_JA": "オートゾーン",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Automotive Retail",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "BA",
+    "Symbol_YF": "BA",
+    "Security": "Boeing",
+    "Security_JA": "ボーイング",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Aerospace & Defense",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "BAC",
+    "Symbol_YF": "BAC",
+    "Security": "Bank of America",
+    "Security_JA": "バンク・オブ・アメリカ",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Diversified Banks",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "BALL",
+    "Symbol_YF": "BALL",
+    "Security": "Ball Corporation",
+    "Security_JA": "ボール",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Metal, Glass & Plastic Containers",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "BAX",
+    "Symbol_YF": "BAX",
+    "Security": "Baxter International",
+    "Security_JA": "バクスター・インターナショナル",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Equipment",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "BBY",
+    "Symbol_YF": "BBY",
+    "Security": "Best Buy",
+    "Security_JA": "ベスト・バイ",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Computer & Electronics Retail",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "BDX",
+    "Symbol_YF": "BDX",
+    "Security": "Becton Dickinson",
+    "Security_JA": "ベクトン・ディッキンソン",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Equipment",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "BEN",
+    "Symbol_YF": "BEN",
+    "Security": "Franklin Resources",
+    "Security_JA": "フランクリン・リソーシズ",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Asset Management & Custody Banks",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "BF.B",
+    "Symbol_YF": "BF-B",
+    "Security": "Brown–Forman",
+    "Security_JA": "ブラウン・フォーマン クラスB",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Distillers & Vintners",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "BG",
+    "Symbol_YF": "BG",
+    "Security": "Bunge Global",
+    "Security_JA": "ブンゲ・グローバル",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Agricultural Products & Services",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "BIIB",
+    "Symbol_YF": "BIIB",
+    "Security": "Biogen",
+    "Security_JA": "バイオジェン",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Biotechnology",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "BK",
+    "Symbol_YF": "BK",
+    "Security": "BNY Mellon",
+    "Security_JA": "バンク・オブ・ニューヨーク・メロン",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Asset Management & Custody Banks",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "BKNG",
+    "Symbol_YF": "BKNG",
+    "Security": "Booking Holdings",
+    "Security_JA": "ブッキング・ ホールディングス",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Hotels, Resorts & Cruise Lines",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "BKR",
+    "Symbol_YF": "BKR",
+    "Security": "Baker Hughes",
+    "Security_JA": "ベーカー・ヒューズ",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Equipment & Services",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "BLDR",
+    "Symbol_YF": "BLDR",
+    "Security": "Builders FirstSource",
+    "Security_JA": "ビルダーズ・ファーストソース",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Building Products",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "BLK",
+    "Symbol_YF": "BLK",
+    "Security": "BlackRock",
+    "Security_JA": "ブラックロック・ファンディング",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Asset Management & Custody Banks",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "BMY",
+    "Symbol_YF": "BMY",
+    "Security": "Bristol Myers Squibb",
+    "Security_JA": "ブリストル・マイヤーズ",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Pharmaceuticals",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "BR",
+    "Symbol_YF": "BR",
+    "Security": "Broadridge Financial Solutions",
+    "Security_JA": "ブロードリッジ・フィナンシャル・ソリューションズ",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Data Processing & Outsourced Services",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "BRK.B",
+    "Symbol_YF": "BRK-B",
+    "Security": "Berkshire Hathaway",
+    "Security_JA": "バークシャー・ハサウェイ　クラスB",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Multi-Sector Holdings",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "BRO",
+    "Symbol_YF": "BRO",
+    "Security": "Brown & Brown",
+    "Security_JA": "ブラウン・アンド・ブラウン",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Insurance Brokers",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "BSX",
+    "Symbol_YF": "BSX",
+    "Security": "Boston Scientific",
+    "Security_JA": "ボストン・サイエンティフィック",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Equipment",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "BX",
+    "Symbol_YF": "BX",
+    "Security": "Blackstone Inc.",
+    "Security_JA": "ブラックストーン",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Asset Management & Custody Banks",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "BXP",
+    "Symbol_YF": "BXP",
+    "Security": "BXP, Inc.",
+    "Security_JA": "BXP",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Office REITs",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "C",
+    "Symbol_YF": "C",
+    "Security": "Citigroup",
+    "Security_JA": "シティグループ",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Diversified Banks",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CAG",
+    "Symbol_YF": "CAG",
+    "Security": "Conagra Brands",
+    "Security_JA": "コナグラ・ブランズ",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Packaged Foods & Meats",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CAH",
+    "Symbol_YF": "CAH",
+    "Security": "Cardinal Health",
+    "Security_JA": "カーディナル・ヘルス",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Distributors",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CARR",
+    "Symbol_YF": "CARR",
+    "Security": "Carrier Global",
+    "Security_JA": "キャリア・グローバル",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Building Products",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CASY",
+    "Symbol_YF": "CASY",
+    "Security": "Casey's",
+    "Security_JA": "ケーシーズ・ゼネラル・ストアーズ",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Food Retail",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CAT",
+    "Symbol_YF": "CAT",
+    "Security": "Caterpillar Inc",
+    "Security_JA": "キャタピラー",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Construction Machinery & Heavy Transportation Equipment",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CB",
+    "Symbol_YF": "CB",
+    "Security": "Chubb Limited",
+    "Security_JA": "チャブ",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Property & Casualty Insurance",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CBOE",
+    "Symbol_YF": "CBOE",
+    "Security": "Cboe Global Markets",
+    "Security_JA": "シービーオーイー・マーケッツ",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Financial Exchanges & Data",
+    "Exchange": "BTS",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CBRE",
+    "Symbol_YF": "CBRE",
+    "Security": "CBRE Group",
+    "Security_JA": "CBREグループ",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Real Estate Services",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CCI",
+    "Symbol_YF": "CCI",
+    "Security": "Crown Castle",
+    "Security_JA": "クラウン・キャッスル",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Telecom Tower REITs",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CCL",
+    "Symbol_YF": "CCL",
+    "Security": "Carnival",
+    "Security_JA": "カーニバル",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Hotels, Resorts & Cruise Lines",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CDNS",
+    "Symbol_YF": "CDNS",
+    "Security": "Cadence Design Systems",
+    "Security_JA": "ケイデンス・デザイン・システムズ",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Application Software",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CDW",
+    "Symbol_YF": "CDW",
+    "Security": "CDW Corporation",
+    "Security_JA": "CDWコープ",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Technology Distributors",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CEG",
+    "Symbol_YF": "CEG",
+    "Security": "Constellation Energy",
+    "Security_JA": "コンステレーション・エナジー",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Electric Utilities",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CF",
+    "Symbol_YF": "CF",
+    "Security": "CF Industries",
+    "Security_JA": "シーエフ・インダストリーズ・ホールディングス",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Fertilizers & Agricultural Chemicals",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CFG",
+    "Symbol_YF": "CFG",
+    "Security": "Citizens Financial Group",
+    "Security_JA": "シチズンズ・フィナンシャル・グループ",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Regional Banks",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CHD",
+    "Symbol_YF": "CHD",
+    "Security": "Church & Dwight",
+    "Security_JA": "チャーチ・アンド・ドワイト",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Household Products",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CHRW",
+    "Symbol_YF": "CHRW",
+    "Security": "C.H. Robinson",
+    "Security_JA": "シー・エイチ・ロビンソン・ワールドワイド",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Air Freight & Logistics",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CHTR",
+    "Symbol_YF": "CHTR",
+    "Security": "Charter Communications",
+    "Security_JA": "チャーター・コミュニケーションズ クラスA",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Cable & Satellite",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CI",
+    "Symbol_YF": "CI",
+    "Security": "Cigna",
+    "Security_JA": "ザ・シグナ・グループ",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Services",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CIEN",
+    "Symbol_YF": "CIEN",
+    "Security": "Ciena",
+    "Security_JA": "シエナ",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Communications Equipment",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CINF",
+    "Symbol_YF": "CINF",
+    "Security": "Cincinnati Financial",
+    "Security_JA": "シンシナティ・フィナンシャル",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Property & Casualty Insurance",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CL",
+    "Symbol_YF": "CL",
+    "Security": "Colgate-Palmolive",
+    "Security_JA": "コルゲート・パルモリーブ",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Household Products",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CLX",
+    "Symbol_YF": "CLX",
+    "Security": "Clorox",
+    "Security_JA": "クロロックス・カンパニー",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Household Products",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CMCSA",
+    "Symbol_YF": "CMCSA",
+    "Security": "Comcast",
+    "Security_JA": "コムキャスト クラスA",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Cable & Satellite",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CME",
+    "Symbol_YF": "CME",
+    "Security": "CME Group",
+    "Security_JA": "シーエムイー・グループ",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Financial Exchanges & Data",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CMG",
+    "Symbol_YF": "CMG",
+    "Security": "Chipotle Mexican Grill",
+    "Security_JA": "チポトレ・メキシカン・グリル",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Restaurants",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CMI",
+    "Symbol_YF": "CMI",
+    "Security": "Cummins",
+    "Security_JA": "カミンズ",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Construction Machinery & Heavy Transportation Equipment",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CMS",
+    "Symbol_YF": "CMS",
+    "Security": "CMS Energy",
+    "Security_JA": "シーエムエス・エナジー",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Multi-Utilities",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CNC",
+    "Symbol_YF": "CNC",
+    "Security": "Centene Corporation",
+    "Security_JA": "センティーン",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Managed Health Care",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CNP",
+    "Symbol_YF": "CNP",
+    "Security": "CenterPoint Energy",
+    "Security_JA": "センターポイント・エナジー",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Multi-Utilities",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "COF",
+    "Symbol_YF": "COF",
+    "Security": "Capital One",
+    "Security_JA": "キャピタル・ワン・フィナンシャル",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Consumer Finance",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "COHR",
+    "Symbol_YF": "COHR",
+    "Security": "Coherent Corp.",
+    "Security_JA": "コヒレント",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Electronic Components",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "COIN",
+    "Symbol_YF": "COIN",
+    "Security": "Coinbase",
+    "Security_JA": "コインベース・グローバル",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Financial Exchanges & Data",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "COO",
+    "Symbol_YF": "COO",
+    "Security": "Cooper Companies (The)",
+    "Security_JA": "クーパー",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Supplies",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "COP",
+    "Symbol_YF": "COP",
+    "Security": "ConocoPhillips",
+    "Security_JA": "コノコ・フィリップス",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Exploration & Production",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "COR",
+    "Symbol_YF": "COR",
+    "Security": "Cencora",
+    "Security_JA": "センコア",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Distributors",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "COST",
+    "Symbol_YF": "COST",
+    "Security": "Costco",
+    "Security_JA": "コストコ・ホールセール",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Consumer Staples Merchandise Retail",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CPAY",
+    "Symbol_YF": "CPAY",
+    "Security": "Corpay",
+    "Security_JA": "コーペイ",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Transaction & Payment Processing Services",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CPB",
+    "Symbol_YF": "CPB",
+    "Security": "Campbell's Company (The)",
+    "Security_JA": "ザ・キャンベルズ",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Packaged Foods & Meats",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CPRT",
+    "Symbol_YF": "CPRT",
+    "Security": "Copart",
+    "Security_JA": "コパート",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Diversified Support Services",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CPT",
+    "Symbol_YF": "CPT",
+    "Security": "Camden Property Trust",
+    "Security_JA": "カムデン・プロパティ・トラスト",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Multi-Family Residential REITs",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CRH",
+    "Symbol_YF": "CRH",
+    "Security": "CRH plc",
+    "Security_JA": "CRH",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Construction Materials",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CRL",
+    "Symbol_YF": "CRL",
+    "Security": "Charles River Laboratories",
+    "Security_JA": "チャールス・リバー・ラボラトリーズ",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Life Sciences Tools & Services",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CRM",
+    "Symbol_YF": "CRM",
+    "Security": "Salesforce",
+    "Security_JA": "セールスフォース",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Application Software",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CRWD",
+    "Symbol_YF": "CRWD",
+    "Security": "CrowdStrike",
+    "Security_JA": "クラウドストライク・ホールディングス　クラスA",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Systems Software",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CSCO",
+    "Symbol_YF": "CSCO",
+    "Security": "Cisco",
+    "Security_JA": "シスコシステムズ",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Communications Equipment",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CSGP",
+    "Symbol_YF": "CSGP",
+    "Security": "CoStar Group",
+    "Security_JA": "コスター・グループ",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Real Estate Services",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CSX",
+    "Symbol_YF": "CSX",
+    "Security": "CSX Corporation",
+    "Security_JA": "シーエスエックス",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Rail Transportation",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CTAS",
+    "Symbol_YF": "CTAS",
+    "Security": "Cintas",
+    "Security_JA": "シンタス",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Diversified Support Services",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CTRA",
+    "Symbol_YF": "CTRA",
+    "Security": "Coterra",
+    "Security_JA": "コテラ・エナジー・インク",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Exploration & Production",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CTSH",
+    "Symbol_YF": "CTSH",
+    "Security": "Cognizant",
+    "Security_JA": "コグニザント・テクノロジー・ソリューションズ クラスA",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "IT Consulting & Other Services",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CTVA",
+    "Symbol_YF": "CTVA",
+    "Security": "Corteva",
+    "Security_JA": "コルテバ",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Fertilizers & Agricultural Chemicals",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CVNA",
+    "Symbol_YF": "CVNA",
+    "Security": "Carvana",
+    "Security_JA": "カーヴァナ",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Automotive Retail",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CVS",
+    "Symbol_YF": "CVS",
+    "Security": "CVS Health",
+    "Security_JA": "シーブイエス・ヘルス",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Services",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "CVX",
+    "Symbol_YF": "CVX",
+    "Security": "Chevron Corp",
+    "Security_JA": "シェブロン",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Integrated Oil & Gas",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "D",
+    "Symbol_YF": "D",
+    "Security": "Dominion Energy",
+    "Security_JA": "ドミニオン・エナジー",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Multi-Utilities",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "DAL",
+    "Symbol_YF": "DAL",
+    "Security": "Delta Air Lines",
+    "Security_JA": "デルタ航空",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Passenger Airlines",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "DASH",
+    "Symbol_YF": "DASH",
+    "Security": "DoorDash",
+    "Security_JA": "ドアダッシュ",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Specialized Consumer Services",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "DD",
+    "Symbol_YF": "DD",
+    "Security": "DuPont",
+    "Security_JA": "デュポン・ド・ヌムール",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Specialty Chemicals",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "DDOG",
+    "Symbol_YF": "DDOG",
+    "Security": "Datadog",
+    "Security_JA": "データドッグ　クラスA",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Application Software",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "DE",
+    "Symbol_YF": "DE",
+    "Security": "Deere & Company",
+    "Security_JA": "ディア",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Agricultural & Farm Machinery",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "DECK",
+    "Symbol_YF": "DECK",
+    "Security": "Deckers Brands",
+    "Security_JA": "デッカーズ・アウトドア",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Footwear",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "DELL",
+    "Symbol_YF": "DELL",
+    "Security": "Dell Technologies",
+    "Security_JA": "デル・テクノロジーズ",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "DG",
+    "Symbol_YF": "DG",
+    "Security": "Dollar General",
+    "Security_JA": "ダラー・ゼネラル",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Consumer Staples Merchandise Retail",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "DGX",
+    "Symbol_YF": "DGX",
+    "Security": "Quest Diagnostics",
+    "Security_JA": "クエスト・ダイアグノスティクス",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Services",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "DHI",
+    "Symbol_YF": "DHI",
+    "Security": "D. R. Horton",
+    "Security_JA": "ディーアール・ホートン",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Homebuilding",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "DHR",
+    "Symbol_YF": "DHR",
+    "Security": "Danaher Corporation",
+    "Security_JA": "ダナハー",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Life Sciences Tools & Services",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "DIS",
+    "Symbol_YF": "DIS",
+    "Security": "Walt Disney Company (The)",
+    "Security_JA": "ウォルト・ディズニー",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Movies & Entertainment",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "DLR",
+    "Symbol_YF": "DLR",
+    "Security": "Digital Realty",
+    "Security_JA": "デジタル・リアルティ",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Data Center REITs",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "DLTR",
+    "Symbol_YF": "DLTR",
+    "Security": "Dollar Tree",
+    "Security_JA": "ダラー・ツリー",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Consumer Staples Merchandise Retail",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "DOC",
+    "Symbol_YF": "DOC",
+    "Security": "Healthpeak Properties",
+    "Security_JA": "ヘルスピーク・プロパティーズ",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Health Care REITs",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "DOV",
+    "Symbol_YF": "DOV",
+    "Security": "Dover Corporation",
+    "Security_JA": "ドーバー",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "DOW",
+    "Symbol_YF": "DOW",
+    "Security": "Dow Inc.",
+    "Security_JA": "ダウ",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Commodity Chemicals",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "DPZ",
+    "Symbol_YF": "DPZ",
+    "Security": "Domino's",
+    "Security_JA": "ドミノ･ピザ",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Restaurants",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "DRI",
+    "Symbol_YF": "DRI",
+    "Security": "Darden Restaurants",
+    "Security_JA": "ダーデン・レストランツ",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Restaurants",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "DTE",
+    "Symbol_YF": "DTE",
+    "Security": "DTE Energy",
+    "Security_JA": "ディーティーイー・エナジー・カンパニー",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Multi-Utilities",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "DUK",
+    "Symbol_YF": "DUK",
+    "Security": "Duke Energy",
+    "Security_JA": "デューク・エナジー",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Electric Utilities",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "DVA",
+    "Symbol_YF": "DVA",
+    "Security": "DaVita",
+    "Security_JA": "ダビータ",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Services",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "DVN",
+    "Symbol_YF": "DVN",
+    "Security": "Devon Energy",
+    "Security_JA": "デボン・エナジー・コーポレーション",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Exploration & Production",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "DXCM",
+    "Symbol_YF": "DXCM",
+    "Security": "Dexcom",
+    "Security_JA": "デクスコム",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Equipment",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "EA",
+    "Symbol_YF": "EA",
+    "Security": "Electronic Arts",
+    "Security_JA": "エレクトロニック・アーツ",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Interactive Home Entertainment",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "EBAY",
+    "Symbol_YF": "EBAY",
+    "Security": "eBay Inc.",
+    "Security_JA": "イーベイ",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Broadline Retail",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ECL",
+    "Symbol_YF": "ECL",
+    "Security": "Ecolab",
+    "Security_JA": "エコラボ",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Specialty Chemicals",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ED",
+    "Symbol_YF": "ED",
+    "Security": "Consolidated Edison",
+    "Security_JA": "コンソリデーテッド・エジソン",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Multi-Utilities",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "EFX",
+    "Symbol_YF": "EFX",
+    "Security": "Equifax",
+    "Security_JA": "エキファックス",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Research & Consulting Services",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "EG",
+    "Symbol_YF": "EG",
+    "Security": "Everest Group",
+    "Security_JA": "エベレスト・リ・グループ",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Reinsurance",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "EIX",
+    "Symbol_YF": "EIX",
+    "Security": "Edison International",
+    "Security_JA": "エジソン・インターナショナル",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Electric Utilities",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "EL",
+    "Symbol_YF": "EL",
+    "Security": "Estée Lauder Companies (The)",
+    "Security_JA": "エスティローダー クラスA",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Personal Care Products",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ELV",
+    "Symbol_YF": "ELV",
+    "Security": "Elevance Health",
+    "Security_JA": "エレバンス・ヘルス",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Managed Health Care",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "EME",
+    "Symbol_YF": "EME",
+    "Security": "Emcor",
+    "Security_JA": "エムコア・グループ",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Construction & Engineering",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "EMR",
+    "Symbol_YF": "EMR",
+    "Security": "Emerson Electric",
+    "Security_JA": "エマーソン・エレクトリック",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Electrical Components & Equipment",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "EOG",
+    "Symbol_YF": "EOG",
+    "Security": "EOG Resources",
+    "Security_JA": "イーオージー・リソーシズ",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Exploration & Production",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "EPAM",
+    "Symbol_YF": "EPAM",
+    "Security": "EPAM Systems",
+    "Security_JA": "イーピーエーエム・システムズ",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "IT Consulting & Other Services",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "EQIX",
+    "Symbol_YF": "EQIX",
+    "Security": "Equinix",
+    "Security_JA": "エクイニクス",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Data Center REITs",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "EQR",
+    "Symbol_YF": "EQR",
+    "Security": "Equity Residential",
+    "Security_JA": "エクイティ・レジデンシャル",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Multi-Family Residential REITs",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "EQT",
+    "Symbol_YF": "EQT",
+    "Security": "EQT Corporation",
+    "Security_JA": "イーキューティー",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Exploration & Production",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ERIE",
+    "Symbol_YF": "ERIE",
+    "Security": "Erie Indemnity",
+    "Security_JA": "イリー・インデムニティー・カンパニー クラスA",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Insurance Brokers",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ES",
+    "Symbol_YF": "ES",
+    "Security": "Eversource Energy",
+    "Security_JA": "エバーソース・エナジー",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Electric Utilities",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ESS",
+    "Symbol_YF": "ESS",
+    "Security": "Essex Property Trust",
+    "Security_JA": "エセックス・プロパティ・トラスト",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Multi-Family Residential REITs",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ETN",
+    "Symbol_YF": "ETN",
+    "Security": "Eaton Corporation",
+    "Security_JA": "イートン",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Electrical Components & Equipment",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ETR",
+    "Symbol_YF": "ETR",
+    "Security": "Entergy",
+    "Security_JA": "エンタジー",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Electric Utilities",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "EVRG",
+    "Symbol_YF": "EVRG",
+    "Security": "Evergy",
+    "Security_JA": "エヴァージー",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Electric Utilities",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "EW",
+    "Symbol_YF": "EW",
+    "Security": "Edwards Lifesciences",
+    "Security_JA": "エドワーズ・ライフサイエンシズ",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Equipment",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "EXC",
+    "Symbol_YF": "EXC",
+    "Security": "Exelon",
+    "Security_JA": "エクセロン",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Electric Utilities",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "EXE",
+    "Symbol_YF": "EXE",
+    "Security": "Expand Energy",
+    "Security_JA": "エクスパンド・エナジー",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Exploration & Production",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "EXPD",
+    "Symbol_YF": "EXPD",
+    "Security": "Expeditors International",
+    "Security_JA": "エクスペディターズ・インターナショナル・オブ・ワシントン",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Air Freight & Logistics",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "EXPE",
+    "Symbol_YF": "EXPE",
+    "Security": "Expedia Group",
+    "Security_JA": "エクスペディア・グループ",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Hotels, Resorts & Cruise Lines",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "EXR",
+    "Symbol_YF": "EXR",
+    "Security": "Extra Space Storage",
+    "Security_JA": "エクストラ・スペース・ストレージ",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Self-Storage REITs",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "F",
+    "Symbol_YF": "F",
+    "Security": "Ford Motor Company",
+    "Security_JA": "フォード・モーター",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Automobile Manufacturers",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "FANG",
+    "Symbol_YF": "FANG",
+    "Security": "Diamondback Energy",
+    "Security_JA": "ダイアモンドバック・エナジー",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Exploration & Production",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "FAST",
+    "Symbol_YF": "FAST",
+    "Security": "Fastenal",
+    "Security_JA": "ファスナル",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Trading Companies & Distributors",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "FCX",
+    "Symbol_YF": "FCX",
+    "Security": "Freeport-McMoRan",
+    "Security_JA": "フリーポートマクモラン",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Copper",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "FDS",
+    "Symbol_YF": "FDS",
+    "Security": "FactSet",
+    "Security_JA": "ファクトセット・リサーチ・システムズ",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Financial Exchanges & Data",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "FDX",
+    "Symbol_YF": "FDX",
+    "Security": "FedEx",
+    "Security_JA": "フェデックス",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Air Freight & Logistics",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "FE",
+    "Symbol_YF": "FE",
+    "Security": "FirstEnergy",
+    "Security_JA": "ファーストエナジー",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Electric Utilities",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "FFIV",
+    "Symbol_YF": "FFIV",
+    "Security": "F5, Inc.",
+    "Security_JA": "F5ネットワークス",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Communications Equipment",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "FICO",
+    "Symbol_YF": "FICO",
+    "Security": "Fair Isaac",
+    "Security_JA": "フェア・アイザック",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Application Software",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "FIS",
+    "Symbol_YF": "FIS",
+    "Security": "Fidelity National Information Services",
+    "Security_JA": "フィディリティ・ナショナル・インフォメーション・サービシズ",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Transaction & Payment Processing Services",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "FISV",
+    "Symbol_YF": "FISV",
+    "Security": "Fiserv",
+    "Security_JA": "フィサーブ",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Transaction & Payment Processing Services",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "FITB",
+    "Symbol_YF": "FITB",
+    "Security": "Fifth Third Bancorp",
+    "Security_JA": "フィフス・サード・バンコープ",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Regional Banks",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "FIX",
+    "Symbol_YF": "FIX",
+    "Security": "Comfort Systems USA",
+    "Security_JA": "コンフォート・システムズUSA",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Construction & Engineering",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "FOX",
+    "Symbol_YF": "FOX",
+    "Security": "Fox Corporation (Class B)",
+    "Security_JA": "フォックス　クラスB",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Broadcasting",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "FOXA",
+    "Symbol_YF": "FOXA",
+    "Security": "Fox Corporation (Class A)",
+    "Security_JA": "フォックス　クラスA",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Broadcasting",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "FRT",
+    "Symbol_YF": "FRT",
+    "Security": "Federal Realty Investment Trust",
+    "Security_JA": "フェデラル・リアルティー・インベストメント・トラスト",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Retail REITs",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "FSLR",
+    "Symbol_YF": "FSLR",
+    "Security": "First Solar",
+    "Security_JA": "ファースト・ソーラー",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Semiconductors",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "FTNT",
+    "Symbol_YF": "FTNT",
+    "Security": "Fortinet",
+    "Security_JA": "フォーティネット",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Systems Software",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "FTV",
+    "Symbol_YF": "FTV",
+    "Security": "Fortive",
+    "Security_JA": "フォーティブ",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "GD",
+    "Symbol_YF": "GD",
+    "Security": "General Dynamics",
+    "Security_JA": "ゼネラル・ダイナミックス",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Aerospace & Defense",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "GDDY",
+    "Symbol_YF": "GDDY",
+    "Security": "GoDaddy",
+    "Security_JA": "ゴーダディ クラスA",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Internet Services & Infrastructure",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "GE",
+    "Symbol_YF": "GE",
+    "Security": "GE Aerospace",
+    "Security_JA": "GE エアロスペース（ゼネラル・エレクトリック）",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Aerospace & Defense",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "GEHC",
+    "Symbol_YF": "GEHC",
+    "Security": "GE HealthCare",
+    "Security_JA": "GEヘルスケア・テクノロジーズ",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Equipment",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "GEN",
+    "Symbol_YF": "GEN",
+    "Security": "Gen Digital",
+    "Security_JA": "ゲンデジタル",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Systems Software",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "GEV",
+    "Symbol_YF": "GEV",
+    "Security": "GE Vernova",
+    "Security_JA": "GEベルノバ",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Heavy Electrical Equipment",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "GILD",
+    "Symbol_YF": "GILD",
+    "Security": "Gilead Sciences",
+    "Security_JA": "ギリアド・サイエンシズ",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Biotechnology",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "GIS",
+    "Symbol_YF": "GIS",
+    "Security": "General Mills",
+    "Security_JA": "ゼネラル・ミルズ",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Packaged Foods & Meats",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "GL",
+    "Symbol_YF": "GL",
+    "Security": "Globe Life",
+    "Security_JA": "グローブ・ライフ",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Life & Health Insurance",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "GLW",
+    "Symbol_YF": "GLW",
+    "Security": "Corning Inc.",
+    "Security_JA": "コーニング",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Electronic Components",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "GM",
+    "Symbol_YF": "GM",
+    "Security": "General Motors",
+    "Security_JA": "ゼネラルモーターズ",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Automobile Manufacturers",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "GNRC",
+    "Symbol_YF": "GNRC",
+    "Security": "Generac",
+    "Security_JA": "ジェネラック・ホールディングス",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Electrical Components & Equipment",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "GOOG",
+    "Symbol_YF": "GOOG",
+    "Security": "Alphabet Inc. (Class C)",
+    "Security_JA": "アルファベット クラスC",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Interactive Media & Services",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "GOOGL",
+    "Symbol_YF": "GOOGL",
+    "Security": "Alphabet Inc",
+    "Security_JA": "アルファベット",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Interactive Media",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "GPC",
+    "Symbol_YF": "GPC",
+    "Security": "Genuine Parts Company",
+    "Security_JA": "ジェニュイン・パーツ",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Distributors",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "GPN",
+    "Symbol_YF": "GPN",
+    "Security": "Global Payments",
+    "Security_JA": "グローバル・ペイメンツ",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Transaction & Payment Processing Services",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "GRMN",
+    "Symbol_YF": "GRMN",
+    "Security": "Garmin",
+    "Security_JA": "ガーミン",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Consumer Electronics",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "GS",
+    "Symbol_YF": "GS",
+    "Security": "Goldman Sachs",
+    "Security_JA": "ゴールドマン・サックス",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Investment Banking & Brokerage",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "GWW",
+    "Symbol_YF": "GWW",
+    "Security": "W. W. Grainger",
+    "Security_JA": "ダブリュー・ダブリュー・グレインジャー",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "HAL",
+    "Symbol_YF": "HAL",
+    "Security": "Halliburton",
+    "Security_JA": "ハリバートン",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Equipment & Services",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "HAS",
+    "Symbol_YF": "HAS",
+    "Security": "Hasbro",
+    "Security_JA": "ハスブロ",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Leisure Products",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "HBAN",
+    "Symbol_YF": "HBAN",
+    "Security": "Huntington Bancshares",
+    "Security_JA": "ハンチントン・バンクシェアーズ",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Regional Banks",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "HCA",
+    "Symbol_YF": "HCA",
+    "Security": "HCA Healthcare",
+    "Security_JA": "HCAヘルスケア",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Facilities",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "HD",
+    "Symbol_YF": "HD",
+    "Security": "Home Depot (The)",
+    "Security_JA": "ホームデポ",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Home Improvement Retail",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "HIG",
+    "Symbol_YF": "HIG",
+    "Security": "Hartford (The)",
+    "Security_JA": "ハートフォード・インシュランス・グループ",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Property & Casualty Insurance",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "HII",
+    "Symbol_YF": "HII",
+    "Security": "Huntington Ingalls Industries",
+    "Security_JA": "ハンティントン・インガルス・インダストリーズ",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Aerospace & Defense",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "HLT",
+    "Symbol_YF": "HLT",
+    "Security": "Hilton Worldwide",
+    "Security_JA": "ヒルトン・ワールドワイド・ホールディングス",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Hotels, Resorts & Cruise Lines",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "HON",
+    "Symbol_YF": "HON",
+    "Security": "Honeywell International",
+    "Security_JA": "ハネウェル・インターナショナル",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Industrial Conglomerates",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "HOOD",
+    "Symbol_YF": "HOOD",
+    "Security": "Robinhood Markets",
+    "Security_JA": "ロビンフッド・マーケッツ",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Investment Banking & Brokerage",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "HPE",
+    "Symbol_YF": "HPE",
+    "Security": "Hewlett Packard Enterprise",
+    "Security_JA": "ヒューレット・パッカード・エンタープライズ",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "HPQ",
+    "Symbol_YF": "HPQ",
+    "Security": "HP Inc.",
+    "Security_JA": "HP",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "HRL",
+    "Symbol_YF": "HRL",
+    "Security": "Hormel Foods",
+    "Security_JA": "ホーメル・フーズ",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Packaged Foods & Meats",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "HSIC",
+    "Symbol_YF": "HSIC",
+    "Security": "Henry Schein",
+    "Security_JA": "ヘンリー・シャイン",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Distributors",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "HST",
+    "Symbol_YF": "HST",
+    "Security": "Host Hotels & Resorts",
+    "Security_JA": "ホスト・ホテルズ＆リゾーツ",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Hotel & Resort REITs",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "HSY",
+    "Symbol_YF": "HSY",
+    "Security": "Hershey Company (The)",
+    "Security_JA": "ハーシー",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Packaged Foods & Meats",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "HUBB",
+    "Symbol_YF": "HUBB",
+    "Security": "Hubbell Incorporated",
+    "Security_JA": "ハベル",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "HUM",
+    "Symbol_YF": "HUM",
+    "Security": "Humana",
+    "Security_JA": "ヒューマナ",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Managed Health Care",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "HWM",
+    "Symbol_YF": "HWM",
+    "Security": "Howmet Aerospace",
+    "Security_JA": "ハウメット・エアロスペース",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Aerospace & Defense",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "IBKR",
+    "Symbol_YF": "IBKR",
+    "Security": "Interactive Brokers",
+    "Security_JA": "インタラクティブ・ブローカーズ・グループ　クラスA",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Investment Banking & Brokerage",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "IBM",
+    "Symbol_YF": "IBM",
+    "Security": "IBM",
+    "Security_JA": "アイビーエム",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "IT Consulting & Other Services",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ICE",
+    "Symbol_YF": "ICE",
+    "Security": "Intercontinental Exchange",
+    "Security_JA": "インターコンチネンタル・エクスチェンジ",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Financial Exchanges & Data",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "IDXX",
+    "Symbol_YF": "IDXX",
+    "Security": "Idexx Laboratories",
+    "Security_JA": "アイデックス・ラボラトリーズ",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Equipment",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "IEX",
+    "Symbol_YF": "IEX",
+    "Security": "IDEX Corporation",
+    "Security_JA": "アイデックス",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "IFF",
+    "Symbol_YF": "IFF",
+    "Security": "International Flavors & Fragrances",
+    "Security_JA": "インターナショナル・フレーバー・アンド・フレグランス",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Specialty Chemicals",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "INCY",
+    "Symbol_YF": "INCY",
+    "Security": "Incyte",
+    "Security_JA": "インサイト",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Biotechnology",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "INTC",
+    "Symbol_YF": "INTC",
+    "Security": "Intel",
+    "Security_JA": "インテル",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Semiconductors",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "INTU",
+    "Symbol_YF": "INTU",
+    "Security": "Intuit",
+    "Security_JA": "インテュイト",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Application Software",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "INVH",
+    "Symbol_YF": "INVH",
+    "Security": "Invitation Homes",
+    "Security_JA": "インビテーション・ホームズ",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Single-Family Residential REITs",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "IP",
+    "Symbol_YF": "IP",
+    "Security": "International Paper",
+    "Security_JA": "インターナショナル・ペーパー",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Paper & Plastic Packaging Products & Materials",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "IQV",
+    "Symbol_YF": "IQV",
+    "Security": "IQVIA",
+    "Security_JA": "アイキューヴィア・ホールディングス",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Life Sciences Tools & Services",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "IR",
+    "Symbol_YF": "IR",
+    "Security": "Ingersoll Rand",
+    "Security_JA": "インガソール・ランド",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "IRM",
+    "Symbol_YF": "IRM",
+    "Security": "Iron Mountain",
+    "Security_JA": "アイアン・マウンテン",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Other Specialized REITs",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ISRG",
+    "Symbol_YF": "ISRG",
+    "Security": "Intuitive Surgical",
+    "Security_JA": "インテュイティブ・サージカル",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Equipment",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "IT",
+    "Symbol_YF": "IT",
+    "Security": "Gartner",
+    "Security_JA": "ガートナー",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "IT Consulting & Other Services",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ITW",
+    "Symbol_YF": "ITW",
+    "Security": "Illinois Tool Works",
+    "Security_JA": "イリノイ・ツール・ワークス",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "IVZ",
+    "Symbol_YF": "IVZ",
+    "Security": "Invesco",
+    "Security_JA": "インベスコ",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Asset Management & Custody Banks",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "J",
+    "Symbol_YF": "J",
+    "Security": "Jacobs Solutions",
+    "Security_JA": "ジェイコブズ・ソリューションズ",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Construction & Engineering",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "JBHT",
+    "Symbol_YF": "JBHT",
+    "Security": "J.B. Hunt",
+    "Security_JA": "ジェイビー・ハント・トランスポート・サービシズ",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Cargo Ground Transportation",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "JBL",
+    "Symbol_YF": "JBL",
+    "Security": "Jabil",
+    "Security_JA": "ジェイビル・サーキット",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Electronic Manufacturing Services",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "JCI",
+    "Symbol_YF": "JCI",
+    "Security": "Johnson Controls",
+    "Security_JA": "ジョンソン・コントロールズ",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Building Products",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "JKHY",
+    "Symbol_YF": "JKHY",
+    "Security": "Jack Henry & Associates",
+    "Security_JA": "ジャック・ヘンリー・アンド・アソシエイツ",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Transaction & Payment Processing Services",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "JNJ",
+    "Symbol_YF": "JNJ",
+    "Security": "Johnson & Johnson",
+    "Security_JA": "ジョンソン・エンド・ジョンソン",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Pharmaceuticals",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "JPM",
+    "Symbol_YF": "JPM",
+    "Security": "JPMorgan Chase & Co",
+    "Security_JA": "JPモルガン・チェース",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Diversified Banks",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "KDP",
+    "Symbol_YF": "KDP",
+    "Security": "Keurig Dr Pepper",
+    "Security_JA": "キューリグ・ドクターペッパー",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Soft Drinks & Non-alcoholic Beverages",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "KEY",
+    "Symbol_YF": "KEY",
+    "Security": "KeyCorp",
+    "Security_JA": "キーコープ",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Regional Banks",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "KEYS",
+    "Symbol_YF": "KEYS",
+    "Security": "Keysight Technologies",
+    "Security_JA": "キーサイト・テクノロジーズ",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Electronic Equipment & Instruments",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "KHC",
+    "Symbol_YF": "KHC",
+    "Security": "Kraft Heinz",
+    "Security_JA": "クラフト・ハインツ",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Packaged Foods & Meats",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "KIM",
+    "Symbol_YF": "KIM",
+    "Security": "Kimco Realty",
+    "Security_JA": "キムコ・リアルティ",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Retail REITs",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "KKR",
+    "Symbol_YF": "KKR",
+    "Security": "KKR & Co.",
+    "Security_JA": "KKR",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Asset Management & Custody Banks",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "KLAC",
+    "Symbol_YF": "KLAC",
+    "Security": "KLA Corporation",
+    "Security_JA": "ケーエルエー・コーポレーション",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Semiconductor Materials & Equipment",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "KMB",
+    "Symbol_YF": "KMB",
+    "Security": "Kimberly-Clark",
+    "Security_JA": "キンバリークラーク",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Household Products",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "KMI",
+    "Symbol_YF": "KMI",
+    "Security": "Kinder Morgan",
+    "Security_JA": "キンダー・モルガン",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Storage & Transportation",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "KO",
+    "Symbol_YF": "KO",
+    "Security": "Coca-Cola Co",
+    "Security_JA": "コカ・コーラ",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Soft Drinks",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "KR",
+    "Symbol_YF": "KR",
+    "Security": "Kroger",
+    "Security_JA": "クローガー",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Food Retail",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "KVUE",
+    "Symbol_YF": "KVUE",
+    "Security": "Kenvue",
+    "Security_JA": "ケンビュー",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Personal Care Products",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "L",
+    "Symbol_YF": "L",
+    "Security": "Loews Corporation",
+    "Security_JA": "ロウズ",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Multi-line Insurance",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "LDOS",
+    "Symbol_YF": "LDOS",
+    "Security": "Leidos",
+    "Security_JA": "レイドス・ホールディングス",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Diversified Support Services",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "LEN",
+    "Symbol_YF": "LEN",
+    "Security": "Lennar",
+    "Security_JA": "レナー クラスA",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Homebuilding",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "LH",
+    "Symbol_YF": "LH",
+    "Security": "Labcorp",
+    "Security_JA": "ラボコープ・ホールディングス",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Services",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "LHX",
+    "Symbol_YF": "LHX",
+    "Security": "L3Harris",
+    "Security_JA": "L3ハリス・テクノロジーズ",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Aerospace & Defense",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "LII",
+    "Symbol_YF": "LII",
+    "Security": "Lennox International",
+    "Security_JA": "レノックス・インターナショナル",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Building Products",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "LIN",
+    "Symbol_YF": "LIN",
+    "Security": "Linde plc",
+    "Security_JA": "リンデ",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Industrial Gases",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "LITE",
+    "Symbol_YF": "LITE",
+    "Security": "Lumentum",
+    "Security_JA": "ルメンタム・ホールディングス",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Communications Equipment",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "LLY",
+    "Symbol_YF": "LLY",
+    "Security": "Eli Lilly & Co",
+    "Security_JA": "イーライリリー",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Pharmaceuticals",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "LMT",
+    "Symbol_YF": "LMT",
+    "Security": "Lockheed Martin",
+    "Security_JA": "ロッキード・マーチン",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Aerospace & Defense",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "LNT",
+    "Symbol_YF": "LNT",
+    "Security": "Alliant Energy",
+    "Security_JA": "アライアント・エナジー",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Electric Utilities",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "LOW",
+    "Symbol_YF": "LOW",
+    "Security": "Lowe's",
+    "Security_JA": "ロウズ・カンパニーズ",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Home Improvement Retail",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "LRCX",
+    "Symbol_YF": "LRCX",
+    "Security": "Lam Research",
+    "Security_JA": "ラム・リサーチ",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Semiconductor Materials & Equipment",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "LULU",
+    "Symbol_YF": "LULU",
+    "Security": "Lululemon Athletica",
+    "Security_JA": "ルルレモン・アスレティカ",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Apparel, Accessories & Luxury Goods",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "LUV",
+    "Symbol_YF": "LUV",
+    "Security": "Southwest Airlines",
+    "Security_JA": "サウスウェスト航空",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Passenger Airlines",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "LVS",
+    "Symbol_YF": "LVS",
+    "Security": "Las Vegas Sands",
+    "Security_JA": "ラスベガス・サンズ",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Casinos & Gaming",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "LYB",
+    "Symbol_YF": "LYB",
+    "Security": "LyondellBasell",
+    "Security_JA": "リヨンデルバセル・インダストリーズ クラスA",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Specialty Chemicals",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "LYV",
+    "Symbol_YF": "LYV",
+    "Security": "Live Nation Entertainment",
+    "Security_JA": "ライブ・ネーション・エンターテインメント",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Movies & Entertainment",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "MA",
+    "Symbol_YF": "MA",
+    "Security": "Mastercard",
+    "Security_JA": "マスターカード クラスA",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Transaction & Payment Processing Services",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "MAA",
+    "Symbol_YF": "MAA",
+    "Security": "Mid-America Apartment Communities",
+    "Security_JA": "ミッド・アメリカ・アパートメント・コミュニティーズ",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Multi-Family Residential REITs",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "MAR",
+    "Symbol_YF": "MAR",
+    "Security": "Marriott International",
+    "Security_JA": "マリオット・インターナショナル",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Hotels, Resorts & Cruise Lines",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "MAS",
+    "Symbol_YF": "MAS",
+    "Security": "Masco",
+    "Security_JA": "マスコ",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Building Products",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "MCD",
+    "Symbol_YF": "MCD",
+    "Security": "McDonald's",
+    "Security_JA": "マクドナルド",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Restaurants",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "MCHP",
+    "Symbol_YF": "MCHP",
+    "Security": "Microchip Technology",
+    "Security_JA": "マイクロチップ・テクノロジー",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Semiconductors",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "MCK",
+    "Symbol_YF": "MCK",
+    "Security": "McKesson Corporation",
+    "Security_JA": "マケッソン",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Distributors",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "MCO",
+    "Symbol_YF": "MCO",
+    "Security": "Moody's Corporation",
+    "Security_JA": "ムーディーズ",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Financial Exchanges & Data",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "MDLZ",
+    "Symbol_YF": "MDLZ",
+    "Security": "Mondelez International",
+    "Security_JA": "モンデリーズ・インターナショナル クラスA",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Packaged Foods & Meats",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "MDT",
+    "Symbol_YF": "MDT",
+    "Security": "Medtronic",
+    "Security_JA": "メドトロニック",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Equipment",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "MET",
+    "Symbol_YF": "MET",
+    "Security": "MetLife",
+    "Security_JA": "メットライフ",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Life & Health Insurance",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "META",
+    "Symbol_YF": "META",
+    "Security": "Meta Platforms Inc",
+    "Security_JA": "メタ・プラットフォームズ",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Interactive Media",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "MGM",
+    "Symbol_YF": "MGM",
+    "Security": "MGM Resorts",
+    "Security_JA": "エムジーエム・リゾーツ・インターナショナル",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Casinos & Gaming",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "MKC",
+    "Symbol_YF": "MKC",
+    "Security": "McCormick & Company",
+    "Security_JA": "マコーミック",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Packaged Foods & Meats",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "MLM",
+    "Symbol_YF": "MLM",
+    "Security": "Martin Marietta Materials",
+    "Security_JA": "マーチン・マリエッタ・マテリアルズ",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Construction Materials",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "MMM",
+    "Symbol_YF": "MMM",
+    "Security": "3M",
+    "Security_JA": "スリーエム",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Industrial Conglomerates",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "MNST",
+    "Symbol_YF": "MNST",
+    "Security": "Monster Beverage",
+    "Security_JA": "モンスター・ビバレッジ",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Soft Drinks & Non-alcoholic Beverages",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "MO",
+    "Symbol_YF": "MO",
+    "Security": "Altria",
+    "Security_JA": "アルトリア・グループ",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Tobacco",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "MOS",
+    "Symbol_YF": "MOS",
+    "Security": "Mosaic Company (The)",
+    "Security_JA": "モザイク",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Fertilizers & Agricultural Chemicals",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "MPC",
+    "Symbol_YF": "MPC",
+    "Security": "Marathon Petroleum",
+    "Security_JA": "マラソン・ペトロリアム",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Refining & Marketing",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "MPWR",
+    "Symbol_YF": "MPWR",
+    "Security": "Monolithic Power Systems",
+    "Security_JA": "モノリシック・パワー・システムズ",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Semiconductors",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "MRK",
+    "Symbol_YF": "MRK",
+    "Security": "Merck & Co.",
+    "Security_JA": "メルク",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Pharmaceuticals",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "MRNA",
+    "Symbol_YF": "MRNA",
+    "Security": "Moderna",
+    "Security_JA": "モデルナ",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Biotechnology",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "MRSH",
+    "Symbol_YF": "MRSH",
+    "Security": "Marsh McLennan",
+    "Security_JA": "マーシュ・アンド・マクレナン",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Insurance Brokers",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "MS",
+    "Symbol_YF": "MS",
+    "Security": "Morgan Stanley",
+    "Security_JA": "モルガン・スタンレー",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Investment Banking & Brokerage",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "MSCI",
+    "Symbol_YF": "MSCI",
+    "Security": "MSCI Inc.",
+    "Security_JA": "エムエスシーアイ",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Financial Exchanges & Data",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "MSFT",
+    "Symbol_YF": "MSFT",
+    "Security": "Microsoft Corp",
+    "Security_JA": null,
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Systems Software",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "MSFT",
+    "Symbol_YF": "MSFT",
+    "Security": "Microsoft Corporation",
+    "Security_JA": null,
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Systems Software",
+    "Exchange": "NMS",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "MSI",
+    "Symbol_YF": "MSI",
+    "Security": "Motorola Solutions",
+    "Security_JA": "モトローラ・ソリューションズ",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Communications Equipment",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "MTB",
+    "Symbol_YF": "MTB",
+    "Security": "M&T Bank",
+    "Security_JA": "エム・アンド・ティー・バンク",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Regional Banks",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "MTD",
+    "Symbol_YF": "MTD",
+    "Security": "Mettler Toledo",
+    "Security_JA": "メトラー・トレド・インターナショナル",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Life Sciences Tools & Services",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "MU",
+    "Symbol_YF": "MU",
+    "Security": "Micron Technology",
+    "Security_JA": "マイクロン・テクノロジー",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Semiconductors",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "NCLH",
+    "Symbol_YF": "NCLH",
+    "Security": "Norwegian Cruise Line Holdings",
+    "Security_JA": "ノルウェージャン・クルーズライン・ホールディングス",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Hotels, Resorts & Cruise Lines",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "NDAQ",
+    "Symbol_YF": "NDAQ",
+    "Security": "Nasdaq, Inc.",
+    "Security_JA": "ナスダック",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Financial Exchanges & Data",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "NDSN",
+    "Symbol_YF": "NDSN",
+    "Security": "Nordson Corporation",
+    "Security_JA": "ノードソン",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "NEE",
+    "Symbol_YF": "NEE",
+    "Security": "NextEra Energy",
+    "Security_JA": "ネクステラ・エナジー",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Electric Utilities",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "NEM",
+    "Symbol_YF": "NEM",
+    "Security": "Newmont",
+    "Security_JA": "ニューモント",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Gold",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "NFLX",
+    "Symbol_YF": "NFLX",
+    "Security": "Netflix",
+    "Security_JA": "ネットフリックス",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Movies & Entertainment",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "NI",
+    "Symbol_YF": "NI",
+    "Security": "NiSource",
+    "Security_JA": "ナイソース",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Multi-Utilities",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "NKE",
+    "Symbol_YF": "NKE",
+    "Security": "Nike, Inc.",
+    "Security_JA": "ナイキ クラスB",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Apparel, Accessories & Luxury Goods",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "NOC",
+    "Symbol_YF": "NOC",
+    "Security": "Northrop Grumman",
+    "Security_JA": "ノースロップ・グラマン",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Aerospace & Defense",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "NOW",
+    "Symbol_YF": "NOW",
+    "Security": "ServiceNow",
+    "Security_JA": "サービスナウ",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Systems Software",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "NRG",
+    "Symbol_YF": "NRG",
+    "Security": "NRG Energy",
+    "Security_JA": "エヌアールジー・エナジー",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Independent Power Producers & Energy Traders",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "NSC",
+    "Symbol_YF": "NSC",
+    "Security": "Norfolk Southern",
+    "Security_JA": "ノーフォーク・サザン",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Rail Transportation",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "NTAP",
+    "Symbol_YF": "NTAP",
+    "Security": "NetApp",
+    "Security_JA": "ネットアップ",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "NTRS",
+    "Symbol_YF": "NTRS",
+    "Security": "Northern Trust",
+    "Security_JA": "ノーザン・トラスト",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Asset Management & Custody Banks",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "NUE",
+    "Symbol_YF": "NUE",
+    "Security": "Nucor",
+    "Security_JA": "ニューコア",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Steel",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "NVDA",
+    "Symbol_YF": "NVDA",
+    "Security": "Nvidia",
+    "Security_JA": "エヌビディア",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Semiconductors",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "NVR",
+    "Symbol_YF": "NVR",
+    "Security": "NVR, Inc.",
+    "Security_JA": "エヌブイアール",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Homebuilding",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "NWS",
+    "Symbol_YF": "NWS",
+    "Security": "News Corp (Class B)",
+    "Security_JA": "ニューズ・コーポレーション クラスB",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Publishing",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "NWSA",
+    "Symbol_YF": "NWSA",
+    "Security": "News Corp (Class A)",
+    "Security_JA": "ニューズ・コーポレーション クラスA",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Publishing",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "NXPI",
+    "Symbol_YF": "NXPI",
+    "Security": "NXP Semiconductors",
+    "Security_JA": "NXPセミコンダクターズ",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Semiconductors",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "O",
+    "Symbol_YF": "O",
+    "Security": "Realty Income",
+    "Security_JA": "リアルティー・インカム",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Retail REITs",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ODFL",
+    "Symbol_YF": "ODFL",
+    "Security": "Old Dominion",
+    "Security_JA": "オールド・ドミニオン・フレイト・ラインズ",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Cargo Ground Transportation",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "OKE",
+    "Symbol_YF": "OKE",
+    "Security": "Oneok",
+    "Security_JA": "ワンオーケー",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Storage & Transportation",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "OMC",
+    "Symbol_YF": "OMC",
+    "Security": "Omnicom Group",
+    "Security_JA": "オムニコム・グループ",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Advertising",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ON",
+    "Symbol_YF": "ON",
+    "Security": "ON Semiconductor",
+    "Security_JA": "オン・セミコンダクター・コーポレーション",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Semiconductors",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ORCL",
+    "Symbol_YF": "ORCL",
+    "Security": "Oracle Corporation",
+    "Security_JA": "オラクル",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Application Software",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ORLY",
+    "Symbol_YF": "ORLY",
+    "Security": "O’Reilly Automotive",
+    "Security_JA": "オライリー・オートモーティブ",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Automotive Retail",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "OTIS",
+    "Symbol_YF": "OTIS",
+    "Security": "Otis Worldwide",
+    "Security_JA": "オティス・ワールドワイド",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "OXY",
+    "Symbol_YF": "OXY",
+    "Security": "Occidental Petroleum",
+    "Security_JA": "オクシデンタル・ペトロリアム",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Exploration & Production",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "PANW",
+    "Symbol_YF": "PANW",
+    "Security": "Palo Alto Networks",
+    "Security_JA": "パロ・アルト・ネットワークス",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Systems Software",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "PAYX",
+    "Symbol_YF": "PAYX",
+    "Security": "Paychex",
+    "Security_JA": "ペイチェックス",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Human Resource & Employment Services",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "PCAR",
+    "Symbol_YF": "PCAR",
+    "Security": "Paccar",
+    "Security_JA": "パッカー",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Construction Machinery & Heavy Transportation Equipment",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "PCG",
+    "Symbol_YF": "PCG",
+    "Security": "PG&E Corporation",
+    "Security_JA": "パシフィック・ガス・アンド・エレクトリック",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Multi-Utilities",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "PEG",
+    "Symbol_YF": "PEG",
+    "Security": "Public Service Enterprise Group",
+    "Security_JA": "パブリック・サービス・エンタープライズ・グループ",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Electric Utilities",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "PEP",
+    "Symbol_YF": "PEP",
+    "Security": "PepsiCo",
+    "Security_JA": "ペプシコ",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Soft Drinks & Non-alcoholic Beverages",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "PFE",
+    "Symbol_YF": "PFE",
+    "Security": "Pfizer",
+    "Security_JA": "ファイザー",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Pharmaceuticals",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "PFG",
+    "Symbol_YF": "PFG",
+    "Security": "Principal Financial Group",
+    "Security_JA": "プリンシパル・フィナンシャル・グループ",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Life & Health Insurance",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "PG",
+    "Symbol_YF": "PG",
+    "Security": "Procter & Gamble",
+    "Security_JA": "プロクター・アンド・ギャンブル",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Household Products",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "PGR",
+    "Symbol_YF": "PGR",
+    "Security": "Progressive Corporation",
+    "Security_JA": "プログレッシブ",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Property & Casualty Insurance",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "PH",
+    "Symbol_YF": "PH",
+    "Security": "Parker Hannifin",
+    "Security_JA": "パーカー･ハニフィン",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
+    "Exchange": "NYSE",
+    "Daily_Change": null
   },
   {
     "Symbol": "PHM",
     "Symbol_YF": "PHM",
     "Security": "PulteGroup Inc",
+    "Security_JA": null,
     "GICS Sector": "Consumer Discretionary",
     "GICS Sub-Industry": "Homebuilding",
     "Exchange": "NYSE",
-    "Daily_Change": -0.0257437
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "PKG",
+    "Symbol_YF": "PKG",
+    "Security": "Packaging Corporation of America",
+    "Security_JA": "パッケージング・コーポレーション・オブ・アメリカ",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Paper & Plastic Packaging Products & Materials",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "PLD",
+    "Symbol_YF": "PLD",
+    "Security": "Prologis Inc",
+    "Security_JA": "プロロジス",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Industrial REITs",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "PLTR",
+    "Symbol_YF": "PLTR",
+    "Security": "Palantir Technologies",
+    "Security_JA": "パランティア・テクノロジーズ",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Application Software",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "PM",
+    "Symbol_YF": "PM",
+    "Security": "Philip Morris International",
+    "Security_JA": "フィリップ・モリス・インターナショナル",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Tobacco",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "PNC",
+    "Symbol_YF": "PNC",
+    "Security": "PNC Financial Services",
+    "Security_JA": "ピーエヌシー・フィナンシャル・サービシズ・グループ",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Diversified Banks",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "PNR",
+    "Symbol_YF": "PNR",
+    "Security": "Pentair",
+    "Security_JA": "ペンテア",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "PNW",
+    "Symbol_YF": "PNW",
+    "Security": "Pinnacle West Capital",
+    "Security_JA": "ピナクル・ウェスト・キャピタル",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Multi-Utilities",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "PODD",
+    "Symbol_YF": "PODD",
+    "Security": "Insulet Corporation",
+    "Security_JA": "インシュレット",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Equipment",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "POOL",
+    "Symbol_YF": "POOL",
+    "Security": "Pool Corporation",
+    "Security_JA": "プール",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Distributors",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "PPG",
+    "Symbol_YF": "PPG",
+    "Security": "PPG Industries",
+    "Security_JA": "ピーピージー・インダストリーズ",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Specialty Chemicals",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "PPL",
+    "Symbol_YF": "PPL",
+    "Security": "PPL Corporation",
+    "Security_JA": "パシフィック・パワー・アンド・ライト・コーポレーション",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Electric Utilities",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "PRU",
+    "Symbol_YF": "PRU",
+    "Security": "Prudential Financial",
+    "Security_JA": "プルデンシャル・フィナンシャル",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Life & Health Insurance",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "PSA",
+    "Symbol_YF": "PSA",
+    "Security": "Public Storage",
+    "Security_JA": "パブリック・ストレージ",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Self-Storage REITs",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "PSKY",
+    "Symbol_YF": "PSKY",
+    "Security": "Paramount Skydance Corporation",
+    "Security_JA": "パラマウント・スカイダンス B",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Movies & Entertainment",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "PSX",
+    "Symbol_YF": "PSX",
+    "Security": "Phillips 66",
+    "Security_JA": "フィリップス66",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Refining & Marketing",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "PTC",
+    "Symbol_YF": "PTC",
+    "Security": "PTC Inc.",
+    "Security_JA": "ピー・ティー・シー",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Application Software",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "PWR",
+    "Symbol_YF": "PWR",
+    "Security": "Quanta Services",
+    "Security_JA": "クアンタ・サービシズ",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Construction & Engineering",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "PYPL",
+    "Symbol_YF": "PYPL",
+    "Security": "PayPal",
+    "Security_JA": "ペイパル・ホールディングス",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Transaction & Payment Processing Services",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "Q",
+    "Symbol_YF": "Q",
+    "Security": "Qnity Electronics",
+    "Security_JA": "キューニティ・エレクトロニクス",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Semiconductor Materials & Equipment",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "QCOM",
+    "Symbol_YF": "QCOM",
+    "Security": "Qualcomm",
+    "Security_JA": "クアルコム",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Semiconductors",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "RCL",
+    "Symbol_YF": "RCL",
+    "Security": "Royal Caribbean Group",
+    "Security_JA": "ロイヤル・カリビアン・クルーズ",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Hotels, Resorts & Cruise Lines",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "REG",
+    "Symbol_YF": "REG",
+    "Security": "Regency Centers",
+    "Security_JA": "リージェンシー・センターズ",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Retail REITs",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "REGN",
+    "Symbol_YF": "REGN",
+    "Security": "Regeneron Pharmaceuticals",
+    "Security_JA": "リジェネロン・ファーマシューティカルズ",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Biotechnology",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "RF",
+    "Symbol_YF": "RF",
+    "Security": "Regions Financial Corporation",
+    "Security_JA": "リジョンズ・フィナンシャル",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Regional Banks",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "RJF",
+    "Symbol_YF": "RJF",
+    "Security": "Raymond James Financial",
+    "Security_JA": "レイモンド・ジェームズ・フィナンシャル",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Investment Banking & Brokerage",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "RL",
+    "Symbol_YF": "RL",
+    "Security": "Ralph Lauren Corporation",
+    "Security_JA": "ラルフローレン",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Apparel, Accessories & Luxury Goods",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "RMD",
+    "Symbol_YF": "RMD",
+    "Security": "ResMed",
+    "Security_JA": "レスメド",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Equipment",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ROK",
+    "Symbol_YF": "ROK",
+    "Security": "Rockwell Automation",
+    "Security_JA": "ロックウェル・オートメーション",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Electrical Components & Equipment",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ROL",
+    "Symbol_YF": "ROL",
+    "Security": "Rollins, Inc.",
+    "Security_JA": "ローリンズ",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Environmental & Facilities Services",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ROP",
+    "Symbol_YF": "ROP",
+    "Security": "Roper Technologies",
+    "Security_JA": "ローパー・テクノロジーズ",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Electronic Equipment & Instruments",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ROST",
+    "Symbol_YF": "ROST",
+    "Security": "Ross Stores",
+    "Security_JA": "ロス・ストアーズ",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Apparel Retail",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "RSG",
+    "Symbol_YF": "RSG",
+    "Security": "Republic Services",
+    "Security_JA": "リパブリック・サービシズ",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Environmental & Facilities Services",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "RTX",
+    "Symbol_YF": "RTX",
+    "Security": "RTX Corporation",
+    "Security_JA": "RTX",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Aerospace & Defense",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "RVTY",
+    "Symbol_YF": "RVTY",
+    "Security": "Revvity",
+    "Security_JA": "レビティー",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Equipment",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "SATS",
+    "Symbol_YF": "SATS",
+    "Security": "EchoStar",
+    "Security_JA": "エコスター クラスA",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Wireless Telecommunication Services",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "SBAC",
+    "Symbol_YF": "SBAC",
+    "Security": "SBA Communications",
+    "Security_JA": "SBAコミュニケーションズ",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Telecom Tower REITs",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "SBUX",
+    "Symbol_YF": "SBUX",
+    "Security": "Starbucks",
+    "Security_JA": "スターバックス",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Restaurants",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "SCHW",
+    "Symbol_YF": "SCHW",
+    "Security": "Charles Schwab Corporation",
+    "Security_JA": "チャールズ・シュワブ",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Investment Banking & Brokerage",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "SHW",
+    "Symbol_YF": "SHW",
+    "Security": "Sherwin-Williams Co",
+    "Security_JA": "シャーウィン・ウィリアムズ",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Specialty Chemicals",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "SJM",
+    "Symbol_YF": "SJM",
+    "Security": "J.M. Smucker Company (The)",
+    "Security_JA": "ジェイ・エム・スマッカー",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Packaged Foods & Meats",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "SLB",
+    "Symbol_YF": "SLB",
+    "Security": "Schlumberger",
+    "Security_JA": "SLB",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Equipment & Services",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "SMCI",
+    "Symbol_YF": "SMCI",
+    "Security": "Supermicro",
+    "Security_JA": "スーパー・マイクロ・コンピューター",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "SNA",
+    "Symbol_YF": "SNA",
+    "Security": "Snap-on",
+    "Security_JA": "スナップオン",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "SNDK",
+    "Symbol_YF": "SNDK",
+    "Security": "Sandisk",
+    "Security_JA": "サンディスク",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "SNPS",
+    "Symbol_YF": "SNPS",
+    "Security": "Synopsys",
+    "Security_JA": "シノプシス",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Application Software",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "SO",
+    "Symbol_YF": "SO",
+    "Security": "Southern Co",
+    "Security_JA": "サザンカンパニー",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Electric Utilities",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "SOLV",
+    "Symbol_YF": "SOLV",
+    "Security": "Solventum",
+    "Security_JA": "ソルベンタム",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Technology",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "SPG",
+    "Symbol_YF": "SPG",
+    "Security": "Simon Property Group",
+    "Security_JA": "サイモン・プロパティ・グループ",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Retail REITs",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "SPGI",
+    "Symbol_YF": "SPGI",
+    "Security": "S&P Global",
+    "Security_JA": "S&P グローバル",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Financial Exchanges & Data",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "SPY",
+    "Symbol_YF": "SPY",
+    "Security": "State Street SPDR S&P 500 ETF Trust",
+    "Security_JA": null,
+    "GICS Sector": "Unknown",
+    "GICS Sub-Industry": "Unknown",
+    "Exchange": "PCX",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "SRE",
+    "Symbol_YF": "SRE",
+    "Security": "Sempra",
+    "Security_JA": "センプラ・エナジー",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Multi-Utilities",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "STE",
+    "Symbol_YF": "STE",
+    "Security": "Steris",
+    "Security_JA": "ステリス",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Equipment",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "STLD",
+    "Symbol_YF": "STLD",
+    "Security": "Steel Dynamics",
+    "Security_JA": "スチール・ダイナミクス",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Steel",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "STT",
+    "Symbol_YF": "STT",
+    "Security": "State Street Corporation",
+    "Security_JA": "ステート・ストリート",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Asset Management & Custody Banks",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "STX",
+    "Symbol_YF": "STX",
+    "Security": "Seagate Technology",
+    "Security_JA": "シーゲイト・テクノロジー・ホールディングス",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "STZ",
+    "Symbol_YF": "STZ",
+    "Security": "Constellation Brands",
+    "Security_JA": "コンステレーション･ブランズ クラスA",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Distillers & Vintners",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "SW",
+    "Symbol_YF": "SW",
+    "Security": "Smurfit Westrock",
+    "Security_JA": "スマーフィット・ウエストロックPLC",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Paper & Plastic Packaging Products & Materials",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "SWK",
+    "Symbol_YF": "SWK",
+    "Security": "Stanley Black & Decker",
+    "Security_JA": "スタンレー・ブラック・アンド・デッカー",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "SWKS",
+    "Symbol_YF": "SWKS",
+    "Security": "Skyworks Solutions",
+    "Security_JA": "スカイワークス・ソリューションズ",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Semiconductors",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "SYF",
+    "Symbol_YF": "SYF",
+    "Security": "Synchrony Financial",
+    "Security_JA": "シンクロニー・フィナンシャル",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Consumer Finance",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "SYK",
+    "Symbol_YF": "SYK",
+    "Security": "Stryker Corporation",
+    "Security_JA": "ストライカー",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Equipment",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "SYY",
+    "Symbol_YF": "SYY",
+    "Security": "Sysco",
+    "Security_JA": "シスコ",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Food Distributors",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "T",
+    "Symbol_YF": "T",
+    "Security": "AT&T",
+    "Security_JA": "エーティー・アンド・ティー",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Integrated Telecommunication Services",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "TAP",
+    "Symbol_YF": "TAP",
+    "Security": "Molson Coors Beverage Company",
+    "Security_JA": "モルソン・クアーズ・ビバレッジ",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Brewers",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "TDG",
+    "Symbol_YF": "TDG",
+    "Security": "TransDigm Group",
+    "Security_JA": "トランスダイム・グループ",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Aerospace & Defense",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "TDY",
+    "Symbol_YF": "TDY",
+    "Security": "Teledyne Technologies",
+    "Security_JA": "テレダイン･テクノロジーズ",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Electronic Equipment & Instruments",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "TECH",
+    "Symbol_YF": "TECH",
+    "Security": "Bio-Techne",
+    "Security_JA": "テクネ",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Life Sciences Tools & Services",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "TEL",
+    "Symbol_YF": "TEL",
+    "Security": "TE Connectivity",
+    "Security_JA": "TEコネクティビティ・PLC",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Electronic Manufacturing Services",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "TER",
+    "Symbol_YF": "TER",
+    "Security": "Teradyne",
+    "Security_JA": "テラダイン",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Semiconductor Materials & Equipment",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "TFC",
+    "Symbol_YF": "TFC",
+    "Security": "Truist Financial",
+    "Security_JA": "トゥルーイスト・フィナンシャル",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Diversified Banks",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "TGT",
+    "Symbol_YF": "TGT",
+    "Security": "Target Corporation",
+    "Security_JA": "ターゲット",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Consumer Staples Merchandise Retail",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "TJX",
+    "Symbol_YF": "TJX",
+    "Security": "TJX Companies",
+    "Security_JA": "ティージェイエックス・カンパニーズ",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Apparel Retail",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "TKO",
+    "Symbol_YF": "TKO",
+    "Security": "TKO Group Holdings",
+    "Security_JA": "TKO・グループ・ホールディングス",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Movies & Entertainment",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "TMO",
+    "Symbol_YF": "TMO",
+    "Security": "Thermo Fisher Scientific",
+    "Security_JA": "サーモ・フィッシャーサイエンティフィック",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Life Sciences Tools & Services",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "TMUS",
+    "Symbol_YF": "TMUS",
+    "Security": "T-Mobile US",
+    "Security_JA": "Ｔモバイル",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Wireless Telecommunication Services",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "TPL",
+    "Symbol_YF": "TPL",
+    "Security": "Texas Pacific Land Corporation",
+    "Security_JA": "テキサス・パシフィック・ランド・コーポ",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Exploration & Production",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "TPR",
+    "Symbol_YF": "TPR",
+    "Security": "Tapestry, Inc.",
+    "Security_JA": "タペストリー",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Apparel, Accessories & Luxury Goods",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "TRGP",
+    "Symbol_YF": "TRGP",
+    "Security": "Targa Resources",
+    "Security_JA": "タルガ・リソーシズ",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Storage & Transportation",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "TRMB",
+    "Symbol_YF": "TRMB",
+    "Security": "Trimble Inc.",
+    "Security_JA": "トリンブル",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Application Software",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "TROW",
+    "Symbol_YF": "TROW",
+    "Security": "T. Rowe Price",
+    "Security_JA": "ティー・ロウ・プライス・グループ",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Asset Management & Custody Banks",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "TRV",
+    "Symbol_YF": "TRV",
+    "Security": "Travelers Companies (The)",
+    "Security_JA": "トラベラーズ･カンパニーズ",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Property & Casualty Insurance",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "TSCO",
+    "Symbol_YF": "TSCO",
+    "Security": "Tractor Supply",
+    "Security_JA": "トラクター・サプライ・カンパニー",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Other Specialty Retail",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "TSLA",
+    "Symbol_YF": "TSLA",
+    "Security": "Tesla Inc",
+    "Security_JA": "テスラ",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Automobile Manufacturers",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "TSN",
+    "Symbol_YF": "TSN",
+    "Security": "Tyson Foods",
+    "Security_JA": "タイソン・フーズ クラスA",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Packaged Foods & Meats",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "TT",
+    "Symbol_YF": "TT",
+    "Security": "Trane Technologies",
+    "Security_JA": "トレイン・テクノロジーズ",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Building Products",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "TTD",
+    "Symbol_YF": "TTD",
+    "Security": "Trade Desk (The)",
+    "Security_JA": "トレード・デスク　クラスA",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Advertising",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "TTWO",
+    "Symbol_YF": "TTWO",
+    "Security": "Take-Two Interactive",
+    "Security_JA": "テイクツー・インタラクティブ・ソフトウェア",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Interactive Home Entertainment",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "TXN",
+    "Symbol_YF": "TXN",
+    "Security": "Texas Instruments",
+    "Security_JA": "テキサス・インストゥルメンツ",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Semiconductors",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "TXT",
+    "Symbol_YF": "TXT",
+    "Security": "Textron",
+    "Security_JA": "テクストロン",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Aerospace & Defense",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "TYL",
+    "Symbol_YF": "TYL",
+    "Security": "Tyler Technologies",
+    "Security_JA": "タイラー・テクノロジーズ",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Application Software",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "UAL",
+    "Symbol_YF": "UAL",
+    "Security": "United Airlines Holdings",
+    "Security_JA": "ユナイテッド・エアラインズ・ホールディングス",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Passenger Airlines",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "UBER",
+    "Symbol_YF": "UBER",
+    "Security": "Uber",
+    "Security_JA": "ウーバー・テクノロジーズ",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Passenger Ground Transportation",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "UDR",
+    "Symbol_YF": "UDR",
+    "Security": "UDR, Inc.",
+    "Security_JA": "UDR",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Multi-Family Residential REITs",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "UHS",
+    "Symbol_YF": "UHS",
+    "Security": "Universal Health Services",
+    "Security_JA": "ユニバーサル・ヘルス・サービシズ クラスB",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Facilities",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ULTA",
+    "Symbol_YF": "ULTA",
+    "Security": "Ulta Beauty",
+    "Security_JA": "アルタ",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Other Specialty Retail",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "UNH",
+    "Symbol_YF": "UNH",
+    "Security": "UnitedHealth Group",
+    "Security_JA": "ユナイテッドヘルス・グループ",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Managed Health Care",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "UNP",
+    "Symbol_YF": "UNP",
+    "Security": "Union Pacific Corporation",
+    "Security_JA": "ユニオン・パシフィック",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Rail Transportation",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "UPS",
+    "Symbol_YF": "UPS",
+    "Security": "United Parcel Service",
+    "Security_JA": "ユナイテッド･パーセル･サービス クラスB",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Air Freight & Logistics",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "URI",
+    "Symbol_YF": "URI",
+    "Security": "United Rentals",
+    "Security_JA": "ユナイテッド・レンタルズ",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Trading Companies & Distributors",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "USB",
+    "Symbol_YF": "USB",
+    "Security": "U.S. Bancorp",
+    "Security_JA": "ユー・エス・バンコープ",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Diversified Banks",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "V",
+    "Symbol_YF": "V",
+    "Security": "Visa Inc",
+    "Security_JA": "ビザ",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Transaction & Payment Processing Services",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "VICI",
+    "Symbol_YF": "VICI",
+    "Security": "Vici Properties",
+    "Security_JA": "VICIプロパティーズ",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Hotel & Resort REITs",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "VLO",
+    "Symbol_YF": "VLO",
+    "Security": "Valero Energy",
+    "Security_JA": "バレロ・エナジー",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Refining & Marketing",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "VLTO",
+    "Symbol_YF": "VLTO",
+    "Security": "Veralto",
+    "Security_JA": "ヴェラルト",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Environmental & Facilities Services",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "VMC",
+    "Symbol_YF": "VMC",
+    "Security": "Vulcan Materials Company",
+    "Security_JA": "バルカン・マテリアルズ",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Construction Materials",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "VRSK",
+    "Symbol_YF": "VRSK",
+    "Security": "Verisk Analytics",
+    "Security_JA": "ベリスク・アナリティックス",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Research & Consulting Services",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "VRSN",
+    "Symbol_YF": "VRSN",
+    "Security": "Verisign",
+    "Security_JA": "ベリサイン",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Internet Services & Infrastructure",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "VRT",
+    "Symbol_YF": "VRT",
+    "Security": "Vertiv",
+    "Security_JA": "バーティブ・ホールディングス",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Electrical Components & Equipment",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "VRTX",
+    "Symbol_YF": "VRTX",
+    "Security": "Vertex Pharmaceuticals",
+    "Security_JA": "バーテックス・ファーマシューティカルズ",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Biotechnology",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "VST",
+    "Symbol_YF": "VST",
+    "Security": "Vistra Corp.",
+    "Security_JA": "ビストラ・エナジー",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Electric Utilities",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "VTR",
+    "Symbol_YF": "VTR",
+    "Security": "Ventas",
+    "Security_JA": "ベンタス",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Health Care REITs",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "VTRS",
+    "Symbol_YF": "VTRS",
+    "Security": "Viatris",
+    "Security_JA": "ビアトリス",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Pharmaceuticals",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "VZ",
+    "Symbol_YF": "VZ",
+    "Security": "Verizon",
+    "Security_JA": "ベライゾン・コミュニケーションズ",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Integrated Telecommunication Services",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "WAB",
+    "Symbol_YF": "WAB",
+    "Security": "Wabtec",
+    "Security_JA": "ワブテック",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Construction Machinery & Heavy Transportation Equipment",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "WAT",
+    "Symbol_YF": "WAT",
+    "Security": "Waters Corporation",
+    "Security_JA": "ウォーターズ",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Life Sciences Tools & Services",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "WBD",
+    "Symbol_YF": "WBD",
+    "Security": "Warner Bros. Discovery",
+    "Security_JA": "ワーナーブラザース・ディスカバリー・インク",
+    "GICS Sector": "Communication Services",
+    "GICS Sub-Industry": "Broadcasting",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "WDAY",
+    "Symbol_YF": "WDAY",
+    "Security": "Workday, Inc.",
+    "Security_JA": "ワークデイ クラスA",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Application Software",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "WDC",
+    "Symbol_YF": "WDC",
+    "Security": "Western Digital",
+    "Security_JA": "ウェスタン・デジタル",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Technology Hardware, Storage & Peripherals",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "WEC",
+    "Symbol_YF": "WEC",
+    "Security": "WEC Energy Group",
+    "Security_JA": "ウィスコンシン・エナジー",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Electric Utilities",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "WELL",
+    "Symbol_YF": "WELL",
+    "Security": "Welltower",
+    "Security_JA": "ウェルタワー",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Health Care REITs",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "WFC",
+    "Symbol_YF": "WFC",
+    "Security": "Wells Fargo",
+    "Security_JA": "ウェルズ・ファーゴ",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Diversified Banks",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "WM",
+    "Symbol_YF": "WM",
+    "Security": "Waste Management",
+    "Security_JA": "ウェースト・マネジメント",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Environmental & Facilities Services",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "WMB",
+    "Symbol_YF": "WMB",
+    "Security": "Williams Companies",
+    "Security_JA": "ウィリアムズ・カンパニーズ",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Oil & Gas Storage & Transportation",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "WMT",
+    "Symbol_YF": "WMT",
+    "Security": "Walmart",
+    "Security_JA": "ウォルマート",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Consumer Staples Merchandise Retail",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "WRB",
+    "Symbol_YF": "WRB",
+    "Security": "W. R. Berkley Corporation",
+    "Security_JA": "ダブリューアール・バークレー",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Property & Casualty Insurance",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "WSM",
+    "Symbol_YF": "WSM",
+    "Security": "Williams-Sonoma, Inc.",
+    "Security_JA": "ウィリアムズソノマ",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Homefurnishing Retail",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "WST",
+    "Symbol_YF": "WST",
+    "Security": "West Pharmaceutical Services",
+    "Security_JA": "ウェスト・ファーマシューティカル・サービシズ",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Supplies",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "WTW",
+    "Symbol_YF": "WTW",
+    "Security": "Willis Towers Watson",
+    "Security_JA": "ウィリス・タワーズ・ワトソン・パブリック",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Insurance Brokers",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "WY",
+    "Symbol_YF": "WY",
+    "Security": "Weyerhaeuser",
+    "Security_JA": "ウェアーハウザー",
+    "GICS Sector": "Real Estate",
+    "GICS Sub-Industry": "Timber REITs",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "WYNN",
+    "Symbol_YF": "WYNN",
+    "Security": "Wynn Resorts",
+    "Security_JA": "ウィン・リゾーツ",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Casinos & Gaming",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "XEL",
+    "Symbol_YF": "XEL",
+    "Security": "Xcel Energy",
+    "Security_JA": "エクセル・エナジー",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Multi-Utilities",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "XOM",
+    "Symbol_YF": "XOM",
+    "Security": "Exxon Mobil Corp",
+    "Security_JA": "エクソンモービル",
+    "GICS Sector": "Energy",
+    "GICS Sub-Industry": "Integrated Oil & Gas",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "XYL",
+    "Symbol_YF": "XYL",
+    "Security": "Xylem Inc.",
+    "Security_JA": "ザイレム",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Industrial Machinery & Supplies & Components",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "XYZ",
+    "Symbol_YF": "XYZ",
+    "Security": "Block, Inc.",
+    "Security_JA": "ブロック",
+    "GICS Sector": "Financials",
+    "GICS Sub-Industry": "Transaction & Payment Processing Services",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "YUM",
+    "Symbol_YF": "YUM",
+    "Security": "Yum! Brands",
+    "Security_JA": "ヤム・ブランズ",
+    "GICS Sector": "Consumer Discretionary",
+    "GICS Sub-Industry": "Restaurants",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ZBH",
+    "Symbol_YF": "ZBH",
+    "Security": "Zimmer Biomet",
+    "Security_JA": "ジンマー・バイオメット・ホールディングス",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Equipment",
+    "Exchange": "NYSE",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ZBRA",
+    "Symbol_YF": "ZBRA",
+    "Security": "Zebra Technologies",
+    "Security_JA": "ゼブラ・テクノロジーズ クラスA",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Electronic Equipment & Instruments",
+    "Exchange": "NASDAQ",
+    "Daily_Change": null
+  },
+  {
+    "Symbol": "ZTS",
+    "Symbol_YF": "ZTS",
+    "Security": "Zoetis",
+    "Security_JA": "ゾエティス",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Pharmaceuticals",
+    "Exchange": "NYSE",
+    "Daily_Change": null
   }
 ]

@@ -748,45 +748,6 @@ if (reportData?.analyst_ratings) {
                 )}
               </div>
 
-              {/* US 10Y Treasury Yield History & Average */}
-              <div class="mt-8 p-6 bg-skin-fill/5 border border-skin-line rounded-lg">
-                <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
-                  <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">account_balance</span>
-                  リスクフリーレートの算出根拠 (US 10Y Treasury Yield)
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-                  <div class="overflow-hidden rounded-lg border border-skin-line">
-                    <table class="min-w-full divide-y divide-skin-line text-xs">
-                      <thead class="bg-skin-fill/20">
-                        <tr>
-                          <th class="px-4 py-2 text-left font-bold">年 (Year)</th>
-                          <th class="px-4 py-2 text-right font-bold">利回り (Yield)</th>
-                        </tr>
-                      </thead>
-                      <tbody class="divide-y divide-skin-line">
-                        <tr><td class="px-4 py-2">2021</td><td class="px-4 py-2 text-right font-medium">1.46%</td></tr>
-                        <tr class="bg-skin-fill/5"><td class="px-4 py-2">2022</td><td class="px-4 py-2 text-right font-medium">2.95%</td></tr>
-                        <tr><td class="px-4 py-2">2023</td><td class="px-4 py-2 text-right font-medium">3.96%</td></tr>
-                        <tr class="bg-skin-fill/5"><td class="px-4 py-2">2024</td><td class="px-4 py-2 text-right font-medium">4.21%</td></tr>
-                        <tr><td class="px-4 py-2">2025</td><td class="px-4 py-2 text-right font-medium">4.29%</td></tr>
-                        <tr class="bg-skin-accent/10 font-bold"><td class="px-4 py-2">直近5年平均 (Avg)</td><td class="px-4 py-2 text-right">3.52%</td></tr>
-                      </tbody>
-                    </table>
-                  </div>
-                  <div class="text-sm space-y-3 opacity-90 leading-relaxed">
-                    <p>
-                      本モデルでは、リスクフリーレートとして<strong>米国10年国債利回り（US 10Y Treasury Yield）の過去5年間平均値</strong>を採用しています。
-                    </p>
-                    <p>
-                      スポット（現在）の利回りは市場環境やインフレ期待によって短期的に大きく変動しますが、企業価値の算定においては、より長期的かつ安定的な金利水準を前提とすることで、一時的なノイズを排除した本源的価値を算出することが可能です。
-                    </p>
-                    <p class="text-xs italic opacity-70">
-                      ※平均値（3.52%）を割引率（WACC）の算出および永続成長率（Terminal Growth）の基準値として使用しています。
-                    </p>
-                  </div>
-                </div>
-              </div>
-
               {/* Cash Flow Projections Table */}
               {reportData.dcf_valuation.projections && (
                 <div class="space-y-4">
@@ -846,7 +807,7 @@ if (reportData?.analyst_ratings) {
                 <div class="flex gap-2"><span class="opacity-60">発行済株式数:</span> <span class="font-bold">{(reportData.dcf_valuation.shares / 1e6).toFixed(1)}M</span></div>
               </div>
 
-              {/* Rigorous Methodology Section */}
+              {/* Technical Methodology Section */}
               <div class="mt-8">
                 <details class="group bg-skin-fill/10 border border-skin-line rounded-lg overflow-hidden">
                   <summary class="flex items-center justify-between p-4 cursor-pointer hover:bg-skin-fill/20 transition-colors">
@@ -861,96 +822,100 @@ if (reportData?.analyst_ratings) {
                     </svg>
                   </summary>
                   <div class="p-6 border-t border-skin-line space-y-8 bg-skin-card/50">
-                    
+
                     <div>
-                      <h4 class="font-bold text-skin-accent mb-3 border-l-4 border-skin-accent pl-2">1. 割引率 (Discount Rate) の定義</h4>
-                      <p class="text-sm mb-4">本モデルでは、資本資産価格モデル (CAPM) に基づき株主資本コストを算出し、有利子負債コストと加重平均した <strong>WACC</strong> を割引率として採用しています。</p>
-                      
-                      <div class="bg-skin-fill/20 p-6 rounded-md space-y-8 overflow-x-auto text-center font-serif">
+                      <h4 class="font-bold text-skin-accent mb-4 border-l-4 border-skin-accent pl-2">1. 割引率 (Discount Rate: WACC)</h4>
+                      <p class="text-sm mb-4">資本資産価格モデル (CAPM) に基づき、株主資本コストと有利子負債コストを加重平均します。</p>
+
+                      <div class="bg-skin-fill/20 p-6 rounded-md space-y-6 overflow-x-auto text-center font-serif">
                         <div class="space-y-4 text-left">
-                          <p class="text-skin-accent font-bold text-xs uppercase tracking-widest font-sans">■ 株主資本コスト (Cost of Equity)</p>
-                          <div class="flex justify-center py-2">
-                            <img src="https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Cbg%7Bwhite%7D%20R_e%20%3D%20R_f%20%2B%20%5Cbeta%20%5Ctimes%20%28R_m%20-%20R_f%29" alt="R_e formula" class="dark:invert h-8" />
+                          <p class="text-skin-accent font-bold text-xs uppercase tracking-widest font-sans">■ 株主資本コスト (Cost of Equity - CAPM)</p>
+                          <div class="flex justify-center py-3">
+                            <img src="https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Cbg%7Bwhite%7D%20R_e%20%3D%20R_f%20%2B%20%5Cbeta_%7B5y%7D%20%5Ctimes%20%28R_m%20-%20R_f%29" alt="Cost of Equity" class="dark:invert h-8" />
                           </div>
-                          <div class="opacity-60 text-[10px] flex flex-wrap justify-center gap-x-4 gap-y-1 font-sans border-t border-skin-line/10 pt-2">
-                            <span><strong>R_f</strong>:リスクフリーレート</span>
-                            <span><strong>β</strong>:5年ベータ値</span>
-                            <span><strong>R_m</strong>:市場期待リターン</span>
+                          <div class="opacity-60 text-[10px] flex flex-wrap justify-center gap-x-4 gap-y-1.5 font-sans border-t border-skin-line/10 pt-3">
+                            <span><strong>R_f</strong>: 長期リスクフリーレート (5年平均)</span>
+                            <span><strong>β_5y</strong>: 5年ベータ値</span>
+                            <span><strong>R_m</strong>: S&P 500 期待リターン (10Y CAGR)</span>
                           </div>
                         </div>
+
                         <div class="space-y-4 pt-6 border-t border-skin-line/30 text-left">
                           <p class="text-skin-accent font-bold text-xs uppercase tracking-widest font-sans">■ 加重平均資本コスト (WACC)</p>
-                          <div class="flex justify-center py-2">
-                            <img src="https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Cbg%7Bwhite%7D%20WACC%20%3D%20%5Cfrac%7BE%7D%7BV%7D%20R_e%20%2B%20%5Cfrac%7BD%7D%7BV%7D%20R_d%20%281%20-%20%5Ctau%29" alt="WACC formula" class="dark:invert h-10" />
+                          <div class="flex justify-center py-3">
+                            <img src="https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Cbg%7Bwhite%7D%20WACC%20%3D%20%5Cfrac%7BE%7D%7BV%7D%20R_e%20%2B%20%5Cfrac%7BD%7D%7BV%7D%20R_d%20%281%20-%20%5Ctau%29" alt="WACC" class="dark:invert h-10" />
                           </div>
-                          <div class="opacity-60 text-[10px] flex flex-wrap justify-center gap-x-4 gap-y-1 font-sans border-t border-skin-line/10 pt-2">
-                            <span><strong>E</strong>:時価総額</span>
-                            <span><strong>D</strong>:有利子負債</span>
-                            <span><strong>R_d</strong>:負債利子率</span>
-                            <span><strong>τ</strong>:実効税率</span>
+                          <div class="opacity-60 text-[10px] flex flex-wrap justify-center gap-x-4 gap-y-1.5 font-sans border-t border-skin-line/10 pt-3">
+                            <span><strong>V</strong>: 企業価値 (E + D)</span>
+                            <span><strong>E</strong>: 時価総額</span>
+                            <span><strong>D</strong>: 有利子負債</span>
+                            <span><strong>R_d</strong>: 負債コスト</span>
+                            <span><strong>τ</strong>: 実効税率</span>
                           </div>
                         </div>
                       </div>
                     </div>
 
                     <div>
-                      <h4 class="font-bold text-skin-accent mb-3 border-l-4 border-skin-accent pl-2">2. 将来キャッシュフロー (FCF) の予測</h4>
-                      <p class="text-sm mb-4">予測期間10年間の成長率は、過去3年間の実績に基づく<strong>多要素加重平均成長率</strong>を用いています。</p>
-                      
-                      <div class="bg-skin-fill/20 p-6 rounded-md space-y-8 overflow-x-auto text-center font-serif">
+                      <h4 class="font-bold text-skin-accent mb-4 border-l-4 border-skin-accent pl-2">2. 成長率予測 (Growth Rate Forecast)</h4>
+                      <p class="text-sm mb-4">EPS 9年 CAGR を主要指標とし、複数メトリクスの加重平均で補完します。</p>
+
+                      <div class="bg-skin-fill/20 p-6 rounded-md space-y-6 overflow-x-auto text-center font-serif">
                         <div class="space-y-4 text-left">
-                          <p class="text-skin-accent font-bold text-xs uppercase tracking-widest font-sans">■ 予測成長率 (Years 1-5)</p>
-                          <div class="flex justify-center py-2">
-                            <img src="https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Cbg%7Bwhite%7D%20g_%7B1-5%7D%20%3D%200.4g_%7Brev%7D%20%2B%200.3g_%7Bfcf%7D%20%2B%200.2g_%7Bebitda%7D%20%2B%200.1g_%7Bni%7D" alt="Weighted growth formula" class="dark:invert h-8" />
+                          <p class="text-skin-accent font-bold text-xs uppercase tracking-widest font-sans">■ 予測期間1-5年の成長率</p>
+                          <div class="flex justify-center py-3">
+                            <img src="https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Cbg%7Bwhite%7D%20g_%7B1-5%7D%20%3D%20%5Ctext%7Bclip%7D%28CAGR_%7BEPS%7D%2C%205%5C%25%2C%2020%5C%25%29" alt="Growth Rate 1-5" class="dark:invert h-8" />
                           </div>
-                          <div class="opacity-60 text-[10px] flex flex-wrap justify-center gap-x-4 gap-y-1 font-sans border-t border-skin-line/10 pt-2 text-center">
-                            <span><strong>g_rev</strong>:売上</span>
-                            <span><strong>g_fcf</strong>:FCF</span>
-                            <span><strong>g_ebitda</strong>:EBITDA</span>
-                            <span><strong>g_ni</strong>:純利益のCAGR</span>
-                          </div>
+                          <p class="opacity-60 text-[10px] font-sans text-center border-t border-skin-line/10 pt-2">EPS 9Y CAGR を 5%～20% の範囲に制限</p>
                         </div>
+
                         <div class="space-y-4 pt-6 border-t border-skin-line/30 text-left">
-                          <p class="text-skin-accent font-bold text-xs uppercase tracking-widest font-sans">■ 減衰予測成長率 (Years 6-10)</p>
-                          <div class="flex justify-center py-2">
-                            <img src="https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Cbg%7Bwhite%7D%20g_%7B6-10%7D%20%3D%20%5Cmax%28g_%7B1-5%7D%20%5Ctimes%200.9%5E5%2C%20R_f%29" alt="Decay growth formula" class="dark:invert h-8" />
+                          <p class="text-skin-accent font-bold text-xs uppercase tracking-widest font-sans">■ 予測期間6-10年の線形減衰</p>
+                          <div class="flex justify-center py-3">
+                            <img src="https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Cbg%7Bwhite%7D%20g_i%20%3D%20g_%7B1-5%7D%20-%20%5Cfrac%7Bi-5%7D%7B5%7D%28g_%7B1-5%7D%20-%20R_f%29%2C%20i%20%3D%206...10" alt="Linear decline" class="dark:invert h-10" />
                           </div>
-                          <p class="opacity-60 text-[10px] italic font-sans leading-relaxed text-center border-t border-skin-line/10 pt-2 w-full">※6年目以降は減衰係数 0.9を適用し、リスクフリーレートに向けて収束させます。</p>
+                          <p class="opacity-60 text-[10px] font-sans text-center border-t border-skin-line/10 pt-2">成長率を段階的に長期リスクフリーレートへ収束</p>
                         </div>
                       </div>
                     </div>
 
                     <div>
-                      <h4 class="font-bold text-skin-accent mb-3 border-l-4 border-skin-accent pl-2">3. 企業価値 (Enterprise Value) の現在価値換算</h4>
-                      <p class="text-sm mb-4">予測期間のFCF合計と、それ以降の継続価値 (Terminal Value) をWACCで割引きます。</p>
-                      
-                      <div class="bg-skin-fill/20 p-6 rounded-md space-y-8 overflow-x-auto text-center font-serif">
+                      <h4 class="font-bold text-skin-accent mb-4 border-l-4 border-skin-accent pl-2">3. フリーキャッシュフロー現在価値</h4>
+                      <p class="text-sm mb-4">予測期間 (1-10年) のFCFと継続価値 (Terminal Value) を割引きます。</p>
+
+                      <div class="bg-skin-fill/20 p-6 rounded-md space-y-6 overflow-x-auto text-center font-serif">
                         <div class="space-y-4 text-left">
-                          <p class="text-skin-accent font-bold text-xs uppercase tracking-widest font-sans">■ 継続価値 (Terminal Value)</p>
-                          <div class="flex justify-center py-2">
-                            <img src="https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Cbg%7Bwhite%7D%20TV%20%3D%20%5Cfrac%7BFCF_%7B10%7D%20%281%20%2B%20g_%7Btrm%7D%29%7D%7BWACC%20-%20g_%7Btrm%7D%7D" alt="Terminal Value formula" class="dark:invert h-12" />
-                          </div>
-                          <div class="opacity-60 text-[10px] flex flex-wrap justify-center gap-x-4 gap-y-1 font-sans border-t border-skin-line/10 pt-2 text-center">
-                            <span><strong>g_trm</strong>:永続成長率（リスクフリーレートを採用）</span>
+                          <p class="text-skin-accent font-bold text-xs uppercase tracking-widest font-sans">■ 予測FCF の現在価値化</p>
+                          <div class="flex justify-center py-3">
+                            <img src="https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Cbg%7Bwhite%7D%20PV_%7BFCF%7D%20%3D%20%5Csum_%7Bt%3D1%7D%5E%7B10%7D%20%5Cfrac%7BFCF_t%7D%7B%281%2BWACC%29%5Et%7D" alt="FCF PV" class="dark:invert h-10" />
                           </div>
                         </div>
+
+                        <div class="space-y-4 pt-6 border-t border-skin-line/30 text-left">
+                          <p class="text-skin-accent font-bold text-xs uppercase tracking-widest font-sans">■ 継続価値 (Terminal Value)</p>
+                          <div class="flex justify-center py-3">
+                            <img src="https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Cbg%7Bwhite%7D%20TV%20%3D%20%5Cfrac%7BFCF_%7B10%7D%20%281%2BR_f%29%7D%7BWACC%20-%20R_f%7D" alt="Terminal Value" class="dark:invert h-12" />
+                          </div>
+                          <p class="opacity-60 text-[10px] font-sans text-center border-t border-skin-line/10 pt-2">11年目以降を永遠に成長を仮定（成長率 = R_f）</p>
+                        </div>
+
                         <div class="space-y-4 pt-6 border-t border-skin-line/30 text-left">
                           <p class="text-skin-accent font-bold text-xs uppercase tracking-widest font-sans">■ 企業価値 (Enterprise Value)</p>
-                          <div class="flex justify-center py-2">
-                            <img src="https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Cbg%7Bwhite%7D%20EV%20%3D%20%5Csum_%7Bt%3D1%7D%5E%7B10%7D%20%5Cfrac%7BFCF_t%7D%7B%281%2BWACC%29%5Et%7D%20%2B%20%5Cfrac%7BTV%7D%7B%281%2BWACC%29%5E%7B10%7D%7D" alt="EV formula" class="dark:invert h-12" />
+                          <div class="flex justify-center py-3">
+                            <img src="https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Cbg%7Bwhite%7D%20EV%20%3D%20PV_%7BFCF%7D%20%2B%20%5Cfrac%7BTV%7D%7B%281%2BWACC%29%5E%7B10%7D%7D" alt="EV" class="dark:invert h-10" />
                           </div>
                         </div>
                       </div>
                     </div>
 
                     <div>
-                      <h4 class="font-bold text-skin-accent mb-3 border-l-4 border-skin-accent pl-2">4. 理論株価 (Fair Price) への調整</h4>
-                      <p class="text-sm mb-4">企業価値 (EV) から現金・負債を調整し、株主価値を発行済株式数で除して算出します。</p>
-                      
-                      <div class="bg-skin-fill/20 p-6 rounded-md space-y-6 overflow-x-auto text-center font-serif">
-                        <div class="flex flex-col items-center gap-6">
-                          <img src="https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Cbg%7Bwhite%7D%20EquityValue%20%3D%20EV%20%2B%20Cash%20-%20Debt" alt="Equity Value" class="dark:invert h-6" />
-                          <img src="https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Cbg%7Bwhite%7D%20FairPrice%20%3D%20%5Cfrac%7BEquity%20Value%7D%7BShares%20Outstanding%7D" alt="Fair Price formula" class="dark:invert h-10" />
+                      <h4 class="font-bold text-skin-accent mb-4 border-l-4 border-skin-accent pl-2">4. 理論株価 (Fair Price) 算出</h4>
+                      <p class="text-sm mb-4">企業価値から有利子負債を差引き、現金を加算後、発行済株式数で除します。</p>
+
+                      <div class="bg-skin-fill/20 p-6 rounded-md space-y-4 overflow-x-auto text-center font-serif">
+                        <div class="flex flex-col items-center gap-4">
+                          <img src="https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Cbg%7Bwhite%7D%20EquityValue%20%3D%20EV%20%2B%20Cash%20-%20Debt" alt="Equity Value" class="dark:invert h-8" />
+                          <img src="https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Cbg%7Bwhite%7D%20FairPrice%20%3D%20%5Cfrac%7BEquityValue%7D%7BSharesOutstanding%7D" alt="Fair Price" class="dark:invert h-12" />
                         </div>
                       </div>
                     </div>
