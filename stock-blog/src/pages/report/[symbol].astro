@@ -798,6 +798,73 @@ if (reportData?.analyst_ratings) {
                 </div>
               )}
 
+              {/* Reverse DCF Analysis */}
+              {typeof reportData.dcf_valuation.reverse_growth === 'number' && (
+                <div class="mt-10 p-6 bg-gradient-to-br from-blue-50 to-blue-50/50 dark:from-blue-900/20 dark:to-blue-900/10 rounded-lg border border-blue-200 dark:border-blue-800/40 shadow-sm">
+                  <h3 class="text-lg font-bold mb-6 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-blue-600" aria-hidden="true">trending_up</span>
+                    リバースDCF分析：現在株価を正当化するために必要な成長率
+                  </h3>
+
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Reverse Growth Display */}
+                    <div class="space-y-4">
+                      <div class="bg-white dark:bg-skin-card p-5 rounded-lg border border-blue-100 dark:border-blue-900/40">
+                        <div class="text-sm opacity-70 mb-2">今後1-5年間に必要な年平均成長率</div>
+                        <div class="text-4xl font-black text-blue-600 dark:text-blue-400">
+                          {(reportData.dcf_valuation.reverse_growth * 100).toFixed(2)}%
+                        </div>
+                      </div>
+
+                      <div class="text-sm opacity-80 leading-relaxed p-4 bg-white dark:bg-skin-card rounded-lg border border-blue-100 dark:border-blue-900/40">
+                        <p class="font-bold text-blue-700 dark:text-blue-400 mb-2">📊 解釈</p>
+                        <p>
+                          現在の株価 (${reportData.dcf_valuation.current_price.toFixed(2)}) を正当化するには、今後1-5年間に<strong>年平均 {(reportData.dcf_valuation.reverse_growth * 100).toFixed(2)}%</strong>の成長が必要です。
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Comparison */}
+                    <div class="space-y-4">
+                      <div class="space-y-2">
+                        <div class="text-sm font-bold opacity-70 mb-3">DCF予測との比較</div>
+
+                        <div class="flex items-center justify-between p-3 rounded-lg bg-white dark:bg-skin-card border border-blue-100 dark:border-blue-900/40">
+                          <span class="text-sm opacity-80">DCF予測成長率 (1-5Y)</span>
+                          <span class="font-bold text-skin-accent">{(reportData.dcf_valuation.growth_1_5y * 100).toFixed(2)}%</span>
+                        </div>
+
+                        <div class="flex items-center justify-between p-3 rounded-lg bg-white dark:bg-skin-card border border-blue-100 dark:border-blue-900/40">
+                          <span class="text-sm opacity-80">必要成長率 (現在株価ベース)</span>
+                          <span class="font-bold text-blue-600">{(reportData.dcf_valuation.reverse_growth * 100).toFixed(2)}%</span>
+                        </div>
+
+                        <div class={`flex items-center justify-between p-4 rounded-lg font-bold ${
+                          reportData.dcf_valuation.reverse_growth <= reportData.dcf_valuation.growth_1_5y
+                            ? 'bg-green-100/50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800/40'
+                            : 'bg-orange-100/50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-400 border border-orange-200 dark:border-orange-800/40'
+                        }`}>
+                          <span class="text-sm">実現可能性判定</span>
+                          <span class="text-lg">
+                            {reportData.dcf_valuation.reverse_growth <= reportData.dcf_valuation.growth_1_5y
+                              ? '✓ 実現可能 (割安)'
+                              : '⚠ 要注視 (割高傾向)'}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div class="text-xs opacity-70 p-3 bg-white dark:bg-skin-card rounded-lg border border-blue-100 dark:border-blue-900/40 leading-relaxed">
+                        <p><strong>💡 ポイント：</strong></p>
+                        <ul class="list-disc list-inside mt-2 space-y-1">
+                          <li>必要成長率が予測値より低い = 保有的価値あり</li>
+                          <li>必要成長率が予測値より高い = 現在価格が割高の可能性</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* Adjustment Details */}
               <div class="bg-skin-fill/5 p-4 rounded-lg border border-skin-line flex flex-wrap gap-x-12 gap-y-2 text-sm justify-center lg:justify-start">
                 <div class="flex gap-2"><span class="opacity-60">企業価値 (EV):</span> <span class="font-bold">${(reportData.dcf_valuation.enterprise_value / 1e9).toFixed(2)}B</span></div>

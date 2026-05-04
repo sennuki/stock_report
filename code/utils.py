@@ -348,6 +348,46 @@ def calculate_dcf(symbol, ticker=None):
         price_df = db_ticker.price()
         current_price = float(price_df['close'].iloc[-1]) if not price_df.empty else 0
         
+        # リバースDCF：現在株価から逆算して必要な成長率を計算
+        reverse_growth = None
+        try:
+            current_equity_value = current_price * shares
+            current_ev = current_equity_value + total_debt - cash_value
+
+            if current_ev > 0 and base_fcf > 0:
+                def calculate_ev_for_growth(g):
+                    """指定の成長率で企業価値を計算"""
+                    fcf = base_fcf
+                    pv_fcf_sum = 0
+                    for i in range(1, 11):
+                        if i <= 5:
+                            rate = g
+                        else:
+                            rate = g - (i - 5) * (g - terminal_growth) / 5
+                        fcf *= (1 + rate)
+                        pv_fcf_sum += fcf / ((1 + wacc) ** i)
+                    tv = (fcf * (1 + terminal_growth)) / (wacc - terminal_growth)
+                    npv_tv = tv / ((1 + wacc) ** 10)
+                    return pv_fcf_sum + npv_tv
+
+                # 二分探索で必要な成長率を求める
+                low, high = 0.001, 0.50  # 0.1% ～ 50%
+                tolerance = 0.0001
+                for _ in range(100):
+                    mid = (low + high) / 2
+                    ev_mid = calculate_ev_for_growth(mid)
+                    if abs(ev_mid - current_ev) < tolerance * current_ev:
+                        reverse_growth = mid
+                        break
+                    elif ev_mid < current_ev:
+                        low = mid
+                    else:
+                        high = mid
+                else:
+                    reverse_growth = (low + high) / 2
+        except Exception as e:
+            pass
+
         return {
             "fair_price": float(fair_price),
             "current_price": float(current_price),
@@ -364,7 +404,8 @@ def calculate_dcf(symbol, ticker=None):
             "growth_1_5y": float(growth_1_5y),
             "growth_6_10y": float(growth_6_10y),
             "terminal_growth": float(terminal_growth),
-            "base_fcf": float(base_fcf)
+            "base_fcf": float(base_fcf),
+            "reverse_growth": float(reverse_growth) if reverse_growth is not None else None
         }
     except Exception as e:
         print(f"Error calculating detailed DCF for {symbol}: {e}")
