@@ -29,26 +29,42 @@ async function main() {
 
   if (!fs.existsSync(REPORTS_DIR)) fs.mkdirSync(REPORTS_DIR, { recursive: true });
 
-  let allStocks = await fetchSp500Companies();
-  const brokerages = await getBrokerageAvailability();
-  
   let stocks = [];
+
   if (process.env.TEST_MODE === 'true') {
     stocks = [
       { Symbol: 'MSFT', Symbol_YF: 'MSFT', Security: 'Microsoft Corp', 'GICS Sector': 'Information Technology', 'GICS Sub-Industry': 'Systems Software', Exchange: 'NASDAQ' },
       { Symbol: 'AAPL', Symbol_YF: 'AAPL', Security: 'Apple Inc', 'GICS Sector': 'Information Technology', 'GICS Sub-Industry': 'Technology Hardware Storage & Peripherals', Exchange: 'NASDAQ' },
       { Symbol: 'PHM', Symbol_YF: 'PHM', Security: 'PulteGroup Inc', 'GICS Sector': 'Consumer Discretionary', 'GICS Sub-Industry': 'Homebuilding', Exchange: 'NYSE' }
     ];
-    if (allStocks.length === 0) allStocks = stocks;
+  } else if (fs.existsSync(STOCKS_JSON_PATH)) {
+    // Read stocks from the JSON file created by Python main.py
+    const data = fs.readFileSync(STOCKS_JSON_PATH, 'utf-8');
+    stocks = JSON.parse(data);
   } else {
-    stocks = allStocks;
+    // Fallback: try to fetch from Wikipedia
+    stocks = await fetchSp500Companies();
   }
-  
+
+  const brokerages = await getBrokerageAvailability();
+
   console.log(`Processing ${stocks.length} stocks...`);
 
-  const updatedStocks = [];
+  // 並列度を制限するヘルパー関数
+  const MAX_CONCURRENT = 5;
+  async function processStocksInBatches(stockList: typeof stocks) {
+    const results = [];
+    for (let i = 0; i < stockList.length; i += MAX_CONCURRENT) {
+      const batch = stockList.slice(i, i + MAX_CONCURRENT);
+      const batchResults = await Promise.all(batch.map(stock => processStock(stock)));
+      results.push(...batchResults);
+      console.log(`Progress: ${Math.min(i + MAX_CONCURRENT, stockList.length)}/${stockList.length} stocks processed`);
+    }
+    return results;
+  }
 
-  for (const stock of stocks) {
+  // 1銘柄の処理をasync関数に抽出
+  async function processStock(stock: typeof stocks[0]): Promise<any> {
     console.log(`[${stock.Symbol}] Fetching integrated data...`);
     
     try {
@@ -346,11 +362,11 @@ async function main() {
         }),
 
         peers: {
-          sub_industry: allStocks
+          sub_industry: stocks
             .filter(s => s['GICS Sub-Industry'] === stock['GICS Sub-Industry'] && s.Symbol !== stock.Symbol)
             .slice(0, 10)
             .map(p => ({ Symbol: p.Symbol, Symbol_YF: p.Symbol_YF })),
-          sector: allStocks
+          sector: stocks
             .filter(s => s['GICS Sector'] === stock['GICS Sector'] && s['GICS Sub-Industry'] !== stock['GICS Sub-Industry'])
             .slice(0, 10)
             .map(p => ({ Symbol: p.Symbol, Symbol_YF: p.Symbol_YF }))
@@ -359,14 +375,15 @@ async function main() {
 
       fs.writeFileSync(path.join(REPORTS_DIR, `${stock.Symbol_YF}.json`), JSON.stringify(reportData, null, 2));
       console.log(`  - [${stock.Symbol}] Successfully saved report.`);
-      updatedStocks.push({ ...stock, Daily_Change: (quote as any).regularMarketChangePercent / 100 });
+      return { ...stock, Daily_Change: (quote as any).regularMarketChangePercent / 100 };
 
     } catch (e: any) {
       console.error(`    - Unexpected error processing ${stock.Symbol}:`, e);
+      return null;
     }
-    
-    await new Promise(resolve => setTimeout(resolve, 500));
   }
+
+  const updatedStocks = (await processStocksInBatches(stocks)).filter(s => s !== null);
 
   fs.writeFileSync(STOCKS_JSON_PATH, JSON.stringify(updatedStocks, null, 2));
   console.log('--- Integration Finished! ---');

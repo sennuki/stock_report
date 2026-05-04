@@ -30,6 +30,19 @@ if R2_ACCOUNT_ID and R2_ACCESS_KEY_ID and R2_SECRET_ACCESS_KEY:
         region_name="auto"
     )
 
+def export_stocks_json(df):
+    """S&P 500の銘柄リストをAstro用のJSONデータとして保存する"""
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    dest_path = os.path.join(base_dir, "../stock-blog/src/data/stocks.json")
+    try:
+        os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+        data = df.to_dicts()
+        with open(dest_path, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+        print(f"銘柄リストJSONを保存しました: {dest_path}")
+    except Exception as e:
+        print(f"JSON保存エラー: {e}")
+
 def upload_base_stocks_list_to_r2(df_sp500):
     """
     S&P500の基本銘柄リストをR2の raw/stocks_list.json としてアップロードする
@@ -37,7 +50,7 @@ def upload_base_stocks_list_to_r2(df_sp500):
     try:
         data = df_sp500.to_dicts()
         json_data = json.dumps(data, ensure_ascii=False, indent=2)
-        
+
         if s3_client:
             s3_client.put_object(
                 Bucket=R2_BUCKET_NAME,
@@ -53,20 +66,22 @@ def upload_base_stocks_list_to_r2(df_sp500):
 
 if __name__ == "__main__":
     utils.log_event("INFO", "SYSTEM", "--- Python Data Fetch Pipeline Started ---")
-    
+
     # fetch_raw_data.py の main を実行して、全銘柄データをR2に保存
     try:
         fetch_raw_data.main()
         utils.log_event("SUCCESS", "SYSTEM", "Fetched all raw data and uploaded to R2")
     except Exception as e:
         utils.log_event("ERROR", "SYSTEM", f"Failed during fetch_raw_data.main(): {e}")
-        
+
     # ベース銘柄リストのアップロード (TypeScript側で一覧表示等に利用するため)
     try:
         df_sp500 = market_data.fetch_sp500_companies_optimized()
         if not df_sp500.is_empty():
+            # stocks.json にエクスポート（TypeScript側で読み込む）
+            export_stocks_json(df_sp500)
             upload_base_stocks_list_to_r2(df_sp500)
     except Exception as e:
         pass
-    
+
     utils.log_event("INFO", "SYSTEM", "--- Python Data Fetch Pipeline Finished ---")

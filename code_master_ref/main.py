@@ -98,15 +98,19 @@ if __name__ == "__main__":
     # 1. データ準備
     try:
         df_sp500 = market_data.fetch_sp500_companies_optimized()
-        
+        print(f"DEBUG: Fetched df_sp500 with {len(df_sp500)} rows, is_empty={df_sp500.is_empty()}")
+
         # TEST_MODEなら銘柄数を制限する
         if os.environ.get("TEST_MODE") == "true":
             print("TEST_MODE is active: limiting to 10 stocks.")
             df_sp500 = df_sp500.head(10)
-            
+
         if not df_sp500.is_empty():
             utils.log_event("SUCCESS", "SYSTEM", f"Fetched {len(df_sp500)} companies")
+        else:
+            print("DEBUG: df_sp500 is EMPTY! Skipping stock processing.")
     except Exception as e:
+        print(f"DEBUG: Exception in data preparation: {e}")
         utils.log_event("ERROR", "SYSTEM", f"Failed to fetch S&P 500 list: {e}")
         df_sp500 = pl.DataFrame()
 
@@ -116,10 +120,11 @@ if __name__ == "__main__":
         "META": {"Security": "Meta Platforms Inc", "Sector": "Communication Services", "Sub": "Interactive Media & Services"}
     }
 
+    print(f"DEBUG: Before if check - df_sp500.is_empty()={df_sp500.is_empty()}")
     if not df_sp500.is_empty():
         current_symbols = set(df_sp500['Symbol_YF'].to_list())
         missing_rows = []
-        
+
         for ticker, info in required_tickers.items():
             if ticker not in current_symbols:
                 print(f"Adding missing ticker: {ticker}")
@@ -134,19 +139,22 @@ if __name__ == "__main__":
                     "Symbol_YF": sym_yf,
                     "Exchange": "NASDAQ"
                 })
-        
+
         if missing_rows:
             df_missing = pl.DataFrame(missing_rows)
             # Ensure all columns from df_sp500 exist in df_missing
             for col in df_sp500.columns:
                 if col not in df_missing.columns:
                     df_missing = df_missing.with_columns(pl.lit(None).alias(col))
-            
+
             # Match column order and types
             df_missing = df_missing.select(df_sp500.columns)
             df_sp500 = pl.concat([df_sp500, df_missing])
-        # JSONリストのエクスポート (レポート生成前でもOK)
-        export_stocks_json(df_sp500)
+
+    # JSONリストのエクスポート (常に実行)
+    print(f"DEBUG: About to export stocks JSON. df_sp500 shape: {df_sp500.shape}")
+    export_stocks_json(df_sp500)
+    print(f"DEBUG: Stocks JSON export completed")
 
         # 2. リスク指標計算 (全銘柄)
         try:

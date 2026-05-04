@@ -4,6 +4,14 @@ import json
 import os
 import pandas as pd
 import numpy as np
+from decimal import Decimal
+
+# JSON encoder for Decimal
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Decimal):
+            return float(obj)
+        return super().default(obj)
 
 # 出力を抑制してASCIIアートなどを消す
 import io
@@ -113,11 +121,11 @@ def main(symbol):
         
         # 抑制していた出力を元に戻し、JSONのみを出力
         sys.stdout = original_stdout
-        print(json.dumps(data, ensure_ascii=False))
+        print(json.dumps(data, ensure_ascii=False, cls=DecimalEncoder))
 
     except Exception as e:
         sys.stdout = original_stdout
-        print(json.dumps({"error": str(e)}), file=sys.stderr)
+        print(json.dumps({"error": str(e)}, cls=DecimalEncoder), file=sys.stderr)
         sys.exit(1)
 
 if __name__ == "__main__":
