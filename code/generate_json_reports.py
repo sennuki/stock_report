@@ -35,9 +35,9 @@ gemini_client = get_gemini_client()
 GEMINI_MODEL_NAME = "models/gemma-4-26b-a4b-it"
 
 translation_cache = {}
-initial_translation_counter = 0
+rotation_translation_counter = 0
 translation_lock = threading.Lock()
-MAX_INITIAL_TRANSLATIONS = 250
+MAX_ROTATION_TRANSLATIONS_PER_DAY = 2
 
 from google.genai import types
 
@@ -178,25 +178,24 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, force_transla
         
         do_translate = False
         if force_translate:
-            # Periodic rotation update
-            print(f" [{ticker_display}] 定期ローテーションによる再翻訳を実行します...")
-            time.sleep(2.0)
-            do_translate = True
-        elif not business_summary_ja:
-            # Initial translation: ensure we are well under 15 RPM and limit to 100
-            global initial_translation_counter
+            # Periodic rotation update (max 2 stocks per day)
+            global rotation_translation_counter
             with translation_lock:
-                if initial_translation_counter < MAX_INITIAL_TRANSLATIONS:
-                    initial_translation_counter += 1
+                if rotation_translation_counter < MAX_ROTATION_TRANSLATIONS_PER_DAY:
+                    rotation_translation_counter += 1
+                    print(f" [{ticker_display}] 定期ローテーションによる再翻訳を実行します ({rotation_translation_counter}/{MAX_ROTATION_TRANSLATIONS_PER_DAY})...")
+                    time.sleep(2.0)
                     do_translate = True
                 else:
-                    print(f" [{ticker_display}] 初回翻訳制限({MAX_INITIAL_TRANSLATIONS})に達したためスキップします。")
+                    print(f" [{ticker_display}] 本日の再翻訳上限({MAX_ROTATION_TRANSLATIONS_PER_DAY})に達しました。スキップします。")
                     do_translate = False
-            
-            if do_translate:
-                wait_time = 4.5 * max_workers
-                print(f" [{ticker_display}] 初回翻訳を開始します ({initial_translation_counter}/{MAX_INITIAL_TRANSLATIONS}) (Wait: {wait_time}s)...")
-                time.sleep(wait_time) 
+        elif not business_summary_ja:
+            # Initial translation: translate all missing summaries
+            max_workers = int(os.environ.get("PYTHON_MAX_WORKERS", 2))
+            wait_time = 4.5 * max_workers
+            print(f" [{ticker_display}] 初回翻訳を開始します (Wait: {wait_time}s)...")
+            time.sleep(wait_time)
+            do_translate = True 
             
         if do_translate:
             business_summary_ja = translate_summary(chart_target_symbol, info.get("longBusinessSummary"))
@@ -213,6 +212,7 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, force_transla
         "security": row['Security'],
         "security_ja": row.get('Security_JA'),
         "business_summary_ja": business_summary_ja,
+        "translation_date": datetime.datetime.now().isoformat() if business_summary_ja else None,
         "dcf_valuation": dcf_valuation,
         "sector": current_sector,
         "sub_industry": current_sub_industry,
@@ -638,6 +638,9 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, force_transla
             os.remove(temp_path)
 
 def export_json_reports(df_info, df_metrics, output_dir="../stock-blog/public/reports"):
+    global rotation_translation_counter
+    rotation_translation_counter = 0  # Reset daily counter
+
     base_dir = os.path.dirname(os.path.abspath(__file__))
     output_dir = os.path.join(base_dir, output_dir)
     if not os.path.exists(output_dir): os.makedirs(output_dir)
@@ -687,17 +690,21 @@ def export_json_reports(df_info, df_metrics, output_dir="../stock-blog/public/re
     rows = sorted(rows, key=lambda x: x['Symbol'])
     num_stocks = len(rows)
     
-    # Calculate daily rotation for translation (365 days cycle)
-    # Day of year (1 to 365)
-    day_of_year = datetime.datetime.now().timetuple().tm_yday
-    batch_size = max(1, num_stocks // 365 + (1 if num_stocks % 365 > 0 else 0))
+    # Calculate daily rotation for translation (366 days cycle)
+    # Day of year (1 to 366)
+    today = datetime.datetime.now().date()
+    day_of_year = today.timetuple().tm_yday
+
+    # Calculate batch size: each stock appears once every 366 days
+    batch_size = max(1, num_stocks // 366 + (1 if num_stocks % 366 > 0 else 0))
     start_idx = ((day_of_year - 1) * batch_size) % num_stocks
     end_idx = min(start_idx + batch_size, num_stocks)
-    
+
     # Identify which stocks are in today's rotation batch
     target_symbols = [rows[i]['Symbol'] for i in range(start_idx, end_idx)]
-    print(f"\n--- 日次翻訳ローテーション ---")
-    print(f"全銘柄数: {num_stocks}, 1日のノルマ: {batch_size}")
+    print(f"\n--- 日次翻訳ローテーション（366日サイクル） ---")
+    print(f"本日の日付: {today.isoformat()}")
+    print(f"全銘柄数: {num_stocks}, 1日のノルマ: {batch_size}銘柄/日（最大{MAX_ROTATION_TRANSLATIONS_PER_DAY}銘柄）")
     print(f"本日の再翻訳対象 ({start_idx+1}-{end_idx}番目): {', '.join(target_symbols)}")
 
     # 制限を回避するため、デフォルトの並列度を 2 に抑える (環境変数で変更可能)
