@@ -88,12 +88,8 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
     const yAxisPosition = wrapper.dataset.yAxisPosition || 'left';
     const config = transformPlotlyToChartJs(plotlyData, isDark, textColor, gridColor, yAxisPosition, canvas.id);
     if (!config) {
-      if (canvas.id === 'chart-performance') console.warn('ChartJs: Config transformation failed for performance chart');
+      if (import.meta.env.DEV && canvas.id === 'chart-performance') console.warn('ChartJs: Config transformation failed for performance chart');
       return;
-    }
-    
-    if (canvas.id === 'chart-performance') {
-      console.log('ChartJs: Rendering performance chart with', config.data.datasets.length, 'datasets');
     }
     
     // 既存のチャートを確実に破棄
