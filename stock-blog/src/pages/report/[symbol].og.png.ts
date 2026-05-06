@@ -135,10 +135,11 @@ async function generateStockOG(symbol: string, price?: number, change?: number) 
     }
   );
 
-  const resvg = (await import("@resvg/resvg-js")).default;
-  const pngData = resvg.render(Buffer.from(svg)).asPng();
+  const { Resvg } = await import("@resvg/resvg-js");
+  const resvg = new Resvg(svg);
+  const pngBuffer = resvg.render().asPng();
 
-  return pngData;
+  return new Uint8Array(pngBuffer);
 }
 
 export async function getStaticPaths() {
@@ -147,7 +148,7 @@ export async function getStaticPaths() {
   }));
 }
 
-export async function GET({ params }) {
+export async function GET({ params }: { params: { symbol: string } }) {
   try {
     const { symbol } = params;
     const pngData = await generateStockOG(symbol);

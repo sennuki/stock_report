@@ -9,8 +9,6 @@ import PeerLinks from "@/components/report/PeerLinks.astro";
 import EarningsHighlights from "@/components/report/EarningsHighlights.astro";
 import JapanBrokers from "@/components/report/JapanBrokers.astro";
 
-const reports = import.meta.glob<{ default: any }>('@/data/reports/*.json', { eager: true });
-
 export async function getStaticPaths() {
   // Use stocks.json as the source of truth for symbols
   return (stocks as any[]).map((stock: any) => ({
@@ -23,19 +21,19 @@ const { symbol } = Astro.params;
 let reportData: any = null;
 let lastUpdated: string = "";
 
-const reportKey = Object.keys(reports).find(key => key.includes(`${symbol}.json`));
-if (reportKey) {
-  try {
-    reportData = reports[reportKey].default;
+try {
+  const response = await fetch(`${Astro.url.origin}/reports/${symbol}.json`);
+  if (response.ok) {
+    reportData = await response.json();
     lastUpdated = new Intl.DateTimeFormat("ja-JP", {
       year: "numeric",
       month: "long",
       day: "numeric",
     }).format(new Date());
-  } catch (e) {
-    if (import.meta.env.DEV) console.error(`Error loading report for ${symbol}:`, e);
-    reportData = null;
   }
+} catch (e) {
+  if (import.meta.env.DEV) console.error(`Error loading report for ${symbol}:`, e);
+  reportData = null;
 }
 
 const stockInfo = (stocks as any[]).find((s: any) => s.Symbol_YF === symbol);
@@ -284,7 +282,6 @@ if (reportData?.analyst_ratings) {
           next_earnings={reportData.next_earnings}
           consensus={reportData.consensus}
         />
-      </section>
 
         <section id="next-earnings" class="mt-12">
           <h2 class="text-2xl font-bold mb-6 border-b pb-2 flex items-center gap-2">

@@ -87,10 +87,11 @@ async function generateOG() {
     }
   );
 
-  const resvg = (await import("@resvg/resvg-js")).default;
-  const pngData = resvg.render(Buffer.from(svg)).asPng();
+  const { Resvg } = await import("@resvg/resvg-js");
+  const resvg = new Resvg(svg);
+  const pngBuffer = resvg.render().asPng();
 
-  return pngData;
+  return new Uint8Array(pngBuffer);
 }
 
 export async function GET() {

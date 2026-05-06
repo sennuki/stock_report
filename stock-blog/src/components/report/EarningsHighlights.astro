@@ -1,15 +1,13 @@
 ---
-import ChartJs from "@/components/report/ChartJs.astro";
-
 interface Props {
   symbol: string;
   highlights: any;
   earnings_surprise: any;
-  next_earnings: any;
-  consensus: any;
+  next_earnings?: any;
+  consensus?: any;
 }
 
-const { symbol, highlights, earnings_surprise, next_earnings, consensus } = Astro.props;
+const { symbol, highlights, earnings_surprise } = Astro.props;
 ---
 
 <section id="earnings-highlights" class="mt-12">
