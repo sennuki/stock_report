@@ -10,6 +10,7 @@ import path from "node:path";
 import ChartJs from "@/components/report/ChartJs.astro";
 import TradingViewWidget from "@/components/report/TradingViewWidget.astro";
 import PeerLinks from "@/components/report/PeerLinks.astro";
+import ShareCard from "@/components/report/ShareCard.astro";
 
 export async function getStaticPaths() {
   // Use stocks.json as the source of truth for symbols
@@ -237,6 +238,16 @@ if (reportData?.analyst_ratings) {
         )}
 
             <TradingViewWidget symbol={reportData.full_symbol} type="symbol-info" />
+
+        <ShareCard
+          symbol={reportData.symbol}
+          security={reportData.security}
+          securityJa={reportData.security_ja}
+          sector={stockInfo?.["GICS Sector"]}
+          highlights={reportData.highlights}
+          earningsSurprise={reportData.earnings_surprise}
+          analystRatings={reportData.analyst_ratings}
+        />
 
         <hr class="my-8 border-skin-line" />
 

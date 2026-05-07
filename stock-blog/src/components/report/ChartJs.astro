@@ -27,6 +27,20 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
       <div class="chartjs-graph-div w-full relative" style={`height: ${height}px;`}>
         <canvas id={id}></canvas>
       </div>
+      <div class="chart-actions flex justify-end gap-2 mt-3">
+        <button
+          type="button"
+          class="chart-download-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md border border-skin-line bg-skin-card hover:border-skin-accent hover:text-skin-accent transition-colors"
+          data-canvas-id={id}
+          aria-label="グラフを画像として保存"
+          title="グラフを画像として保存（PNG）"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3" />
+          </svg>
+          <span>画像を保存</span>
+        </button>
+      </div>
     </>
   )}
 </div>
@@ -767,8 +781,90 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
     };
   }
 
+  function downloadChartImage(canvasId: string) {
+    const canvas = document.getElementById(canvasId) as HTMLCanvasElement | null;
+    if (!canvas) return;
+
+    const isDark = document.documentElement.classList.contains('dark') ||
+                   document.documentElement.getAttribute('data-theme') === 'dark';
+    const bgColor = isDark ? '#1e1e1e' : '#ffffff';
+    const watermarkColor = isDark ? 'rgba(229,231,235,0.55)' : 'rgba(31,41,55,0.55)';
+
+    // チャート上部にタイトル/シンボル、下部にウォーターマークを描画した複合画像を作成
+    const wrapper = canvas.closest('.chartjs-wrapper') as HTMLElement | null;
+    const chartData = wrapper ? JSON.parse(wrapper.dataset.chart || '{}') : {};
+    const symbol = wrapper?.dataset?.symbol || chartData?.symbol || '';
+    const titleEl = wrapper?.querySelector('h3');
+    const titleText = titleEl?.textContent?.trim() || '';
+
+    const padding = 40;
+    const headerHeight = titleText || symbol ? 80 : 0;
+    const footerHeight = 40;
+    const outW = canvas.width + padding * 2;
+    const outH = canvas.height + headerHeight + footerHeight + padding;
+
+    const out = document.createElement('canvas');
+    out.width = outW;
+    out.height = outH;
+    const ctx = out.getContext('2d');
+    if (!ctx) return;
+
+    // 背景塗りつぶし
+    ctx.fillStyle = bgColor;
+    ctx.fillRect(0, 0, outW, outH);
+
+    // ヘッダー描画
+    if (titleText || symbol) {
+      ctx.fillStyle = isDark ? '#e5e7eb' : '#1f2937';
+      ctx.font = 'bold 22px system-ui, -apple-system, sans-serif';
+      ctx.textBaseline = 'top';
+      ctx.textAlign = 'left';
+      let headerText = '';
+      if (symbol) headerText += symbol;
+      if (symbol && titleText) headerText += '  -  ';
+      if (titleText) headerText += titleText;
+      ctx.fillText(headerText, padding, padding / 2 + 10);
+    }
+
+    // チャート本体を描画
+    ctx.drawImage(canvas, padding, headerHeight + padding / 2);
+
+    // フッター（ウォーターマーク）
+    ctx.fillStyle = watermarkColor;
+    ctx.font = '12px system-ui, -apple-system, sans-serif';
+    ctx.textBaseline = 'bottom';
+    ctx.textAlign = 'right';
+    const url = (window.location.origin || '') + window.location.pathname;
+    ctx.fillText(url, outW - padding, outH - 12);
+    ctx.textAlign = 'left';
+    const today = new Date().toISOString().slice(0, 10);
+    ctx.fillText(`Generated: ${today}`, padding, outH - 12);
+
+    // ダウンロードトリガー
+    const dataUrl = out.toDataURL('image/png');
+    const a = document.createElement('a');
+    const safeSymbol = (symbol || 'chart').replace(/[^A-Za-z0-9_-]/g, '');
+    a.href = dataUrl;
+    a.download = `${safeSymbol}_${canvasId}.png`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
+  function bindDownloadButtons() {
+    document.querySelectorAll<HTMLButtonElement>('.chart-download-btn').forEach(btn => {
+      if ((btn as any)._bound) return;
+      (btn as any)._bound = true;
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.canvasId;
+        if (id) downloadChartImage(id);
+      });
+    });
+  }
+
   // Run on initial script load
   initChartJs();
+  bindDownloadButtons();
 
   // Run on page transitions (View Transitions)
   document.addEventListener('astro:page-load', () => {
@@ -776,7 +872,10 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
     document.querySelectorAll('.chartjs-graph-div canvas').forEach(c => {
       (c as any)._chart_initialized = false;
     });
-    setTimeout(initChartJs, 50);
+    setTimeout(() => {
+      initChartJs();
+      bindDownloadButtons();
+    }, 50);
   });
 
   const themeObserver = new MutationObserver(() => initChartJs());
