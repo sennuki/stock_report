@@ -14,6 +14,7 @@ type Props = {
   pubDatetime?: Date;
   modDatetime?: Date | null;
   scrollSmooth?: boolean;
+  extraStructuredData?: Record<string, any> | Record<string, any>[];
 };
 
 // Helper to ensure trailing slash
@@ -33,6 +34,7 @@ const {
   pubDatetime,
   modDatetime,
   scrollSmooth = false,
+  extraStructuredData,
 } = Astro.props;
 
 const socialImageURL = new URL(ogImage, Astro.url);
@@ -52,6 +54,10 @@ const structuredData = {
     },
   ],
 };
+
+const extraDataArray = extraStructuredData
+  ? (Array.isArray(extraStructuredData) ? extraStructuredData : [extraStructuredData])
+  : [];
 ---
 
 <!doctype html>
@@ -75,9 +81,14 @@ const structuredData = {
     <link rel="canonical" href={canonicalURL} />
     <meta name="generator" content={Astro.generator} />
 
-    <!-- Google Fonts Material Symbols (subset to used icons only) -->
+    <!-- Preconnect to third-party origins to reduce TLS handshake time -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://s3.tradingview.com" crossorigin />
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+    <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
+
+    <!-- Google Fonts Material Symbols (subset to used icons only) -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&text=align_horizontal_leftattach_moneybreaking_newscalendar_todaydata_explorationfinanceink_highlightermoneymonbagmonitoringnote_stackoverviewpercent_discountprice_changetrending_downtrending_upscatter_plotshow_chartsisid_charttarget" />
 
     <!-- General Meta Tags -->
@@ -127,6 +138,13 @@ const structuredData = {
       is:inline
       set:html={JSON.stringify(structuredData)}
     />
+    {extraDataArray.map(data => (
+      <script
+        type="application/ld+json"
+        is:inline
+        set:html={JSON.stringify(data)}
+      />
+    ))}
 
     <!-- Enable RSS feed auto-discovery  -->
     <!-- https://docs.astro.build/en/recipes/rss/#enabling-rss-feed-auto-discovery -->

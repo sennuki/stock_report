@@ -2,6 +2,8 @@
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
+import Breadcrumbs from "@/components/Breadcrumbs.astro";
+import { SITE } from "@/config";
 import stocks from "@/data/stocks.json";
 import fs from "node:fs";
 import path from "node:path";
@@ -74,12 +76,85 @@ if (jsonPath && fs.existsSync(jsonPath)) {
 
 const stockInfo = (stocks as any[]).find((s: any) => s.Symbol_YF === symbol);
 const displaySecurity = stockInfo?.Security_JA || stockInfo?.Security || '';
+const englishName = stockInfo?.Security || '';
+const sector = stockInfo?.["GICS Sector"] || '';
 const title = `${symbol} (${displaySecurity}) 銘柄分析：株価・PER・配当利回り・ファンダメンタル分析`;
-const description = `${symbol} (${displaySecurity}) の最新株価、PER、配当利回り、財務推移などのファンダメンタルデータを網羅。投資判断に役立つ分析レポートを定期的に更新しています。`;
+
+// Build a richer, data-driven meta description with real metrics
+const fmt = (v: any, suffix = "") =>
+  typeof v === "number" && isFinite(v) ? `${v.toFixed(2)}${suffix}` : null;
+const fmtPct = (v: any) =>
+  typeof v === "number" && isFinite(v) ? `${(v * 100).toFixed(1)}%` : null;
+
+const h = reportData?.highlights ?? {};
+const descParts: string[] = [
+  `${symbol}${displaySecurity ? `（${displaySecurity}）` : ""}の銘柄分析レポート。`,
+];
+if (fmt(h.pe_forward)) descParts.push(`予想PER ${fmt(h.pe_forward, "倍")}`);
+if (fmt(h.pe_ttm)) descParts.push(`実績PER ${fmt(h.pe_ttm, "倍")}`);
+if (fmtPct(h.dividend_yield)) descParts.push(`配当利回り ${fmtPct(h.dividend_yield)}`);
+if (fmtPct(h.revenue_growth)) descParts.push(`売上成長率 ${fmtPct(h.revenue_growth)}`);
+if (fmtPct(h.roe)) descParts.push(`ROE ${fmtPct(h.roe)}`);
+const metricsLine = descParts.length > 1 ? descParts.slice(1).join("・") + "。" : "";
+const description = (reportData
+  ? `${descParts[0]}${metricsLine}最新の財務ハイライト、アナリスト評価、DCF理論株価、競合比較を網羅。投資判断の参考に。`
+  : `${symbol} (${displaySecurity}) の最新株価、PER、配当利回り、財務推移などのファンダメンタルデータを網羅。投資判断に役立つ分析レポートを定期的に更新しています。`
+).slice(0, 158);
 
 const base = import.meta.env.BASE_URL.endsWith("/")
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
+
+// Build structured data for SEO: BreadcrumbList + FinancialProduct
+const siteUrl = SITE.website?.replace(/\/$/, "") || "";
+const pageUrl = `${siteUrl}${base}report/${symbol}`;
+
+const breadcrumbList = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "トップ",
+      item: `${siteUrl}${base.replace(/\/$/, "")}/`,
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "銘柄一覧",
+      item: `${siteUrl}${base}az`,
+    },
+    {
+      "@type": "ListItem",
+      position: 3,
+      name: `${symbol} ${displaySecurity}`,
+      item: pageUrl,
+    },
+  ],
+};
+
+const currentPrice = reportData?.analyst_ratings?.currentPrice;
+const financialProduct: Record<string, any> = {
+  "@context": "https://schema.org",
+  "@type": "FinancialProduct",
+  name: `${englishName || displaySecurity || symbol} (${symbol})`,
+  alternateName: displaySecurity || undefined,
+  identifier: symbol,
+  category: sector || undefined,
+  url: pageUrl,
+  description,
+};
+if (typeof currentPrice === "number" && isFinite(currentPrice)) {
+  financialProduct.offers = {
+    "@type": "Offer",
+    price: currentPrice,
+    priceCurrency: "USD",
+    availability: "https://schema.org/InStock",
+  };
+}
+
+const extraStructuredData = [breadcrumbList, financialProduct];
 
 // Helper to translate grades to "Japanese (English)"
 const translateGrade = (grade: string) => {
@@ -126,13 +201,18 @@ if (reportData?.analyst_ratings) {
 }
 ---
 
-<Layout title={title} description={description}>
+<Layout title={title} description={description} extraStructuredData={extraStructuredData}>
   <Header />
-  
+
   <main id="main-content" class="w-full px-4 py-8 max-w-app mx-auto">
+    <Breadcrumbs items={[
+      { name: "トップ", href: "/" },
+      { name: "銘柄一覧", href: "/az" },
+      { name: `${symbol} ${displaySecurity}` },
+    ]} />
     <div class="mb-6">
        <a href={base} class="text-skin-accent hover:underline inline-flex items-center">
-         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
          </svg>
          銘柄一覧に戻る
@@ -149,7 +229,7 @@ if (reportData?.analyst_ratings) {
         <h1 class="text-3xl font-bold mb-2" data-pagefind-meta="title">銘柄分析レポート: {reportData.symbol} ({reportData.security_ja || reportData.security})</h1>
         {lastUpdated && (
           <div class="flex items-center text-sm text-gray-500 mb-6 bg-skin-fill/30 px-3 py-1.5 rounded-md border border-skin-line w-fit">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-skin-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-skin-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <span>最終更新日: {lastUpdated} <span class="mx-2 text-skin-line">|</span> 米国市場閉場後、全銘柄を毎日自動更新</span>
@@ -189,7 +269,7 @@ if (reportData?.analyst_ratings) {
           {reportData.movement_reason && (
             <div class="mb-8 p-6 bg-skin-accent/5 rounded-lg border-l-4 border-skin-accent shadow-sm leading-relaxed">
               <h3 class="text-lg font-bold mb-3 flex items-center gap-2 text-skin-accent">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                 </svg>
                 直近の株価変動理由 ({reportData.movement_reason.date})
@@ -208,7 +288,7 @@ if (reportData?.analyst_ratings) {
           {reportData.business_summary_ja && (
             <div class="mb-8 p-6 bg-skin-fill/20 rounded-lg border border-skin-line leading-relaxed">
               <h3 class="text-lg font-bold mb-3 flex items-center gap-2 text-skin-accent">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 会社概要 (AI翻訳)
@@ -252,7 +332,7 @@ if (reportData?.analyst_ratings) {
             <details class="group bg-skin-fill/10 border border-skin-line rounded-lg overflow-hidden">
               <summary class="flex items-center justify-between p-3 cursor-pointer hover:bg-skin-fill/20 transition-colors text-xs font-bold opacity-70">
                 <span>算出ロジックの詳細 (Mathematical Definition)</span>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transform group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transform group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
               </summary>
@@ -355,7 +435,7 @@ if (reportData?.analyst_ratings) {
               <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div class="bg-skin-fill/20 p-4 rounded-lg border border-skin-line">
                   <div class="text-sm opacity-70 mb-1 flex items-center gap-1.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     売上高成長率 (YoY)
@@ -367,7 +447,7 @@ if (reportData?.analyst_ratings) {
 
                 <div class="bg-skin-fill/20 p-4 rounded-lg border border-skin-line">
                   <div class="text-sm opacity-70 mb-1 flex items-center gap-1.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                     </svg>
                     利益成長率 (YoY)
@@ -379,7 +459,7 @@ if (reportData?.analyst_ratings) {
 
                 <div class="bg-skin-fill/20 p-4 rounded-lg border border-skin-line">
                   <div class="text-sm opacity-70 mb-1 flex items-center gap-1.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h2a2 2 0 002-2zM9 19h10a2 2 0 002-2v-3a2 2 0 00-2-2h-3z" />
                     </svg>
                     営業利益率
@@ -391,7 +471,7 @@ if (reportData?.analyst_ratings) {
 
                 <div class="bg-skin-fill/20 p-4 rounded-lg border border-skin-line">
                   <div class="text-sm opacity-70 mb-1 flex items-center gap-1.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
                     </svg>
@@ -436,7 +516,7 @@ if (reportData?.analyst_ratings) {
               </div>
               <div class="mt-6 p-4 bg-red-50/30 dark:bg-red-900/20 border border-red-200/50 dark:border-red-800/30 rounded-lg text-xs text-red-800/80 dark:text-red-200/80">
                 <p class="font-bold flex items-center gap-1 mb-1">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                   </svg>
                   財務データに関する重要事項
@@ -467,7 +547,7 @@ if (reportData?.analyst_ratings) {
                   <div class="flex-grow">
                     <div class="flex items-center gap-3 mb-4">
                       <div class="p-3 bg-skin-accent/10 rounded-full text-skin-accent">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
                       </div>
@@ -620,7 +700,7 @@ if (reportData?.analyst_ratings) {
             {reportData.is_financial && (
               <div class="mt-4 p-4 bg-skin-fill/30 border border-skin-line rounded-lg text-sm text-gray-500 italic">
                 <p class="flex items-center gap-2 mb-1">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-skin-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-skin-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   <strong>金融・不動産セクターのキャッシュフローに関する注意点:</strong>
@@ -658,7 +738,7 @@ if (reportData?.analyst_ratings) {
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                   <div>
                     <h3 class="text-xl font-bold mb-4 flex items-center justify-center md:justify-start gap-2 text-skin-accent">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                       理論株価 (Fair Price)
@@ -879,12 +959,12 @@ if (reportData?.analyst_ratings) {
                 <details class="group bg-skin-fill/10 border border-skin-line rounded-lg overflow-hidden">
                   <summary class="flex items-center justify-between p-4 cursor-pointer hover:bg-skin-fill/20 transition-colors">
                     <span class="font-bold flex items-center gap-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-skin-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-skin-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                       </svg>
                       DCF算出ロジックの数学的定義 (Technical Methodology)
                     </span>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transform group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transform group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>
                   </summary>
@@ -993,7 +1073,7 @@ if (reportData?.analyst_ratings) {
 
               <div class="p-4 bg-skin-fill/10 border border-skin-line rounded-lg text-xs leading-relaxed opacity-80">
                 <p class="font-bold mb-2 flex items-center gap-1 text-skin-accent">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   詳細なDCF分析モデルについて
@@ -1249,7 +1329,7 @@ if (reportData?.analyst_ratings) {
              <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">price_change</span> 日本の証券会社での購入可否
           </h2>
           <p class="text-xs text-gray-500 mb-6 italic flex items-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             本セクションには広告・プロモーションが含まれる場合があります。
@@ -1260,11 +1340,11 @@ if (reportData?.analyst_ratings) {
               <div class="flex items-center gap-4 mb-6">
                 <div class={`p-3 rounded-full ${reportData.is_available_monex ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
                    {reportData.is_available_monex ? (
-                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                      </svg>
                    ) : (
-                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                      </svg>
                    )}
@@ -1281,7 +1361,7 @@ if (reportData?.analyst_ratings) {
                 <div class="mt-2 pt-3 border-t border-skin-line/50">
                   <a href="https://h.accesstrade.net/sp/cc?rk=0100h3pw00oqmq" rel="nofollow" referrerpolicy="no-referrer-when-downgrade" target="_blank" class="text-xs text-skin-accent hover:underline flex items-center justify-center gap-1">
                     米国株(PR)<img src="https://h.accesstrade.net/sp/rr?rk=0100h3pw00oqmq" width="1" height="1" alt="">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>
                   </a>
@@ -1293,11 +1373,11 @@ if (reportData?.analyst_ratings) {
               <div class="flex items-center gap-4 mb-6">
                 <div class={`p-3 rounded-full ${reportData.is_available_rakuten ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
                    {reportData.is_available_rakuten ? (
-                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                      </svg>
                    ) : (
-                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                      </svg>
                    )}
@@ -1314,7 +1394,7 @@ if (reportData?.analyst_ratings) {
                 <div class="mt-2 pt-3 border-t border-skin-line/50">
                   <a href="https://www.rakuten-sec.co.jp/web/market/search/us_search/result.html?all=on&vall=on&forwarding=na&target=0&theme=na&returns=na&head_office=na&name=&code=&sector=na&pageNo=&c=us&p=result&r1=on" target="_blank" rel="noopener noreferrer" class="text-xs text-skin-accent hover:underline flex items-center justify-center gap-1">
                     公式サイトを確認
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>
                   </a>
@@ -1326,11 +1406,11 @@ if (reportData?.analyst_ratings) {
               <div class="flex items-center gap-4 mb-6">
                 <div class={`p-3 rounded-full ${reportData.is_available_sbi ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
                    {reportData.is_available_sbi ? (
-                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                      </svg>
                    ) : (
-                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                      </svg>
                    )}
@@ -1347,7 +1427,7 @@ if (reportData?.analyst_ratings) {
                 <div class="mt-2 pt-3 border-t border-skin-line/50">
                   <a href="https://search.sbisec.co.jp/v2/popwin/info/stock/pop6040_usequity_list.html#us" target="_blank" rel="noopener noreferrer" class="text-xs text-skin-accent hover:underline flex items-center justify-center gap-1">
                     公式サイトを確認
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>
                   </a>
@@ -1359,11 +1439,11 @@ if (reportData?.analyst_ratings) {
               <div class="flex items-center gap-4 mb-6">
                 <div class={`p-3 rounded-full ${reportData.is_available_mufg ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
                    {reportData.is_available_mufg ? (
-                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                      </svg>
                    ) : (
-                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                      </svg>
                    )}
@@ -1380,7 +1460,7 @@ if (reportData?.analyst_ratings) {
                 <div class="mt-2 pt-3 border-t border-skin-line/50">
                   <a href="https://kabu.com/item/foreign_stock/us_stock/meigara.html" target="_blank" rel="noopener noreferrer" class="text-xs text-skin-accent hover:underline flex items-center justify-center gap-1">
                     公式サイトを確認
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>
                   </a>
@@ -1392,11 +1472,11 @@ if (reportData?.analyst_ratings) {
               <div class="flex items-center gap-4 mb-6">
                 <div class={`p-3 rounded-full ${reportData.is_available_matsui ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
                    {reportData.is_available_matsui ? (
-                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                      </svg>
                    ) : (
-                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                      </svg>
                    )}
@@ -1414,7 +1494,7 @@ if (reportData?.analyst_ratings) {
                   <a href="https://h.accesstrade.net/sp/cc?rk=0100p10300oqmq" rel="nofollow" referrerpolicy="no-referrer-when-downgrade" class="text-[10px] text-skin-accent hover:underline leading-tight flex items-center justify-center gap-1">
                     松井証券の米国株?業界最安水準の手数料?（PR）
                     <img src="https://h.accesstrade.net/sp/rr?rk=0100p10300oqmq" width="1" height="1" alt="" class="inline">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>
                   </a>
@@ -1426,11 +1506,11 @@ if (reportData?.analyst_ratings) {
               <div class="flex items-center gap-4 mb-6">
                 <div class={`p-3 rounded-full ${reportData.is_available_dmm ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
                    {reportData.is_available_dmm ? (
-                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                      </svg>
                    ) : (
-                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                      </svg>
                    )}
@@ -1448,7 +1528,7 @@ if (reportData?.analyst_ratings) {
                   <a href="https://h.accesstrade.net/sp/cc?rk=0100mkk300oqmq" rel="nofollow" referrerpolicy="no-referrer-when-downgrade" class="text-xs text-skin-accent hover:underline flex items-center justify-center gap-1">
                     DMM 株（PR）
                     <img src="https://h.accesstrade.net/sp/rr?rk=0100mkk300oqmq" width="1" height="1" alt="" class="inline">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>
                   </a>
@@ -1460,11 +1540,11 @@ if (reportData?.analyst_ratings) {
               <div class="flex items-center gap-4 mb-6">
                 <div class={`p-3 rounded-full ${reportData.is_available_paypay ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
                    {reportData.is_available_paypay ? (
-                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                      </svg>
                    ) : (
-                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                      </svg>
                    )}
@@ -1481,7 +1561,7 @@ if (reportData?.analyst_ratings) {
                 <div class="mt-2 pt-3 border-t border-skin-line/50">
                   <a href="https://www.paypay-sec.co.jp/us-stock/list/" target="_blank" rel="noopener noreferrer" class="text-xs text-skin-accent hover:underline flex items-center justify-center gap-1">
                     公式サイトを確認
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>
                   </a>
@@ -1493,11 +1573,11 @@ if (reportData?.analyst_ratings) {
               <div class="flex items-center gap-4 mb-6">
                 <div class={`p-3 rounded-full ${reportData.is_available_moomoo ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
                    {reportData.is_available_moomoo ? (
-                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                      </svg>
                    ) : (
-                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                      </svg>
                    )}
@@ -1515,7 +1595,7 @@ if (reportData?.analyst_ratings) {
                   <a href="https://h.accesstrade.net/sp/cc?rk=0100pd0z00oqmq" rel="nofollow" referrerpolicy="no-referrer-when-downgrade" class="text-xs text-skin-accent hover:underline flex items-center justify-center gap-1">
                     moomoo証券（PR）
                     <img src="https://h.accesstrade.net/sp/rr?rk=0100pd0z00oqmq" width="1" height="1" alt="" class="inline">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>
                   </a>
@@ -1528,11 +1608,11 @@ if (reportData?.analyst_ratings) {
               <div class="flex items-center gap-4 mb-4">
                 <div class={`p-3 rounded-full ${reportData.is_available_iwaicosmo ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
                    {reportData.is_available_iwaicosmo ? (
-                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                      </svg>
                    ) : (
-                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                      </svg>
                    )}
@@ -1549,7 +1629,7 @@ if (reportData?.analyst_ratings) {
                 <div class="mt-2 pt-3 border-t border-skin-line/50">
                   <a href="https://www.iwaicosmo.co.jp/investment/list/" target="_blank" rel="noopener noreferrer" class="text-xs text-skin-accent hover:underline flex items-center justify-center gap-1">
                     公式サイトを確認
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>
                   </a>
@@ -1566,7 +1646,7 @@ if (reportData?.analyst_ratings) {
         <!-- トップに戻るボタン -->
         <div class="mt-12 mb-20 text-center">
           <a href="#" class="px-6 py-2 bg-skin-card border border-skin-line rounded-full text-sm font-bold hover:text-skin-accent hover:border-skin-accent transition-all inline-flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
               <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
             </svg>
             ページトップへ戻る

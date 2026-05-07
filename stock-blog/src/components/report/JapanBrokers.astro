@@ -23,7 +23,7 @@ const brokers = [
     <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">price_change</span> 日本の証券会社での購入可否
   </h2>
   <p class="text-xs text-gray-500 mb-6 italic flex items-center gap-1">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
     </svg>
     本セクションには広告・プロモーションが含まれる場合があります。
@@ -37,11 +37,11 @@ const brokers = [
           <div class="flex items-center gap-4 mb-6">
             <div class={`p-3 rounded-full ${isAvailable ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
               {isAvailable ? (
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                 </svg>
               ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               )}
@@ -58,7 +58,7 @@ const brokers = [
             <div class="mt-2 pt-3 border-t border-skin-line/50">
               <a href={broker.url} rel={broker.isPR ? "nofollow sponsored" : ""} referrerpolicy="no-referrer-when-downgrade" target="_blank" class="text-xs text-skin-accent hover:underline flex items-center justify-center gap-1">
                 {broker.isPR ? '公式サイトを確認 (PR)' : '公式サイトを確認'}
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                 </svg>
               </a>
