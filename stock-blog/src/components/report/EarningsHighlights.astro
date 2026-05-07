@@ -1,0 +1,154 @@
+---
+interface Props {
+  symbol: string;
+  highlights: any;
+  earnings_surprise: any;
+  next_earnings?: any;
+  consensus?: any;
+}
+
+const { symbol, highlights, earnings_surprise } = Astro.props;
+---
+
+<section id="earnings-highlights" class="mt-12">
+  <h2 class="text-2xl font-bold mb-6 border-b pb-2 flex items-center gap-2">
+    <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">ink_highlighter</span>
+    {symbol}の直近決算・財務ハイライト
+  </h2>
+  {highlights ? (
+    <div class="space-y-6">
+      {earnings_surprise && (
+        <div class="bg-skin-fill/30 p-5 rounded-lg border-2 border-skin-accent/30 shadow-sm">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <h3 class="text-lg font-bold flex items-center gap-2">
+                <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">breaking_news</span>
+                直近の四半期決算実績 (EPSサプライズ)
+              </h3>
+              <p class="text-sm opacity-70 mt-1">決算発表日: {earnings_surprise.date}</p>
+            </div>
+            <div class="flex items-center gap-6">
+              <div class="text-center">
+                <div class="text-xs opacity-60 uppercase tracking-wider mb-1">市場予想</div>
+                <div class="text-xl font-bold opacity-80">
+                  {typeof earnings_surprise.estimate === 'number' ? `$${earnings_surprise.estimate.toFixed(2)}` : '---'}
+                </div>
+              </div>
+              <div class="text-2xl font-light opacity-30">→</div>
+              <div class="text-center">
+                <div class="text-xs opacity-60 uppercase tracking-wider mb-1">実績 (EPS)</div>
+                <div class={`text-2xl font-bold ${(typeof earnings_surprise.actual === 'number' && typeof earnings_surprise.estimate === 'number' && earnings_surprise.actual >= earnings_surprise.estimate) ? 'text-green-600' : 'text-red-600'}`}>
+                  {typeof earnings_surprise.actual === 'number' ? `$${earnings_surprise.actual.toFixed(2)}` : '---'}
+                </div>
+              </div>
+              <div class={`px-3 py-1.5 rounded-md font-bold text-sm ${(typeof earnings_surprise.surprise_pct === 'number' && earnings_surprise.surprise_pct >= 0) ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                {typeof earnings_surprise.surprise_pct === 'number' ? `${earnings_surprise.surprise_pct >= 0 ? '+' : ''}${earnings_surprise.surprise_pct.toFixed(2)}%` : '---'}
+                <span class="ml-1">{(typeof earnings_surprise.surprise_pct === 'number' && earnings_surprise.surprise_pct >= 0) ? 'Beat!' : 'Miss'}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-skin-fill/20 p-4 rounded-lg border border-skin-line">
+          <div class="text-sm opacity-70 mb-1 flex items-center gap-1.5">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            売上高成長率 (YoY)
+          </div>
+          <div class={`text-2xl font-bold ${highlights.revenue_growth > 0 ? 'text-green-600' : 'text-red-600'}`}>
+            {typeof highlights.revenue_growth === 'number' ? (highlights.revenue_growth * 100).toFixed(1) + '%' : '---'}
+          </div>
+        </div>
+
+        <div class="bg-skin-fill/20 p-4 rounded-lg border border-skin-line">
+          <div class="text-sm opacity-70 mb-1 flex items-center gap-1.5">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+            </svg>
+            利益成長率 (YoY)
+          </div>
+          <div class={`text-2xl font-bold ${highlights.earnings_growth > 0 ? 'text-green-600' : 'text-red-600'}`}>
+            {typeof highlights.earnings_growth === 'number' ? (highlights.earnings_growth * 100).toFixed(1) + '%' : '---'}
+          </div>
+        </div>
+
+        <div class="bg-skin-fill/20 p-4 rounded-lg border border-skin-line">
+          <div class="text-sm opacity-70 mb-1 flex items-center gap-1.5">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h2a2 2 0 002-2zM9 19h10a2 2 0 002-2v-3a2 2 0 00-2-2h-3z" />
+            </svg>
+            営業利益率
+          </div>
+          <div class="text-2xl font-bold text-skin-base">
+            {typeof highlights.operating_margins === 'number' ? (highlights.operating_margins * 100).toFixed(1) + '%' : '---'}
+          </div>
+        </div>
+
+        <div class="bg-skin-fill/20 p-4 rounded-lg border border-skin-line">
+          <div class="text-sm opacity-70 mb-1 flex items-center gap-1.5">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+            </svg>
+            ROE (自己資本利益率)
+          </div>
+          <div class="text-2xl font-bold text-skin-base">
+            {typeof highlights.roe === 'number' ? (highlights.roe * 100).toFixed(1) + '%' : '---'}
+          </div>
+        </div>
+
+        <div class="bg-skin-fill/20 p-4 rounded-lg border border-skin-line">
+          <div class="text-sm opacity-70 mb-1">予想PER</div>
+          <div class="text-2xl font-bold text-skin-accent">
+            {typeof highlights.pe_forward === 'number' ? highlights.pe_forward.toFixed(1) + 'x' : '---'}
+          </div>
+          <div class="text-xs opacity-50 mt-1">実績PER: {typeof highlights.pe_ttm === 'number' ? highlights.pe_ttm.toFixed(1) + 'x' : '---'}</div>
+        </div>
+
+        <div class="bg-skin-fill/20 p-4 rounded-lg border border-skin-line">
+          <div class="text-sm opacity-70 mb-1">EPS (直近12ヶ月)</div>
+          <div class="text-2xl font-bold text-skin-base">
+            {typeof highlights.eps_ttm === 'number' ? '$' + highlights.eps_ttm.toFixed(2) : '---'}
+          </div>
+          <div class="text-xs opacity-50 mt-1">予想EPS: {typeof highlights.eps_forward === 'number' ? '$' + highlights.eps_forward.toFixed(2) : '---'}</div>
+        </div>
+
+        <div class="bg-skin-fill/20 p-4 rounded-lg border border-skin-line">
+          <div class="text-sm opacity-70 mb-1">配当利回り</div>
+          <div class="text-2xl font-bold text-skin-base">
+            {typeof highlights.dividend_yield === 'number' ? (highlights.dividend_yield * 100).toFixed(2) + '%' : '実績なし'}
+          </div>
+          <div class="text-xs opacity-50 mt-1">配当性向: {typeof highlights.payout_ratio === 'number' ? (highlights.payout_ratio * 100).toFixed(1) + '%' : '---'}</div>
+        </div>
+
+        <div class="bg-skin-fill/20 p-4 rounded-lg border border-skin-line">
+          <div class="text-sm opacity-70 mb-1">負債比率 (D/E)</div>
+          <div class="text-2xl font-bold text-skin-base">
+            {typeof highlights.debt_to_equity === 'number' ? highlights.debt_to_equity.toFixed(1) + '%' : '---'}
+          </div>
+          <div class="text-xs opacity-50 mt-1">流動比率: {typeof highlights.current_ratio === 'number' ? highlights.current_ratio.toFixed(2) : '---'}</div>
+        </div>
+      </div>
+      <div class="mt-6 p-4 bg-red-50/30 dark:bg-red-900/20 border border-red-200/50 dark:border-red-800/30 rounded-lg text-xs text-red-800/80 dark:text-red-200/80">
+        <p class="font-bold flex items-center gap-1 mb-1">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          財務データに関する重要事項
+        </p>
+        <p>
+          本レポートに使用されている財務データは外部API（yfinance）を通じて自動取得されており、時期や項目の分類方法により実際の決算数値と異なる場合があります。
+          特に合併・分社化、会計方針の変更があった銘柄では正確な推移が表示されない可能性があります。投資判断の際は必ず公式サイトのIR情報を併せてご確認ください。
+        </p>
+      </div>
+      <p class="text-xs text-gray-500 mt-4 italic">
+        ※YoY (Year over Year): 前年同期比。前年の同じ時期と比較した成長率を示します。季節的な変動を排除して、企業の純粋な成長性を判断するための重要な指標です。
+      </p>
+    </div>
+  ) : (
+    <p class="text-gray-500 italic">ハイライトデータは現在利用できません。データ生成を再実行してください。</p>
+  )}
+</section>
