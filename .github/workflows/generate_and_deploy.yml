@@ -56,7 +56,7 @@ jobs:
           cd code
           python main.py
         env:
-          TEST_MODE: ${{ github.event_name == 'push' && 'true' || 'false' }} # pushの時はテストモード
+          TEST_MODE: 'false' # 全504銘柄を処理
           PYTHON_MAX_WORKERS: 2
           R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
