@@ -1,0 +1,97 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import Breadcrumbs from "@/components/Breadcrumbs.astro";
+
+const title = "解説記事一覧｜株価指標・米国株投資の基礎ガイド";
+const description = "PER・ROE・DCFなどの株価指標、米国株投資の始め方、S&P 500の解説、ファンダメンタル分析の基礎をまとめた解説記事一覧。投資判断の参考にしてください。";
+
+interface Post {
+  title: string;
+  description: string;
+  href: string;
+  category: string;
+}
+
+const posts: Post[] = [
+  {
+    title: "PER（株価収益率）とは何か",
+    description: "株価が割高か割安かを判断する代表的な指標。意味・計算方法・目安・注意点を解説します。",
+    href: "/posts/per-explained",
+    category: "株価指標",
+  },
+  {
+    title: "ROE（自己資本利益率）とは何か",
+    description: "企業の稼ぐ力を測る最重要指標のひとつ。デュポン分解で内訳まで踏み込んで解説します。",
+    href: "/posts/roe-explained",
+    category: "株価指標",
+  },
+  {
+    title: "DCF 法（割引キャッシュフロー）とは",
+    description: "企業価値評価のスタンダード。考え方・計算ステップ・限界・実務での使い方まで解説。",
+    href: "/posts/dcf-explained",
+    category: "株価指標",
+  },
+  {
+    title: "ファンダメンタル分析の基礎",
+    description: "収益性・成長性・バリュエーション・財務健全性・競争優位性の5観点でまとめた基礎ガイド。",
+    href: "/posts/fundamental-analysis-basics",
+    category: "投資の基礎",
+  },
+  {
+    title: "S&P 500 とは",
+    description: "米国を代表する株価指数。構成銘柄・選定基準・推移・投資する方法をまとめて解説。",
+    href: "/posts/sp500-explained",
+    category: "投資の基礎",
+  },
+  {
+    title: "米国株投資の始め方",
+    description: "口座開設からNISA活用、銘柄選定までの基本フローを初心者向けにまとめました。",
+    href: "/posts/us-stocks-getting-started",
+    category: "投資の基礎",
+  },
+];
+
+const base = import.meta.env.BASE_URL.endsWith("/")
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+
+const baseNoSlash = base.replace(/\/$/, "");
+
+const categories = Array.from(new Set(posts.map(p => p.category)));
+---
+
+<Layout title={title} description={description}>
+  <Header />
+  <main id="main-content" class="w-full px-4 py-8 max-w-app mx-auto">
+    <Breadcrumbs items={[
+      { name: "トップ", href: "/" },
+      { name: "解説記事" },
+    ]} />
+    <h1 class="text-3xl font-bold mb-2">解説記事一覧</h1>
+    <p class="opacity-70 mb-8 text-sm leading-relaxed">
+      米国株投資・株価指標・ファンダメンタル分析に関する解説記事をまとめています。当サイトの銘柄レポートとあわせてご活用ください。
+    </p>
+
+    {categories.map(category => (
+      <section class="mb-10">
+        <h2 class="text-xl font-bold mb-4 border-b pb-2">{category}</h2>
+        <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {posts.filter(p => p.category === category).map(post => (
+            <li>
+              <a
+                href={`${baseNoSlash}${post.href}`}
+                class="block bg-skin-card p-5 rounded-lg border border-skin-line hover:border-skin-accent transition-all hover:shadow-md h-full"
+              >
+                <h3 class="text-lg font-bold mb-2 text-skin-accent">{post.title}</h3>
+                <p class="text-sm opacity-80 leading-relaxed">{post.description}</p>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+  </main>
+  <Footer />
+</Layout>
