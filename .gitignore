@@ -22,3 +22,6 @@ stock-blog/public/reports/*.json
 public/reports/
 code/data/
 .env
+.wrangler/
+**/.wrangler/
+stock-blog/public/reports/*.json

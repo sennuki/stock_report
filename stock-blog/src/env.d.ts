@@ -1,3 +1,21 @@
+/// <reference types="astro/client" />
+
+declare module "cloudflare:workers" {
+  export interface Env {
+    STOCK_DATA: R2Bucket;
+  }
+}
+
+interface Env {
+  STOCK_DATA: any; // R2Bucket type would be better but requires @cloudflare/workers-types
+}
+
+declare namespace App {
+  interface Locals {
+    runtime: import("@astrojs/cloudflare").Runtime<Env>;
+  }
+}
+
 interface Window {
   theme?: {
     themeValue: string;
@@ -6,4 +24,10 @@ interface Window {
     getTheme: () => string;
     setTheme: (val: string) => void;
   };
+}
+
+type Runtime = import("@astrojs/cloudflare").Runtime<Env>;
+
+declare namespace App {
+  interface Locals extends Runtime {}
 }

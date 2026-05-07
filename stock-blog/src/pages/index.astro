@@ -2,7 +2,8 @@
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
-import stocksData from "@/data/stocks.json";
+import fallbackStocksData from "@/data/stocks.json";
+import { env } from "cloudflare:workers";
 
 interface Stock {
   Symbol_YF: string;
@@ -14,7 +15,20 @@ interface Stock {
   [key: string]: any;
 }
 
-const stocks: Stock[] = stocksData as Stock[];
+let stocks: Stock[] = fallbackStocksData as Stock[];
+
+try {
+  const bucket = (env as any)?.STOCK_DATA;
+  if (bucket) {
+    const object = await bucket.get('reports/stocks.json');
+    if (object) {
+      const text = await object.text();
+      stocks = JSON.parse(text);
+    }
+  }
+} catch (e) {
+  console.error("Failed to load stocks from R2", e);
+}
 
 // Check if earnings was within the last 7 days
 // 実績データ (Actual_Earnings_Date) が直近7日以内かどうかで判定する

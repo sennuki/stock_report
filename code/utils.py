@@ -194,33 +194,89 @@ def calculate_dcf(symbol, ticker=None):
         }
         
         wacc = wacc_details["wacc"]
-        risk_free_rate = wacc_details["risk_free_rate"]
-        
-        # 2. 成長率の取得 (3Y CAGR)
-        def get_cagr(growth_df):
-            if growth_df is None or growth_df.empty: return 0
-            return float(growth_df['yoy_growth'].tail(3).mean())
 
-        rev_cagr = get_cagr(db_ticker.annual_revenue_yoy_growth())
-        fcf_cagr = get_cagr(db_ticker.annual_fcf_yoy_growth())
-        ebitda_cagr = get_cagr(db_ticker.annual_ebitda_yoy_growth())
-        ni_cagr = get_cagr(db_ticker.annual_net_income_yoy_growth())
-        
+        # リスクフリーレート: 直近5年の10年国債利回り平均 (Excelの L9 相当)
+        try:
+            treasure_df = db_ticker.treasure.daily_treasure_yield()
+            treasure_df['report_date'] = pd.to_datetime(treasure_df['report_date'])
+            five_years_ago = pd.Timestamp.now() - pd.DateOffset(years=5)
+            recent_treasure = treasure_df[treasure_df['report_date'] >= five_years_ago]
+            risk_free_rate = float(recent_treasure['bc10_year'].mean()) if not recent_treasure.empty else float(last_wacc_data.get('treasure_10y_yield', 0.04))
+        except Exception:
+            risk_free_rate = float(last_wacc_data.get('treasure_10y_yield', 0.04))
+        wacc_details["risk_free_rate"] = risk_free_rate
+
+        # 2. 成長率の取得
+        def get_3y_cagr(growth_df):
+            """DataFrame の実値列から 3Y CAGR を計算。負値・データ不足は None を返す。"""
+            if growth_df is None or growth_df.empty:
+                return None
+            recent = growth_df.tail(3)
+            if len(recent) < 2:
+                return None
+            metric_col = [c for c in recent.columns
+                          if c not in ('symbol', 'report_date', 'yoy_growth')
+                          and not c.startswith('prev_year_')]
+            if not metric_col:
+                return None
+            col = metric_col[0]
+            v_start = float(recent.iloc[0][col])
+            v_end   = float(recent.iloc[-1][col])
+            n = len(recent) - 1
+            if v_start <= 0 or v_end <= 0:
+                return None
+            return (v_end / v_start) ** (1.0 / n) - 1
+
+        rev_cagr    = get_3y_cagr(db_ticker.annual_revenue_yoy_growth())
+        fcf_cagr    = get_3y_cagr(db_ticker.annual_fcf_yoy_growth())
+        ebitda_cagr = get_3y_cagr(db_ticker.annual_ebitda_yoy_growth())
+        ni_cagr     = get_3y_cagr(db_ticker.annual_net_income_yoy_growth())
+
+        # EPS 9Y CAGR (defeatbeta Excel 新方式: MIN(MAX(EPS 9Y CAGR, 5%), 20%))
+        eps_9y_cagr = None
+        try:
+            ttm_eps_df = db_ticker.ttm_eps()
+            if not ttm_eps_df.empty:
+                ttm_eps_df['report_date'] = pd.to_datetime(ttm_eps_df['report_date'])
+                ttm_eps_df = ttm_eps_df.sort_values('report_date').reset_index(drop=True)
+                eps_col = [c for c in ttm_eps_df.columns
+                           if c not in ('symbol', 'report_date')][0]
+                valid_eps = ttm_eps_df.dropna(subset=[eps_col])
+                valid_eps = valid_eps[valid_eps[eps_col] > 0].reset_index(drop=True)
+                if len(valid_eps) >= 2:
+                    latest_eps  = float(valid_eps.iloc[-1][eps_col])
+                    latest_date = valid_eps.iloc[-1]['report_date']
+                    nine_years_ago = latest_date - pd.DateOffset(years=9)
+                    historical = valid_eps[valid_eps['report_date'] >= nine_years_ago]
+                    if not historical.empty:
+                        oldest_eps  = float(historical.iloc[0][eps_col])
+                        oldest_date = historical.iloc[0]['report_date']
+                        years_diff  = round((latest_date - oldest_date).days / 365.25)
+                        if years_diff > 0 and oldest_eps > 0 and latest_eps > 0:
+                            eps_9y_cagr = (latest_eps / oldest_eps) ** (1.0 / years_diff) - 1
+        except Exception:
+            pass
+
         cagr_details = {
-            "revenue": rev_cagr,
-            "fcf": fcf_cagr,
-            "ebitda": ebitda_cagr,
-            "net_income": ni_cagr
+            "revenue":      rev_cagr,
+            "fcf":          fcf_cagr,
+            "ebitda":       ebitda_cagr,
+            "net_income":   ni_cagr,
+            "eps_9y_cagr":  eps_9y_cagr,
         }
-        
-        # 将来成長率 (1-5年) - defeatbetaの重み付け
-        growth_1_5y = (rev_cagr * 0.4 + fcf_cagr * 0.3 + ebitda_cagr * 0.2 + ni_cagr * 0.1)
-        
-        # 将来成長率 (6-10年) - Decay Factor 0.9
-        decay_factor = 0.9
-        growth_6_10y = max(growth_1_5y * (decay_factor ** 5), risk_free_rate)
-        
-        # 永続成長率
+
+        # 将来成長率 (1-5年): EPS 9Y CAGR を 5%〜20% にクリップ (defeatbeta Excel 方式)
+        if eps_9y_cagr is not None:
+            growth_1_5y = min(max(eps_9y_cagr, 0.05), 0.20)
+        else:
+            # フォールバック: Rev/FCF/EBITDA/NI 加重平均
+            weights = {"revenue": 0.4, "fcf": 0.3, "ebitda": 0.2, "net_income": 0.1}
+            values  = {"revenue": rev_cagr, "fcf": fcf_cagr, "ebitda": ebitda_cagr, "net_income": ni_cagr}
+            total_w = sum(w for k, w in weights.items() if values[k] is not None)
+            raw = sum(values[k] * weights[k] for k in weights if values[k] is not None) / total_w if total_w > 0 else 0.05
+            growth_1_5y = min(max(raw, 0.05), 0.20)
+
+        # 永続成長率 = 5年平均リスクフリーレート
         terminal_growth = risk_free_rate
         
         # 3. キャッシュフロー予測
@@ -234,7 +290,12 @@ def calculate_dcf(symbol, ticker=None):
         
         # 1-10年目の予測
         for i in range(1, 11):
-            rate = growth_1_5y if i <= 5 else growth_6_10y
+            if i <= 5:
+                rate = growth_1_5y
+            else:
+                # 6年目以降はTerminal Growthに向けて線形に漸減させる
+                rate = growth_1_5y - (i - 5) * (growth_1_5y - terminal_growth) / 5
+            
             current_fcf *= (1 + rate)
             discounted_fcf = current_fcf / ((1 + wacc) ** i)
             projections.append({
@@ -243,6 +304,9 @@ def calculate_dcf(symbol, ticker=None):
                 "discounted_fcf": float(discounted_fcf),
                 "growth_rate": float(rate)
             })
+        
+        # 6年目の成長率を growth_6_10y として保持 (Excel の C13 = C12-(C12-C14)/5 に相当)
+        growth_6_10y = growth_1_5y - (growth_1_5y - terminal_growth) / 5
             
         # 継続価値 (Terminal Value)
         tv = (current_fcf * (1 + terminal_growth)) / (wacc - terminal_growth)
@@ -284,6 +348,46 @@ def calculate_dcf(symbol, ticker=None):
         price_df = db_ticker.price()
         current_price = float(price_df['close'].iloc[-1]) if not price_df.empty else 0
         
+        # リバースDCF：現在株価から逆算して必要な成長率を計算
+        reverse_growth = None
+        try:
+            current_equity_value = current_price * shares
+            current_ev = current_equity_value + total_debt - cash_value
+
+            if current_ev > 0 and base_fcf > 0:
+                def calculate_ev_for_growth(g):
+                    """指定の成長率で企業価値を計算"""
+                    fcf = base_fcf
+                    pv_fcf_sum = 0
+                    for i in range(1, 11):
+                        if i <= 5:
+                            rate = g
+                        else:
+                            rate = g - (i - 5) * (g - terminal_growth) / 5
+                        fcf *= (1 + rate)
+                        pv_fcf_sum += fcf / ((1 + wacc) ** i)
+                    tv = (fcf * (1 + terminal_growth)) / (wacc - terminal_growth)
+                    npv_tv = tv / ((1 + wacc) ** 10)
+                    return pv_fcf_sum + npv_tv
+
+                # 二分探索で必要な成長率を求める
+                low, high = 0.001, 0.50  # 0.1% ～ 50%
+                tolerance = 0.0001
+                for _ in range(100):
+                    mid = (low + high) / 2
+                    ev_mid = calculate_ev_for_growth(mid)
+                    if abs(ev_mid - current_ev) < tolerance * current_ev:
+                        reverse_growth = mid
+                        break
+                    elif ev_mid < current_ev:
+                        low = mid
+                    else:
+                        high = mid
+                else:
+                    reverse_growth = (low + high) / 2
+        except Exception as e:
+            pass
+
         return {
             "fair_price": float(fair_price),
             "current_price": float(current_price),
@@ -293,14 +397,15 @@ def calculate_dcf(symbol, ticker=None):
             "cash_value": float(cash_value),
             "total_debt": float(total_debt),
             "wacc_details": wacc_details,
-            "cagr_details": cagr_details,
+            "cagr_details": {k: (float(v) if v is not None else None) for k, v in cagr_details.items()},
             "projections": projections,
             "terminal_value": float(tv),
             "npv_tv": float(npv_tv),
             "growth_1_5y": float(growth_1_5y),
             "growth_6_10y": float(growth_6_10y),
             "terminal_growth": float(terminal_growth),
-            "base_fcf": float(base_fcf)
+            "base_fcf": float(base_fcf),
+            "reverse_growth": float(reverse_growth) if reverse_growth is not None else None
         }
     except Exception as e:
         print(f"Error calculating detailed DCF for {symbol}: {e}")

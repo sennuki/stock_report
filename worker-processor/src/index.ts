@@ -1,0 +1,544 @@
+export interface Env {
+  STOCK_DATA: R2Bucket;
+  GEMINI_API_KEY?: string;
+}
+
+export default {
+  async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext) {
+    ctx.waitUntil(processAllStocks(env));
+  },
+  async fetch(request: Request, env: Env, ctx: ExecutionContext) {
+    const url = new URL(request.url);
+    if (url.pathname === '/batch') {
+      ctx.waitUntil(processAllStocks(env));
+      return new Response("Batch processing started in background.", { status: 202 });
+    }
+    return new Response("Use /batch to trigger processing.", { status: 400 });
+  }
+};
+
+export async function processAllStocks(env: Env) {
+  console.log("--- Batch Processing Started ---");
+  
+  const objects = await env.STOCK_DATA.list({ prefix: 'raw/' });
+  
+  let baseStocksList: any[] = [];
+  try {
+    const listObj = await env.STOCK_DATA.get('raw/stocks_list.json');
+    if (listObj) {
+      baseStocksList = JSON.parse(await listObj.text());
+    }
+  } catch (e) {
+    console.log("No raw/stocks_list.json found.");
+  }
+
+  const rawDataMap: Record<string, any> = {};
+  const riskReturnMetrics: any[] = [];
+  const topMovers: string[] = [];
+
+  const objectKeys = objects.objects.map(o => o.key).filter(k => k.endsWith('.json') && k !== 'raw/stocks_list.json');
+  console.log(`Found ${objectKeys.length} raw data files.`);
+
+  const BATCH_SIZE = 50;
+  for (let i = 0; i < objectKeys.length; i += BATCH_SIZE) {
+    const batch = objectKeys.slice(i, i + BATCH_SIZE);
+    await Promise.all(batch.map(async (key) => {
+      try {
+        const obj = await env.STOCK_DATA.get(key);
+        if (!obj) return;
+        const text = await obj.text();
+        const data = JSON.parse(text.replace(/\bNaN\b/g, "null"));
+        const symbol = data.symbol || key.replace('raw/', '').replace('.json', '');
+        rawDataMap[symbol] = data;
+
+        const rr = calculateRiskReturn(data.history, symbol);
+        if (rr) {
+          riskReturnMetrics.push(rr);
+          if (data.history && data.history.length >= 2) {
+            const last = data.history[data.history.length - 1].Close;
+            const prev = data.history[data.history.length - 2].Close;
+            const change = (last - prev) / prev;
+            if (Math.abs(change) >= 0.03) {
+              topMovers.push(symbol);
+            }
+          }
+        }
+      } catch (e) {
+        console.error(`Failed to read/parse ${key}:`, e);
+      }
+    }));
+  }
+
+  const movementReasons: Record<string, string> = {};
+
+  const subIndustryMap: Record<string, any[]> = {};
+  const sectorMap: Record<string, any[]> = {};
+  
+  for (const symbol of Object.keys(rawDataMap)) {
+    const rawData = rawDataMap[symbol];
+    const metadata = baseStocksList.find(s => s.Symbol_YF === symbol || s.Symbol === symbol) || {};
+    const sector = metadata['GICS Sector'] || rawData.info?.sector || "Unknown";
+    const subInd = metadata['GICS Sub-Industry'] || rawData.info?.industry || "Unknown";
+    
+    const dailyChange = calculateDailyChange(rawData.history);
+    const peerInfo = { Symbol: metadata.Symbol || symbol, Symbol_YF: symbol, Daily_Change: dailyChange };
+    
+    if (!sectorMap[sector]) sectorMap[sector] = [];
+    sectorMap[sector].push(peerInfo);
+    
+    if (!subIndustryMap[subInd]) subIndustryMap[subInd] = [];
+    subIndustryMap[subInd].push(peerInfo);
+  }
+
+  const updatedStocksList = [];
+  
+  for (const symbol of Object.keys(rawDataMap)) {
+    const rawData = rawDataMap[symbol];
+    const isETF = ["SPY", "XLC", "XLY", "XLP", "XLE", "XLF", "XLV", "XLI", "XLK", "XLB", "XLRE", "XLU"].includes(symbol);
+    const metadata = baseStocksList.find(s => s.Symbol_YF === symbol || s.Symbol === symbol) || {};
+
+    const sectorEtf = getSectorETF(metadata['GICS Sector'] || rawData.info?.sector);
+    const etfRawData = rawDataMap[sectorEtf];
+    
+    const highlights = extractHighlights(rawData);
+    const earningsSurprise = extractEarningsSurprise(rawData);
+    const nextEarnings = extractNextEarnings(rawData);
+    const consensus = extractConsensus(rawData);
+    const ratingChanges = extractRatingChanges(rawData);
+    const analystRatings = extractAnalystRatings(rawData);
+
+    // Chart Generations (Updated for Array format)
+    const riskReturnChart = generateRiskReturnChart(riskReturnMetrics, symbol);
+    const isChart = generateFinancialChart(rawData.income_stmt || [], ["Total Revenue", "Gross Profit", "Operating Income", "Net Income"], "bar", "group");
+    const bsChart = generateFinancialChart(rawData.balancesheet || [], ["Total Assets", "Total Liabilities Net Minority Interest", "Stockholders Equity"], "bar", "stack");
+    const cfChart = generateFinancialChart(rawData.cashflow || [], ["Operating Cash Flow", "Investing Cash Flow", "Financing Cash Flow", "Free Cash Flow"], "bar", "group");
+    const perfChart = generatePerformanceChart(rawData.history, etfRawData?.history, symbol, sectorEtf);
+    
+    const tpChart = generateTpChart(rawData.cashflow || [], rawData.income_stmt || []);
+    const dpsChart = generateDpsEpsChart(rawData.dividends);
+    const segmentChart = generateSegmentChart(rawData.revenue_by_segment);
+    const geoChart = generateSegmentChart(rawData.revenue_by_geography);
+
+    const sector = metadata['GICS Sector'] || rawData.info?.sector || "Unknown";
+    const subInd = metadata['GICS Sub-Industry'] || rawData.info?.industry || "Unknown";
+
+    const reportData = {
+      symbol: metadata.Symbol || symbol,
+      symbol_yf: symbol,
+      security: metadata.Security || rawData.info?.longName || rawData.info?.shortName || symbol,
+      security_ja: metadata.Security_JA || null,
+      business_summary_ja: rawData.info?.longBusinessSummary || null,
+      sector: sector,
+      sub_industry: subInd,
+      exchange: rawData.info?.exchange || "NASDAQ",
+      full_symbol: `${rawData.info?.exchange || 'NASDAQ'}:${symbol.replace("-", ".")}`,
+      sector_etf: sectorEtf,
+      is_financial: ["Financials", "Real Estate"].includes(sector),
+      is_available_monex: true,
+      is_available_rakuten: true,
+      is_available_sbi: true,
+      is_available_mufg: true,
+      is_available_matsui: true,
+      is_available_dmm: true,
+      is_available_paypay: true,
+      is_available_moomoo: true,
+      is_available_iwaicosmo: true,
+      movement_reason: movementReasons[symbol] || null,
+      highlights,
+      earnings_surprise: earningsSurprise,
+      next_earnings: nextEarnings,
+      consensus,
+      consensus_raw: {
+        eps_trend: rawData.info?.epsTrend || null,
+        eps_revisions: rawData.info?.epsRevisions || null
+      },
+      rating_changes: ratingChanges,
+      analyst_ratings: analystRatings,
+      peers: {
+        sub_industry: (subIndustryMap[subInd] || []).filter(s => s.Symbol_YF !== symbol),
+        sector: (sectorMap[sector] || []).filter(s => s.Symbol_YF !== symbol && !subIndustryMap[subInd]?.find(si => si.Symbol_YF === s.Symbol_YF))
+      },
+      dcf_valuation: rawData.dcf_valuation || null,
+      charts: {
+        risk_return: riskReturnChart,
+        is: isChart,
+        bs: bsChart,
+        cf: cfChart,
+        performance: perfChart,
+        tp: tpChart,
+        dps: dpsChart,
+        segment: segmentChart,
+        geo: geoChart
+      },
+      last_updated: new Date().toISOString()
+    };
+
+    await env.STOCK_DATA.put(`reports/${symbol}.json`, JSON.stringify(reportData), {
+      httpMetadata: { contentType: 'application/json' }
+    });
+
+    if (!isETF || metadata.Symbol) {
+      updatedStocksList.push({
+        ...metadata,
+        Symbol_YF: symbol,
+        Daily_Change: calculateDailyChange(rawData.history),
+        Has_Movement_Reason: !!movementReasons[symbol]
+      });
+    }
+  }
+
+  if (updatedStocksList.length > 0) {
+    await env.STOCK_DATA.put('reports/stocks.json', JSON.stringify(updatedStocksList, null, 2), {
+      httpMetadata: { contentType: 'application/json' }
+    });
+    console.log(`Saved reports/stocks.json with ${updatedStocksList.length} items.`);
+  }
+  
+  console.log("--- Batch Processing Completed ---");
+}
+
+function calculateDailyChange(history: any[]) {
+  if (!history || history.length < 2) return 0;
+  const last = history[history.length - 1].Close;
+  const prev = history[history.length - 2].Close;
+  return (last - prev) / prev;
+}
+
+function calculateRiskReturn(history: any[], symbol: string) {
+  if (!history || history.length < 5) return null;
+  const lastQuotes = history.slice(-252);
+  const returns = [];
+  for (let i = 1; i < lastQuotes.length; i++) {
+    returns.push(Math.log(lastQuotes[i].Close / lastQuotes[i - 1].Close));
+  }
+  if (returns.length === 0) return null;
+
+  const mean = returns.reduce((a, b) => a + b, 0) / returns.length;
+  const variance = returns.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / (returns.length - 1);
+  const hv = Math.sqrt(variance) * Math.sqrt(252);
+  const totalReturn = (lastQuotes[lastQuotes.length - 1].Close / lastQuotes[0].Close) - 1;
+
+  return { symbol, hv, ret: totalReturn };
+}
+
+function getSectorETF(sector?: string) {
+  const map: Record<string, string> = {
+    "Communication Services": "XLC", "Consumer Discretionary": "XLY", "Consumer Staples": "XLP",
+    "Energy": "XLE", "Financials": "XLF", "Health Care": "XLV", "Industrials": "XLI",
+    "Information Technology": "XLK", "Materials": "XLB", "Real Estate": "XLRE", "Utilities": "XLU"
+  };
+  return sector && map[sector] ? map[sector] : "SPY";
+}
+
+function extractHighlights(rawData: any) {
+  const info = rawData.info || {};
+  return {
+    revenue_growth: info.revenueGrowth,
+    earnings_growth: info.earningsGrowth,
+    profit_margins: info.profitMargins,
+    operating_margins: info.operatingMargins,
+    roe: info.returnOnEquity,
+    roa: info.returnOnAssets,
+    eps_ttm: info.trailingEps,
+    eps_forward: info.forwardEps,
+    pe_ttm: info.trailingPE,
+    pe_forward: info.forwardPE,
+    dividend_yield: info.dividendYield,
+    payout_ratio: info.payoutRatio || (info.dividendRate && info.trailingEps ? info.dividendRate / info.trailingEps : null),
+    debt_to_equity: info.debtToEquity,
+    current_ratio: info.currentRatio
+  };
+}
+
+function extractEarningsSurprise(rawData: any) {
+  const datesObj = rawData.earnings_dates || {};
+  const dates = Object.keys(datesObj).sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+  
+  for (const date of dates) {
+    const d = datesObj[date];
+    if (d && d['Reported EPS'] !== null && d['Reported EPS'] !== undefined) {
+      return {
+        date: date.split(' ')[0],
+        actual: d['Reported EPS'],
+        estimate: d['EPS Estimate'],
+        surprise_pct: d['Surprise(%)']
+      };
+    }
+  }
+  return null;
+}
+
+function extractNextEarnings(rawData: any) {
+  const datesObj = rawData.earnings_dates || {};
+  const dates = Object.keys(datesObj).sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+  const now = new Date();
+  
+  for (const date of dates) {
+    if (new Date(date) >= now) {
+      const d = datesObj[date];
+      if (d && (d['Reported EPS'] === null || d['Reported EPS'] === undefined)) {
+        return {
+          date: date.split(' ')[0],
+          estimate: d['EPS Estimate'] || rawData.info?.earningsAverage || null
+        };
+      }
+    }
+  }
+  
+  if (rawData.calendar?.['Earnings Date']) {
+    const cDates = Array.isArray(rawData.calendar['Earnings Date']) ? rawData.calendar['Earnings Date'] : [rawData.calendar['Earnings Date']];
+    if (cDates.length > 0 && new Date(cDates[0]) >= now) {
+      return {
+        date: cDates[0].split(' ')[0],
+        estimate: rawData.calendar['Earnings Average'] || rawData.calendar['EPS Estimate'] || rawData.info?.earningsAverage || null
+      };
+    }
+  }
+  
+  return null;
+}
+
+function extractConsensus(rawData: any) {
+  const info = rawData.info || {};
+  return {
+    earnings: {
+      "0q": {
+        avg: info.earningsAverage,
+        low: info.earningsLow,
+        high: info.earningsHigh,
+        growth: info.earningsGrowth,
+        numberOfAnalysts: info.numberOfAnalystOpinions
+      }
+    },
+    revenue: {
+      "0q": {
+        avg: info.revenueAverage,
+        low: info.revenueLow,
+        high: info.revenueHigh,
+        growth: info.revenueGrowth,
+        numberOfAnalysts: info.numberOfAnalystOpinions
+      }
+    }
+  };
+}
+
+function extractRatingChanges(rawData: any) {
+  const ud = rawData.upgrades_downgrades || {};
+  const dates = Object.keys(ud).sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+  return dates.slice(0, 10).map(date => {
+    return {
+      GradeDate: date.split(' ')[0],
+      Firm: ud[date]?.Firm || ud[date]?.firm,
+      ToGrade: ud[date]?.ToGrade || ud[date]?.toGrade,
+      FromGrade: ud[date]?.FromGrade || ud[date]?.fromGrade,
+      Action: ud[date]?.Action || ud[date]?.action
+    };
+  });
+}
+
+function extractAnalystRatings(rawData: any) {
+  const info = rawData.info || {};
+  const ratings = rawData.analyst_ratings || {};
+  return {
+    targetHighPrice: info.targetHighPrice,
+    targetLowPrice: info.targetLowPrice,
+    targetMeanPrice: info.targetMeanPrice,
+    targetMedianPrice: info.targetMedianPrice,
+    currentPrice: info.currentPrice,
+    numberOfAnalystOpinions: info.numberOfAnalystOpinions,
+    recommendationKey: info.recommendationKey,
+    ...ratings
+  };
+}
+
+function generateRiskReturnChart(allMetrics: any[], targetSymbol: string) {
+  const others = allMetrics.filter(m => m.symbol !== targetSymbol);
+  const target = allMetrics.find(m => m.symbol === targetSymbol);
+
+  const datasets: any[] = [
+    {
+      label: 'Other S&P 500',
+      data: others.map(m => ({ x: m.hv, y: m.ret, symbol: m.symbol })),
+      backgroundColor: 'rgba(200, 200, 200, 0.5)',
+      pointRadius: 4
+    }
+  ];
+
+  if (target) {
+    datasets.push({
+      label: target.symbol,
+      data: [{ x: target.hv, y: target.ret, symbol: target.symbol }],
+      backgroundColor: 'rgba(255, 0, 0, 0.9)',
+      pointRadius: 8
+    });
+  }
+  return { datasets };
+}
+
+// Helper to extract value from Array format [ {index: 'Item', '2023-01-01': 123, ...}, ... ]
+function getValFromArray(data: any[], itemLabel: string, date: string): number {
+  const row = data.find(r => r.index === itemLabel);
+  return row ? (Number(row[date]) || 0) : 0;
+}
+
+function generateFinancialChart(data: any[], fields: string[], type: string, barmode: string) {
+  if (data.length === 0) return null;
+  // Get dates from first row (excluding 'index')
+  const dates = Object.keys(data[0]).filter(k => k !== 'index').sort();
+  if (dates.length === 0) return null;
+
+  const colors = [
+    { bg: 'rgba(54, 162, 235, 0.5)', border: 'rgb(54, 162, 235)' },
+    { bg: 'rgba(255, 99, 132, 0.5)', border: 'rgb(255, 99, 132)' },
+    { bg: 'rgba(75, 192, 192, 0.5)', border: 'rgb(75, 192, 192)' },
+    { bg: 'rgba(255, 159, 64, 0.5)', border: 'rgb(255, 159, 64)' }
+  ];
+
+  return {
+    labels: dates.map(d => d.split(' ')[0]),
+    datasets: fields.map((field, i) => {
+      return {
+        label: field,
+        data: dates.map(d => getValFromArray(data, field, d)),
+        backgroundColor: colors[i % colors.length].bg,
+        borderColor: colors[i % colors.length].border,
+        borderWidth: 1
+      };
+    })
+  };
+}
+
+function generatePerformanceChart(history: any[], etfHistory: any[], symbol: string, etfSymbol: string) {
+  if (!history || history.length === 0) return null;
+  const targetData = history.slice(-252);
+  if (targetData.length === 0) return null;
+  
+  const startClose = targetData[0].Close;
+  const dates = targetData.map(h => (h.Date || h.index).split(' ')[0]);
+  const targetReturns = targetData.map(h => (h.Close / startClose) - 1);
+
+  const datasets: any[] = [
+    {
+      label: symbol,
+      data: targetReturns,
+      borderColor: "#1f77b4",
+      borderWidth: 2,
+      fill: false,
+      pointRadius: 0
+    }
+  ];
+
+  if (etfHistory && etfHistory.length > 0) {
+    const etfMap = new Map(etfHistory.map(h => [(h.Date || h.index).split(' ')[0], h.Close]));
+    let etfStartClose = etfMap.get(dates[0]);
+    if (!etfStartClose) {
+       for(const d of dates) {
+          if (etfMap.has(d)) { etfStartClose = etfMap.get(d); break; }
+       }
+    }
+    if (etfStartClose) {
+      const etfReturns = dates.map(d => {
+        const close = etfMap.get(d) || etfStartClose;
+        return ((close as number) / (etfStartClose as number)) - 1;
+      });
+      datasets.push({
+        label: `Sector ETF (${etfSymbol})`,
+        data: etfReturns,
+        borderColor: "#ff7f0e",
+        borderWidth: 2,
+        borderDash: [5, 5],
+        fill: false,
+        pointRadius: 0
+      });
+    }
+  }
+  return { labels: dates, datasets };
+}
+
+function generateTpChart(cf: any[], is: any[]) {
+  if (is.length === 0 && cf.length === 0) return null;
+  const dates = Object.keys(is[0] || cf[0] || {}).filter(k => k !== 'index').sort();
+  if (dates.length === 0) return null;
+
+  const niKeys = ['Net Income', 'Net Income From Continuing Operations', 'Net Income Common Stockholders'];
+  const divKeys = ['Cash Dividends Paid', 'Common Stock Dividend Paid'];
+  const repoKeys = ['Repurchase Of Capital Stock', 'Repurchase Of Common Stock', 'Common Stock Repurchased'];
+
+  const getAnyVal = (arr: any[], keys: string[], date: string) => {
+    for (const k of keys) {
+      const v = getValFromArray(arr, k, date);
+      if (v !== 0) return v;
+    }
+    return 0;
+  };
+
+  const niData = dates.map(d => getAnyVal(is, niKeys, d) || getAnyVal(cf, niKeys, d));
+  const divData = dates.map(d => Math.abs(getAnyVal(cf, divKeys, d)));
+  const repoData = dates.map(d => Math.abs(getAnyVal(cf, repoKeys, d)));
+
+  const divRatio = niData.map((ni, i) => ni > 0 ? divData[i] / ni : 0);
+  const totalRatio = niData.map((ni, i) => ni > 0 ? (divData[i] + repoData[i]) / ni : 0);
+
+  return {
+    labels: dates.map(d => d.split(' ')[0]),
+    datasets: [
+      { type: 'bar', label: 'Net Income', data: niData, backgroundColor: 'rgba(44, 160, 44, 0.6)', yAxisID: 'y' },
+      { type: 'bar', label: 'Dividends Paid', data: divData, backgroundColor: 'rgba(174, 199, 232, 0.6)', yAxisID: 'y' },
+      { type: 'bar', label: 'Stock Repurchase', data: repoData, backgroundColor: 'rgba(31, 119, 180, 0.6)', yAxisID: 'y' },
+      { type: 'line', label: 'Dividend Payout Ratio', data: divRatio, borderColor: '#ffbb78', yAxisID: 'y1' },
+      { type: 'line', label: 'Total Payout Ratio', data: totalRatio, borderColor: '#ff7f0e', yAxisID: 'y1' }
+    ]
+  };
+}
+
+function generateDpsEpsChart(dividends: any[]) {
+  if (!dividends || !Array.isArray(dividends) || dividends.length === 0) return null;
+  const annual: Record<string, number> = {};
+  
+  dividends.forEach(d => {
+    const dateStr = d.Date || d.index;
+    if (!dateStr) return;
+    const year = String(dateStr).substring(0, 4);
+    const val = Number(d.Dividends || d.Value || 0);
+    annual[year] = (annual[year] || 0) + val;
+  });
+  
+  const labels = Object.keys(annual).sort();
+  if (labels.length === 0) return null;
+
+  return {
+    labels,
+    datasets: [{
+      type: 'bar',
+      label: 'Annual Dividends',
+      data: labels.map(y => annual[y]),
+      backgroundColor: 'rgba(31, 119, 180, 0.8)'
+    }]
+  };
+}
+
+function generateSegmentChart(segmentData: any[]) {
+  if (!segmentData || !Array.isArray(segmentData) || segmentData.length === 0) return null;
+  
+  const segmentsArr = Object.keys(segmentData[0]).filter(k => !['Date', 'report_date', 'symbol', 'index'].includes(k));
+  if (segmentsArr.length === 0) return null;
+
+  const labels = segmentData.map(row => String(row.Date || row.report_date || row.index).split(' ')[0]);
+
+  const colors = [
+    'rgba(31, 119, 180, 0.7)', 'rgba(255, 127, 14, 0.7)', 'rgba(44, 160, 44, 0.7)',
+    'rgba(214, 39, 40, 0.7)', 'rgba(148, 103, 189, 0.7)', 'rgba(140, 86, 75, 0.7)',
+    'rgba(227, 119, 194, 0.7)', 'rgba(127, 127, 127, 0.7)', 'rgba(188, 189, 34, 0.7)',
+    'rgba(23, 190, 207, 0.7)'
+  ];
+
+  const datasets = segmentsArr.map((seg, i) => {
+    return {
+      label: seg,
+      data: segmentData.map(row => Number(row[seg]) || 0),
+      backgroundColor: colors[i % colors.length]
+    };
+  });
+
+  return { labels, datasets };
+}

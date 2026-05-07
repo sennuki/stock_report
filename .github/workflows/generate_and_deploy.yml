@@ -1,18 +1,19 @@
-name: Generate and Deploy Stock Reports
+name: Data Pipeline and Deploy Pages
 
 on:
   schedule:
     - cron: '0 21 * * 1-5' # 平日毎日実行
   push:
-    branches: [ master ] # コードが更新された時も実行
-  workflow_dispatch: # 手動実行用
+    branches: [ master, c1 ]
+  workflow_dispatch:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-  build-and-deploy:
+  run-pipeline-and-deploy:
     runs-on: ubuntu-latest
+    environment: ${{ github.ref_name == 'master' && 'production' || 'c1' }}
     permissions:
       contents: write
       deployments: write
@@ -36,63 +37,41 @@ jobs:
           sudo apt-get install -y libcurl4
 
       - name: Install Python dependencies
-        run: uv pip install --system -r requirements.txt
-
-      - name: Restore yfinance cache
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/py-yfinance
-          key: ${{ runner.os }}-yfinance-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-yfinance-
-
-      - name: Restore stock reports cache
-        uses: actions/cache@v4
-        with:
-          path: stock-blog/public/reports
-          key: ${{ runner.os }}-stock-reports-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-stock-reports-
-
-      - name: Create output directories
         run: |
-          mkdir -p stock-blog/public/reports
-          mkdir -p stock-blog/public/output_reports_full
-          mkdir -p stock-blog/src/data/blog
-          # If stocks.json doesn't exist, create an empty array
-          [ -f stock-blog/src/data/stocks.json ] || echo "[]" > stock-blog/src/data/stocks.json
+          cd code
+          uv pip install --system -r requirements.txt
 
-      - name: Run Python report generator
-        run: PYTHONPATH=code python code/main.py
+      - name: Set current date for cache key
+        run: echo "TODAY=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+
+      - name: Restore fetch status cache (same-day retry skip)
+        uses: actions/cache@v4
+        with:
+          path: code/data/fetch_status.json
+          key: fetch-status-${{ runner.os }}-${{ env.TODAY }}
+          restore-keys: fetch-status-${{ runner.os }}-
+
+      - name: Run Python Data Fetch (Uploads to R2)
+        run: |
+          cd code
+          python main.py
         env:
-          TEST_MODE: false
-          PYTHON_MAX_WORKERS: 1
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TEST_MODE: ${{ github.event_name == 'push' && 'true' || 'false' }} # pushの時はテストモード
+          PYTHON_MAX_WORKERS: 2
+          R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_BUCKET_NAME: "stock-data-c1"
 
-      - name: Commit and push changes
+      - name: Upload raw data to R2 (via Cloudflare API)
         run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add -f stock-blog/public/reports/*.json stock-blog/src/data/stocks.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "data: update stock reports and translations [skip ci]" && git push origin HEAD)
-
-      - name: Upload JSON Reports
-        uses: actions/upload-artifact@v4
-        with:
-          name: stock-reports-json
-          path: |
-            stock-blog/public/reports/
-            stock-blog/src/data/stocks.json
-          retention-days: 5
-          if-no-files-found: error
-
-      - name: Upload run log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: execution-log
-          path: run_log.txt
-          retention-days: 7
+          cd worker-processor
+          npm ci
+          node upload-raw-to-r2.mjs
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          R2_BUCKET_NAME: "stock-data-c1"
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -103,29 +82,82 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'pnpm'
-          cache-dependency-path: stock-blog/pnpm-lock.yaml
 
-      - name: Install Node dependencies
+      - name: Deploy Worker Processor and Trigger Batch
+        run: |
+          cd worker-processor
+          npm ci
+
+          echo "Current CLOUDFLARE_ACCOUNT_ID: $CLOUDFLARE_ACCOUNT_ID"
+          npx wrangler whoami
+
+          # Workerをデプロイ
+          WORKER_OUTPUT=$(npx wrangler deploy)
+          echo "$WORKER_OUTPUT"
+
+          # デプロイされたWorkerのURLを抽出して /batch を叩く
+          WORKER_URL=$(echo "$WORKER_OUTPUT" | grep -oE "https://[a-zA-Z0-9.-]+\.workers\.dev" | head -n 1)
+          if [ -n "$WORKER_URL" ]; then
+            echo "Waiting for worker to be fully deployed (10s)..."
+            sleep 10
+            echo "Triggering worker at $WORKER_URL/batch ..."
+            curl -X POST "$WORKER_URL/batch"
+            echo "WORKER_URL=$WORKER_URL" >> $GITHUB_ENV
+          else
+            echo "Failed to extract Worker URL"
+            exit 1
+          fi
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Wait for batch and sync stocks list to build
+        run: |
+          cd worker-processor
+          STOCKS_FILE=../stock-blog/src/data/stocks.json
+          # バッチ完了を最大5分ポーリングして待機し、stocks.json をビルドに取り込む
+          MAX_ATTEMPTS=10
+          WAIT_SECS=30
+          for i in $(seq 1 $MAX_ATTEMPTS); do
+            TMP=$(mktemp)
+            if npx wrangler r2 object get stock-data-c1/reports/stocks.json \
+               --file="$TMP" --remote 2>/dev/null; then
+              COUNT=$(python3 -c "import json; print(len(json.load(open('$TMP'))))" 2>/dev/null || echo 0)
+              echo "stocks.json downloaded: $COUNT stocks"
+              if [ "$COUNT" -gt 10 ]; then
+                mv "$TMP" "$STOCKS_FILE"
+                echo "Batch complete."
+                break
+              fi
+            fi
+            rm -f "$TMP"
+            echo "Batch not ready yet (attempt $i/$MAX_ATTEMPTS). Waiting ${WAIT_SECS}s..."
+            sleep $WAIT_SECS
+          done
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Build and Deploy Astro to Cloudflare Workers
         run: |
           cd stock-blog
-          pnpm install --frozen-lockfile
-
-      - name: Regenerate blog posts (Markdown)
-        run: |
-          cd stock-blog
-          node scripts/generate-blog-posts.js
-
-      - name: Build Astro site
-        run: |
-          cd stock-blog
+          export NODE_OPTIONS="--max-old-space-size=6656"
+          pnpm install --no-frozen-lockfile
           pnpm run build
-
-      - name: Deploy to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=stock-blog
-          workingDirectory: stock-blog
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          
+          # Workerとしてデプロイ (wrangler.jsonc の設定を使用)
+          DEPLOY_OUTPUT=$(npx wrangler deploy)
+          echo "$DEPLOY_OUTPUT"
+          
+          # デプロイされたWorkerのURLを抽出
+          DEPLOY_URL=$(echo "$DEPLOY_OUTPUT" | grep -oE "https://[a-zA-Z0-9.-]+\.workers\.dev" | head -n 1)
+          
+          # GitHub Job Summaryに書き込み
+          echo "### 🚀 Pipeline & Deployment Successful!" >> $GITHUB_STEP_SUMMARY
+          echo "The Astro site has been deployed to Cloudflare Workers." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Site URL:** [$DEPLOY_URL]($DEPLOY_URL)" >> $GITHUB_STEP_SUMMARY
+          echo "**Branch:** \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

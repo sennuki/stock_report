@@ -2,13 +2,13 @@
 import os
 import json
 import time
-from google import genai
+# from google import genai  # 無効化
 from dotenv import load_dotenv
 import yfinance as yf
 import pandas as pd
 import polars as pl
 
-from google.genai import types
+# from google.genai import types  # 無効化
 import utils
 
 # .envの読み込み
@@ -17,162 +17,54 @@ load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env"))
 # 2026年時点のモデル設定
 GEMINI_MODEL = "gemini-3.1-flash-lite-preview"
 
+# APIクライアントの初期化 (無効化)
 def get_gemini_client():
-    api_key = os.getenv("GEMINI_API_KEY")
-    if not api_key:
-        return None
-    return genai.Client(api_key=api_key)
+    return None
 
-def get_recent_news(symbol):
+def generate_stock_movement_reason(symbol, stats, original_reason=""):
     """
-    yfinanceから銘柄に関連する最新ニュースを取得する
+    Gemini呼び出しを一時的に無効化しています。
     """
-    try:
-        ticker = yf.Ticker(symbol)
-        news = ticker.news
-        if not news:
-            return ""
-        news_summary = "\n".join([f"- {n.get('title')}" for n in news[:3]])
-        return news_summary
-    except:
-        return ""
+    return None
 
-def generate_styled_reason(client, symbol, stats, original_reason):
+def fetch_recent_movers(symbols, threshold=0.03):
     """
-    指定されたニューススタイルで株価変動理由を生成する
+    リスト内の銘柄から、前日比が閾値以上のものを抽出する。
     """
-    # 前日比の符号に応じた語句の選択
-    is_up = stats['diff_pct'] >= 0
-    up_down_word = "高" if is_up else "安"
+    results = []
+    print(f"Checking {len(symbols)} symbols for significant movements...")
     
-    # ニュース風の演出用の一時的な価格
-    intraday_price = stats.get('high', stats['close']) if is_up else stats.get('low', stats['close'])
-    prev_close = stats['close'] / (1 + stats['diff_pct']) if stats['diff_pct'] != -1 else stats['close']
-    intraday_diff = intraday_price - prev_close
-    intraday_pct = intraday_diff / prev_close if prev_close != 0 else 0
-    
-    # 最新ニュースの補強
-    recent_news = get_recent_news(symbol)
-    
-    prompt = f"""
-以下の銘柄情報と背景理由を元に、プロの証券アナリストが執筆する金融ニュース記事のようなスタイルで文章を作成してください。
-必要に応じて、最新の市場動向を検索して補完してください。
-
-【銘柄】: {symbol}
-【日付】: {stats['date']}
-【前日比】: {stats['diff']:.2f}ドル ({stats['diff_pct']:.2%})
-【終値】: {stats['close']:.2f}ドル
-【一時的な株価】: {intraday_price:.2f}ドル (前日比 {intraday_diff:.2f}ドル{up_down_word} / {intraday_pct:.2%})
-【年初来騰落率】: {stats['ytd_pct']:.2%}
-【主な背景理由】: {original_reason}
-【関連ニュース】: 
-{recent_news}
-
-【構成案】
-1. 一行目に「年初来・株価騰落率：[+0.00]％」と記載。 (※{stats['ytd_pct']:.2%})
-2. 本文は「{stats['date_ja']}の取引で、[会社概要や業界での立ち位置]の[社名]が大幅に[上昇/下落]。...」と開始し、背景理由を詳しく、プロフェッショナルな日本語で説明。
-3. 最後に「株価は一時、前日比[0.00]ドル[高/安]([0.00]％)の[0.00]ドルまで[上昇/下落]し、[0.00]ドル[高/安]([0.00]％)の[0.00]ドルで終了。S&P500の[上昇/下落]率{stats['rank']}位にランクインし、年初来では[0.00]％[高/安]となった。」という形式で締める。
-
-※必ず指定のスタイルを守り、事実に基づいた格調高い文章にしてください。改行（\n）を適切に使用して読みやすくしてください。
-"""
-
-    max_retries = 3
-    base_delay = 10 
-
-    for attempt in range(max_retries):
+    for symbol in symbols:
         try:
-            # 最新の SDK 形式に合わせた呼び出し
-            response = client.models.generate_content(
-                model=GEMINI_MODEL,
-                contents=prompt,
-                config=types.GenerateContentConfig(
-                    tools=[types.Tool(google_search=types.GoogleSearch())],
-                    system_instruction="あなたは日経新聞やロイター通信のシニア編集者です。正確で客観的、かつ洞察に富んだ金融ニュース記事を執筆します。",
-                    thinking_config=types.ThinkingConfig(
-                        thinking_level="MINIMAL",
-                    ),
-                )
-            )
-            return response.text.strip()
-        except Exception as e:
-            error_msg = str(e)
-            if ("429" in error_msg or "503" in error_msg) and attempt < max_retries - 1:
-                delay = base_delay * (attempt + 1)
-                print(f"Server error for {symbol} ({error_msg[:10]}...). Retrying in {delay} seconds... (Attempt {attempt + 1}/{max_retries})")
-                time.sleep(delay)
+            tk = yf.Ticker(symbol)
+            hist = tk.history(period="5d")
+            if len(hist) < 2:
                 continue
-            print(f"Error generating reason for {symbol}: {e}")
-            return None
-
-def process_top_movers(df_metrics):
-    """
-    上昇・下落トップ10銘柄に対して理由を生成し、結果を辞書で返す
-    """
-    client = get_gemini_client()
-    if not client:
-        print("Skipping reason generation: Gemini API Key not found.")
-        return {}
-
-    # 上昇率・下落率でソート
-    df_sorted = df_metrics.sort("Daily_Change", descending=True)
-    top_gainers = df_sorted.head(10).to_dicts()
-    top_losers = df_sorted.tail(10).sort("Daily_Change").to_dicts()
-    
-    results = {}
-    today_str = time.strftime("%Y-%m-%d")
-    today_ja = time.strftime("%m月%d日")
-
-    # 処理対象をまとめる
-    movers = []
-    for i, row in enumerate(top_gainers):
-        row['rank'] = i + 1
-        row['type'] = 'gain'
-        movers.append(row)
-    for i, row in enumerate(top_losers):
-        row['rank'] = i + 1
-        row['type'] = 'loss'
-        movers.append(row)
-
-    print(f"Generating professional reasons for {len(movers)} top movers using {GEMINI_MODEL}...")
-    
-    for row in movers:
-        symbol = row['Symbol']
-        print(f"Processing {symbol} (Rank {row['rank']} {row['type']})...")
-        
-        try:
-            ticker = yf.Ticker(symbol)
-            hist = ticker.history(period="5d")
-            if hist.empty: continue
+                
+            last_close = hist['Close'].iloc[-1]
+            prev_close = hist['Close'].iloc[-2]
+            diff = last_close - prev_close
+            diff_pct = diff / prev_close
             
-            last_close = hist.iloc[-1]['Close']
-            prev_close = hist.iloc[-2]['Close']
-            high_val = hist.iloc[-1]['High']
-            low_val = hist.iloc[-1]['Low']
+            if abs(diff_pct) >= threshold:
+                # 年初来計算
+                ytd_start = f"{pd.Timestamp.now().year}-01-01"
+                ytd_hist = tk.history(start=ytd_start)
+                ytd_pct = (last_close / ytd_hist['Close'].iloc[0]) - 1 if not ytd_hist.empty else 0
+                
+                results.append({
+                    'symbol': symbol,
+                    'close': last_close,
+                    'diff': diff,
+                    'diff_pct': diff_pct,
+                    'date': hist.index[-1].strftime('%Y-%m-%d'),
+                    'date_ja': hist.index[-1].strftime('%-m月%-d日'),
+                    'ytd_pct': ytd_pct
+                })
+                print(f"Found mover: {symbol} ({diff_pct*100:+.2f}%)")
             
-            stats = {
-                "date": today_str,
-                "date_ja": today_ja,
-                "close": last_close,
-                "high": high_val,
-                "low": low_val,
-                "diff": last_close - prev_close,
-                "diff_pct": row['Daily_Change'],
-                "ytd_pct": row.get('Ret_YTD', 0.0),
-                "rank": row['rank']
-            }
-            
-            reason_text = generate_styled_reason(client, symbol, stats, "")
-            
-            if reason_text:
-                results[symbol] = {
-                    "date": today_str,
-                    "change_pct": row['Daily_Change'],
-                    "reason": reason_text
-                }
-                print(f"Successfully generated reason for {symbol}")
-            
-            # APIクォータ対策: 5秒待機
-            time.sleep(5)
+            # 待機時間を短縮（テスト用）
+            time.sleep(1)
         except Exception as e:
             print(f"Failed to fetch detailed data for {symbol}: {e}")
             continue
