@@ -128,7 +128,7 @@ function calculateRiskReturnFromHistory(history: any[], symbol: string) {
 }
 
 /**
- * 財務データを Chart.js/Plotly 向けに整形
+ * 財務データを Chart.js 向けに整形
  */
 function formatFinancialChart(stmt: any[], fields: string[]) {
   if (!stmt || !Array.isArray(stmt) || stmt.length === 0) return null;

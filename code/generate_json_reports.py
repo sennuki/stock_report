@@ -27,7 +27,7 @@ from utils import get_gemini_model
 import time
 import random
 
-# Force Plotly to use standard JSON output
+# 標準 JSON エンジンを使用（base64 ではなく素のリストとして書き出す）
 pio.json.config.default_engine = 'json'
 
 # Initialize Gemini Client
@@ -76,26 +76,30 @@ def translate_summary(symbol, summary):
 
 from decimal import Decimal
 
-def clean_plotly_data(obj):
-    """Recursively remove 'bdata' and convert to standard lists.
+def normalize_chart_data(obj):
+    """チャートデータを再帰的に正規化して、フロントエンドで安全に
+    パースできる標準 JSON 互換の構造を返す。
 
-    NaN/Infinity を None に変換して、標準準拠の JSON を生成する。
-    JavaScript の `response.json()` は非標準の NaN/Infinity リテラルを
-    パースできないため、ここで None に正規化することで Cloudflare Workers
-    などの実行環境でも JSON が読めるようにする。
+    主な処理:
+    - base64 でエンコードされたバイナリデータ (``{"bdata": ..., "dtype": ...}``)
+      を素の数値リストに展開する
+    - numpy 配列・スカラ、``Decimal``、``datetime`` を JSON で扱える型に変換
+    - ``NaN`` / ``Infinity`` を ``None`` に変換する
+      （JavaScript の ``response.json()`` は非標準リテラルをパースできず、
+      Cloudflare Workers 等の実行環境で JSON 読み込みが失敗するため）
     """
     if isinstance(obj, dict):
         if "bdata" in obj and "dtype" in obj:
-            # Decode base64 binary data to list
+            # base64 のバイナリブロックを素の Python リストへ展開
             dtype = obj["dtype"]
             bdata = base64.b64decode(obj["bdata"])
             arr = np.frombuffer(bdata, dtype=dtype)
             # NaN/Inf を None に変換
             return [None if (isinstance(v, float) and (math.isnan(v) or math.isinf(v))) else v
                     for v in arr.tolist()]
-        return {k: clean_plotly_data(v) for k, v in obj.items()}
+        return {k: normalize_chart_data(v) for k, v in obj.items()}
     elif isinstance(obj, list):
-        return [clean_plotly_data(v) for v in obj]
+        return [normalize_chart_data(v) for v in obj]
     elif isinstance(obj, np.ndarray):
         return [None if (isinstance(v, float) and (math.isnan(v) or math.isinf(v))) else v
                 for v in obj.tolist()]
@@ -115,16 +119,23 @@ def clean_plotly_data(obj):
     return obj
 
 def fig_to_dict(fig):
+    """チャート図オブジェクトを JSON シリアライズ可能な dict に変換する。
+
+    - 文字列が渡された場合はエラーメッセージとして包んで返す
+    - ``to_plotly_json()`` メソッドを持つオブジェクトはそれを呼び出す
+      （現状はバックエンドのチャートデータ構築で用いている図オブジェクトが
+      該当する。フロントエンドではこの dict を Chart.js が解釈する）
+    - その後 ``normalize_chart_data`` で base64 や numpy 型・NaN を整形する
+    """
     if isinstance(fig, str):
         return {"error": fig}
-    
+
     if hasattr(fig, 'to_plotly_json'):
         data = fig.to_plotly_json()
     else:
         data = fig
-        
-    # Thoroughly clean bdata and numpy types
-    return clean_plotly_data(data)
+
+    return normalize_chart_data(data)
 
 def generate_json_for_ticker(row, df_info, df_metrics, output_dir, force_translate=False, monex_symbols=None, rakuten_symbols=None, sbi_symbols=None, mufg_symbols=None, matsui_symbols=None, dmm_symbols=None, paypay_symbols=None, moomoo_symbols=None, iwaicosmo_symbols=None):
     # Add a small random delay to mimic human behavior and avoid rate limits
@@ -265,7 +276,7 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, force_transla
         # --- Add Valuation Data ---
         # if "valuation" in fin_data:
         #    report_data["valuation"] = fin_data["valuation"]
-        #    report_data["charts"]["pe_valuation"] = fig_to_dict(fundamentals.get_valuation_plotly_fig(fin_data["valuation"]))
+        #    report_data["charts"]["pe_valuation"] = fig_to_dict(fundamentals.get_valuation_chart(fin_data["valuation"]))
         # ----------------------------
 
         # --- Add Earnings Surprise ---
@@ -645,12 +656,12 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, force_transla
     output_path = os.path.join(output_dir, f"{chart_target_symbol}.json")
     temp_path = output_path + ".tmp"
     try:
-        # Clean the entire report_data object before serialization.
+        # シリアライズ前に report_data 全体を正規化する。
         # allow_nan=False で標準準拠の JSON を保証する（NaN/Inf が混入していたら
-        # ここで例外。clean_plotly_data 側で取り切れていない場合に気付くための保険）。
-        cleaned_report_data = clean_plotly_data(report_data)
+        # ここで例外。normalize_chart_data 側で取り切れていない場合に気付くための保険）。
+        normalized_report_data = normalize_chart_data(report_data)
         with open(temp_path, "w", encoding="utf-8") as f:
-            json.dump(cleaned_report_data, f, ensure_ascii=False, allow_nan=False)
+            json.dump(normalized_report_data, f, ensure_ascii=False, allow_nan=False)
         os.replace(temp_path, output_path)
     except Exception as write_err:
         print(f"Error writing JSON for {ticker_display}: {write_err}")

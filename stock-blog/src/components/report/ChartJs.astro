@@ -96,13 +96,13 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
     });
   }
 
-  function renderChartJs(wrapper: HTMLElement, canvas: HTMLCanvasElement, plotlyData: any) {
-    if (!plotlyData || !plotlyData.data) return;
+  function renderChartJs(wrapper: HTMLElement, canvas: HTMLCanvasElement, srcData: any) {
+    if (!srcData || !srcData.data) return;
     const { isDark, textColor, gridColor } = getThemeColors();
     const yAxisPosition = wrapper.dataset.yAxisPosition || 'left';
     
-    // 事前にグループとデフォルトグループを判定しておく（transformPlotlyToChartJsで使用）
-    const datasets = plotlyData.data || [];
+    // 事前にグループとデフォルトグループを判定しておく（transformToChartJsで使用）
+    const datasets = srcData.data || [];
     const groups = new Set<string>();
     datasets.forEach((d: any) => {
       const match = (d.name || "").match(/\(([^)]+)\)$/);
@@ -123,7 +123,7 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
       defaultGroup = groupList.includes('1年') ? '1年' : groupList[0];
     }
 
-    const config = transformPlotlyToChartJs(plotlyData, isDark, textColor, gridColor, yAxisPosition, canvas.id, defaultGroup);
+    const config = transformToChartJs(srcData, isDark, textColor, gridColor, yAxisPosition, canvas.id, defaultGroup);
     if (!config) {
       if (canvas.id === 'chart-performance') console.warn('ChartJs: Config transformation failed for performance chart');
       return;
@@ -244,7 +244,7 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
     (canvas as any)._chart_instance = chart;
     
     // 最後にコントロールをセットアップし、初期グループがある場合は適用する
-    setupControls(wrapper, chart, plotlyData, defaultGroup);
+    setupControls(wrapper, chart, srcData, defaultGroup);
   }
 
   function formatYValueAbbreviated(v: any, isPercent: boolean, isPerformance: boolean = false, canvasId: string = '') {
@@ -277,7 +277,7 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
     return Math.round(v / 1e6).toLocaleString() + 'M';
   }
 
-  function setupControls(wrapper: HTMLElement, chart: any, plotlyData: any, defaultGroup: string | null = null) {
+  function setupControls(wrapper: HTMLElement, chart: any, srcData: any, defaultGroup: string | null = null) {
     const controlsContainer = wrapper.querySelector('.chart-controls');
     if (!controlsContainer) return;
 
@@ -290,7 +290,7 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
       if (match) groups.add(match[1]);
     });
 
-    const hasUpdateMenus = !!(plotlyData.layout?.updatemenus && plotlyData.layout.updatemenus.length > 0);
+    const hasUpdateMenus = !!(srcData.layout?.updatemenus && srcData.layout.updatemenus.length > 0);
     const hasGroups = groups.size > 1;
 
     if (!hasUpdateMenus && !hasGroups) return;
@@ -310,27 +310,27 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
         let maxLen = -1;
         
         groupTraces.forEach((ds: any) => {
-          const plotlyDs = plotlyData.data[ds.originalIndex];
-          if (plotlyDs && plotlyDs.x && plotlyDs.x.length > maxLen) {
-            maxLen = plotlyDs.x.length;
+          const srcDs = srcData.data[ds.originalIndex];
+          if (srcDs && srcDs.x && srcDs.x.length > maxLen) {
+            maxLen = srcDs.x.length;
             bestTraceIdx = ds.originalIndex;
           }
         });
 
         if (bestTraceIdx !== -1) {
-          const originalDataSeries = plotlyData.data[bestTraceIdx];
+          const originalDataSeries = srcData.data[bestTraceIdx];
           
           // Update the global labels
           chart.data.labels = originalDataSeries.x;
           
-          // Synchronize data for ALL datasets based on their original data in Plotly
+          // Synchronize data for ALL datasets based on their original source data
           chart.data.datasets.forEach((chartDs: any) => {
-            const plotlyDs = plotlyData.data[chartDs.originalIndex];
-            if (plotlyDs && plotlyDs.y) {
+            const srcDs = srcData.data[chartDs.originalIndex];
+            if (srcDs && srcDs.y) {
               // Ensure alignment with new labels
               chartDs.data = chart.data.labels.map((label: any) => {
-                const xIdx = (plotlyDs.x || []).findIndex((xv: any) => String(xv) === String(label));
-                return xIdx !== -1 ? plotlyDs.y[xIdx] : null;
+                const xIdx = (srcDs.x || []).findIndex((xv: any) => String(xv) === String(label));
+                return xIdx !== -1 ? srcDs.y[xIdx] : null;
               });
             }
           });
@@ -452,12 +452,12 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
     let activeIdx = 0;
     
     if (hasUpdateMenus) {
-      plotlyData.layout.updatemenus[0].buttons.forEach((btn: any, btnIdx: number) => {
+      srcData.layout.updatemenus[0].buttons.forEach((btn: any, btnIdx: number) => {
         // Find active button based on initial visibility
         const isVisibleArr = btn.args && btn.args[0] && btn.args[0].visible;
         if (isVisibleArr && Array.isArray(isVisibleArr)) {
           const matches = isVisibleArr.every((v: any, i: number) => {
-            const traceVisible = plotlyData.data[i]?.visible !== false;
+            const traceVisible = srcData.data[i]?.visible !== false;
             return (v === true) === traceVisible;
           });
           if (matches) activeIdx = btnIdx;
@@ -499,9 +499,9 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
     }
   }
 
-  function transformPlotlyToChartJs(plotlyData: any, isDark: boolean, textColor: string, gridColor: string, yAxisPosition: string = 'left', canvasId: string = '', defaultGroup: string | null = null) {
-    const data = plotlyData.data || [];
-    const layout = plotlyData.layout || {};
+  function transformToChartJs(srcData: any, isDark: boolean, textColor: string, gridColor: string, yAxisPosition: string = 'left', canvasId: string = '', defaultGroup: string | null = null) {
+    const data = srcData.data || [];
+    const layout = srcData.layout || {};
     if (data.length === 0) return null;
 
     const isScatterChart = data.some((d: any) => d.type === 'scatter' && d.mode && d.mode.includes('markers')) && !data.some((d: any) => d.type === 'bar');
@@ -530,7 +530,7 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
       const isRatio = name.includes('率') || name.includes('性向') || name.includes('利回り');
       const type = (d.type === 'bar') ? 'bar' : (isScatterChart ? 'scatter' : (isRatio ? 'line' : 'line'));
       
-      // Prioritize marker color from Plotly (explicitly set for segments)
+      // Prioritize explicitly set marker color (e.g. for segments)
       let baseColor = d.marker?.color || d.line?.color || (isDark ? '#ff6b01' : '#006cac');
       if (isScatterChart && name.includes('S&P') && !name.includes('銘柄')) baseColor = '#22c55e';
 
@@ -566,7 +566,7 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
         }));
       } else {
         // Important: Map individual trace data to global labels to ensure correct alignment
-        // Plotly traces can have different x-axis lengths/ranges, but Chart.js category axis requires synchronized indices
+        // Source traces can have different x-axis lengths/ranges, but Chart.js category axis requires synchronized indices
         s.data = labels.map((label: any) => {
           const xIdx = (d.x || []).findIndex((xv: any) => String(xv) === String(label));
           return xIdx !== -1 ? d.y[xIdx] : null;

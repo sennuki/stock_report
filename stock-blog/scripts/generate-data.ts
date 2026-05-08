@@ -389,7 +389,7 @@ async function main() {
   console.log('--- Integration Finished! ---');
 }
 
-// 補助関数: DefeatBeta (Split形式) から ChartJs (Plotly風) 用に変換
+// 補助関数: DefeatBeta (Split形式) から ChartJs 用のシリーズ形式に変換
 function convertDBFinancials(splitData: any, allowedKeys?: string[], offsetGroupMap?: Record<string, string>, suffix: string = '', visible: boolean = true) {
   if (!splitData || !splitData.columns || !splitData.data) return { data: [] };
   
@@ -919,7 +919,7 @@ function addMarginRatiosToIS(is: any) {
       y: m.source.y.map((v: number | null, i: number) => (v !== null && rev.y[i]) ? v / rev.y[i] : null),
       type: 'scatter',
       mode: 'lines+markers',
-      yaxis: 'y2', // Plotly format for secondary Y axis
+      yaxis: 'y2', // 第2 Y 軸の指定（ChartJs.astro 側で yAxisID にマップ）
       marker: { color: m.color },
       line: { color: m.color, width: 2 }
     });
