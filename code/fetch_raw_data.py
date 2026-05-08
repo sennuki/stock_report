@@ -100,30 +100,61 @@ def df_to_dict_safe(df):
         print(f"Conversion error: {e}")
     return None
 
+def _safe_get(fn, symbol, field):
+    """yfinance プロパティ取得をラップし、失敗時は None を返す"""
+    try:
+        return fn()
+    except Exception as e:
+        print(f"[{symbol}] {field} fetch failed: {e}")
+        return None
+
 def fetch_raw_data_for_ticker(symbol):
     """
     1銘柄の生データを yfinance と defeatbeta-api から取得
     """
     try:
         ticker = yf.Ticker(symbol)
-        
+
+        def _df(fn, field):
+            return df_to_dict_safe(_safe_get(fn, symbol, field))
+
+        def _cal():
+            cal = _safe_get(lambda: ticker.calendar, symbol, "calendar")
+            return stringify_keys_and_clean(cal) if cal is not None else None
+
+        def _divs():
+            d = _safe_get(lambda: ticker.dividends, symbol, "dividends")
+            if d is None:
+                return None
+            return df_to_dict_safe(d.to_frame() if hasattr(d, 'to_frame') else d)
+
+        def _rev_seg():
+            fn = getattr(ticker, 'revenue_by_segment', None)
+            val = _safe_get(lambda: fn() if callable(fn) else fn, symbol, "revenue_by_segment")
+            return df_to_dict_safe(val)
+
+        def _rev_geo():
+            fn = getattr(ticker, 'revenue_by_geography', None)
+            val = _safe_get(lambda: fn() if callable(fn) else fn, symbol, "revenue_by_geography")
+            return df_to_dict_safe(val)
+
         raw_payload = {
             "symbol": symbol,
-            "info": stringify_keys_and_clean(ticker.info),
-            "history": df_to_dict_safe(ticker.history(period="10y")),
-            "income_stmt": df_to_dict_safe(ticker.income_stmt),
-            "balancesheet": df_to_dict_safe(ticker.balance_sheet),
-            "cashflow": df_to_dict_safe(ticker.cashflow),
-            "quarterly_income_stmt": df_to_dict_safe(ticker.quarterly_income_stmt),
-            "quarterly_balancesheet": df_to_dict_safe(ticker.quarterly_balance_sheet),
-            "quarterly_cashflow": df_to_dict_safe(ticker.quarterly_cashflow),
-            "earnings_dates": df_to_dict_safe(ticker.earnings_dates),
-            "calendar": stringify_keys_and_clean(ticker.calendar) if ticker.calendar is not None else None,
-            "analyst_ratings": df_to_dict_safe(ticker.recommendations_summary),
-            "upgrades_downgrades": df_to_dict_safe(ticker.upgrades_downgrades),
-            "dividends": df_to_dict_safe(ticker.dividends.to_frame() if hasattr(ticker.dividends, 'to_frame') else ticker.dividends),
-            "revenue_by_segment": df_to_dict_safe(ticker.revenue_by_segment() if callable(getattr(ticker, 'revenue_by_segment', None)) else getattr(ticker, 'revenue_by_segment', None)),
-            "revenue_by_geography": df_to_dict_safe(ticker.revenue_by_geography() if callable(getattr(ticker, 'revenue_by_geography', None)) else getattr(ticker, 'revenue_by_geography', None))
+            "info": _safe_get(lambda: stringify_keys_and_clean(ticker.info), symbol, "info"),
+            "history": _df(lambda: ticker.history(period="10y"), "history"),
+            "income_stmt": _df(lambda: ticker.income_stmt, "income_stmt"),
+            "balancesheet": _df(lambda: ticker.balance_sheet, "balancesheet"),
+            "cashflow": _df(lambda: ticker.cashflow, "cashflow"),
+            "quarterly_income_stmt": _df(lambda: ticker.quarterly_income_stmt, "quarterly_income_stmt"),
+            "quarterly_balancesheet": _df(lambda: ticker.quarterly_balance_sheet, "quarterly_balancesheet"),
+            "quarterly_cashflow": _df(lambda: ticker.quarterly_cashflow, "quarterly_cashflow"),
+            "earnings_dates": _df(lambda: ticker.earnings_dates, "earnings_dates"),
+            "calendar": _cal(),
+            "analyst_ratings": _df(lambda: ticker.recommendations_summary, "analyst_ratings"),
+            "upgrades_downgrades": _df(lambda: ticker.upgrades_downgrades, "upgrades_downgrades"),
+            "dividends": _divs(),
+            "revenue_by_segment": _rev_seg(),
+            "revenue_by_geography": _rev_geo(),
         }
 
         # ETFの場合はdefeatbetaを使わない
