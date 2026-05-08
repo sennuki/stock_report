@@ -19,9 +19,20 @@ export default {
 
 export async function processAllStocks(env: Env) {
   console.log("--- Batch Processing Started ---");
-  
-  const objects = await env.STOCK_DATA.list({ prefix: 'raw/' });
-  
+
+  // R2.list() はデフォルト 1 ページ最大 1000 件。S&P 500/400/600 で
+  // 約 1500 件あるため cursor で全件を取得しないと末尾が落ちる。
+  const allObjects: { key: string }[] = [];
+  let cursor: string | undefined = undefined;
+  let pages = 0;
+  do {
+    const res: any = await env.STOCK_DATA.list({ prefix: 'raw/', cursor, limit: 1000 });
+    allObjects.push(...res.objects);
+    cursor = res.truncated ? res.cursor : undefined;
+    pages++;
+  } while (cursor);
+  console.log(`Listed ${allObjects.length} raw objects across ${pages} page(s).`);
+
   let baseStocksList: any[] = [];
   try {
     const listObj = await env.STOCK_DATA.get('raw/stocks_list.json');
@@ -36,7 +47,7 @@ export async function processAllStocks(env: Env) {
   const riskReturnMetrics: any[] = [];
   const topMovers: string[] = [];
 
-  const objectKeys = objects.objects.map(o => o.key).filter(k => k.endsWith('.json') && k !== 'raw/stocks_list.json');
+  const objectKeys = allObjects.map(o => o.key).filter(k => k.endsWith('.json') && k !== 'raw/stocks_list.json');
   console.log(`Found ${objectKeys.length} raw data files.`);
 
   const BATCH_SIZE = 50;
