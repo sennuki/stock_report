@@ -2,6 +2,7 @@
 import concurrent.futures
 import os
 import json
+import math
 import polars as pl
 import pandas as pd
 import numpy as np
@@ -76,24 +77,41 @@ def translate_summary(symbol, summary):
 from decimal import Decimal
 
 def clean_plotly_data(obj):
-    """Recursively remove 'bdata' and convert to standard lists."""
+    """Recursively remove 'bdata' and convert to standard lists.
+
+    NaN/Infinity を None に変換して、標準準拠の JSON を生成する。
+    JavaScript の `response.json()` は非標準の NaN/Infinity リテラルを
+    パースできないため、ここで None に正規化することで Cloudflare Workers
+    などの実行環境でも JSON が読めるようにする。
+    """
     if isinstance(obj, dict):
         if "bdata" in obj and "dtype" in obj:
             # Decode base64 binary data to list
             dtype = obj["dtype"]
             bdata = base64.b64decode(obj["bdata"])
-            return np.frombuffer(bdata, dtype=dtype).tolist()
+            arr = np.frombuffer(bdata, dtype=dtype)
+            # NaN/Inf を None に変換
+            return [None if (isinstance(v, float) and (math.isnan(v) or math.isinf(v))) else v
+                    for v in arr.tolist()]
         return {k: clean_plotly_data(v) for k, v in obj.items()}
     elif isinstance(obj, list):
         return [clean_plotly_data(v) for v in obj]
     elif isinstance(obj, np.ndarray):
-        return obj.tolist()
+        return [None if (isinstance(v, float) and (math.isnan(v) or math.isinf(v))) else v
+                for v in obj.tolist()]
     elif isinstance(obj, Decimal):
         return float(obj)
     elif isinstance(obj, (np.generic, datetime.datetime, datetime.date)):
         if hasattr(obj, 'isoformat'):
             return obj.isoformat()
-        return obj.item()
+        v = obj.item()
+        if isinstance(v, float) and (math.isnan(v) or math.isinf(v)):
+            return None
+        return v
+    elif isinstance(obj, float):
+        if math.isnan(obj) or math.isinf(obj):
+            return None
+        return obj
     return obj
 
 def fig_to_dict(fig):
@@ -627,10 +645,12 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, force_transla
     output_path = os.path.join(output_dir, f"{chart_target_symbol}.json")
     temp_path = output_path + ".tmp"
     try:
-        # Clean the entire report_data object before serialization
+        # Clean the entire report_data object before serialization.
+        # allow_nan=False で標準準拠の JSON を保証する（NaN/Inf が混入していたら
+        # ここで例外。clean_plotly_data 側で取り切れていない場合に気付くための保険）。
         cleaned_report_data = clean_plotly_data(report_data)
         with open(temp_path, "w", encoding="utf-8") as f:
-            json.dump(cleaned_report_data, f, ensure_ascii=False)
+            json.dump(cleaned_report_data, f, ensure_ascii=False, allow_nan=False)
         os.replace(temp_path, output_path)
     except Exception as write_err:
         print(f"Error writing JSON for {ticker_display}: {write_err}")

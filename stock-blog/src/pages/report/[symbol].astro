@@ -62,13 +62,25 @@ if (jsonPath && fs.existsSync(jsonPath)) {
     reportData = null;
   }
 } else {
-  // フォールバック: fetch で自身のサーバーから取得を試みる
+  // フォールバック: fetch で自身のサーバーから取得を試みる。
+  // response.json() は標準 JSON のみ受け付け NaN/Infinity リテラルを
+  // 含むファイルではエラーになるため、text() → 置換 → JSON.parse で
+  // 取り扱う。
   try {
     const origin = Astro.url.origin;
     const response = await fetch(`${origin}/reports/${symbol}.json`);
     if (response.ok) {
-      reportData = await response.json();
-      lastUpdated = "Web取得";
+      const raw = await response.text();
+      const sanitized = raw
+        .replace(/\bNaN\b/g, "null")
+        .replace(/-?\bInfinity\b/g, "null");
+      try {
+        reportData = JSON.parse(sanitized);
+        lastUpdated = "Web取得";
+      } catch (parseErr) {
+        if (import.meta.env.DEV) console.error(`JSON parse failed for ${symbol}`, parseErr);
+        reportData = null;
+      }
     }
   } catch(e) {
     // 無視
