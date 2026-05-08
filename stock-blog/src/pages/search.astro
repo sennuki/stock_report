@@ -12,6 +12,7 @@ interface Stock {
   Security: string;
   Security_JA?: string;
   "GICS Sector"?: string;
+  Index?: string;
 }
 
 // 検索に必要な最小限のフィールドだけクライアントへ渡す
@@ -20,6 +21,7 @@ const searchData = (stocks as Stock[]).map(s => ({
   n: s.Security || "",
   j: s.Security_JA || "",
   c: s["GICS Sector"] || "",
+  i: s.Index || "S&P 500",
 }));
 
 const sectorTranslations: Record<string, string> = {
@@ -193,6 +195,7 @@ const description = "S&P 500 構成銘柄をティッカーコード・英語社
         li.className =
           "block bg-skin-card border border-skin-line rounded-md hover:border-skin-accent hover:shadow-sm transition-all";
         const sectorJa = (sectorTranslations || {})[st.c] || st.c || "";
+        const indexLabel = st.i || "";
         li.innerHTML = `
           <a href="${baseNoSlash}/report/${encodeURIComponent(st.s)}"
              class="flex items-center gap-3 px-4 py-3 focus:outline-none focus:bg-skin-fill/30">
@@ -201,6 +204,7 @@ const description = "S&P 500 構成銘柄をティッカーコード・英語社
               <span class="block truncate font-medium">${highlight(st.n, q)}</span>
               ${st.j ? `<span class="block truncate text-xs opacity-70">${highlight(st.j, q)}</span>` : ""}
             </span>
+            ${indexLabel ? `<span class="hidden md:inline-block text-[10px] font-bold px-2 py-0.5 rounded border border-skin-accent/40 text-skin-accent shrink-0">${escapeHtml(indexLabel)}</span>` : ""}
             ${sectorJa ? `<span class="hidden sm:inline-block text-xs px-2 py-0.5 rounded-full border border-skin-line opacity-70 shrink-0">${escapeHtml(sectorJa)}</span>` : ""}
           </a>
         `;

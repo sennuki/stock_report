@@ -239,7 +239,18 @@ if (reportData?.analyst_ratings) {
         </div>
     ) : (
       <div class="report-content bg-skin-card p-4 sm:p-8 rounded-lg border border-skin-line shadow-sm" data-pagefind-body>
-        <h1 class="text-3xl font-bold mb-2" data-pagefind-meta="title">銘柄分析レポート: {reportData.symbol} ({reportData.security_ja || reportData.security})</h1>
+        <h1 class="text-3xl font-bold mb-2 flex flex-wrap items-baseline gap-3" data-pagefind-meta="title">
+          <span>銘柄分析レポート: {reportData.symbol} ({reportData.security_ja || reportData.security})</span>
+          {stockInfo?.Index && (
+            <a
+              href={`${base}?idx=${encodeURIComponent(stockInfo.Index)}`}
+              class="text-xs font-bold px-2 py-1 rounded border border-skin-accent/40 text-skin-accent hover:bg-skin-accent/10 transition-colors no-underline"
+              aria-label={`${stockInfo.Index} 構成銘柄の一覧へ`}
+            >
+              {stockInfo.Index}
+            </a>
+          )}
+        </h1>
         {lastUpdated && (
           <div class="flex items-center text-sm text-gray-500 mb-6 bg-skin-fill/30 px-3 py-1.5 rounded-md border border-skin-line w-fit">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-skin-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">

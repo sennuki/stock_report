@@ -12,6 +12,7 @@ interface Stock {
   "GICS Sector": string;
   "GICS Sub-Industry": string;
   Earnings_Date?: string;
+  Index?: string;
   [key: string]: any;
 }
 
@@ -31,7 +32,6 @@ try {
 }
 
 // Check if earnings was within the last 7 days
-// 実績データ (Actual_Earnings_Date) が直近7日以内かどうかで判定する
 const isRecentEarnings = (stock?: Stock) => {
   return stock?.Is_Recent_Actual === true;
 };
@@ -50,23 +50,57 @@ const sectorTranslations: Record<string, string> = {
   "Utilities": "公益事業"
 };
 
-// Group by Sector
-const stocksBySector = stocks.reduce((acc, stock) => {
-  const sector = stock['GICS Sector'] || 'Unknown';
-  if (!acc[sector]) {
-    acc[sector] = [];
+// 指数ごとに分類（既存データに Index が無い場合は S&P 500 とみなす）
+const INDICES = ["S&P 500", "S&P 400", "S&P 600"] as const;
+type IndexLabel = typeof INDICES[number];
+
+const stocksByIndex: Record<IndexLabel, Stock[]> = {
+  "S&P 500": [],
+  "S&P 400": [],
+  "S&P 600": [],
+};
+stocks.forEach(s => {
+  const idx = (s.Index || "S&P 500") as IndexLabel;
+  if (stocksByIndex[idx]) {
+    stocksByIndex[idx].push(s);
+  } else {
+    stocksByIndex["S&P 500"].push(s);
   }
-  acc[sector].push(stock);
-  return acc;
-}, {} as Record<string, Stock[]>);
-
-// Sort Sectors
-const sortedSectors = Object.keys(stocksBySector).sort();
-
-// Sort stocks within each sector
-sortedSectors.forEach(sector => {
-    stocksBySector[sector].sort((a: Stock, b: Stock) => a.Symbol_YF.localeCompare(b.Symbol_YF));
 });
+
+// 各指数ごとに「セクター別」「平均変動率」を計算
+function buildIndexView(arr: Stock[]) {
+  const grouped = arr.reduce((acc, stock) => {
+    const sector = stock['GICS Sector'] || 'Unknown';
+    if (!acc[sector]) acc[sector] = [];
+    acc[sector].push(stock);
+    return acc;
+  }, {} as Record<string, Stock[]>);
+
+  const sectors = Object.keys(grouped).sort();
+  sectors.forEach(sector => {
+    grouped[sector].sort((a, b) => a.Symbol_YF.localeCompare(b.Symbol_YF));
+  });
+
+  const validChanges = arr
+    .filter(s => s.Daily_Change !== undefined && s.Daily_Change !== null)
+    .map(s => s.Daily_Change as number);
+  const averageChange = validChanges.length > 0
+    ? validChanges.reduce((a, b) => a + b, 0) / validChanges.length
+    : null;
+
+  return { grouped, sectors, averageChange };
+}
+
+const indexViews = INDICES.map(idx => ({
+  label: idx,
+  count: stocksByIndex[idx].length,
+  view: buildIndexView(stocksByIndex[idx]),
+  stocks: stocksByIndex[idx],
+}));
+
+// 既定で表示する指数（最初に銘柄が入っているもの）
+const initialActiveIndex = indexViews.find(v => v.count > 0)?.label || "S&P 500";
 
 const formatChange = (change?: number) => {
   if (change === undefined || change === null) return null;
@@ -76,52 +110,38 @@ const formatChange = (change?: number) => {
   return { val, color, prefix };
 };
 
-// Calculate Average S&P 500 Change
-const validChanges = stocks
-  .filter(s => s.Daily_Change !== undefined && s.Daily_Change !== null)
-  .map(s => s.Daily_Change as number);
-const averageChange = validChanges.length > 0 
-  ? validChanges.reduce((a, b) => a + b, 0) / validChanges.length 
-  : null;
-const formattedAvgChange = formatChange(averageChange || undefined);
+const totalCount = stocks.length;
 
 const base = import.meta.env.BASE_URL.endsWith("/")
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
+
+// SEO 用 title/description
+const title = `アメリカ株インサイト：S&P 500/400/600 銘柄分析（${totalCount} 銘柄）`;
+const description = `S&P 500・S&P 400（中型株）・S&P 600（小型株）の合計 ${totalCount} 銘柄について、株価・PER・ROE・配当利回り・財務推移などのファンダメンタルデータを日本語で網羅。米国株投資の銘柄分析に。`;
 ---
 
-<Layout>
+<Layout title={title} description={description}>
   <Header />
   <main id="main-content">
     <section id="hero" class="pt-8 pb-6" data-pagefind-body>
       <div class="flex justify-center mb-4">
         <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 border border-green-200 dark:border-green-800">
-          <span class="relative flex h-2 w-2 mr-2">
+          <span class="relative flex h-2 w-2 mr-2" aria-hidden="true">
             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
             <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
           </span>
-          米国市場閉場後、全500銘柄を毎日自動更新中
+          米国市場閉場後、全{totalCount}銘柄（S&P 500/400/600）を毎日自動更新中
         </span>
       </div>
       <h1 class="my-4 text-3xl font-bold sm:my-8 sm:text-6xl text-center tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-skin-accent to-green-500" data-pagefind-meta="title">
-        アメリカ株インサイト：<br class="sm:hidden" />S&P500銘柄深堀り
+        アメリカ株インサイト：<br class="sm:hidden" />S&P 500/400/600 銘柄深堀り
       </h1>
 
-      {formattedAvgChange && (
-        <div class="flex flex-col items-center justify-center mb-8">
-          <div class={`inline-flex items-baseline px-8 py-3 rounded-2xl bg-skin-card border-2 ${formattedAvgChange.prefix === '+' ? 'border-green-500/30' : 'border-red-500/30'} shadow-md transform hover:scale-105 transition-transform`}>
-            <span class="text-xs font-bold opacity-60 mr-4 uppercase tracking-[0.2em] border-r pr-4 border-skin-line">S&P 500 Market Avg</span>
-            <span class={`text-4xl font-mono font-black ${formattedAvgChange.color} drop-shadow-sm`}>
-              {formattedAvgChange.prefix === '+' ? '▲' : '▼'} {formattedAvgChange.val}%
-            </span>
-          </div>
-        </div>
-      )}
-
       <p class="mb-10 mt-4 text-center opacity-90 max-w-3xl mx-auto px-4 text-lg sm:text-xl leading-relaxed font-medium">
-        市場が閉まるたび、全500銘柄のファンダメンタルズを全自動で解析。<br class="hidden sm:block" />
+        市場が閉まるたび、大型株(S&P 500)・中型株(S&P 400)・小型株(S&P 600) 合計 {totalCount} 銘柄のファンダメンタルズを全自動で解析。<br class="hidden sm:block" />
       </p>
-      
+
       <div class="max-w-2xl mx-auto px-4 mb-12">
         <p class="text-[10px] text-center text-gray-400 leading-tight">
           ※掲載データはyfinanceより自動取得したものであり、その正確性を保証するものではありません。情報の誤りにより生じた損害について、当サイトは一切の責任を負いかねます。最新の正確な情報は必ず各企業の公式サイトや適時開示資料をご確認ください。
@@ -129,135 +149,179 @@ const base = import.meta.env.BASE_URL.endsWith("/")
       </div>
     </section>
 
-    <!-- Daily Rankings Section -->
-    <section class="mb-12 max-w-app mx-auto px-4" data-pagefind-ignore>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <!-- Gainers (Top 5) -->
-        <div class="bg-skin-card p-6 rounded-xl border border-green-200 dark:border-green-900/50 shadow-sm">
-          <h3 class="text-lg font-bold mb-4 flex items-center text-green-700 dark:text-green-400 gap-2">
-            <span class="material-symbols-outlined text-green-600" aria-hidden="true">trending_up</span> 今日の値上がり上位
-          </h3>
-          <div class="space-y-3">
-            {[...stocks]
-              .filter(s => s.Daily_Change !== undefined && s.Daily_Change !== null)
-              .sort((a, b) => (b.Daily_Change || 0) - (a.Daily_Change || 0))
-              .slice(0, 5)
-              .map((stock) => {
-                const change = formatChange(stock.Daily_Change);
-                return (
-                  <a href={`${base}report/${stock.Symbol_YF}/`} class="flex items-center justify-between p-2 hover:bg-green-50 dark:hover:bg-green-900/20 rounded transition-colors group">
-                    <div class="flex items-center">
-                      <span class="font-bold text-skin-accent w-16">{stock.Symbol_YF}</span>
-                      {isRecentEarnings(stock) && (
-                        <span class="mr-2 px-1 py-0.5 text-[10px] font-bold bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300 border border-amber-200 dark:border-amber-800 rounded leading-none uppercase tracking-tighter shadow-sm animate-pulse whitespace-nowrap">
-                          決算
-                        </span>
-                      )}
-                      <span class="text-sm opacity-80 truncate max-w-[120px] sm:max-w-[180px]">{stock.Security_JA || stock.Security}</span>
-                    </div>
-                    {change && (
-                      <span class={`font-mono font-bold ${change.color}`}>
-                        {change.prefix}{change.val}%
-                      </span>
-                    )}
-                  </a>
-                );
-              })
-            }
-          </div>
-        </div>
-
-        <!-- Losers (Bottom 5) -->
-        <div class="bg-skin-card p-6 rounded-xl border border-red-200 dark:border-red-900/50 shadow-sm">
-          <h3 class="text-lg font-bold mb-4 flex items-center text-red-700 dark:text-red-400 gap-2">
-            <span class="material-symbols-outlined text-red-600" aria-hidden="true">trending_down</span> 今日の値下がり上位
-          </h3>
-          <div class="space-y-3">
-            {[...stocks]
-              .filter(s => s.Daily_Change !== undefined && s.Daily_Change !== null)
-              .sort((a, b) => (a.Daily_Change || 0) - (b.Daily_Change || 0))
-              .slice(0, 5)
-              .map((stock) => {
-                const change = formatChange(stock.Daily_Change);
-                return (
-                  <a href={`${base}report/${stock.Symbol_YF}/`} class="flex items-center justify-between p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors group">
-                    <div class="flex items-center">
-                      <span class="font-bold text-skin-accent w-16">{stock.Symbol_YF}</span>
-                      {isRecentEarnings(stock) && (
-                        <span class="mr-2 px-1 py-0.5 text-[10px] font-bold bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300 border border-amber-200 dark:border-amber-800 rounded leading-none uppercase tracking-tighter shadow-sm animate-pulse whitespace-nowrap">
-                          決算
-                        </span>
-                      )}
-                      <span class="text-sm opacity-80 truncate max-w-[120px] sm:max-w-[180px]">{stock.Security_JA || stock.Security}</span>
-                    </div>
-                    {change && (
-                      <span class={`font-mono font-bold ${change.color}`}>
-                        {change.prefix}{change.val}%
-                      </span>
-                    )}
-                  </a>
-                );
-              })
-            }
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Sector Tags -->
-    <section class="mb-10 max-w-app mx-auto px-4">
-      <div class="flex flex-wrap justify-center gap-2">
-        {sortedSectors.map((sector) => (
-          <a 
-            href={`#${sector}`}
-            class="px-3 py-1 bg-skin-card border border-skin-line rounded-full text-sm hover:text-skin-accent hover:border-skin-accent transition-colors"
+    <!-- 指数タブ -->
+    <section class="mb-8 max-w-app mx-auto px-4" data-pagefind-ignore>
+      <div role="tablist" aria-label="指数の切り替え" class="index-tabs flex justify-center gap-2 border-b border-skin-line">
+        {indexViews.map((iv) => (
+          <button
+            type="button"
+            role="tab"
+            data-index-tab={iv.label}
+            aria-selected={iv.label === initialActiveIndex ? "true" : "false"}
+            aria-controls={`index-panel-${iv.label.replace(/[^A-Za-z0-9]/g, '-')}`}
+            class:list={[
+              "px-5 py-2.5 text-sm font-bold border-b-2 transition-colors",
+              iv.label === initialActiveIndex
+                ? "border-skin-accent text-skin-accent"
+                : "border-transparent opacity-60 hover:opacity-100 hover:text-skin-accent",
+            ]}
           >
-            {sectorTranslations[sector] || sector}
-          </a>
+            {iv.label}
+            <span class="ml-2 text-xs font-normal opacity-70">({iv.count})</span>
+          </button>
         ))}
       </div>
+      <p class="text-xs opacity-60 text-center mt-2">
+        S&P 500（大型株）・S&P 400（中型株）・S&P 600（小型株）。タブで切り替えてご覧ください。
+      </p>
     </section>
 
-    <section class="mb-12 max-w-app mx-auto px-4">
-      {sortedSectors.map((sector) => (
-        <div class="mb-12" id={sector}>
-          <h2 class="text-2xl font-bold mb-6 border-l-4 border-skin-accent pl-4 flex items-baseline flex-wrap">
-            <span class="mr-4">{sectorTranslations[sector] || '未分類'}</span>
-            <span class="text-base font-normal opacity-70">{sector}</span>
-          </h2>
-          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {stocksBySector[sector].map((stock) => {
-              const change = formatChange(stock.Daily_Change);
-              return (
-                <a 
-                  href={`${base}report/${stock.Symbol_YF}/`} 
-                  class="group block p-4 border border-skin-line rounded-lg hover:border-skin-accent hover:shadow-lg transition-all bg-skin-card relative overflow-hidden"
-                  data-pagefind-ignore
-                >
-                  {isRecentEarnings(stock) && (
-                    <div class="absolute top-0 right-0 bg-amber-500 text-white text-[8px] font-black px-1.5 py-0.5 rounded-bl-lg uppercase tracking-tighter animate-pulse shadow-sm">
-                      決算
-                    </div>
-                  )}
-
-                  <div class="flex justify-between items-start mb-1">
-                    <div class="text-lg font-bold text-skin-accent group-hover:underline decoration-dashed underline-offset-4">{stock.Symbol_YF}</div>
-                    {change && (
-                      <div class={`text-xs font-bold ${change.color} pt-1`}>
-                        {change.prefix}{change.val}%
-                      </div>
-                    )}
+    {indexViews.map((iv) => {
+      const panelId = `index-panel-${iv.label.replace(/[^A-Za-z0-9]/g, '-')}`;
+      const isActive = iv.label === initialActiveIndex;
+      const formattedAvgChange = formatChange(iv.view.averageChange ?? undefined);
+      return (
+        <div
+          id={panelId}
+          role="tabpanel"
+          data-index-panel={iv.label}
+          hidden={!isActive}
+          aria-labelledby={`tab-${iv.label.replace(/[^A-Za-z0-9]/g, '-')}`}
+        >
+          {iv.count === 0 ? (
+            <p class="text-center py-12 opacity-70">
+              {iv.label} のデータは現在準備中です。データ生成パイプラインの実行が完了すると表示されます。
+            </p>
+          ) : (
+            <>
+              {formattedAvgChange && (
+                <div class="flex flex-col items-center justify-center mb-8 px-4">
+                  <div class={`inline-flex items-baseline px-6 sm:px-8 py-3 rounded-2xl bg-skin-card border-2 ${formattedAvgChange.prefix === '+' ? 'border-green-500/30' : 'border-red-500/30'} shadow-md`}>
+                    <span class="text-xs font-bold opacity-60 mr-3 sm:mr-4 uppercase tracking-[0.2em] border-r pr-3 sm:pr-4 border-skin-line">{iv.label} Avg</span>
+                    <span class={`text-3xl sm:text-4xl font-mono font-black ${formattedAvgChange.color} drop-shadow-sm`}>
+                      {formattedAvgChange.prefix === '+' ? '▲' : '▼'} {formattedAvgChange.val}%
+                    </span>
                   </div>
-                  <div class="text-sm opacity-90 truncate" title={stock.Security_JA || stock.Security}>{stock.Security_JA || stock.Security}</div>
-                </a>
-              );
-            })}
-          </div>
-        </div>
-      ))}
-    </section>
+                </div>
+              )}
 
-    <!-- トップに戻るボタン -->
+              <!-- Daily Rankings -->
+              <section class="mb-12 max-w-app mx-auto px-4" data-pagefind-ignore>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div class="bg-skin-card p-6 rounded-xl border border-green-200 dark:border-green-900/50 shadow-sm">
+                    <h3 class="text-lg font-bold mb-4 flex items-center text-green-700 dark:text-green-400 gap-2">
+                      <span class="material-symbols-outlined text-green-600" aria-hidden="true">trending_up</span> {iv.label} 値上がり上位
+                    </h3>
+                    <div class="space-y-3">
+                      {[...iv.stocks]
+                        .filter(s => s.Daily_Change !== undefined && s.Daily_Change !== null)
+                        .sort((a, b) => (b.Daily_Change || 0) - (a.Daily_Change || 0))
+                        .slice(0, 5)
+                        .map((stock) => {
+                          const change = formatChange(stock.Daily_Change);
+                          return (
+                            <a href={`${base}report/${stock.Symbol_YF}/`} class="flex items-center justify-between p-2 hover:bg-green-50 dark:hover:bg-green-900/20 rounded transition-colors group">
+                              <div class="flex items-center min-w-0">
+                                <span class="font-bold text-skin-accent w-16 shrink-0">{stock.Symbol_YF}</span>
+                                {isRecentEarnings(stock) && (
+                                  <span class="mr-2 px-1 py-0.5 text-[10px] font-bold bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300 border border-amber-200 dark:border-amber-800 rounded leading-none uppercase tracking-tighter shadow-sm animate-pulse whitespace-nowrap">決算</span>
+                                )}
+                                <span class="text-sm opacity-80 truncate">{stock.Security_JA || stock.Security}</span>
+                              </div>
+                              {change && (
+                                <span class={`font-mono font-bold ${change.color} shrink-0 ml-2`}>{change.prefix}{change.val}%</span>
+                              )}
+                            </a>
+                          );
+                        })}
+                    </div>
+                  </div>
+
+                  <div class="bg-skin-card p-6 rounded-xl border border-red-200 dark:border-red-900/50 shadow-sm">
+                    <h3 class="text-lg font-bold mb-4 flex items-center text-red-700 dark:text-red-400 gap-2">
+                      <span class="material-symbols-outlined text-red-600" aria-hidden="true">trending_down</span> {iv.label} 値下がり上位
+                    </h3>
+                    <div class="space-y-3">
+                      {[...iv.stocks]
+                        .filter(s => s.Daily_Change !== undefined && s.Daily_Change !== null)
+                        .sort((a, b) => (a.Daily_Change || 0) - (b.Daily_Change || 0))
+                        .slice(0, 5)
+                        .map((stock) => {
+                          const change = formatChange(stock.Daily_Change);
+                          return (
+                            <a href={`${base}report/${stock.Symbol_YF}/`} class="flex items-center justify-between p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors group">
+                              <div class="flex items-center min-w-0">
+                                <span class="font-bold text-skin-accent w-16 shrink-0">{stock.Symbol_YF}</span>
+                                {isRecentEarnings(stock) && (
+                                  <span class="mr-2 px-1 py-0.5 text-[10px] font-bold bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300 border border-amber-200 dark:border-amber-800 rounded leading-none uppercase tracking-tighter shadow-sm animate-pulse whitespace-nowrap">決算</span>
+                                )}
+                                <span class="text-sm opacity-80 truncate">{stock.Security_JA || stock.Security}</span>
+                              </div>
+                              {change && (
+                                <span class={`font-mono font-bold ${change.color} shrink-0 ml-2`}>{change.prefix}{change.val}%</span>
+                              )}
+                            </a>
+                          );
+                        })}
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Sector Tags -->
+              <section class="mb-10 max-w-app mx-auto px-4">
+                <div class="flex flex-wrap justify-center gap-2">
+                  {iv.view.sectors.map((sector) => (
+                    <a
+                      href={`#${iv.label.replace(/[^A-Za-z0-9]/g, '-')}-${sector}`}
+                      class="px-3 py-1 bg-skin-card border border-skin-line rounded-full text-sm hover:text-skin-accent hover:border-skin-accent transition-colors"
+                    >
+                      {sectorTranslations[sector] || sector}
+                    </a>
+                  ))}
+                </div>
+              </section>
+
+              <!-- Sector Sections -->
+              <section class="mb-12 max-w-app mx-auto px-4">
+                {iv.view.sectors.map((sector) => (
+                  <div class="mb-12" id={`${iv.label.replace(/[^A-Za-z0-9]/g, '-')}-${sector}`}>
+                    <h2 class="text-2xl font-bold mb-6 border-l-4 border-skin-accent pl-4 flex items-baseline flex-wrap">
+                      <span class="mr-4">{sectorTranslations[sector] || '未分類'}</span>
+                      <span class="text-base font-normal opacity-70">{sector}</span>
+                    </h2>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                      {iv.view.grouped[sector].map((stock) => {
+                        const change = formatChange(stock.Daily_Change);
+                        return (
+                          <a
+                            href={`${base}report/${stock.Symbol_YF}/`}
+                            class="group block p-4 border border-skin-line rounded-lg hover:border-skin-accent hover:shadow-lg transition-all bg-skin-card relative overflow-hidden"
+                            data-pagefind-ignore
+                          >
+                            {isRecentEarnings(stock) && (
+                              <div class="absolute top-0 right-0 bg-amber-500 text-white text-[8px] font-black px-1.5 py-0.5 rounded-bl-lg uppercase tracking-tighter animate-pulse shadow-sm">決算</div>
+                            )}
+                            <div class="flex justify-between items-start mb-1">
+                              <div class="text-lg font-bold text-skin-accent group-hover:underline decoration-dashed underline-offset-4">{stock.Symbol_YF}</div>
+                              {change && (
+                                <div class={`text-xs font-bold ${change.color} pt-1`}>{change.prefix}{change.val}%</div>
+                              )}
+                            </div>
+                            <div class="text-sm opacity-90 truncate" title={stock.Security_JA || stock.Security}>{stock.Security_JA || stock.Security}</div>
+                          </a>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </section>
+            </>
+          )}
+        </div>
+      );
+    })}
+
     <div class="mt-12 mb-20 text-center">
       <a href="#" class="px-6 py-2 bg-skin-card border border-skin-line rounded-full text-sm font-bold hover:text-skin-accent hover:border-skin-accent transition-all inline-flex items-center gap-2">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -269,3 +333,64 @@ const base = import.meta.env.BASE_URL.endsWith("/")
   </main>
   <Footer />
 </Layout>
+
+<script is:inline>
+  (function () {
+    function initIndexTabs() {
+      const tabs = Array.from(document.querySelectorAll('[data-index-tab]'));
+      const panels = Array.from(document.querySelectorAll('[data-index-panel]'));
+      if (!tabs.length || !panels.length) return;
+
+      function activate(label) {
+        tabs.forEach((t) => {
+          const isActive = t.getAttribute('data-index-tab') === label;
+          t.setAttribute('aria-selected', isActive ? 'true' : 'false');
+          if (isActive) {
+            t.classList.add('border-skin-accent', 'text-skin-accent');
+            t.classList.remove('border-transparent', 'opacity-60');
+          } else {
+            t.classList.remove('border-skin-accent', 'text-skin-accent');
+            t.classList.add('border-transparent', 'opacity-60');
+          }
+        });
+        panels.forEach((p) => {
+          const isActive = p.getAttribute('data-index-panel') === label;
+          if (isActive) {
+            p.removeAttribute('hidden');
+          } else {
+            p.setAttribute('hidden', '');
+          }
+        });
+        try {
+          const url = new URL(window.location.href);
+          url.searchParams.set('idx', label);
+          history.replaceState(history.state, '', url.toString());
+        } catch (e) {}
+        try {
+          localStorage.setItem('preferredIndex', label);
+        } catch (e) {}
+      }
+
+      tabs.forEach((t) => {
+        t.addEventListener('click', () => {
+          activate(t.getAttribute('data-index-tab'));
+        });
+      });
+
+      // 初期表示の優先順: ?idx= > localStorage > 既定
+      const params = new URLSearchParams(window.location.search);
+      const fromQuery = params.get('idx');
+      let stored = null;
+      try {
+        stored = localStorage.getItem('preferredIndex');
+      } catch (e) {}
+      const wanted = fromQuery || stored;
+      if (wanted && tabs.some((t) => t.getAttribute('data-index-tab') === wanted)) {
+        activate(wanted);
+      }
+    }
+
+    document.addEventListener('astro:page-load', initIndexTabs);
+    initIndexTabs();
+  })();
+</script>

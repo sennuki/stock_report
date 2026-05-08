@@ -21,22 +21,45 @@ try {
   console.error("Failed to load stocks from R2", e);
 }
 
-// アルファベット順（A-Z）にソート
-const sortedStocks = [...stocksData].sort((a, b) => a.Symbol.localeCompare(b.Symbol));
+// 指数ごとに分類（既存データに Index が無い場合は S&P 500 とみなす）
+const INDICES = ["S&P 500", "S&P 400", "S&P 600"] as const;
+type IndexLabel = typeof INDICES[number];
 
-// 各アルファベットごとのグループ分け
-const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-const groupedStocks = alphabet.reduce<Record<string, any[]>>((acc, letter) => {
-  acc[letter] = sortedStocks.filter(s => s.Symbol.startsWith(letter));
-  return acc;
-}, {});
-
-// 有効なアルファベットのみ（銘柄が存在するもの）
-const activeLetters = alphabet.filter(letter => groupedStocks[letter].length > 0);
-
-const isRecentEarnings = (stock?: any) => {
-  return stock?.Is_Recent_Actual === true;
+const stocksByIndex: Record<IndexLabel, any[]> = {
+  "S&P 500": [],
+  "S&P 400": [],
+  "S&P 600": [],
 };
+stocksData.forEach((s: any) => {
+  const idx = (s.Index || "S&P 500") as IndexLabel;
+  if (stocksByIndex[idx]) {
+    stocksByIndex[idx].push(s);
+  } else {
+    stocksByIndex["S&P 500"].push(s);
+  }
+});
+
+const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+
+function buildAzView(arr: any[]) {
+  const sorted = [...arr].sort((a, b) => a.Symbol.localeCompare(b.Symbol));
+  const grouped = alphabet.reduce<Record<string, any[]>>((acc, letter) => {
+    acc[letter] = sorted.filter(s => s.Symbol.startsWith(letter));
+    return acc;
+  }, {});
+  const activeLetters = alphabet.filter(l => grouped[l].length > 0);
+  return { grouped, activeLetters };
+}
+
+const indexViews = INDICES.map(idx => ({
+  label: idx,
+  count: stocksByIndex[idx].length,
+  view: buildAzView(stocksByIndex[idx]),
+}));
+
+const initialActiveIndex = indexViews.find(v => v.count > 0)?.label || "S&P 500";
+
+const isRecentEarnings = (stock?: any) => stock?.Is_Recent_Actual === true;
 
 const formatChange = (change?: number) => {
   if (change === undefined || change === null) return null;
@@ -49,67 +72,109 @@ const formatChange = (change?: number) => {
 const base = import.meta.env.BASE_URL.endsWith("/")
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
+
+const totalCount = stocksData.length;
+const title = `A-Z 銘柄一覧 (${totalCount}銘柄) | アメリカ株インサイト`;
+const description = `S&P 500・S&P 400・S&P 600 の合計 ${totalCount} 銘柄をアルファベット順に表示。指数別タブで切り替えられます。`;
 ---
 
-<Layout title="A-Z 銘柄一覧 | アメリカ株インサイト">
+<Layout title={title} description={description}>
   <Header />
-  <Main pageTitle="A-Z 銘柄一覧" pageDesc="S&P 500構成銘柄をアルファベット順に表示しています。">
-    
-    <!-- アルファベットナビゲーション (index.astroのセクタータグ風) -->
-    <nav class="mb-12 flex flex-wrap gap-2">
-      {activeLetters.map(letter => (
-        <a 
-          href={`#${letter}`} 
-          class="px-4 py-2 bg-skin-card border border-skin-line rounded-full text-sm font-bold hover:text-skin-accent hover:border-skin-accent transition-all hover:shadow-sm"
+  <Main pageTitle="A-Z 銘柄一覧" pageDesc={`S&P 500/400/600 (${totalCount}銘柄) をアルファベット順に表示しています。`}>
+
+    <!-- 指数タブ -->
+    <nav role="tablist" aria-label="指数の切り替え" class="index-tabs flex flex-wrap gap-2 mb-6 border-b border-skin-line">
+      {indexViews.map(iv => (
+        <button
+          type="button"
+          role="tab"
+          data-index-tab={iv.label}
+          aria-selected={iv.label === initialActiveIndex ? "true" : "false"}
+          aria-controls={`az-panel-${iv.label.replace(/[^A-Za-z0-9]/g, '-')}`}
+          class:list={[
+            "px-5 py-2.5 text-sm font-bold border-b-2 transition-colors",
+            iv.label === initialActiveIndex
+              ? "border-skin-accent text-skin-accent"
+              : "border-transparent opacity-60 hover:opacity-100 hover:text-skin-accent",
+          ]}
         >
-          {letter}
-        </a>
+          {iv.label}
+          <span class="ml-2 text-xs font-normal opacity-70">({iv.count})</span>
+        </button>
       ))}
     </nav>
 
-    <!-- 銘柄リスト -->
-    <div class="space-y-16">
-      {activeLetters.map(letter => (
-        <section id={letter} class="scroll-mt-24">
-          <h2 class="text-2xl font-bold mb-6 border-l-4 border-skin-accent pl-4 flex items-baseline">
-            <span class="mr-4">{letter}</span>
-          </h2>
+    {indexViews.map((iv) => {
+      const panelId = `az-panel-${iv.label.replace(/[^A-Za-z0-9]/g, '-')}`;
+      const isActive = iv.label === initialActiveIndex;
+      return (
+        <div
+          id={panelId}
+          role="tabpanel"
+          data-index-panel={iv.label}
+          hidden={!isActive}
+        >
+          {iv.count === 0 ? (
+            <p class="text-center py-12 opacity-70">
+              {iv.label} のデータは現在準備中です。
+            </p>
+          ) : (
+            <>
+              <!-- アルファベットナビゲーション -->
+              <nav class="mb-12 flex flex-wrap gap-2">
+                {iv.view.activeLetters.map(letter => (
+                  <a
+                    href={`#${iv.label.replace(/[^A-Za-z0-9]/g, '-')}-${letter}`}
+                    class="px-4 py-2 bg-skin-card border border-skin-line rounded-full text-sm font-bold hover:text-skin-accent hover:border-skin-accent transition-all hover:shadow-sm"
+                  >
+                    {letter}
+                  </a>
+                ))}
+              </nav>
 
-          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {groupedStocks[letter].map(stock => {
-              const change = formatChange(stock.Daily_Change);
-              return (
-                <a 
-                  href={`${base}report/${stock.Symbol_YF}/`} 
-                  class="group block p-4 border border-skin-line rounded-lg hover:border-skin-accent hover:shadow-lg transition-all bg-skin-card relative overflow-hidden"
-                  data-pagefind-ignore
-                >
-                  {isRecentEarnings(stock) && (
-                    <div class="absolute top-0 right-0 bg-amber-500 text-white text-[8px] font-black px-1.5 py-0.5 rounded-bl-lg uppercase tracking-tighter animate-pulse shadow-sm">
-                      決算
+              <!-- 銘柄リスト -->
+              <div class="space-y-16">
+                {iv.view.activeLetters.map(letter => (
+                  <section id={`${iv.label.replace(/[^A-Za-z0-9]/g, '-')}-${letter}`} class="scroll-mt-24">
+                    <h2 class="text-2xl font-bold mb-6 border-l-4 border-skin-accent pl-4 flex items-baseline">
+                      <span class="mr-4">{letter}</span>
+                    </h2>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                      {iv.view.grouped[letter].map(stock => {
+                        const change = formatChange(stock.Daily_Change);
+                        return (
+                          <a
+                            href={`${base}report/${stock.Symbol_YF}/`}
+                            class="group block p-4 border border-skin-line rounded-lg hover:border-skin-accent hover:shadow-lg transition-all bg-skin-card relative overflow-hidden"
+                            data-pagefind-ignore
+                          >
+                            {isRecentEarnings(stock) && (
+                              <div class="absolute top-0 right-0 bg-amber-500 text-white text-[8px] font-black px-1.5 py-0.5 rounded-bl-lg uppercase tracking-tighter animate-pulse shadow-sm">決算</div>
+                            )}
+                            <div class="flex justify-between items-start mb-1">
+                              <div class="text-lg font-bold text-skin-accent group-hover:underline decoration-dashed underline-offset-4">{stock.Symbol}</div>
+                              {change && (
+                                <div class={`text-xs font-bold ${change.color} pt-1`}>{change.prefix}{change.val}%</div>
+                              )}
+                            </div>
+                            <div class="text-sm opacity-90 truncate" title={stock.Security_JA || stock.Security}>{stock.Security_JA || stock.Security}</div>
+                            <div class="mt-2 text-[10px] opacity-60 uppercase tracking-tighter truncate">
+                              {stock["GICS Sector"]}
+                            </div>
+                          </a>
+                        );
+                      })}
                     </div>
-                  )}
-                  <div class="flex justify-between items-start mb-1">
-                    <div class="text-lg font-bold text-skin-accent group-hover:underline decoration-dashed underline-offset-4">{stock.Symbol}</div>
-                    {change && (
-                      <div class={`text-xs font-bold ${change.color} pt-1`}>
-                        {change.prefix}{change.val}%
-                      </div>
-                    )}
-                  </div>
-                  <div class="text-sm opacity-90 truncate" title={stock.Security_JA || stock.Security}>{stock.Security_JA || stock.Security}</div>
-                  <div class="mt-2 text-[10px] opacity-60 uppercase tracking-tighter truncate">
-                    {stock["GICS Sector"]}
-                  </div>
-                </a>
-              );
-            })}
-          </div>
-        </section>
-      ))}
-    </div>
+                  </section>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      );
+    })}
 
-    <!-- トップに戻るボタン (index.astro風の丸み) -->
     <div class="mt-20 text-center">
       <a href="#" class="px-6 py-2 bg-skin-card border border-skin-line rounded-full text-sm font-bold hover:text-skin-accent hover:border-skin-accent transition-all inline-flex items-center gap-2">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -128,3 +193,63 @@ const base = import.meta.env.BASE_URL.endsWith("/")
     scroll-behavior: smooth;
   }
 </style>
+
+<script is:inline>
+  (function () {
+    function initIndexTabs() {
+      const tabs = Array.from(document.querySelectorAll('[data-index-tab]'));
+      const panels = Array.from(document.querySelectorAll('[data-index-panel]'));
+      if (!tabs.length || !panels.length) return;
+
+      function activate(label) {
+        tabs.forEach((t) => {
+          const isActive = t.getAttribute('data-index-tab') === label;
+          t.setAttribute('aria-selected', isActive ? 'true' : 'false');
+          if (isActive) {
+            t.classList.add('border-skin-accent', 'text-skin-accent');
+            t.classList.remove('border-transparent', 'opacity-60');
+          } else {
+            t.classList.remove('border-skin-accent', 'text-skin-accent');
+            t.classList.add('border-transparent', 'opacity-60');
+          }
+        });
+        panels.forEach((p) => {
+          const isActive = p.getAttribute('data-index-panel') === label;
+          if (isActive) {
+            p.removeAttribute('hidden');
+          } else {
+            p.setAttribute('hidden', '');
+          }
+        });
+        try {
+          const url = new URL(window.location.href);
+          url.searchParams.set('idx', label);
+          history.replaceState(history.state, '', url.toString());
+        } catch (e) {}
+        try {
+          localStorage.setItem('preferredIndex', label);
+        } catch (e) {}
+      }
+
+      tabs.forEach((t) => {
+        t.addEventListener('click', () => {
+          activate(t.getAttribute('data-index-tab'));
+        });
+      });
+
+      const params = new URLSearchParams(window.location.search);
+      const fromQuery = params.get('idx');
+      let stored = null;
+      try {
+        stored = localStorage.getItem('preferredIndex');
+      } catch (e) {}
+      const wanted = fromQuery || stored;
+      if (wanted && tabs.some((t) => t.getAttribute('data-index-tab') === wanted)) {
+        activate(wanted);
+      }
+    }
+
+    document.addEventListener('astro:page-load', initIndexTabs);
+    initIndexTabs();
+  })();
+</script>

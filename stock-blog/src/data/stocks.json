@@ -7,7 +7,8 @@
     "Symbol_YF": "MMM",
     "Exchange": "NYSE",
     "Daily_Change": -0.027436527436527504,
-    "Security_JA": "スリーエム"
+    "Security_JA": "スリーエム",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "AOS",
@@ -17,7 +18,8 @@
     "Symbol_YF": "AOS",
     "Exchange": "NYSE",
     "Daily_Change": -0.02409443725743858,
-    "Security_JA": "エー・オー・スミス"
+    "Security_JA": "エー・オー・スミス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ABT",
@@ -27,7 +29,8 @@
     "Symbol_YF": "ABT",
     "Exchange": "NYSE",
     "Daily_Change": -0.01464919043947585,
-    "Security_JA": "アボット･ラボラトリーズ"
+    "Security_JA": "アボット･ラボラトリーズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ABBV",
@@ -37,7 +40,8 @@
     "Symbol_YF": "ABBV",
     "Exchange": "NYSE",
     "Daily_Change": -0.02233579405640734,
-    "Security_JA": "アッヴィ"
+    "Security_JA": "アッヴィ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ACN",
@@ -47,7 +51,8 @@
     "Symbol_YF": "ACN",
     "Exchange": "NYSE",
     "Daily_Change": 0.0062671367019193356,
-    "Security_JA": "アクセンチュア　クラスA"
+    "Security_JA": "アクセンチュア　クラスA",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ADBE",
@@ -57,7 +62,8 @@
     "Symbol_YF": "ADBE",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.01873222267370993,
-    "Security_JA": "アドビ"
+    "Security_JA": "アドビ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "AMD",
@@ -67,7 +73,8 @@
     "Symbol_YF": "AMD",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.017066714600315138,
-    "Security_JA": "アドバンスト・マイクロ・デバイシズ"
+    "Security_JA": "アドバンスト・マイクロ・デバイシズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "AES",
@@ -77,7 +84,8 @@
     "Symbol_YF": "AES",
     "Exchange": "NYSE",
     "Daily_Change": 0.00042034468263978054,
-    "Security_JA": "エーイーエス"
+    "Security_JA": "エーイーエス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "AFL",
@@ -87,7 +95,8 @@
     "Symbol_YF": "AFL",
     "Exchange": "NYSE",
     "Daily_Change": -0.006949942816926245,
-    "Security_JA": "アフラック"
+    "Security_JA": "アフラック",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "A",
@@ -97,7 +106,8 @@
     "Symbol_YF": "A",
     "Exchange": "NYSE",
     "Daily_Change": -0.008913890090869764,
-    "Security_JA": "アジレント･テクノロジーズ"
+    "Security_JA": "アジレント･テクノロジーズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "APD",
@@ -107,7 +117,8 @@
     "Symbol_YF": "APD",
     "Exchange": "NYSE",
     "Daily_Change": 0.003399433427761979,
-    "Security_JA": "エアー・プロダクツ・アンド・ケミカルズ"
+    "Security_JA": "エアー・プロダクツ・アンド・ケミカルズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ABNB",
@@ -117,7 +128,8 @@
     "Symbol_YF": "ABNB",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.009261897976631397,
-    "Security_JA": "エアビーアンドビー"
+    "Security_JA": "エアビーアンドビー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "AKAM",
@@ -127,7 +139,8 @@
     "Symbol_YF": "AKAM",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.008642454845601093,
-    "Security_JA": "アカマイ・テクノロジーズ"
+    "Security_JA": "アカマイ・テクノロジーズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ALB",
@@ -137,7 +150,8 @@
     "Symbol_YF": "ALB",
     "Exchange": "NYSE",
     "Daily_Change": -0.01433655312658868,
-    "Security_JA": "アルビマール"
+    "Security_JA": "アルビマール",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ARE",
@@ -147,7 +161,8 @@
     "Symbol_YF": "ARE",
     "Exchange": "NYSE",
     "Daily_Change": 0.021723031350283944,
-    "Security_JA": "アレクサンドリア・リアル・エステート・エクイティーズ"
+    "Security_JA": "アレクサンドリア・リアル・エステート・エクイティーズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ALGN",
@@ -157,7 +172,8 @@
     "Symbol_YF": "ALGN",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.016476278820732996,
-    "Security_JA": "アライン・テクノロジー"
+    "Security_JA": "アライン・テクノロジー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ALLE",
@@ -167,7 +183,8 @@
     "Symbol_YF": "ALLE",
     "Exchange": "NYSE",
     "Daily_Change": -0.01447483270293847,
-    "Security_JA": "アレジオン"
+    "Security_JA": "アレジオン",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "LNT",
@@ -177,7 +194,8 @@
     "Symbol_YF": "LNT",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.008579599618684399,
-    "Security_JA": "アライアント・エナジー"
+    "Security_JA": "アライアント・エナジー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ALL",
@@ -187,7 +205,8 @@
     "Symbol_YF": "ALL",
     "Exchange": "NYSE",
     "Daily_Change": -0.0030838626530423803,
-    "Security_JA": "オールステート"
+    "Security_JA": "オールステート",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "GOOGL",
@@ -197,7 +216,8 @@
     "Symbol_YF": "GOOGL",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.0023128898128897775,
-    "Security_JA": "アルファベット クラスA"
+    "Security_JA": "アルファベット クラスA",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "GOOG",
@@ -207,7 +227,8 @@
     "Symbol_YF": "GOOG",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.0033513117243546883,
-    "Security_JA": "アルファベット クラスC"
+    "Security_JA": "アルファベット クラスC",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "MO",
@@ -217,7 +238,8 @@
     "Symbol_YF": "MO",
     "Exchange": "NYSE",
     "Daily_Change": 0.02615278733654496,
-    "Security_JA": "アルトリア・グループ"
+    "Security_JA": "アルトリア・グループ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "AMZN",
@@ -227,7 +249,8 @@
     "Symbol_YF": "AMZN",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.013287956716651183,
-    "Security_JA": "アマゾン･ドットコム"
+    "Security_JA": "アマゾン･ドットコム",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "AMCR",
@@ -237,7 +260,8 @@
     "Symbol_YF": "AMCR",
     "Exchange": "NYSE",
     "Daily_Change": -0.0076235541535225855,
-    "Security_JA": "アムコー"
+    "Security_JA": "アムコー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "AEE",
@@ -247,7 +271,8 @@
     "Symbol_YF": "AEE",
     "Exchange": "NYSE",
     "Daily_Change": -0.0007919049714034615,
-    "Security_JA": "アメレン・コーポレーション"
+    "Security_JA": "アメレン・コーポレーション",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "AEP",
@@ -257,7 +282,8 @@
     "Symbol_YF": "AEP",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.001458682809423215,
-    "Security_JA": "アメリカン・エレクトリック・パワー"
+    "Security_JA": "アメリカン・エレクトリック・パワー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "AXP",
@@ -267,7 +293,8 @@
     "Symbol_YF": "AXP",
     "Exchange": "NYSE",
     "Daily_Change": -0.010431821699427347,
-    "Security_JA": "アメリカン・エキスプレス"
+    "Security_JA": "アメリカン・エキスプレス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "AIG",
@@ -277,7 +304,8 @@
     "Symbol_YF": "AIG",
     "Exchange": "NYSE",
     "Daily_Change": 0.053074866310160417,
-    "Security_JA": "エーアイジー"
+    "Security_JA": "エーアイジー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "AMT",
@@ -287,7 +315,8 @@
     "Symbol_YF": "AMT",
     "Exchange": "NYSE",
     "Daily_Change": -0.006020469596628506,
-    "Security_JA": "アメリカン・タワー"
+    "Security_JA": "アメリカン・タワー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "AWK",
@@ -297,7 +326,8 @@
     "Symbol_YF": "AWK",
     "Exchange": "NYSE",
     "Daily_Change": -0.008098427036287121,
-    "Security_JA": "アメリカン・ウォーター・ワークス"
+    "Security_JA": "アメリカン・ウォーター・ワークス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "AMP",
@@ -307,7 +337,8 @@
     "Symbol_YF": "AMP",
     "Exchange": "NYSE",
     "Daily_Change": -0.016007076812906806,
-    "Security_JA": "アメリプライズ・フィナンシャル"
+    "Security_JA": "アメリプライズ・フィナンシャル",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "AME",
@@ -317,7 +348,8 @@
     "Symbol_YF": "AME",
     "Exchange": "NYSE",
     "Daily_Change": -0.02131634819532913,
-    "Security_JA": "アメテック"
+    "Security_JA": "アメテック",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "AMGN",
@@ -327,7 +359,8 @@
     "Symbol_YF": "AMGN",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.04745126353790616,
-    "Security_JA": "アムジェン"
+    "Security_JA": "アムジェン",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "APH",
@@ -337,7 +370,8 @@
     "Symbol_YF": "APH",
     "Exchange": "NYSE",
     "Daily_Change": -0.03374753853466421,
-    "Security_JA": "アンフェノール クラスA"
+    "Security_JA": "アンフェノール クラスA",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ADI",
@@ -347,7 +381,8 @@
     "Symbol_YF": "ADI",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.011360811415502395,
-    "Security_JA": "アナログ・デバイシズ"
+    "Security_JA": "アナログ・デバイシズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "AON",
@@ -357,7 +392,8 @@
     "Symbol_YF": "AON",
     "Exchange": "NYSE",
     "Daily_Change": 0.0021876910208152587,
-    "Security_JA": "エーオン"
+    "Security_JA": "エーオン",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "APA",
@@ -367,7 +403,8 @@
     "Symbol_YF": "APA",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.01473115639577693,
-    "Security_JA": "アパッチ"
+    "Security_JA": "アパッチ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "APO",
@@ -377,7 +414,8 @@
     "Symbol_YF": "APO",
     "Exchange": "NYSE",
     "Daily_Change": 0.013517712865133693,
-    "Security_JA": "アポロ・グローバル・マネジメント"
+    "Security_JA": "アポロ・グローバル・マネジメント",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "AAPL",
@@ -387,7 +425,8 @@
     "Symbol_YF": "AAPL",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.03321773829687811,
-    "Security_JA": "アップル"
+    "Security_JA": "アップル",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "AMAT",
@@ -397,7 +436,8 @@
     "Symbol_YF": "AMAT",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.013713909097822568,
-    "Security_JA": "アプライド・マテリアルズ"
+    "Security_JA": "アプライド・マテリアルズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "APP",
@@ -407,7 +447,8 @@
     "Symbol_YF": "APP",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.030581382323288848,
-    "Security_JA": "アップラビン"
+    "Security_JA": "アップラビン",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "APTV",
@@ -417,7 +458,8 @@
     "Symbol_YF": "APTV",
     "Exchange": "NYSE",
     "Daily_Change": 0.003816793893129837,
-    "Security_JA": "アプティブ・ホールディングス"
+    "Security_JA": "アプティブ・ホールディングス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ACGL",
@@ -427,7 +469,8 @@
     "Symbol_YF": "ACGL",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.006775354647469835,
-    "Security_JA": "アーチ・キャピタル・グループ"
+    "Security_JA": "アーチ・キャピタル・グループ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ADM",
@@ -437,7 +480,8 @@
     "Symbol_YF": "ADM",
     "Exchange": "NYSE",
     "Daily_Change": 0.005366246310705546,
-    "Security_JA": "アーチャーダニエルズ・ミッドランド"
+    "Security_JA": "アーチャーダニエルズ・ミッドランド",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ARES",
@@ -447,7 +491,8 @@
     "Symbol_YF": "ARES",
     "Exchange": "NYSE",
     "Daily_Change": 0.013628620102214602,
-    "Security_JA": "アレス・マネジメント　クラスA"
+    "Security_JA": "アレス・マネジメント　クラスA",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ANET",
@@ -457,7 +502,8 @@
     "Symbol_YF": "ANET",
     "Exchange": "NYSE",
     "Daily_Change": -5.790052689490664e-05,
-    "Security_JA": "アリスタネットワークス"
+    "Security_JA": "アリスタネットワークス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "AJG",
@@ -467,7 +513,8 @@
     "Symbol_YF": "AJG",
     "Exchange": "NYSE",
     "Daily_Change": 0.00828488372093027,
-    "Security_JA": "アーサー・ジェイ・ギャラガー"
+    "Security_JA": "アーサー・ジェイ・ギャラガー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "AIZ",
@@ -477,7 +524,8 @@
     "Symbol_YF": "AIZ",
     "Exchange": "NYSE",
     "Daily_Change": -0.02014644262919549,
-    "Security_JA": "アシュラント"
+    "Security_JA": "アシュラント",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "T",
@@ -487,7 +535,8 @@
     "Symbol_YF": "T",
     "Exchange": "NYSE",
     "Daily_Change": -0.00038270187523911257,
-    "Security_JA": "エーティー・アンド・ティー"
+    "Security_JA": "エーティー・アンド・ティー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ATO",
@@ -497,7 +546,8 @@
     "Symbol_YF": "ATO",
     "Exchange": "NYSE",
     "Daily_Change": -0.007579745236340656,
-    "Security_JA": "アトモス・エナジー"
+    "Security_JA": "アトモス・エナジー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ADSK",
@@ -507,7 +557,8 @@
     "Symbol_YF": "ADSK",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.031012658227848076,
-    "Security_JA": "オートデスク"
+    "Security_JA": "オートデスク",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ADP",
@@ -517,7 +568,8 @@
     "Symbol_YF": "ADP",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.010710578465603521,
-    "Security_JA": "オートマチック・データ・プロセシング"
+    "Security_JA": "オートマチック・データ・プロセシング",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "AZO",
@@ -527,7 +579,8 @@
     "Symbol_YF": "AZO",
     "Exchange": "NYSE",
     "Daily_Change": -0.02968388484974481,
-    "Security_JA": "オートゾーン"
+    "Security_JA": "オートゾーン",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "AVB",
@@ -537,7 +590,8 @@
     "Symbol_YF": "AVB",
     "Exchange": "NYSE",
     "Daily_Change": 0.0024590163934425607,
-    "Security_JA": "アバロンベイ・コミュニティーズ"
+    "Security_JA": "アバロンベイ・コミュニティーズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "AVY",
@@ -547,7 +601,8 @@
     "Symbol_YF": "AVY",
     "Exchange": "NYSE",
     "Daily_Change": -0.0054901482340023525,
-    "Security_JA": "エイブリー・デニソン"
+    "Security_JA": "エイブリー・デニソン",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "AXON",
@@ -557,7 +612,8 @@
     "Symbol_YF": "AXON",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.001368976503385134,
-    "Security_JA": "アクソン・エンタープライズ"
+    "Security_JA": "アクソン・エンタープライズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "BKR",
@@ -567,7 +623,8 @@
     "Symbol_YF": "BKR",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.007894444561982615,
-    "Security_JA": "ベーカー・ヒューズ"
+    "Security_JA": "ベーカー・ヒューズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "BALL",
@@ -577,7 +634,8 @@
     "Symbol_YF": "BALL",
     "Exchange": "NYSE",
     "Daily_Change": 0.004092992796332679,
-    "Security_JA": "ボール"
+    "Security_JA": "ボール",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "BAC",
@@ -587,7 +645,8 @@
     "Symbol_YF": "BAC",
     "Exchange": "NYSE",
     "Daily_Change": -0.004115226337448538,
-    "Security_JA": "バンク・オブ・アメリカ"
+    "Security_JA": "バンク・オブ・アメリカ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "BAX",
@@ -597,7 +656,8 @@
     "Symbol_YF": "BAX",
     "Exchange": "NYSE",
     "Daily_Change": -0.021046643913537968,
-    "Security_JA": "バクスター・インターナショナル"
+    "Security_JA": "バクスター・インターナショナル",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "BDX",
@@ -607,7 +667,8 @@
     "Symbol_YF": "BDX",
     "Exchange": "NYSE",
     "Daily_Change": 0.0018115942028986195,
-    "Security_JA": "ベクトン・ディッキンソン"
+    "Security_JA": "ベクトン・ディッキンソン",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "BRK.B",
@@ -617,7 +678,8 @@
     "Symbol_YF": "BRK-B",
     "Exchange": "NYSE",
     "Daily_Change": -0.001245777027027094,
-    "Security_JA": "バークシャー・ハサウェイ　クラスB"
+    "Security_JA": "バークシャー・ハサウェイ　クラスB",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "BBY",
@@ -627,7 +689,8 @@
     "Symbol_YF": "BBY",
     "Exchange": "NYSE",
     "Daily_Change": -0.0072739295751364655,
-    "Security_JA": "ベスト・バイ"
+    "Security_JA": "ベスト・バイ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "TECH",
@@ -637,7 +700,8 @@
     "Symbol_YF": "TECH",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.005422993492407758,
-    "Security_JA": "テクネ"
+    "Security_JA": "テクネ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "BIIB",
@@ -647,7 +711,8 @@
     "Symbol_YF": "BIIB",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.011728655959425184,
-    "Security_JA": "バイオジェン"
+    "Security_JA": "バイオジェン",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "BLK",
@@ -657,7 +722,8 @@
     "Symbol_YF": "BLK",
     "Exchange": "NYSE",
     "Daily_Change": -0.003678678678678534,
-    "Security_JA": "ブラックロック・ファンディング"
+    "Security_JA": "ブラックロック・ファンディング",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "BX",
@@ -667,7 +733,8 @@
     "Symbol_YF": "BX",
     "Exchange": "NYSE",
     "Daily_Change": 0.006131549609810448,
-    "Security_JA": "ブラックストーン"
+    "Security_JA": "ブラックストーン",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "XYZ",
@@ -677,7 +744,8 @@
     "Symbol_YF": "XYZ",
     "Exchange": "NYSE",
     "Daily_Change": 0.01843710112040841,
-    "Security_JA": "ブロック"
+    "Security_JA": "ブロック",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "BK",
@@ -687,7 +755,8 @@
     "Symbol_YF": "BK",
     "Exchange": "NYSE",
     "Daily_Change": -0.004390861055295106,
-    "Security_JA": "バンク・オブ・ニューヨーク・メロン"
+    "Security_JA": "バンク・オブ・ニューヨーク・メロン",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "BA",
@@ -697,7 +766,8 @@
     "Symbol_YF": "BA",
     "Exchange": "NYSE",
     "Daily_Change": -0.007204296380386874,
-    "Security_JA": "ボーイング"
+    "Security_JA": "ボーイング",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "BKNG",
@@ -707,7 +777,8 @@
     "Symbol_YF": "BKNG",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.0075433594678069715,
-    "Security_JA": "ブッキング・ ホールディングス"
+    "Security_JA": "ブッキング・ ホールディングス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "BSX",
@@ -717,7 +788,8 @@
     "Symbol_YF": "BSX",
     "Exchange": "NYSE",
     "Daily_Change": -0.019267488283284142,
-    "Security_JA": "ボストン・サイエンティフィック"
+    "Security_JA": "ボストン・サイエンティフィック",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "BMY",
@@ -727,7 +799,8 @@
     "Symbol_YF": "BMY",
     "Exchange": "NYSE",
     "Daily_Change": -0.03911536557187662,
-    "Security_JA": "ブリストル・マイヤーズ"
+    "Security_JA": "ブリストル・マイヤーズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "AVGO",
@@ -737,7 +810,8 @@
     "Symbol_YF": "AVGO",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.009223103274800484,
-    "Security_JA": "ブロードコム"
+    "Security_JA": "ブロードコム",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "BR",
@@ -747,7 +821,8 @@
     "Symbol_YF": "BR",
     "Exchange": "NYSE",
     "Daily_Change": 0.00824782439277835,
-    "Security_JA": "ブロードリッジ・フィナンシャル・ソリューションズ"
+    "Security_JA": "ブロードリッジ・フィナンシャル・ソリューションズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "BRO",
@@ -757,7 +832,8 @@
     "Symbol_YF": "BRO",
     "Exchange": "NYSE",
     "Daily_Change": -0.041895261845386465,
-    "Security_JA": "ブラウン・アンド・ブラウン"
+    "Security_JA": "ブラウン・アンド・ブラウン",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "BF.B",
@@ -767,7 +843,8 @@
     "Symbol_YF": "BF-B",
     "Exchange": "NYSE",
     "Daily_Change": -0.008537058595265769,
-    "Security_JA": "ブラウン・フォーマン クラスB"
+    "Security_JA": "ブラウン・フォーマン クラスB",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "BLDR",
@@ -777,7 +854,8 @@
     "Symbol_YF": "BLDR",
     "Exchange": "NYSE",
     "Daily_Change": -0.0426096851687951,
-    "Security_JA": "ビルダーズ・ファーストソース"
+    "Security_JA": "ビルダーズ・ファーストソース",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "BG",
@@ -787,7 +865,8 @@
     "Symbol_YF": "BG",
     "Exchange": "NYSE",
     "Daily_Change": -0.019359408200204563,
-    "Security_JA": "ブンゲ・グローバル"
+    "Security_JA": "ブンゲ・グローバル",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "BXP",
@@ -797,7 +876,8 @@
     "Symbol_YF": "BXP",
     "Exchange": "NYSE",
     "Daily_Change": 0.01556619911050285,
-    "Security_JA": "BXP"
+    "Security_JA": "BXP",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CHRW",
@@ -807,7 +887,8 @@
     "Symbol_YF": "CHRW",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.024806116275232337,
-    "Security_JA": "シー・エイチ・ロビンソン・ワールドワイド"
+    "Security_JA": "シー・エイチ・ロビンソン・ワールドワイド",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CDNS",
@@ -817,7 +898,8 @@
     "Symbol_YF": "CDNS",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.03443672441518257,
-    "Security_JA": "ケイデンス・デザイン・システムズ"
+    "Security_JA": "ケイデンス・デザイン・システムズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CPT",
@@ -827,7 +909,8 @@
     "Symbol_YF": "CPT",
     "Exchange": "NYSE",
     "Daily_Change": -0.005427537611883386,
-    "Security_JA": "カムデン・プロパティ・トラスト"
+    "Security_JA": "カムデン・プロパティ・トラスト",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CPB",
@@ -837,7 +920,8 @@
     "Symbol_YF": "CPB",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.0028859549247694165,
-    "Security_JA": "ザ・キャンベルズ"
+    "Security_JA": "ザ・キャンベルズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "COF",
@@ -847,7 +931,8 @@
     "Symbol_YF": "COF",
     "Exchange": "NYSE",
     "Daily_Change": 0.003188708834291611,
-    "Security_JA": "キャピタル・ワン・フィナンシャル"
+    "Security_JA": "キャピタル・ワン・フィナンシャル",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CAH",
@@ -857,7 +942,8 @@
     "Symbol_YF": "CAH",
     "Exchange": "NYSE",
     "Daily_Change": 0.012235586893405297,
-    "Security_JA": "カーディナル・ヘルス"
+    "Security_JA": "カーディナル・ヘルス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CCL",
@@ -867,7 +953,8 @@
     "Symbol_YF": "CCL",
     "Exchange": "NYSE",
     "Daily_Change": 0.00565824217276494,
-    "Security_JA": "カーニバル"
+    "Security_JA": "カーニバル",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CARR",
@@ -877,7 +964,8 @@
     "Symbol_YF": "CARR",
     "Exchange": "NYSE",
     "Daily_Change": 0.006699419383653459,
-    "Security_JA": "キャリア・グローバル"
+    "Security_JA": "キャリア・グローバル",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CVNA",
@@ -887,7 +975,8 @@
     "Symbol_YF": "CVNA",
     "Exchange": "NYSE",
     "Daily_Change": -0.033350176856998454,
-    "Security_JA": "カーヴァナ"
+    "Security_JA": "カーヴァナ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CASY",
@@ -897,7 +986,8 @@
     "Symbol_YF": "CASY",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.01674881794070755,
-    "Security_JA": "ケーシーズ・ゼネラル・ストアーズ"
+    "Security_JA": "ケーシーズ・ゼネラル・ストアーズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CAT",
@@ -907,7 +997,8 @@
     "Symbol_YF": "CAT",
     "Exchange": "NYSE",
     "Daily_Change": -0.0004943209266271074,
-    "Security_JA": "キャタピラー"
+    "Security_JA": "キャタピラー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CBOE",
@@ -917,7 +1008,8 @@
     "Symbol_YF": "CBOE",
     "Exchange": "BTS",
     "Daily_Change": 0.08953980472524911,
-    "Security_JA": "シービーオーイー・マーケッツ"
+    "Security_JA": "シービーオーイー・マーケッツ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CBRE",
@@ -927,7 +1019,8 @@
     "Symbol_YF": "CBRE",
     "Exchange": "NYSE",
     "Daily_Change": -0.006445736705667958,
-    "Security_JA": "CBREグループ"
+    "Security_JA": "CBREグループ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CDW",
@@ -937,7 +1030,8 @@
     "Symbol_YF": "CDW",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.006427580162150285,
-    "Security_JA": "CDWコープ"
+    "Security_JA": "CDWコープ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "COR",
@@ -947,7 +1041,8 @@
     "Symbol_YF": "COR",
     "Exchange": "NYSE",
     "Daily_Change": -0.013019057822797933,
-    "Security_JA": "センコア"
+    "Security_JA": "センコア",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CNC",
@@ -957,7 +1052,8 @@
     "Symbol_YF": "CNC",
     "Exchange": "NYSE",
     "Daily_Change": -0.006518904823989464,
-    "Security_JA": "センティーン"
+    "Security_JA": "センティーン",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CNP",
@@ -967,7 +1063,8 @@
     "Symbol_YF": "CNP",
     "Exchange": "NYSE",
     "Daily_Change": -0.006872852233676911,
-    "Security_JA": "センターポイント・エナジー"
+    "Security_JA": "センターポイント・エナジー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CF",
@@ -977,7 +1074,8 @@
     "Symbol_YF": "CF",
     "Exchange": "NYSE",
     "Daily_Change": -0.012157809983896982,
-    "Security_JA": "シーエフ・インダストリーズ・ホールディングス"
+    "Security_JA": "シーエフ・インダストリーズ・ホールディングス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CRL",
@@ -987,7 +1085,8 @@
     "Symbol_YF": "CRL",
     "Exchange": "NYSE",
     "Daily_Change": -0.007127028807570208,
-    "Security_JA": "チャールス・リバー・ラボラトリーズ"
+    "Security_JA": "チャールス・リバー・ラボラトリーズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "SCHW",
@@ -997,7 +1096,8 @@
     "Symbol_YF": "SCHW",
     "Exchange": "NYSE",
     "Daily_Change": -0.0010912265386293575,
-    "Security_JA": "チャールズ・シュワブ"
+    "Security_JA": "チャールズ・シュワブ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CHTR",
@@ -1007,7 +1107,8 @@
     "Symbol_YF": "CHTR",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.039777199249258474,
-    "Security_JA": "チャーター・コミュニケーションズ クラスA"
+    "Security_JA": "チャーター・コミュニケーションズ クラスA",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CVX",
@@ -1017,7 +1118,8 @@
     "Symbol_YF": "CVX",
     "Exchange": "NYSE",
     "Daily_Change": -0.01386374217577987,
-    "Security_JA": "シェブロン"
+    "Security_JA": "シェブロン",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CMG",
@@ -1027,7 +1129,8 @@
     "Symbol_YF": "CMG",
     "Exchange": "NYSE",
     "Daily_Change": -0.029714621947631806,
-    "Security_JA": "チポトレ・メキシカン・グリル"
+    "Security_JA": "チポトレ・メキシカン・グリル",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CB",
@@ -1037,7 +1140,8 @@
     "Symbol_YF": "CB",
     "Exchange": "NYSE",
     "Daily_Change": -0.0023853211009173475,
-    "Security_JA": "チャブ"
+    "Security_JA": "チャブ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CHD",
@@ -1047,7 +1151,8 @@
     "Symbol_YF": "CHD",
     "Exchange": "NYSE",
     "Daily_Change": -0.010715021636101444,
-    "Security_JA": "チャーチ・アンド・ドワイト"
+    "Security_JA": "チャーチ・アンド・ドワイト",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CIEN",
@@ -1057,7 +1162,8 @@
     "Symbol_YF": "CIEN",
     "Exchange": "NYSE",
     "Daily_Change": 0.014613897418400853,
-    "Security_JA": "シエナ"
+    "Security_JA": "シエナ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CI",
@@ -1067,7 +1173,8 @@
     "Symbol_YF": "CI",
     "Exchange": "NYSE",
     "Daily_Change": -0.026429898823043592,
-    "Security_JA": "ザ・シグナ・グループ"
+    "Security_JA": "ザ・シグナ・グループ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CINF",
@@ -1077,7 +1184,8 @@
     "Symbol_YF": "CINF",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.009474327628361754,
-    "Security_JA": "シンシナティ・フィナンシャル"
+    "Security_JA": "シンシナティ・フィナンシャル",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CTAS",
@@ -1087,7 +1195,8 @@
     "Symbol_YF": "CTAS",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.029191231183103395,
-    "Security_JA": "シンタス"
+    "Security_JA": "シンタス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CSCO",
@@ -1097,7 +1206,8 @@
     "Symbol_YF": "CSCO",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.003825136612021796,
-    "Security_JA": "シスコシステムズ"
+    "Security_JA": "シスコシステムズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "C",
@@ -1107,7 +1217,8 @@
     "Symbol_YF": "C",
     "Exchange": "NYSE",
     "Daily_Change": -0.004219409282700471,
-    "Security_JA": "シティグループ"
+    "Security_JA": "シティグループ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CFG",
@@ -1117,7 +1228,8 @@
     "Symbol_YF": "CFG",
     "Exchange": "NYSE",
     "Daily_Change": -0.009684857801690937,
-    "Security_JA": "シチズンズ・フィナンシャル・グループ"
+    "Security_JA": "シチズンズ・フィナンシャル・グループ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CLX",
@@ -1127,7 +1239,8 @@
     "Symbol_YF": "CLX",
     "Exchange": "NYSE",
     "Daily_Change": -0.09674408958938198,
-    "Security_JA": "クロロックス・カンパニー"
+    "Security_JA": "クロロックス・カンパニー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CME",
@@ -1137,7 +1250,8 @@
     "Symbol_YF": "CME",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.005975957195469486,
-    "Security_JA": "シーエムイー・グループ"
+    "Security_JA": "シーエムイー・グループ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CMS",
@@ -1147,7 +1261,8 @@
     "Symbol_YF": "CMS",
     "Exchange": "NYSE",
     "Daily_Change": -0.009252019807140915,
-    "Security_JA": "シーエムエス・エナジー"
+    "Security_JA": "シーエムエス・エナジー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "KO",
@@ -1157,7 +1272,8 @@
     "Symbol_YF": "KO",
     "Exchange": "NYSE",
     "Daily_Change": -0.002285424073133657,
-    "Security_JA": "コカ・コーラ"
+    "Security_JA": "コカ・コーラ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CTSH",
@@ -1167,7 +1283,8 @@
     "Symbol_YF": "CTSH",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.008884688090737218,
-    "Security_JA": "コグニザント・テクノロジー・ソリューションズ クラスA"
+    "Security_JA": "コグニザント・テクノロジー・ソリューションズ クラスA",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "COHR",
@@ -1177,7 +1294,8 @@
     "Symbol_YF": "COHR",
     "Exchange": "NYSE",
     "Daily_Change": 0.030621500735041197,
-    "Security_JA": "コヒレント"
+    "Security_JA": "コヒレント",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "COIN",
@@ -1187,7 +1305,8 @@
     "Symbol_YF": "COIN",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.01853331203067577,
-    "Security_JA": "コインベース・グローバル"
+    "Security_JA": "コインベース・グローバル",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CL",
@@ -1197,7 +1316,8 @@
     "Symbol_YF": "CL",
     "Exchange": "NYSE",
     "Daily_Change": 0.022258669165885727,
-    "Security_JA": "コルゲート・パルモリーブ"
+    "Security_JA": "コルゲート・パルモリーブ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CMCSA",
@@ -1207,7 +1327,8 @@
     "Symbol_YF": "CMCSA",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.00369480879364485,
-    "Security_JA": "コムキャスト クラスA"
+    "Security_JA": "コムキャスト クラスA",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "FIX",
@@ -1217,7 +1338,8 @@
     "Symbol_YF": "FIX",
     "Exchange": "NYSE",
     "Daily_Change": 0.014546936557532935,
-    "Security_JA": "コンフォート・システムズUSA"
+    "Security_JA": "コンフォート・システムズUSA",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CAG",
@@ -1227,7 +1349,8 @@
     "Symbol_YF": "CAG",
     "Exchange": "NYSE",
     "Daily_Change": -0.020209059233449417,
-    "Security_JA": "コナグラ・ブランズ"
+    "Security_JA": "コナグラ・ブランズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "COP",
@@ -1237,7 +1360,8 @@
     "Symbol_YF": "COP",
     "Exchange": "NYSE",
     "Daily_Change": -0.02059150898394024,
-    "Security_JA": "コノコ・フィリップス"
+    "Security_JA": "コノコ・フィリップス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ED",
@@ -1247,7 +1371,8 @@
     "Symbol_YF": "ED",
     "Exchange": "NYSE",
     "Daily_Change": -0.008969414297246391,
-    "Security_JA": "コンソリデーテッド・エジソン"
+    "Security_JA": "コンソリデーテッド・エジソン",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "STZ",
@@ -1257,7 +1382,8 @@
     "Symbol_YF": "STZ",
     "Exchange": "NYSE",
     "Daily_Change": -0.024013283944309738,
-    "Security_JA": "コンステレーション･ブランズ クラスA"
+    "Security_JA": "コンステレーション･ブランズ クラスA",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CEG",
@@ -1267,7 +1393,8 @@
     "Symbol_YF": "CEG",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.016581469648562292,
-    "Security_JA": "コンステレーション・エナジー"
+    "Security_JA": "コンステレーション・エナジー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "COO",
@@ -1277,7 +1404,8 @@
     "Symbol_YF": "COO",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.00858505564387916,
-    "Security_JA": "クーパー"
+    "Security_JA": "クーパー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CPRT",
@@ -1287,7 +1415,8 @@
     "Symbol_YF": "CPRT",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.004832376925400293,
-    "Security_JA": "コパート"
+    "Security_JA": "コパート",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "GLW",
@@ -1297,7 +1426,8 @@
     "Symbol_YF": "GLW",
     "Exchange": "NYSE",
     "Daily_Change": -0.03641013151485642,
-    "Security_JA": "コーニング"
+    "Security_JA": "コーニング",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CPAY",
@@ -1307,7 +1437,8 @@
     "Symbol_YF": "CPAY",
     "Exchange": "NYSE",
     "Daily_Change": 0.002447221587757366,
-    "Security_JA": "コーペイ"
+    "Security_JA": "コーペイ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CTVA",
@@ -1317,7 +1448,8 @@
     "Symbol_YF": "CTVA",
     "Exchange": "NYSE",
     "Daily_Change": -0.0019750648068141067,
-    "Security_JA": "コルテバ"
+    "Security_JA": "コルテバ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CSGP",
@@ -1327,7 +1459,8 @@
     "Symbol_YF": "CSGP",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.0031782721756717547,
-    "Security_JA": "コスター・グループ"
+    "Security_JA": "コスター・グループ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "COST",
@@ -1337,7 +1470,8 @@
     "Symbol_YF": "COST",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.0027894690152089415,
-    "Security_JA": "コストコ・ホールセール"
+    "Security_JA": "コストコ・ホールセール",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CTRA",
@@ -1347,7 +1481,8 @@
     "Symbol_YF": "CTRA",
     "Exchange": "NYSE",
     "Daily_Change": -0.014759120022277751,
-    "Security_JA": "コテラ・エナジー・インク"
+    "Security_JA": "コテラ・エナジー・インク",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CRH",
@@ -1357,7 +1492,8 @@
     "Symbol_YF": "CRH",
     "Exchange": "NYSE",
     "Daily_Change": -0.02508022293531497,
-    "Security_JA": "CRH"
+    "Security_JA": "CRH",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CRWD",
@@ -1367,7 +1503,8 @@
     "Symbol_YF": "CRWD",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.022187324733595033,
-    "Security_JA": "クラウドストライク・ホールディングス　クラスA"
+    "Security_JA": "クラウドストライク・ホールディングス　クラスA",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CCI",
@@ -1377,7 +1514,8 @@
     "Symbol_YF": "CCI",
     "Exchange": "NYSE",
     "Daily_Change": 0.005406623113313854,
-    "Security_JA": "クラウン・キャッスル"
+    "Security_JA": "クラウン・キャッスル",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CSX",
@@ -1387,7 +1525,8 @@
     "Symbol_YF": "CSX",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.007264722069345037,
-    "Security_JA": "シーエスエックス"
+    "Security_JA": "シーエスエックス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CMI",
@@ -1397,7 +1536,8 @@
     "Symbol_YF": "CMI",
     "Exchange": "NYSE",
     "Daily_Change": -0.020223245555207728,
-    "Security_JA": "カミンズ"
+    "Security_JA": "カミンズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CVS",
@@ -1407,7 +1547,8 @@
     "Symbol_YF": "CVS",
     "Exchange": "NYSE",
     "Daily_Change": -0.014407491895785841,
-    "Security_JA": "シーブイエス・ヘルス"
+    "Security_JA": "シーブイエス・ヘルス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "DHR",
@@ -1417,7 +1558,8 @@
     "Symbol_YF": "DHR",
     "Exchange": "NYSE",
     "Daily_Change": -0.02123498183850228,
-    "Security_JA": "ダナハー"
+    "Security_JA": "ダナハー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "DRI",
@@ -1427,7 +1569,8 @@
     "Symbol_YF": "DRI",
     "Exchange": "NYSE",
     "Daily_Change": -0.02891902672516958,
-    "Security_JA": "ダーデン・レストランツ"
+    "Security_JA": "ダーデン・レストランツ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "DDOG",
@@ -1437,7 +1580,8 @@
     "Symbol_YF": "DDOG",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.06309100537105684,
-    "Security_JA": "データドッグ　クラスA"
+    "Security_JA": "データドッグ　クラスA",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "DVA",
@@ -1447,7 +1591,8 @@
     "Symbol_YF": "DVA",
     "Exchange": "NYSE",
     "Daily_Change": -0.022495810235915823,
-    "Security_JA": "ダビータ"
+    "Security_JA": "ダビータ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "DECK",
@@ -1457,7 +1602,8 @@
     "Symbol_YF": "DECK",
     "Exchange": "NYSE",
     "Daily_Change": -0.012915851272015727,
-    "Security_JA": "デッカーズ・アウトドア"
+    "Security_JA": "デッカーズ・アウトドア",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "DE",
@@ -1467,7 +1613,8 @@
     "Symbol_YF": "DE",
     "Exchange": "NYSE",
     "Daily_Change": -0.021377591672741475,
-    "Security_JA": "ディア"
+    "Security_JA": "ディア",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "DELL",
@@ -1477,7 +1624,8 @@
     "Symbol_YF": "DELL",
     "Exchange": "NYSE",
     "Daily_Change": 0.005838717396506336,
-    "Security_JA": "デル・テクノロジーズ"
+    "Security_JA": "デル・テクノロジーズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "DAL",
@@ -1487,7 +1635,8 @@
     "Symbol_YF": "DAL",
     "Exchange": "NYSE",
     "Daily_Change": 0.014560964847771866,
-    "Security_JA": "デルタ航空"
+    "Security_JA": "デルタ航空",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "DVN",
@@ -1497,7 +1646,8 @@
     "Symbol_YF": "DVN",
     "Exchange": "NYSE",
     "Daily_Change": -0.015767957952112034,
-    "Security_JA": "デボン・エナジー・コーポレーション"
+    "Security_JA": "デボン・エナジー・コーポレーション",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "DXCM",
@@ -1507,7 +1657,8 @@
     "Symbol_YF": "DXCM",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.03022670025188924,
-    "Security_JA": "デクスコム"
+    "Security_JA": "デクスコム",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "FANG",
@@ -1517,7 +1668,8 @@
     "Symbol_YF": "FANG",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.00982351844689587,
-    "Security_JA": "ダイアモンドバック・エナジー"
+    "Security_JA": "ダイアモンドバック・エナジー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "DLR",
@@ -1527,7 +1679,8 @@
     "Symbol_YF": "DLR",
     "Exchange": "NYSE",
     "Daily_Change": -0.0011943863839952676,
-    "Security_JA": "デジタル・リアルティ"
+    "Security_JA": "デジタル・リアルティ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "DG",
@@ -1537,7 +1690,8 @@
     "Symbol_YF": "DG",
     "Exchange": "NYSE",
     "Daily_Change": -0.01251294442526742,
-    "Security_JA": "ダラー・ゼネラル"
+    "Security_JA": "ダラー・ゼネラル",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "DLTR",
@@ -1547,7 +1701,8 @@
     "Symbol_YF": "DLTR",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.025226473703998865,
-    "Security_JA": "ダラー・ツリー"
+    "Security_JA": "ダラー・ツリー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "D",
@@ -1557,7 +1712,8 @@
     "Symbol_YF": "D",
     "Exchange": "NYSE",
     "Daily_Change": -0.008682170542635695,
-    "Security_JA": "ドミニオン・エナジー"
+    "Security_JA": "ドミニオン・エナジー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "DPZ",
@@ -1567,7 +1723,8 @@
     "Symbol_YF": "DPZ",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.004861175231935456,
-    "Security_JA": "ドミノ･ピザ"
+    "Security_JA": "ドミノ･ピザ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "DASH",
@@ -1577,7 +1734,8 @@
     "Symbol_YF": "DASH",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.04299608587356185,
-    "Security_JA": "ドアダッシュ"
+    "Security_JA": "ドアダッシュ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "DOV",
@@ -1587,7 +1745,8 @@
     "Symbol_YF": "DOV",
     "Exchange": "NYSE",
     "Daily_Change": -0.002738394947219666,
-    "Security_JA": "ドーバー"
+    "Security_JA": "ドーバー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "DOW",
@@ -1597,7 +1756,8 @@
     "Symbol_YF": "DOW",
     "Exchange": "NYSE",
     "Daily_Change": -0.004939491232403132,
-    "Security_JA": "ダウ"
+    "Security_JA": "ダウ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "DHI",
@@ -1607,7 +1767,8 @@
     "Symbol_YF": "DHI",
     "Exchange": "NYSE",
     "Daily_Change": -0.02521773040426377,
-    "Security_JA": "ディーアール・ホートン"
+    "Security_JA": "ディーアール・ホートン",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "DTE",
@@ -1617,7 +1778,8 @@
     "Symbol_YF": "DTE",
     "Exchange": "NYSE",
     "Daily_Change": -0.019117937899663824,
-    "Security_JA": "ディーティーイー・エナジー・カンパニー"
+    "Security_JA": "ディーティーイー・エナジー・カンパニー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "DUK",
@@ -1627,7 +1789,8 @@
     "Symbol_YF": "DUK",
     "Exchange": "NYSE",
     "Daily_Change": -0.007333076032420046,
-    "Security_JA": "デューク・エナジー"
+    "Security_JA": "デューク・エナジー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "DD",
@@ -1637,7 +1800,8 @@
     "Symbol_YF": "DD",
     "Exchange": "NYSE",
     "Daily_Change": 0.012702584318878787,
-    "Security_JA": "デュポン・ド・ヌムール"
+    "Security_JA": "デュポン・ド・ヌムール",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ETN",
@@ -1647,7 +1811,8 @@
     "Symbol_YF": "ETN",
     "Exchange": "NYSE",
     "Daily_Change": -0.01722823953257426,
-    "Security_JA": "イートン"
+    "Security_JA": "イートン",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "EBAY",
@@ -1657,7 +1822,8 @@
     "Symbol_YF": "EBAY",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.005701584847313386,
-    "Security_JA": "イーベイ"
+    "Security_JA": "イーベイ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "SATS",
@@ -1667,7 +1833,8 @@
     "Symbol_YF": "SATS",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.00032483352281960576,
-    "Security_JA": "エコスター クラスA"
+    "Security_JA": "エコスター クラスA",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ECL",
@@ -1677,7 +1844,8 @@
     "Symbol_YF": "ECL",
     "Exchange": "NYSE",
     "Daily_Change": -0.004182655410591066,
-    "Security_JA": "エコラボ"
+    "Security_JA": "エコラボ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "EIX",
@@ -1687,7 +1855,8 @@
     "Symbol_YF": "EIX",
     "Exchange": "NYSE",
     "Daily_Change": 0.005612318319182625,
-    "Security_JA": "エジソン・インターナショナル"
+    "Security_JA": "エジソン・インターナショナル",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "EW",
@@ -1697,7 +1866,8 @@
     "Symbol_YF": "EW",
     "Exchange": "NYSE",
     "Daily_Change": 0.005748502994012024,
-    "Security_JA": "エドワーズ・ライフサイエンシズ"
+    "Security_JA": "エドワーズ・ライフサイエンシズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "EA",
@@ -1707,7 +1877,8 @@
     "Symbol_YF": "EA",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.001383604289173302,
-    "Security_JA": "エレクトロニック・アーツ"
+    "Security_JA": "エレクトロニック・アーツ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ELV",
@@ -1717,7 +1888,8 @@
     "Symbol_YF": "ELV",
     "Exchange": "NYSE",
     "Daily_Change": -0.009935710111046195,
-    "Security_JA": "エレバンス・ヘルス"
+    "Security_JA": "エレバンス・ヘルス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "EME",
@@ -1727,7 +1899,8 @@
     "Symbol_YF": "EME",
     "Exchange": "NYSE",
     "Daily_Change": 0.013267240122466878,
-    "Security_JA": "エムコア・グループ"
+    "Security_JA": "エムコア・グループ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "EMR",
@@ -1737,7 +1910,8 @@
     "Symbol_YF": "EMR",
     "Exchange": "NYSE",
     "Daily_Change": -0.02129023070350334,
-    "Security_JA": "エマーソン・エレクトリック"
+    "Security_JA": "エマーソン・エレクトリック",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ETR",
@@ -1747,7 +1921,8 @@
     "Symbol_YF": "ETR",
     "Exchange": "NYSE",
     "Daily_Change": -0.007162957278076142,
-    "Security_JA": "エンタジー"
+    "Security_JA": "エンタジー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "EOG",
@@ -1757,7 +1932,8 @@
     "Symbol_YF": "EOG",
     "Exchange": "NYSE",
     "Daily_Change": -0.011524507362879736,
-    "Security_JA": "イーオージー・リソーシズ"
+    "Security_JA": "イーオージー・リソーシズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "EPAM",
@@ -1767,7 +1943,8 @@
     "Symbol_YF": "EPAM",
     "Exchange": "NYSE",
     "Daily_Change": -0.012743891720864852,
-    "Security_JA": "イーピーエーエム・システムズ"
+    "Security_JA": "イーピーエーエム・システムズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "EQT",
@@ -1777,7 +1954,8 @@
     "Symbol_YF": "EQT",
     "Exchange": "NYSE",
     "Daily_Change": -0.023635153129161146,
-    "Security_JA": "イーキューティー"
+    "Security_JA": "イーキューティー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "EFX",
@@ -1787,7 +1965,8 @@
     "Symbol_YF": "EFX",
     "Exchange": "NYSE",
     "Daily_Change": -0.0005174197999310304,
-    "Security_JA": "エキファックス"
+    "Security_JA": "エキファックス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "EQIX",
@@ -1797,7 +1976,8 @@
     "Symbol_YF": "EQIX",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.003271235307163417,
-    "Security_JA": "エクイニクス"
+    "Security_JA": "エクイニクス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "EQR",
@@ -1807,7 +1987,8 @@
     "Symbol_YF": "EQR",
     "Exchange": "NYSE",
     "Daily_Change": -0.003211991434689412,
-    "Security_JA": "エクイティ・レジデンシャル"
+    "Security_JA": "エクイティ・レジデンシャル",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ERIE",
@@ -1817,7 +1998,8 @@
     "Symbol_YF": "ERIE",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.018133694873535163,
-    "Security_JA": "イリー・インデムニティー・カンパニー クラスA"
+    "Security_JA": "イリー・インデムニティー・カンパニー クラスA",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ESS",
@@ -1827,7 +2009,8 @@
     "Symbol_YF": "ESS",
     "Exchange": "NYSE",
     "Daily_Change": 0.0005318946848525634,
-    "Security_JA": "エセックス・プロパティ・トラスト"
+    "Security_JA": "エセックス・プロパティ・トラスト",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "EL",
@@ -1837,7 +2020,8 @@
     "Symbol_YF": "EL",
     "Exchange": "NYSE",
     "Daily_Change": 0.03376352496415074,
-    "Security_JA": "エスティローダー クラスA"
+    "Security_JA": "エスティローダー クラスA",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "EG",
@@ -1847,7 +2031,8 @@
     "Symbol_YF": "EG",
     "Exchange": "NYSE",
     "Daily_Change": -0.008941585379526846,
-    "Security_JA": "エベレスト・リ・グループ"
+    "Security_JA": "エベレスト・リ・グループ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "EVRG",
@@ -1857,7 +2042,8 @@
     "Symbol_YF": "EVRG",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.0027764846558915412,
-    "Security_JA": "エヴァージー"
+    "Security_JA": "エヴァージー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ES",
@@ -1867,7 +2053,8 @@
     "Symbol_YF": "ES",
     "Exchange": "NYSE",
     "Daily_Change": 0.005233380480905096,
-    "Security_JA": "エバーソース・エナジー"
+    "Security_JA": "エバーソース・エナジー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "EXC",
@@ -1877,7 +2064,8 @@
     "Symbol_YF": "EXC",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.011089367253750771,
-    "Security_JA": "エクセロン"
+    "Security_JA": "エクセロン",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "EXE",
@@ -1887,7 +2075,8 @@
     "Symbol_YF": "EXE",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.019872736172295655,
-    "Security_JA": "エクスパンド・エナジー"
+    "Security_JA": "エクスパンド・エナジー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "EXPE",
@@ -1897,7 +2086,8 @@
     "Symbol_YF": "EXPE",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.013971091516688806,
-    "Security_JA": "エクスペディア・グループ"
+    "Security_JA": "エクスペディア・グループ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "EXPD",
@@ -1907,7 +2097,8 @@
     "Symbol_YF": "EXPD",
     "Exchange": "NYSE",
     "Daily_Change": -0.004462776387855816,
-    "Security_JA": "エクスペディターズ・インターナショナル・オブ・ワシントン"
+    "Security_JA": "エクスペディターズ・インターナショナル・オブ・ワシントン",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "EXR",
@@ -1917,7 +2108,8 @@
     "Symbol_YF": "EXR",
     "Exchange": "NYSE",
     "Daily_Change": -0.009139747435986898,
-    "Security_JA": "エクストラ・スペース・ストレージ"
+    "Security_JA": "エクストラ・スペース・ストレージ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "XOM",
@@ -1927,7 +2119,8 @@
     "Symbol_YF": "XOM",
     "Exchange": "NYSE",
     "Daily_Change": -0.010237802112356718,
-    "Security_JA": "エクソン・モービル"
+    "Security_JA": "エクソン・モービル",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "FFIV",
@@ -1937,7 +2130,8 @@
     "Symbol_YF": "FFIV",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.00216122246611777,
-    "Security_JA": "F5ネットワークス"
+    "Security_JA": "F5ネットワークス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "FDS",
@@ -1947,7 +2141,8 @@
     "Symbol_YF": "FDS",
     "Exchange": "NYSE",
     "Daily_Change": 0.0,
-    "Security_JA": "ファクトセット・リサーチ・システムズ"
+    "Security_JA": "ファクトセット・リサーチ・システムズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "FICO",
@@ -1957,7 +2152,8 @@
     "Symbol_YF": "FICO",
     "Exchange": "NYSE",
     "Daily_Change": 0.01024390243902439,
-    "Security_JA": "フェア・アイザック"
+    "Security_JA": "フェア・アイザック",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "FAST",
@@ -1967,7 +2163,8 @@
     "Symbol_YF": "FAST",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.00044513687959054363,
-    "Security_JA": "ファスナル"
+    "Security_JA": "ファスナル",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "FRT",
@@ -1977,7 +2174,8 @@
     "Symbol_YF": "FRT",
     "Exchange": "NYSE",
     "Daily_Change": 0.03985572587917031,
-    "Security_JA": "フェデラル・リアルティー・インベストメント・トラスト"
+    "Security_JA": "フェデラル・リアルティー・インベストメント・トラスト",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "FDX",
@@ -1987,7 +2185,8 @@
     "Symbol_YF": "FDX",
     "Exchange": "NYSE",
     "Daily_Change": -0.0239022092187151,
-    "Security_JA": "フェデックス"
+    "Security_JA": "フェデックス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "FIS",
@@ -1997,7 +2196,8 @@
     "Symbol_YF": "FIS",
     "Exchange": "NYSE",
     "Daily_Change": 0.00021491510853208706,
-    "Security_JA": "フィディリティ・ナショナル・インフォメーション・サービシズ"
+    "Security_JA": "フィディリティ・ナショナル・インフォメーション・サービシズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "FITB",
@@ -2007,7 +2207,8 @@
     "Symbol_YF": "FITB",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.006108374384236498,
-    "Security_JA": "フィフス・サード・バンコープ"
+    "Security_JA": "フィフス・サード・バンコープ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "FSLR",
@@ -2017,7 +2218,8 @@
     "Symbol_YF": "FSLR",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.04864029676356953,
-    "Security_JA": "ファースト・ソーラー"
+    "Security_JA": "ファースト・ソーラー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "FE",
@@ -2027,7 +2229,8 @@
     "Symbol_YF": "FE",
     "Exchange": "NYSE",
     "Daily_Change": -0.012626262626262656,
-    "Security_JA": "ファーストエナジー"
+    "Security_JA": "ファーストエナジー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "FISV",
@@ -2037,7 +2240,8 @@
     "Symbol_YF": "FISV",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.008140431225552408,
-    "Security_JA": "フィサーブ"
+    "Security_JA": "フィサーブ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "F",
@@ -2047,7 +2251,8 @@
     "Symbol_YF": "F",
     "Exchange": "NYSE",
     "Daily_Change": -0.01655629139072842,
-    "Security_JA": "フォード・モーター"
+    "Security_JA": "フォード・モーター",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "FTNT",
@@ -2057,7 +2262,8 @@
     "Symbol_YF": "FTNT",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.023484758628869694,
-    "Security_JA": "フォーティネット"
+    "Security_JA": "フォーティネット",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "FTV",
@@ -2067,7 +2273,8 @@
     "Symbol_YF": "FTV",
     "Exchange": "NYSE",
     "Daily_Change": -0.012711155711657434,
-    "Security_JA": "フォーティブ"
+    "Security_JA": "フォーティブ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "FOXA",
@@ -2077,7 +2284,8 @@
     "Symbol_YF": "FOXA",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.0022050402332663252,
-    "Security_JA": "フォックス　クラスA"
+    "Security_JA": "フォックス　クラスA",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "FOX",
@@ -2087,7 +2295,8 @@
     "Symbol_YF": "FOX",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.0015783935461242268,
-    "Security_JA": "フォックス　クラスB"
+    "Security_JA": "フォックス　クラスB",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "BEN",
@@ -2097,7 +2306,8 @@
     "Symbol_YF": "BEN",
     "Exchange": "NYSE",
     "Daily_Change": -0.004337671004337638,
-    "Security_JA": "フランクリン・リソーシズ"
+    "Security_JA": "フランクリン・リソーシズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "FCX",
@@ -2107,7 +2317,8 @@
     "Symbol_YF": "FCX",
     "Exchange": "NYSE",
     "Daily_Change": -0.021287642782969955,
-    "Security_JA": "フリーポートマクモラン"
+    "Security_JA": "フリーポートマクモラン",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "GRMN",
@@ -2117,7 +2328,8 @@
     "Symbol_YF": "GRMN",
     "Exchange": "NYSE",
     "Daily_Change": -0.034721669188500434,
-    "Security_JA": "ガーミン"
+    "Security_JA": "ガーミン",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "IT",
@@ -2127,7 +2339,8 @@
     "Symbol_YF": "IT",
     "Exchange": "NYSE",
     "Daily_Change": -0.014075021886995779,
-    "Security_JA": "ガートナー"
+    "Security_JA": "ガートナー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "GE",
@@ -2137,7 +2350,8 @@
     "Symbol_YF": "GE",
     "Exchange": "NYSE",
     "Daily_Change": -0.011795950746732025,
-    "Security_JA": "GE エアロスペース（ゼネラル・エレクトリック）"
+    "Security_JA": "GE エアロスペース（ゼネラル・エレクトリック）",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "GEHC",
@@ -2147,7 +2361,8 @@
     "Symbol_YF": "GEHC",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.0031229454306377006,
-    "Security_JA": "GEヘルスケア・テクノロジーズ"
+    "Security_JA": "GEヘルスケア・テクノロジーズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "GEV",
@@ -2157,7 +2372,8 @@
     "Symbol_YF": "GEV",
     "Exchange": "NYSE",
     "Daily_Change": -0.018930094327432475,
-    "Security_JA": "GEベルノバ"
+    "Security_JA": "GEベルノバ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "GEN",
@@ -2167,7 +2383,8 @@
     "Symbol_YF": "GEN",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.005186721991701134,
-    "Security_JA": "ゲンデジタル"
+    "Security_JA": "ゲンデジタル",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "GNRC",
@@ -2177,7 +2394,8 @@
     "Symbol_YF": "GNRC",
     "Exchange": "NYSE",
     "Daily_Change": 0.00042433360336364154,
-    "Security_JA": "ジェネラック・ホールディングス"
+    "Security_JA": "ジェネラック・ホールディングス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "GD",
@@ -2187,7 +2405,8 @@
     "Symbol_YF": "GD",
     "Exchange": "NYSE",
     "Daily_Change": 0.004472843450479128,
-    "Security_JA": "ゼネラル・ダイナミックス"
+    "Security_JA": "ゼネラル・ダイナミックス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "GIS",
@@ -2197,7 +2416,8 @@
     "Symbol_YF": "GIS",
     "Exchange": "NYSE",
     "Daily_Change": -0.01670914755026914,
-    "Security_JA": "ゼネラル・ミルズ"
+    "Security_JA": "ゼネラル・ミルズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "GM",
@@ -2207,7 +2427,8 @@
     "Symbol_YF": "GM",
     "Exchange": "NYSE",
     "Daily_Change": -0.01456626349330218,
-    "Security_JA": "ゼネラルモーターズ"
+    "Security_JA": "ゼネラルモーターズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "GPC",
@@ -2217,7 +2438,8 @@
     "Symbol_YF": "GPC",
     "Exchange": "NYSE",
     "Daily_Change": -0.020889676396530905,
-    "Security_JA": "ジェニュイン・パーツ"
+    "Security_JA": "ジェニュイン・パーツ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "GILD",
@@ -2227,7 +2449,8 @@
     "Symbol_YF": "GILD",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.006190767349434441,
-    "Security_JA": "ギリアド・サイエンシズ"
+    "Security_JA": "ギリアド・サイエンシズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "GPN",
@@ -2237,7 +2460,8 @@
     "Symbol_YF": "GPN",
     "Exchange": "NYSE",
     "Daily_Change": 0.00555864369093949,
-    "Security_JA": "グローバル・ペイメンツ"
+    "Security_JA": "グローバル・ペイメンツ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "GL",
@@ -2247,7 +2471,8 @@
     "Symbol_YF": "GL",
     "Exchange": "NYSE",
     "Daily_Change": -0.010239792611795284,
-    "Security_JA": "グローブ・ライフ"
+    "Security_JA": "グローブ・ライフ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "GDDY",
@@ -2257,7 +2482,8 @@
     "Symbol_YF": "GDDY",
     "Exchange": "NYSE",
     "Daily_Change": -0.0003456619426201306,
-    "Security_JA": "ゴーダディ クラスA"
+    "Security_JA": "ゴーダディ クラスA",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "GS",
@@ -2267,7 +2493,8 @@
     "Symbol_YF": "GS",
     "Exchange": "NYSE",
     "Daily_Change": -6.495123244957666e-05,
-    "Security_JA": "ゴールドマン・サックス"
+    "Security_JA": "ゴールドマン・サックス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "HAL",
@@ -2277,7 +2504,8 @@
     "Symbol_YF": "HAL",
     "Exchange": "NYSE",
     "Daily_Change": -0.015130023640661953,
-    "Security_JA": "ハリバートン"
+    "Security_JA": "ハリバートン",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "HIG",
@@ -2287,7 +2515,8 @@
     "Symbol_YF": "HIG",
     "Exchange": "NYSE",
     "Daily_Change": -0.0073094072070755065,
-    "Security_JA": "ハートフォード・インシュランス・グループ"
+    "Security_JA": "ハートフォード・インシュランス・グループ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "HAS",
@@ -2297,7 +2526,8 @@
     "Symbol_YF": "HAS",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.005947412353923282,
-    "Security_JA": "ハスブロ"
+    "Security_JA": "ハスブロ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "HCA",
@@ -2307,7 +2537,8 @@
     "Symbol_YF": "HCA",
     "Exchange": "NYSE",
     "Daily_Change": -0.0031303947519853003,
-    "Security_JA": "HCAヘルスケア"
+    "Security_JA": "HCAヘルスケア",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "DOC",
@@ -2317,7 +2548,8 @@
     "Symbol_YF": "DOC",
     "Exchange": "NYSE",
     "Daily_Change": 0.015460729746444031,
-    "Security_JA": "ヘルスピーク・プロパティーズ"
+    "Security_JA": "ヘルスピーク・プロパティーズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "HSIC",
@@ -2327,7 +2559,8 @@
     "Symbol_YF": "HSIC",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.008848424247302448,
-    "Security_JA": "ヘンリー・シャイン"
+    "Security_JA": "ヘンリー・シャイン",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "HSY",
@@ -2337,7 +2570,8 @@
     "Symbol_YF": "HSY",
     "Exchange": "NYSE",
     "Daily_Change": -0.01830515774738885,
-    "Security_JA": "ハーシー"
+    "Security_JA": "ハーシー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "HPE",
@@ -2347,7 +2581,8 @@
     "Symbol_YF": "HPE",
     "Exchange": "NYSE",
     "Daily_Change": -0.006951685783802547,
-    "Security_JA": "ヒューレット・パッカード・エンタープライズ"
+    "Security_JA": "ヒューレット・パッカード・エンタープライズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "HLT",
@@ -2357,7 +2592,8 @@
     "Symbol_YF": "HLT",
     "Exchange": "NYSE",
     "Daily_Change": -0.016848211806091213,
-    "Security_JA": "ヒルトン・ワールドワイド・ホールディングス"
+    "Security_JA": "ヒルトン・ワールドワイド・ホールディングス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "HD",
@@ -2367,7 +2603,8 @@
     "Symbol_YF": "HD",
     "Exchange": "NYSE",
     "Daily_Change": -0.014963503649635085,
-    "Security_JA": "ホームデポ"
+    "Security_JA": "ホームデポ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "HON",
@@ -2377,7 +2614,8 @@
     "Symbol_YF": "HON",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.008538235431344247,
-    "Security_JA": "ハネウェル・インターナショナル"
+    "Security_JA": "ハネウェル・インターナショナル",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "HRL",
@@ -2387,7 +2625,8 @@
     "Symbol_YF": "HRL",
     "Exchange": "NYSE",
     "Daily_Change": -0.006520726595249212,
-    "Security_JA": "ホーメル・フーズ"
+    "Security_JA": "ホーメル・フーズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "HST",
@@ -2397,7 +2636,8 @@
     "Symbol_YF": "HST",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.0,
-    "Security_JA": "ホスト・ホテルズ＆リゾーツ"
+    "Security_JA": "ホスト・ホテルズ＆リゾーツ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "HWM",
@@ -2407,7 +2647,8 @@
     "Symbol_YF": "HWM",
     "Exchange": "NYSE",
     "Daily_Change": -0.014524358130348919,
-    "Security_JA": "ハウメット・エアロスペース"
+    "Security_JA": "ハウメット・エアロスペース",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "HPQ",
@@ -2417,7 +2658,8 @@
     "Symbol_YF": "HPQ",
     "Exchange": "NYSE",
     "Daily_Change": -0.001438159156280016,
-    "Security_JA": "HP"
+    "Security_JA": "HP",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "HUBB",
@@ -2427,7 +2669,8 @@
     "Symbol_YF": "HUBB",
     "Exchange": "NYSE",
     "Daily_Change": 0.000511639805576856,
-    "Security_JA": "ハベル"
+    "Security_JA": "ハベル",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "HUM",
@@ -2437,7 +2680,8 @@
     "Symbol_YF": "HUM",
     "Exchange": "NYSE",
     "Daily_Change": -0.011884621891388945,
-    "Security_JA": "ヒューマナ"
+    "Security_JA": "ヒューマナ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "HBAN",
@@ -2447,7 +2691,8 @@
     "Symbol_YF": "HBAN",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.00953800298062594,
-    "Security_JA": "ハンチントン・バンクシェアーズ"
+    "Security_JA": "ハンチントン・バンクシェアーズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "HII",
@@ -2457,7 +2702,8 @@
     "Symbol_YF": "HII",
     "Exchange": "NYSE",
     "Daily_Change": -0.010129292596557682,
-    "Security_JA": "ハンティントン・インガルス・インダストリーズ"
+    "Security_JA": "ハンティントン・インガルス・インダストリーズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "IBM",
@@ -2467,7 +2713,8 @@
     "Symbol_YF": "IBM",
     "Exchange": "NYSE",
     "Daily_Change": 0.005281842583773482,
-    "Security_JA": "アイビーエム"
+    "Security_JA": "アイビーエム",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "IEX",
@@ -2477,7 +2724,8 @@
     "Symbol_YF": "IEX",
     "Exchange": "NYSE",
     "Daily_Change": -0.01340371815469354,
-    "Security_JA": "アイデックス"
+    "Security_JA": "アイデックス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "IDXX",
@@ -2487,7 +2735,8 @@
     "Symbol_YF": "IDXX",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.011875801366280157,
-    "Security_JA": "アイデックス・ラボラトリーズ"
+    "Security_JA": "アイデックス・ラボラトリーズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ITW",
@@ -2497,7 +2746,8 @@
     "Symbol_YF": "ITW",
     "Exchange": "NYSE",
     "Daily_Change": -0.009844579667454719,
-    "Security_JA": "イリノイ・ツール・ワークス"
+    "Security_JA": "イリノイ・ツール・ワークス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "INCY",
@@ -2507,7 +2757,8 @@
     "Symbol_YF": "INCY",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.017214190523178696,
-    "Security_JA": "インサイト"
+    "Security_JA": "インサイト",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "IR",
@@ -2517,7 +2768,8 @@
     "Symbol_YF": "IR",
     "Exchange": "NYSE",
     "Daily_Change": -0.023415977961432563,
-    "Security_JA": "インガソール・ランド"
+    "Security_JA": "インガソール・ランド",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "PODD",
@@ -2527,7 +2779,8 @@
     "Symbol_YF": "PODD",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.016846752643197432,
-    "Security_JA": "インシュレット"
+    "Security_JA": "インシュレット",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "INTC",
@@ -2537,7 +2790,8 @@
     "Symbol_YF": "INTC",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.05418557232587725,
-    "Security_JA": "インテル"
+    "Security_JA": "インテル",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "IBKR",
@@ -2547,7 +2801,8 @@
     "Symbol_YF": "IBKR",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.012075471698113129,
-    "Security_JA": "インタラクティブ・ブローカーズ・グループ　クラスA"
+    "Security_JA": "インタラクティブ・ブローカーズ・グループ　クラスA",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ICE",
@@ -2557,7 +2812,8 @@
     "Symbol_YF": "ICE",
     "Exchange": "NYSE",
     "Daily_Change": -0.021127206021886287,
-    "Security_JA": "インターコンチネンタル・エクスチェンジ"
+    "Security_JA": "インターコンチネンタル・エクスチェンジ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "IFF",
@@ -2567,7 +2823,8 @@
     "Symbol_YF": "IFF",
     "Exchange": "NYSE",
     "Daily_Change": 0.008689458689458682,
-    "Security_JA": "インターナショナル・フレーバー・アンド・フレグランス"
+    "Security_JA": "インターナショナル・フレーバー・アンド・フレグランス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "IP",
@@ -2577,7 +2834,8 @@
     "Symbol_YF": "IP",
     "Exchange": "NYSE",
     "Daily_Change": 0.044049967126890195,
-    "Security_JA": "インターナショナル・ペーパー"
+    "Security_JA": "インターナショナル・ペーパー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "INTU",
@@ -2587,7 +2845,8 @@
     "Symbol_YF": "INTU",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.027051722584713566,
-    "Security_JA": "インテュイト"
+    "Security_JA": "インテュイト",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ISRG",
@@ -2597,7 +2856,8 @@
     "Symbol_YF": "ISRG",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.00037149537816035286,
-    "Security_JA": "インテュイティブ・サージカル"
+    "Security_JA": "インテュイティブ・サージカル",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "IVZ",
@@ -2607,7 +2867,8 @@
     "Symbol_YF": "IVZ",
     "Exchange": "NYSE",
     "Daily_Change": -0.012209080503624582,
-    "Security_JA": "インベスコ"
+    "Security_JA": "インベスコ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "INVH",
@@ -2617,7 +2878,8 @@
     "Symbol_YF": "INVH",
     "Exchange": "NYSE",
     "Daily_Change": -0.008342022940563033,
-    "Security_JA": "インビテーション・ホームズ"
+    "Security_JA": "インビテーション・ホームズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "IQV",
@@ -2627,7 +2889,8 @@
     "Symbol_YF": "IQV",
     "Exchange": "NYSE",
     "Daily_Change": -0.003788596325061529,
-    "Security_JA": "アイキューヴィア・ホールディングス"
+    "Security_JA": "アイキューヴィア・ホールディングス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "IRM",
@@ -2637,7 +2900,8 @@
     "Symbol_YF": "IRM",
     "Exchange": "NYSE",
     "Daily_Change": 0.009524565441701745,
-    "Security_JA": "アイアン・マウンテン"
+    "Security_JA": "アイアン・マウンテン",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "JBHT",
@@ -2647,7 +2911,8 @@
     "Symbol_YF": "JBHT",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.0111318729376218,
-    "Security_JA": "ジェイビー・ハント・トランスポート・サービシズ"
+    "Security_JA": "ジェイビー・ハント・トランスポート・サービシズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "JBL",
@@ -2657,7 +2922,8 @@
     "Symbol_YF": "JBL",
     "Exchange": "NYSE",
     "Daily_Change": 0.014755992770156207,
-    "Security_JA": "ジェイビル・サーキット"
+    "Security_JA": "ジェイビル・サーキット",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "JKHY",
@@ -2667,7 +2933,8 @@
     "Symbol_YF": "JKHY",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.0018211382113821211,
-    "Security_JA": "ジャック・ヘンリー・アンド・アソシエイツ"
+    "Security_JA": "ジャック・ヘンリー・アンド・アソシエイツ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "J",
@@ -2677,7 +2944,8 @@
     "Symbol_YF": "J",
     "Exchange": "NYSE",
     "Daily_Change": -0.003786415269299197,
-    "Security_JA": "ジェイコブズ・ソリューションズ"
+    "Security_JA": "ジェイコブズ・ソリューションズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "JNJ",
@@ -2687,7 +2955,8 @@
     "Symbol_YF": "JNJ",
     "Exchange": "NYSE",
     "Daily_Change": -0.011572764846639098,
-    "Security_JA": "ジョンソン・エンド・ジョンソン"
+    "Security_JA": "ジョンソン・エンド・ジョンソン",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "JCI",
@@ -2697,7 +2966,8 @@
     "Symbol_YF": "JCI",
     "Exchange": "NYSE",
     "Daily_Change": -0.0065055125659110365,
-    "Security_JA": "ジョンソン・コントロールズ"
+    "Security_JA": "ジョンソン・コントロールズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "JPM",
@@ -2707,7 +2977,8 @@
     "Symbol_YF": "JPM",
     "Exchange": "NYSE",
     "Daily_Change": -0.0024263320882418377,
-    "Security_JA": "ジェイピー・モルガン・チェース"
+    "Security_JA": "ジェイピー・モルガン・チェース",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "KVUE",
@@ -2717,7 +2988,8 @@
     "Symbol_YF": "KVUE",
     "Exchange": "NYSE",
     "Daily_Change": -0.005704506560182625,
-    "Security_JA": "ケンビュー"
+    "Security_JA": "ケンビュー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "KDP",
@@ -2727,7 +2999,8 @@
     "Symbol_YF": "KDP",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.010544217687074788,
-    "Security_JA": "キューリグ・ドクターペッパー"
+    "Security_JA": "キューリグ・ドクターペッパー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "KEY",
@@ -2737,7 +3010,8 @@
     "Symbol_YF": "KEY",
     "Exchange": "NYSE",
     "Daily_Change": -0.010854816824966008,
-    "Security_JA": "キーコープ"
+    "Security_JA": "キーコープ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "KEYS",
@@ -2747,7 +3021,8 @@
     "Symbol_YF": "KEYS",
     "Exchange": "NYSE",
     "Daily_Change": 0.007144694349975707,
-    "Security_JA": "キーサイト・テクノロジーズ"
+    "Security_JA": "キーサイト・テクノロジーズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "KMB",
@@ -2757,7 +3032,8 @@
     "Symbol_YF": "KMB",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.007721223204307681,
-    "Security_JA": "キンバリークラーク"
+    "Security_JA": "キンバリークラーク",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "KIM",
@@ -2767,7 +3043,8 @@
     "Symbol_YF": "KIM",
     "Exchange": "NYSE",
     "Daily_Change": -0.01099830795262274,
-    "Security_JA": "キムコ・リアルティ"
+    "Security_JA": "キムコ・リアルティ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "KMI",
@@ -2777,7 +3054,8 @@
     "Symbol_YF": "KMI",
     "Exchange": "NYSE",
     "Daily_Change": -0.010343778521448018,
-    "Security_JA": "キンダー・モルガン"
+    "Security_JA": "キンダー・モルガン",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "KKR",
@@ -2787,7 +3065,8 @@
     "Symbol_YF": "KKR",
     "Exchange": "NYSE",
     "Daily_Change": -0.0063254744105807606,
-    "Security_JA": "KKR"
+    "Security_JA": "KKR",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "KLAC",
@@ -2797,7 +3076,8 @@
     "Symbol_YF": "KLAC",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.013762961693375564,
-    "Security_JA": "ケーエルエー・コーポレーション"
+    "Security_JA": "ケーエルエー・コーポレーション",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "KHC",
@@ -2807,7 +3087,8 @@
     "Symbol_YF": "KHC",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.00750220653133282,
-    "Security_JA": "クラフト・ハインツ"
+    "Security_JA": "クラフト・ハインツ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "KR",
@@ -2817,7 +3098,8 @@
     "Symbol_YF": "KR",
     "Exchange": "NYSE",
     "Daily_Change": -0.0044072278536799936,
-    "Security_JA": "クローガー"
+    "Security_JA": "クローガー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "LHX",
@@ -2827,7 +3109,8 @@
     "Symbol_YF": "LHX",
     "Exchange": "NYSE",
     "Daily_Change": -0.022399001715800986,
-    "Security_JA": "L3ハリス・テクノロジーズ"
+    "Security_JA": "L3ハリス・テクノロジーズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "LH",
@@ -2837,7 +3120,8 @@
     "Symbol_YF": "LH",
     "Exchange": "NYSE",
     "Daily_Change": -0.0037383177570093767,
-    "Security_JA": "ラボコープ・ホールディングス"
+    "Security_JA": "ラボコープ・ホールディングス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "LRCX",
@@ -2847,7 +3131,8 @@
     "Symbol_YF": "LRCX",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.005039931767077659,
-    "Security_JA": "ラム・リサーチ"
+    "Security_JA": "ラム・リサーチ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "LVS",
@@ -2857,7 +3142,8 @@
     "Symbol_YF": "LVS",
     "Exchange": "NYSE",
     "Daily_Change": -0.015015564914850765,
-    "Security_JA": "ラスベガス・サンズ"
+    "Security_JA": "ラスベガス・サンズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "LDOS",
@@ -2867,7 +3153,8 @@
     "Symbol_YF": "LDOS",
     "Exchange": "NYSE",
     "Daily_Change": 6.701514542280461e-05,
-    "Security_JA": "レイドス・ホールディングス"
+    "Security_JA": "レイドス・ホールディングス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "LEN",
@@ -2877,7 +3164,8 @@
     "Symbol_YF": "LEN",
     "Exchange": "NYSE",
     "Daily_Change": -0.020487264673311124,
-    "Security_JA": "レナー クラスA"
+    "Security_JA": "レナー クラスA",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "LII",
@@ -2887,7 +3175,8 @@
     "Symbol_YF": "LII",
     "Exchange": "NYSE",
     "Daily_Change": -0.016003290396156118,
-    "Security_JA": "レノックス・インターナショナル"
+    "Security_JA": "レノックス・インターナショナル",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "LLY",
@@ -2897,7 +3186,8 @@
     "Symbol_YF": "LLY",
     "Exchange": "NYSE",
     "Daily_Change": 0.030740423710678384,
-    "Security_JA": "イーライ・リリー"
+    "Security_JA": "イーライ・リリー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "LIN",
@@ -2907,7 +3197,8 @@
     "Symbol_YF": "LIN",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.013529153529951769,
-    "Security_JA": "リンデ"
+    "Security_JA": "リンデ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "LYV",
@@ -2917,7 +3208,8 @@
     "Symbol_YF": "LYV",
     "Exchange": "NYSE",
     "Daily_Change": 0.001962770672407258,
-    "Security_JA": "ライブ・ネーション・エンターテインメント"
+    "Security_JA": "ライブ・ネーション・エンターテインメント",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "LMT",
@@ -2927,7 +3219,8 @@
     "Symbol_YF": "LMT",
     "Exchange": "NYSE",
     "Daily_Change": -0.010039191458964892,
-    "Security_JA": "ロッキード・マーチン"
+    "Security_JA": "ロッキード・マーチン",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "L",
@@ -2937,7 +3230,8 @@
     "Symbol_YF": "L",
     "Exchange": "NYSE",
     "Daily_Change": -0.008080987478909481,
-    "Security_JA": "ロウズ"
+    "Security_JA": "ロウズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "LOW",
@@ -2947,7 +3241,8 @@
     "Symbol_YF": "LOW",
     "Exchange": "NYSE",
     "Daily_Change": -0.022865279115540767,
-    "Security_JA": "ロウズ・カンパニーズ"
+    "Security_JA": "ロウズ・カンパニーズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "LULU",
@@ -2957,7 +3252,8 @@
     "Symbol_YF": "LULU",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.029920116194625826,
-    "Security_JA": "ルルレモン・アスレティカ"
+    "Security_JA": "ルルレモン・アスレティカ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "LITE",
@@ -2967,7 +3263,8 @@
     "Symbol_YF": "LITE",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.0527639861689865,
-    "Security_JA": "ルメンタム・ホールディングス"
+    "Security_JA": "ルメンタム・ホールディングス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "LYB",
@@ -2977,7 +3274,8 @@
     "Symbol_YF": "LYB",
     "Exchange": "NYSE",
     "Daily_Change": 0.00522788203753352,
-    "Security_JA": "リヨンデルバセル・インダストリーズ クラスA"
+    "Security_JA": "リヨンデルバセル・インダストリーズ クラスA",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "MTB",
@@ -2987,7 +3285,8 @@
     "Symbol_YF": "MTB",
     "Exchange": "NYSE",
     "Daily_Change": -0.010016923569500973,
-    "Security_JA": "エム・アンド・ティー・バンク"
+    "Security_JA": "エム・アンド・ティー・バンク",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "MPC",
@@ -2997,7 +3296,8 @@
     "Symbol_YF": "MPC",
     "Exchange": "NYSE",
     "Daily_Change": -0.0086189536429175,
-    "Security_JA": "マラソン・ペトロリアム"
+    "Security_JA": "マラソン・ペトロリアム",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "MAR",
@@ -3007,7 +3307,8 @@
     "Symbol_YF": "MAR",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.018579446487323317,
-    "Security_JA": "マリオット・インターナショナル"
+    "Security_JA": "マリオット・インターナショナル",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "MRSH",
@@ -3017,7 +3318,8 @@
     "Symbol_YF": "MRSH",
     "Exchange": "NYSE",
     "Daily_Change": -0.009122890704191765,
-    "Security_JA": "マーシュ・アンド・マクレナン"
+    "Security_JA": "マーシュ・アンド・マクレナン",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "MLM",
@@ -3027,7 +3329,8 @@
     "Symbol_YF": "MLM",
     "Exchange": "NYSE",
     "Daily_Change": -0.007398194065291551,
-    "Security_JA": "マーチン・マリエッタ・マテリアルズ"
+    "Security_JA": "マーチン・マリエッタ・マテリアルズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "MAS",
@@ -3037,7 +3340,8 @@
     "Symbol_YF": "MAS",
     "Exchange": "NYSE",
     "Daily_Change": -0.008075744917850158,
-    "Security_JA": "マスコ"
+    "Security_JA": "マスコ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "MA",
@@ -3047,7 +3351,8 @@
     "Symbol_YF": "MA",
     "Exchange": "NYSE",
     "Daily_Change": -0.014833373101089708,
-    "Security_JA": "マスターカード クラスA"
+    "Security_JA": "マスターカード クラスA",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "MKC",
@@ -3057,7 +3362,8 @@
     "Symbol_YF": "MKC",
     "Exchange": "NYSE",
     "Daily_Change": -0.011801730920535039,
-    "Security_JA": "マコーミック"
+    "Security_JA": "マコーミック",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "MCD",
@@ -3067,7 +3373,8 @@
     "Symbol_YF": "MCD",
     "Exchange": "NYSE",
     "Daily_Change": -0.023672468408324498,
-    "Security_JA": "マクドナルド"
+    "Security_JA": "マクドナルド",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "MCK",
@@ -3077,7 +3384,8 @@
     "Symbol_YF": "MCK",
     "Exchange": "NYSE",
     "Daily_Change": -0.0014474975466144057,
-    "Security_JA": "マケッソン"
+    "Security_JA": "マケッソン",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "MDT",
@@ -3087,7 +3395,8 @@
     "Symbol_YF": "MDT",
     "Exchange": "NYSE",
     "Daily_Change": -0.011979745584784474,
-    "Security_JA": "メドトロニック"
+    "Security_JA": "メドトロニック",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "MRK",
@@ -3097,7 +3406,8 @@
     "Symbol_YF": "MRK",
     "Exchange": "NYSE",
     "Daily_Change": 0.027294376259388072,
-    "Security_JA": "メルク"
+    "Security_JA": "メルク",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "META",
@@ -3107,7 +3417,8 @@
     "Symbol_YF": "META",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.005172329264107408,
-    "Security_JA": "メタ・プラットフォームズ"
+    "Security_JA": "メタ・プラットフォームズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "MET",
@@ -3117,7 +3428,8 @@
     "Symbol_YF": "MET",
     "Exchange": "NYSE",
     "Daily_Change": 0.001622971285892755,
-    "Security_JA": "メットライフ"
+    "Security_JA": "メットライフ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "MTD",
@@ -3127,7 +3439,8 @@
     "Symbol_YF": "MTD",
     "Exchange": "NYSE",
     "Daily_Change": -0.007472916552431803,
-    "Security_JA": "メトラー・トレド・インターナショナル"
+    "Security_JA": "メトラー・トレド・インターナショナル",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "MGM",
@@ -3137,7 +3450,8 @@
     "Symbol_YF": "MGM",
     "Exchange": "NYSE",
     "Daily_Change": -0.01129943502824853,
-    "Security_JA": "エムジーエム・リゾーツ・インターナショナル"
+    "Security_JA": "エムジーエム・リゾーツ・インターナショナル",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "MCHP",
@@ -3147,7 +3461,8 @@
     "Symbol_YF": "MCHP",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.011193671776715996,
-    "Security_JA": "マイクロチップ・テクノロジー"
+    "Security_JA": "マイクロチップ・テクノロジー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "MU",
@@ -3157,7 +3472,8 @@
     "Symbol_YF": "MU",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.04843756003340016,
-    "Security_JA": "マイクロン・テクノロジー"
+    "Security_JA": "マイクロン・テクノロジー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "MSFT",
@@ -3167,7 +3483,8 @@
     "Symbol_YF": "MSFT",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.01513157411015604,
-    "Security_JA": "マイクロソフト"
+    "Security_JA": "マイクロソフト",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "MAA",
@@ -3177,7 +3494,8 @@
     "Symbol_YF": "MAA",
     "Exchange": "NYSE",
     "Daily_Change": -0.0047995045672705105,
-    "Security_JA": "ミッド・アメリカ・アパートメント・コミュニティーズ"
+    "Security_JA": "ミッド・アメリカ・アパートメント・コミュニティーズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "MRNA",
@@ -3187,7 +3505,8 @@
     "Symbol_YF": "MRNA",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.012407488027862436,
-    "Security_JA": "モデルナ"
+    "Security_JA": "モデルナ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "TAP",
@@ -3197,7 +3516,8 @@
     "Symbol_YF": "TAP",
     "Exchange": "NYSE",
     "Daily_Change": -0.01403837154890036,
-    "Security_JA": "モルソン・クアーズ・ビバレッジ"
+    "Security_JA": "モルソン・クアーズ・ビバレッジ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "MDLZ",
@@ -3207,7 +3527,8 @@
     "Symbol_YF": "MDLZ",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.0011393229166666713,
-    "Security_JA": "モンデリーズ・インターナショナル クラスA"
+    "Security_JA": "モンデリーズ・インターナショナル クラスA",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "MPWR",
@@ -3217,7 +3538,8 @@
     "Symbol_YF": "MPWR",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.019158701940647085,
-    "Security_JA": "モノリシック・パワー・システムズ"
+    "Security_JA": "モノリシック・パワー・システムズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "MNST",
@@ -3227,7 +3549,8 @@
     "Symbol_YF": "MNST",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.0006487608667446656,
-    "Security_JA": "モンスター・ビバレッジ"
+    "Security_JA": "モンスター・ビバレッジ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "MCO",
@@ -3237,7 +3560,8 @@
     "Symbol_YF": "MCO",
     "Exchange": "NYSE",
     "Daily_Change": -0.013164447331384737,
-    "Security_JA": "ムーディーズ"
+    "Security_JA": "ムーディーズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "MS",
@@ -3247,7 +3571,8 @@
     "Symbol_YF": "MS",
     "Exchange": "NYSE",
     "Daily_Change": -0.002203683299228794,
-    "Security_JA": "モルガン・スタンレー"
+    "Security_JA": "モルガン・スタンレー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "MOS",
@@ -3257,7 +3582,8 @@
     "Symbol_YF": "MOS",
     "Exchange": "NYSE",
     "Daily_Change": -0.005156854318865535,
-    "Security_JA": "モザイク"
+    "Security_JA": "モザイク",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "MSI",
@@ -3267,7 +3593,8 @@
     "Symbol_YF": "MSI",
     "Exchange": "NYSE",
     "Daily_Change": -0.007129353347151666,
-    "Security_JA": "モトローラ・ソリューションズ"
+    "Security_JA": "モトローラ・ソリューションズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "MSCI",
@@ -3277,7 +3604,8 @@
     "Symbol_YF": "MSCI",
     "Exchange": "NYSE",
     "Daily_Change": -0.004328638338884945,
-    "Security_JA": "エムエスシーアイ"
+    "Security_JA": "エムエスシーアイ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "NDAQ",
@@ -3287,7 +3615,8 @@
     "Symbol_YF": "NDAQ",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.006419280009543396,
-    "Security_JA": "ナスダック"
+    "Security_JA": "ナスダック",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "NTAP",
@@ -3297,7 +3626,8 @@
     "Symbol_YF": "NTAP",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.011826270223841449,
-    "Security_JA": "ネットアップ"
+    "Security_JA": "ネットアップ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "NFLX",
@@ -3307,7 +3637,8 @@
     "Symbol_YF": "NFLX",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.016558060036320876,
-    "Security_JA": "ネットフリックス"
+    "Security_JA": "ネットフリックス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "NEM",
@@ -3317,7 +3648,8 @@
     "Symbol_YF": "NEM",
     "Exchange": "NYSE",
     "Daily_Change": -0.022234224502655494,
-    "Security_JA": "ニューモント"
+    "Security_JA": "ニューモント",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "NWSA",
@@ -3327,7 +3659,8 @@
     "Symbol_YF": "NWSA",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.0030395136778116204,
-    "Security_JA": "ニューズ・コーポレーション クラスA"
+    "Security_JA": "ニューズ・コーポレーション クラスA",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "NWS",
@@ -3337,7 +3670,8 @@
     "Symbol_YF": "NWS",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.002296587926509196,
-    "Security_JA": "ニューズ・コーポレーション クラスB"
+    "Security_JA": "ニューズ・コーポレーション クラスB",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "NEE",
@@ -3347,7 +3681,8 @@
     "Symbol_YF": "NEE",
     "Exchange": "NYSE",
     "Daily_Change": -0.009501430322844224,
-    "Security_JA": "ネクステラ・エナジー"
+    "Security_JA": "ネクステラ・エナジー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "NKE",
@@ -3357,7 +3692,8 @@
     "Symbol_YF": "NKE",
     "Exchange": "NYSE",
     "Daily_Change": 0.000901713255184832,
-    "Security_JA": "ナイキ クラスB"
+    "Security_JA": "ナイキ クラスB",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "NI",
@@ -3367,7 +3703,8 @@
     "Symbol_YF": "NI",
     "Exchange": "NYSE",
     "Daily_Change": -0.004142502071251095,
-    "Security_JA": "ナイソース"
+    "Security_JA": "ナイソース",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "NDSN",
@@ -3377,7 +3714,8 @@
     "Symbol_YF": "NDSN",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.018200728029121167,
-    "Security_JA": "ノードソン"
+    "Security_JA": "ノードソン",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "NSC",
@@ -3387,7 +3725,8 @@
     "Symbol_YF": "NSC",
     "Exchange": "NYSE",
     "Daily_Change": 0.00022163822309468126,
-    "Security_JA": "ノーフォーク・サザン"
+    "Security_JA": "ノーフォーク・サザン",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "NTRS",
@@ -3397,7 +3736,8 @@
     "Symbol_YF": "NTRS",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.011181916556450726,
-    "Security_JA": "ノーザン・トラスト"
+    "Security_JA": "ノーザン・トラスト",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "NOC",
@@ -3407,7 +3747,8 @@
     "Symbol_YF": "NOC",
     "Exchange": "NYSE",
     "Daily_Change": -0.01956926899979297,
-    "Security_JA": "ノースロップ・グラマン"
+    "Security_JA": "ノースロップ・グラマン",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "NCLH",
@@ -3417,7 +3758,8 @@
     "Symbol_YF": "NCLH",
     "Exchange": "NYSE",
     "Daily_Change": 0.0346534653465346,
-    "Security_JA": "ノルウェージャン・クルーズライン・ホールディングス"
+    "Security_JA": "ノルウェージャン・クルーズライン・ホールディングス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "NRG",
@@ -3427,7 +3769,8 @@
     "Symbol_YF": "NRG",
     "Exchange": "NYSE",
     "Daily_Change": -0.011185970793978178,
-    "Security_JA": "エヌアールジー・エナジー"
+    "Security_JA": "エヌアールジー・エナジー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "NUE",
@@ -3437,7 +3780,8 @@
     "Symbol_YF": "NUE",
     "Exchange": "NYSE",
     "Daily_Change": 0.0033290425673576283,
-    "Security_JA": "ニューコア"
+    "Security_JA": "ニューコア",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "NVDA",
@@ -3447,7 +3791,8 @@
     "Symbol_YF": "NVDA",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.005612016115248597,
-    "Security_JA": "エヌビディア"
+    "Security_JA": "エヌビディア",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "NVR",
@@ -3457,7 +3802,8 @@
     "Symbol_YF": "NVR",
     "Exchange": "NYSE",
     "Daily_Change": -0.025606923511725155,
-    "Security_JA": "エヌブイアール"
+    "Security_JA": "エヌブイアール",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "NXPI",
@@ -3467,7 +3813,8 @@
     "Symbol_YF": "NXPI",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.0056200824278757255,
-    "Security_JA": "NXPセミコンダクターズ"
+    "Security_JA": "NXPセミコンダクターズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ORLY",
@@ -3477,7 +3824,8 @@
     "Symbol_YF": "ORLY",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.027861597264131926,
-    "Security_JA": "オライリー・オートモーティブ"
+    "Security_JA": "オライリー・オートモーティブ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "OXY",
@@ -3487,7 +3835,8 @@
     "Symbol_YF": "OXY",
     "Exchange": "NYSE",
     "Daily_Change": -0.0308682733575437,
-    "Security_JA": "オクシデンタル・ペトロリアム"
+    "Security_JA": "オクシデンタル・ペトロリアム",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ODFL",
@@ -3497,7 +3846,8 @@
     "Symbol_YF": "ODFL",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.031163206703384665,
-    "Security_JA": "オールド・ドミニオン・フレイト・ラインズ"
+    "Security_JA": "オールド・ドミニオン・フレイト・ラインズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "OMC",
@@ -3507,7 +3857,8 @@
     "Symbol_YF": "OMC",
     "Exchange": "NYSE",
     "Daily_Change": 0.0026068821689260017,
-    "Security_JA": "オムニコム・グループ"
+    "Security_JA": "オムニコム・グループ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ON",
@@ -3517,7 +3868,8 @@
     "Symbol_YF": "ON",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.022021624838805664,
-    "Security_JA": "オン・セミコンダクター・コーポレーション"
+    "Security_JA": "オン・セミコンダクター・コーポレーション",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "OKE",
@@ -3527,7 +3879,8 @@
     "Symbol_YF": "OKE",
     "Exchange": "NYSE",
     "Daily_Change": -0.022712524334847443,
-    "Security_JA": "ワンオーケー"
+    "Security_JA": "ワンオーケー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ORCL",
@@ -3537,7 +3890,8 @@
     "Symbol_YF": "ORCL",
     "Exchange": "NYSE",
     "Daily_Change": 0.06468802280190859,
-    "Security_JA": "オラクル"
+    "Security_JA": "オラクル",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "OTIS",
@@ -3547,7 +3901,8 @@
     "Symbol_YF": "OTIS",
     "Exchange": "NYSE",
     "Daily_Change": -0.010272213662044135,
-    "Security_JA": "オティス・ワールドワイド"
+    "Security_JA": "オティス・ワールドワイド",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "PCAR",
@@ -3557,7 +3912,8 @@
     "Symbol_YF": "PCAR",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.023561123407568947,
-    "Security_JA": "パッカー"
+    "Security_JA": "パッカー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "PKG",
@@ -3567,7 +3923,8 @@
     "Symbol_YF": "PKG",
     "Exchange": "NYSE",
     "Daily_Change": 0.021597563832279287,
-    "Security_JA": "パッケージング・コーポレーション・オブ・アメリカ"
+    "Security_JA": "パッケージング・コーポレーション・オブ・アメリカ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "PLTR",
@@ -3577,7 +3934,8 @@
     "Symbol_YF": "PLTR",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.03565523686291409,
-    "Security_JA": "パランティア・テクノロジーズ"
+    "Security_JA": "パランティア・テクノロジーズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "PANW",
@@ -3587,7 +3945,8 @@
     "Symbol_YF": "PANW",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.009926942167196482,
-    "Security_JA": "パロ・アルト・ネットワークス"
+    "Security_JA": "パロ・アルト・ネットワークス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "PSKY",
@@ -3597,7 +3956,8 @@
     "Symbol_YF": "PSKY",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.08300781249999996,
-    "Security_JA": "パラマウント・スカイダンス B"
+    "Security_JA": "パラマウント・スカイダンス B",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "PH",
@@ -3607,7 +3967,8 @@
     "Symbol_YF": "PH",
     "Exchange": "NYSE",
     "Daily_Change": -0.029898176859976623,
-    "Security_JA": "パーカー･ハニフィン"
+    "Security_JA": "パーカー･ハニフィン",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "PAYX",
@@ -3617,7 +3978,8 @@
     "Symbol_YF": "PAYX",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.004210299039188174,
-    "Security_JA": "ペイチェックス"
+    "Security_JA": "ペイチェックス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "PYPL",
@@ -3627,7 +3989,8 @@
     "Symbol_YF": "PYPL",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.005983246908655707,
-    "Security_JA": "ペイパル・ホールディングス"
+    "Security_JA": "ペイパル・ホールディングス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "PNR",
@@ -3637,7 +4000,8 @@
     "Symbol_YF": "PNR",
     "Exchange": "NYSE",
     "Daily_Change": -0.019947961838681694,
-    "Security_JA": "ペンテア"
+    "Security_JA": "ペンテア",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "PEP",
@@ -3647,7 +4011,8 @@
     "Symbol_YF": "PEP",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.0068143100511074035,
-    "Security_JA": "ペプシコ"
+    "Security_JA": "ペプシコ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "PFE",
@@ -3657,7 +4022,8 @@
     "Symbol_YF": "PFE",
     "Exchange": "NYSE",
     "Daily_Change": -0.01385767790262176,
-    "Security_JA": "ファイザー"
+    "Security_JA": "ファイザー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "PCG",
@@ -3667,7 +4033,8 @@
     "Symbol_YF": "PCG",
     "Exchange": "NYSE",
     "Daily_Change": -0.010228640192539211,
-    "Security_JA": "パシフィック・ガス・アンド・エレクトリック"
+    "Security_JA": "パシフィック・ガス・アンド・エレクトリック",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "PM",
@@ -3677,7 +4044,8 @@
     "Symbol_YF": "PM",
     "Exchange": "NYSE",
     "Daily_Change": 0.007936027140001226,
-    "Security_JA": "フィリップ・モリス・インターナショナル"
+    "Security_JA": "フィリップ・モリス・インターナショナル",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "PSX",
@@ -3687,7 +4055,8 @@
     "Symbol_YF": "PSX",
     "Exchange": "NYSE",
     "Daily_Change": -0.01652246720625179,
-    "Security_JA": "フィリップス66"
+    "Security_JA": "フィリップス66",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "PNW",
@@ -3697,7 +4066,8 @@
     "Symbol_YF": "PNW",
     "Exchange": "NYSE",
     "Daily_Change": -0.0017354415734669555,
-    "Security_JA": "ピナクル・ウェスト・キャピタル"
+    "Security_JA": "ピナクル・ウェスト・キャピタル",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "PNC",
@@ -3707,7 +4077,8 @@
     "Symbol_YF": "PNC",
     "Exchange": "NYSE",
     "Daily_Change": -0.01026905829596409,
-    "Security_JA": "ピーエヌシー・フィナンシャル・サービシズ・グループ"
+    "Security_JA": "ピーエヌシー・フィナンシャル・サービシズ・グループ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "POOL",
@@ -3717,7 +4088,8 @@
     "Symbol_YF": "POOL",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.024517111593714152,
-    "Security_JA": "プール"
+    "Security_JA": "プール",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "PPG",
@@ -3727,7 +4099,8 @@
     "Symbol_YF": "PPG",
     "Exchange": "NYSE",
     "Daily_Change": -0.009124423963133593,
-    "Security_JA": "ピーピージー・インダストリーズ"
+    "Security_JA": "ピーピージー・インダストリーズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "PPL",
@@ -3737,7 +4110,8 @@
     "Symbol_YF": "PPL",
     "Exchange": "NYSE",
     "Daily_Change": 0.004273504273504373,
-    "Security_JA": "パシフィック・パワー・アンド・ライト・コーポレーション"
+    "Security_JA": "パシフィック・パワー・アンド・ライト・コーポレーション",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "PFG",
@@ -3747,7 +4121,8 @@
     "Symbol_YF": "PFG",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.001783807423795723,
-    "Security_JA": "プリンシパル・フィナンシャル・グループ"
+    "Security_JA": "プリンシパル・フィナンシャル・グループ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "PG",
@@ -3757,7 +4132,8 @@
     "Symbol_YF": "PG",
     "Exchange": "NYSE",
     "Daily_Change": 0.0011557549799441668,
-    "Security_JA": "プロクター・アンド・ギャンブル"
+    "Security_JA": "プロクター・アンド・ギャンブル",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "PGR",
@@ -3767,7 +4143,8 @@
     "Symbol_YF": "PGR",
     "Exchange": "NYSE",
     "Daily_Change": -0.009787360890302061,
-    "Security_JA": "プログレッシブ"
+    "Security_JA": "プログレッシブ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "PLD",
@@ -3777,7 +4154,8 @@
     "Symbol_YF": "PLD",
     "Exchange": "NYSE",
     "Daily_Change": -0.004295169694409334,
-    "Security_JA": "プロロジス"
+    "Security_JA": "プロロジス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "PRU",
@@ -3787,7 +4165,8 @@
     "Symbol_YF": "PRU",
     "Exchange": "NYSE",
     "Daily_Change": 0.005198246865762971,
-    "Security_JA": "プルデンシャル・フィナンシャル"
+    "Security_JA": "プルデンシャル・フィナンシャル",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "PEG",
@@ -3797,7 +4176,8 @@
     "Symbol_YF": "PEG",
     "Exchange": "NYSE",
     "Daily_Change": -0.018491305412686638,
-    "Security_JA": "パブリック・サービス・エンタープライズ・グループ"
+    "Security_JA": "パブリック・サービス・エンタープライズ・グループ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "PTC",
@@ -3807,7 +4187,8 @@
     "Symbol_YF": "PTC",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.0016874541452677164,
-    "Security_JA": "ピー・ティー・シー"
+    "Security_JA": "ピー・ティー・シー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "PSA",
@@ -3817,7 +4198,8 @@
     "Symbol_YF": "PSA",
     "Exchange": "NYSE",
     "Daily_Change": -0.002975698462555719,
-    "Security_JA": "パブリック・ストレージ"
+    "Security_JA": "パブリック・ストレージ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "PHM",
@@ -3827,7 +4209,8 @@
     "Symbol_YF": "PHM",
     "Exchange": "NYSE",
     "Daily_Change": -0.025743707093821556,
-    "Security_JA": "パルト・グループ"
+    "Security_JA": "パルト・グループ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "PWR",
@@ -3837,7 +4220,8 @@
     "Symbol_YF": "PWR",
     "Exchange": "NYSE",
     "Daily_Change": 0.019841433419899218,
-    "Security_JA": "クアンタ・サービシズ"
+    "Security_JA": "クアンタ・サービシズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "QCOM",
@@ -3847,7 +4231,8 @@
     "Symbol_YF": "QCOM",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.014034696889532511,
-    "Security_JA": "クアルコム"
+    "Security_JA": "クアルコム",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "DGX",
@@ -3857,7 +4242,8 @@
     "Symbol_YF": "DGX",
     "Exchange": "NYSE",
     "Daily_Change": -0.007878475798146248,
-    "Security_JA": "クエスト・ダイアグノスティクス"
+    "Security_JA": "クエスト・ダイアグノスティクス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "Q",
@@ -3867,7 +4253,8 @@
     "Symbol_YF": "Q",
     "Exchange": "NYSE",
     "Daily_Change": 0.018981942272145714,
-    "Security_JA": "キューニティ・エレクトロニクス"
+    "Security_JA": "キューニティ・エレクトロニクス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "RL",
@@ -3877,7 +4264,8 @@
     "Symbol_YF": "RL",
     "Exchange": "NYSE",
     "Daily_Change": 0.009954271693062663,
-    "Security_JA": "ラルフローレン"
+    "Security_JA": "ラルフローレン",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "RJF",
@@ -3887,7 +4275,8 @@
     "Symbol_YF": "RJF",
     "Exchange": "NYSE",
     "Daily_Change": -0.013390601313794876,
-    "Security_JA": "レイモンド・ジェームズ・フィナンシャル"
+    "Security_JA": "レイモンド・ジェームズ・フィナンシャル",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "RTX",
@@ -3897,7 +4286,8 @@
     "Symbol_YF": "RTX",
     "Exchange": "NYSE",
     "Daily_Change": -0.011813483273697871,
-    "Security_JA": "RTX"
+    "Security_JA": "RTX",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "O",
@@ -3907,7 +4297,8 @@
     "Symbol_YF": "O",
     "Exchange": "NYSE",
     "Daily_Change": -0.0066936488169363735,
-    "Security_JA": "リアルティー・インカム"
+    "Security_JA": "リアルティー・インカム",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "REG",
@@ -3917,7 +4308,8 @@
     "Symbol_YF": "REG",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.010276172125883255,
-    "Security_JA": "リージェンシー・センターズ"
+    "Security_JA": "リージェンシー・センターズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "REGN",
@@ -3927,7 +4319,8 @@
     "Symbol_YF": "REGN",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.007976692218482146,
-    "Security_JA": "リジェネロン・ファーマシューティカルズ"
+    "Security_JA": "リジェネロン・ファーマシューティカルズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "RF",
@@ -3937,7 +4330,8 @@
     "Symbol_YF": "RF",
     "Exchange": "NYSE",
     "Daily_Change": -0.012609457092819595,
-    "Security_JA": "リジョンズ・フィナンシャル"
+    "Security_JA": "リジョンズ・フィナンシャル",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "RSG",
@@ -3947,7 +4341,8 @@
     "Symbol_YF": "RSG",
     "Exchange": "NYSE",
     "Daily_Change": -0.012713889685498502,
-    "Security_JA": "リパブリック・サービシズ"
+    "Security_JA": "リパブリック・サービシズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "RMD",
@@ -3957,7 +4352,8 @@
     "Symbol_YF": "RMD",
     "Exchange": "NYSE",
     "Daily_Change": -0.04111126701276831,
-    "Security_JA": "レスメド"
+    "Security_JA": "レスメド",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "RVTY",
@@ -3967,7 +4363,8 @@
     "Symbol_YF": "RVTY",
     "Exchange": "NYSE",
     "Daily_Change": 0.0006926806742092158,
-    "Security_JA": "レビティー"
+    "Security_JA": "レビティー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "HOOD",
@@ -3977,7 +4374,8 @@
     "Symbol_YF": "HOOD",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.010563724713441427,
-    "Security_JA": "ロビンフッド・マーケッツ"
+    "Security_JA": "ロビンフッド・マーケッツ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ROK",
@@ -3987,7 +4385,8 @@
     "Symbol_YF": "ROK",
     "Exchange": "NYSE",
     "Daily_Change": -0.003619378347313634,
-    "Security_JA": "ロックウェル・オートメーション"
+    "Security_JA": "ロックウェル・オートメーション",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ROL",
@@ -3997,7 +4396,8 @@
     "Symbol_YF": "ROL",
     "Exchange": "NYSE",
     "Daily_Change": -0.017046474071415678,
-    "Security_JA": "ローリンズ"
+    "Security_JA": "ローリンズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ROP",
@@ -4007,7 +4407,8 @@
     "Symbol_YF": "ROP",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.009610777599278558,
-    "Security_JA": "ローパー・テクノロジーズ"
+    "Security_JA": "ローパー・テクノロジーズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ROST",
@@ -4017,7 +4418,8 @@
     "Symbol_YF": "ROST",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.00460950875806669,
-    "Security_JA": "ロス・ストアーズ"
+    "Security_JA": "ロス・ストアーズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "RCL",
@@ -4027,7 +4429,8 @@
     "Symbol_YF": "RCL",
     "Exchange": "NYSE",
     "Daily_Change": 0.006786472550803839,
-    "Security_JA": "ロイヤル・カリビアン・クルーズ"
+    "Security_JA": "ロイヤル・カリビアン・クルーズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "SPGI",
@@ -4037,7 +4440,8 @@
     "Symbol_YF": "SPGI",
     "Exchange": "NYSE",
     "Daily_Change": -0.011988961806924416,
-    "Security_JA": "S&P グローバル"
+    "Security_JA": "S&P グローバル",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "CRM",
@@ -4047,7 +4451,8 @@
     "Symbol_YF": "CRM",
     "Exchange": "NYSE",
     "Daily_Change": 0.04129609698068312,
-    "Security_JA": "セールスフォース"
+    "Security_JA": "セールスフォース",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "SNDK",
@@ -4057,7 +4462,8 @@
     "Symbol_YF": "SNDK",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.08252546716400216,
-    "Security_JA": "サンディスク"
+    "Security_JA": "サンディスク",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "SBAC",
@@ -4067,7 +4473,8 @@
     "Symbol_YF": "SBAC",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.011844484629294648,
-    "Security_JA": "SBAコミュニケーションズ"
+    "Security_JA": "SBAコミュニケーションズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "SLB",
@@ -4077,7 +4484,8 @@
     "Symbol_YF": "SLB",
     "Exchange": "NYSE",
     "Daily_Change": 0.0007032348804500553,
-    "Security_JA": "SLB"
+    "Security_JA": "SLB",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "STX",
@@ -4087,7 +4495,8 @@
     "Symbol_YF": "STX",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.07910753518199627,
-    "Security_JA": "シーゲイト・テクノロジー・ホールディングス"
+    "Security_JA": "シーゲイト・テクノロジー・ホールディングス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "SRE",
@@ -4097,7 +4506,8 @@
     "Symbol_YF": "SRE",
     "Exchange": "NYSE",
     "Daily_Change": -0.004730866274180013,
-    "Security_JA": "センプラ・エナジー"
+    "Security_JA": "センプラ・エナジー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "NOW",
@@ -4107,7 +4517,8 @@
     "Symbol_YF": "NOW",
     "Exchange": "NYSE",
     "Daily_Change": 0.032272675801154956,
-    "Security_JA": "サービスナウ"
+    "Security_JA": "サービスナウ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "SHW",
@@ -4117,7 +4528,8 @@
     "Symbol_YF": "SHW",
     "Exchange": "NYSE",
     "Daily_Change": -0.01122477534902526,
-    "Security_JA": "シャーウィンウィリアムズ"
+    "Security_JA": "シャーウィンウィリアムズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "SPG",
@@ -4127,7 +4539,8 @@
     "Symbol_YF": "SPG",
     "Exchange": "NYSE",
     "Daily_Change": -0.006234352756369399,
-    "Security_JA": "サイモン・プロパティ・グループ"
+    "Security_JA": "サイモン・プロパティ・グループ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "SWKS",
@@ -4137,7 +4550,8 @@
     "Symbol_YF": "SWKS",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.010973350434658628,
-    "Security_JA": "スカイワークス・ソリューションズ"
+    "Security_JA": "スカイワークス・ソリューションズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "SJM",
@@ -4147,7 +4561,8 @@
     "Symbol_YF": "SJM",
     "Exchange": "NYSE",
     "Daily_Change": -0.010813016423543835,
-    "Security_JA": "ジェイ・エム・スマッカー"
+    "Security_JA": "ジェイ・エム・スマッカー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "SW",
@@ -4157,7 +4572,8 @@
     "Symbol_YF": "SW",
     "Exchange": "NYSE",
     "Daily_Change": 0.027090388121906724,
-    "Security_JA": "スマーフィット・ウエストロックPLC"
+    "Security_JA": "スマーフィット・ウエストロックPLC",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "SNA",
@@ -4167,7 +4583,8 @@
     "Symbol_YF": "SNA",
     "Exchange": "NYSE",
     "Daily_Change": -0.007850808555033884,
-    "Security_JA": "スナップオン"
+    "Security_JA": "スナップオン",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "SOLV",
@@ -4177,7 +4594,8 @@
     "Symbol_YF": "SOLV",
     "Exchange": "NYSE",
     "Daily_Change": -0.010837292161520249,
-    "Security_JA": "ソルベンタム"
+    "Security_JA": "ソルベンタム",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "SO",
@@ -4187,7 +4605,8 @@
     "Symbol_YF": "SO",
     "Exchange": "NYSE",
     "Daily_Change": 0.00010341261633909932,
-    "Security_JA": "サザン"
+    "Security_JA": "サザン",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "LUV",
@@ -4197,7 +4616,8 @@
     "Symbol_YF": "LUV",
     "Exchange": "NYSE",
     "Daily_Change": 0.022151898734177118,
-    "Security_JA": "サウスウェスト航空"
+    "Security_JA": "サウスウェスト航空",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "SWK",
@@ -4207,7 +4627,8 @@
     "Symbol_YF": "SWK",
     "Exchange": "NYSE",
     "Daily_Change": 0.004733879222108554,
-    "Security_JA": "スタンレー・ブラック・アンド・デッカー"
+    "Security_JA": "スタンレー・ブラック・アンド・デッカー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "SBUX",
@@ -4217,7 +4638,8 @@
     "Symbol_YF": "SBUX",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.005411563657077826,
-    "Security_JA": "スターバックス"
+    "Security_JA": "スターバックス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "STT",
@@ -4227,7 +4649,8 @@
     "Symbol_YF": "STT",
     "Exchange": "NYSE",
     "Daily_Change": -0.005495943470295756,
-    "Security_JA": "ステート・ストリート"
+    "Security_JA": "ステート・ストリート",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "STLD",
@@ -4237,7 +4660,8 @@
     "Symbol_YF": "STLD",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.0026677162599493295,
-    "Security_JA": "スチール・ダイナミクス"
+    "Security_JA": "スチール・ダイナミクス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "STE",
@@ -4247,7 +4671,8 @@
     "Symbol_YF": "STE",
     "Exchange": "NYSE",
     "Daily_Change": -0.01143489487274064,
-    "Security_JA": "ステリス"
+    "Security_JA": "ステリス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "SYK",
@@ -4257,7 +4682,8 @@
     "Symbol_YF": "SYK",
     "Exchange": "NYSE",
     "Daily_Change": -0.06473518865230216,
-    "Security_JA": "ストライカー"
+    "Security_JA": "ストライカー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "SMCI",
@@ -4267,7 +4693,8 @@
     "Symbol_YF": "SMCI",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.01131386861313864,
-    "Security_JA": "スーパー・マイクロ・コンピューター"
+    "Security_JA": "スーパー・マイクロ・コンピューター",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "SYF",
@@ -4277,7 +4704,8 @@
     "Symbol_YF": "SYF",
     "Exchange": "NYSE",
     "Daily_Change": -0.005774278215223067,
-    "Security_JA": "シンクロニー・フィナンシャル"
+    "Security_JA": "シンクロニー・フィナンシャル",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "SNPS",
@@ -4287,7 +4715,8 @@
     "Symbol_YF": "SNPS",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.013302984388851332,
-    "Security_JA": "シノプシス"
+    "Security_JA": "シノプシス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "SYY",
@@ -4297,7 +4726,8 @@
     "Symbol_YF": "SYY",
     "Exchange": "NYSE",
     "Daily_Change": -0.008834158747155624,
-    "Security_JA": "シスコ"
+    "Security_JA": "シスコ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "TMUS",
@@ -4307,7 +4737,8 @@
     "Symbol_YF": "TMUS",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.0028644501278772493,
-    "Security_JA": "Ｔモバイル"
+    "Security_JA": "Ｔモバイル",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "TROW",
@@ -4317,7 +4748,8 @@
     "Symbol_YF": "TROW",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.005248833592535054,
-    "Security_JA": "ティー・ロウ・プライス・グループ"
+    "Security_JA": "ティー・ロウ・プライス・グループ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "TTWO",
@@ -4327,7 +4759,8 @@
     "Symbol_YF": "TTWO",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.010619386227544958,
-    "Security_JA": "テイクツー・インタラクティブ・ソフトウェア"
+    "Security_JA": "テイクツー・インタラクティブ・ソフトウェア",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "TPR",
@@ -4337,7 +4770,8 @@
     "Symbol_YF": "TPR",
     "Exchange": "NYSE",
     "Daily_Change": -0.015857694429122885,
-    "Security_JA": "タペストリー"
+    "Security_JA": "タペストリー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "TRGP",
@@ -4347,7 +4781,8 @@
     "Symbol_YF": "TRGP",
     "Exchange": "NYSE",
     "Daily_Change": -0.02230083051368803,
-    "Security_JA": "タルガ・リソーシズ"
+    "Security_JA": "タルガ・リソーシズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "TGT",
@@ -4357,7 +4792,8 @@
     "Symbol_YF": "TGT",
     "Exchange": "NYSE",
     "Daily_Change": -0.00662813102119471,
-    "Security_JA": "ターゲット"
+    "Security_JA": "ターゲット",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "TEL",
@@ -4367,7 +4803,8 @@
     "Symbol_YF": "TEL",
     "Exchange": "NYSE",
     "Daily_Change": -0.01998488141358778,
-    "Security_JA": "TEコネクティビティ・PLC"
+    "Security_JA": "TEコネクティビティ・PLC",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "TDY",
@@ -4377,7 +4814,8 @@
     "Symbol_YF": "TDY",
     "Exchange": "NYSE",
     "Daily_Change": -0.008546876209646174,
-    "Security_JA": "テレダイン･テクノロジーズ"
+    "Security_JA": "テレダイン･テクノロジーズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "TER",
@@ -4387,7 +4825,8 @@
     "Symbol_YF": "TER",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.005677351733775842,
-    "Security_JA": "テラダイン"
+    "Security_JA": "テラダイン",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "TSLA",
@@ -4397,7 +4836,8 @@
     "Symbol_YF": "TSLA",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.024080916070539523,
-    "Security_JA": "テスラ"
+    "Security_JA": "テスラ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "TXN",
@@ -4407,7 +4847,8 @@
     "Symbol_YF": "TXN",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.00071136404054771,
-    "Security_JA": "テキサス・インストゥルメンツ"
+    "Security_JA": "テキサス・インストゥルメンツ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "TPL",
@@ -4417,7 +4858,8 @@
     "Symbol_YF": "TPL",
     "Exchange": "NYSE",
     "Daily_Change": -0.022651971059571327,
-    "Security_JA": "テキサス・パシフィック・ランド・コーポ"
+    "Security_JA": "テキサス・パシフィック・ランド・コーポ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "TXT",
@@ -4427,7 +4869,8 @@
     "Symbol_YF": "TXT",
     "Exchange": "NYSE",
     "Daily_Change": -0.012922050854522665,
-    "Security_JA": "テクストロン"
+    "Security_JA": "テクストロン",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "TMO",
@@ -4437,7 +4880,8 @@
     "Symbol_YF": "TMO",
     "Exchange": "NYSE",
     "Daily_Change": -0.020356605979622515,
-    "Security_JA": "サーモ・フィッシャーサイエンティフィック"
+    "Security_JA": "サーモ・フィッシャーサイエンティフィック",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "TJX",
@@ -4447,7 +4891,8 @@
     "Symbol_YF": "TJX",
     "Exchange": "NYSE",
     "Daily_Change": 0.0005103668261563796,
-    "Security_JA": "ティージェイエックス・カンパニーズ"
+    "Security_JA": "ティージェイエックス・カンパニーズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "TKO",
@@ -4457,7 +4902,8 @@
     "Symbol_YF": "TKO",
     "Exchange": "NYSE",
     "Daily_Change": -0.0007523241442313653,
-    "Security_JA": "TKO・グループ・ホールディングス"
+    "Security_JA": "TKO・グループ・ホールディングス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "TTD",
@@ -4467,7 +4913,8 @@
     "Symbol_YF": "TTD",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.026694915254237245,
-    "Security_JA": "トレード・デスク　クラスA"
+    "Security_JA": "トレード・デスク　クラスA",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "TSCO",
@@ -4477,7 +4924,8 @@
     "Symbol_YF": "TSCO",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.0361823911007186,
-    "Security_JA": "トラクター・サプライ・カンパニー"
+    "Security_JA": "トラクター・サプライ・カンパニー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "TT",
@@ -4487,7 +4935,8 @@
     "Symbol_YF": "TT",
     "Exchange": "NYSE",
     "Daily_Change": -0.012303569253258623,
-    "Security_JA": "トレイン・テクノロジーズ"
+    "Security_JA": "トレイン・テクノロジーズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "TDG",
@@ -4497,7 +4946,8 @@
     "Symbol_YF": "TDG",
     "Exchange": "NYSE",
     "Daily_Change": -0.004767323574544365,
-    "Security_JA": "トランスダイム・グループ"
+    "Security_JA": "トランスダイム・グループ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "TRV",
@@ -4507,7 +4957,8 @@
     "Symbol_YF": "TRV",
     "Exchange": "NYSE",
     "Daily_Change": -0.0013764173821850924,
-    "Security_JA": "トラベラーズ･カンパニーズ"
+    "Security_JA": "トラベラーズ･カンパニーズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "TRMB",
@@ -4517,7 +4968,8 @@
     "Symbol_YF": "TRMB",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.01633986928104588,
-    "Security_JA": "トリンブル"
+    "Security_JA": "トリンブル",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "TFC",
@@ -4527,7 +4979,8 @@
     "Symbol_YF": "TFC",
     "Exchange": "NYSE",
     "Daily_Change": -0.011067961165048549,
-    "Security_JA": "トゥルーイスト・フィナンシャル"
+    "Security_JA": "トゥルーイスト・フィナンシャル",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "TYL",
@@ -4537,7 +4990,8 @@
     "Symbol_YF": "TYL",
     "Exchange": "NYSE",
     "Daily_Change": -0.016532801782259444,
-    "Security_JA": "タイラー・テクノロジーズ"
+    "Security_JA": "タイラー・テクノロジーズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "TSN",
@@ -4547,7 +5001,8 @@
     "Symbol_YF": "TSN",
     "Exchange": "NYSE",
     "Daily_Change": -0.006087092242859271,
-    "Security_JA": "タイソン・フーズ クラスA"
+    "Security_JA": "タイソン・フーズ クラスA",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "USB",
@@ -4557,7 +5012,8 @@
     "Symbol_YF": "USB",
     "Exchange": "NYSE",
     "Daily_Change": -0.006353688669255197,
-    "Security_JA": "ユー・エス・バンコープ"
+    "Security_JA": "ユー・エス・バンコープ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "UBER",
@@ -4567,7 +5023,8 @@
     "Symbol_YF": "UBER",
     "Exchange": "NYSE",
     "Daily_Change": 0.006835544833132356,
-    "Security_JA": "ウーバー・テクノロジーズ"
+    "Security_JA": "ウーバー・テクノロジーズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "UDR",
@@ -4577,7 +5034,8 @@
     "Symbol_YF": "UDR",
     "Exchange": "NYSE",
     "Daily_Change": 0.0013758943313152765,
-    "Security_JA": "UDR"
+    "Security_JA": "UDR",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ULTA",
@@ -4587,7 +5045,8 @@
     "Symbol_YF": "ULTA",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.010288828586081048,
-    "Security_JA": "アルタ"
+    "Security_JA": "アルタ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "UNP",
@@ -4597,7 +5056,8 @@
     "Symbol_YF": "UNP",
     "Exchange": "NYSE",
     "Daily_Change": -0.01172628766513294,
-    "Security_JA": "ユニオン・パシフィック"
+    "Security_JA": "ユニオン・パシフィック",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "UAL",
@@ -4607,7 +5067,8 @@
     "Symbol_YF": "UAL",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.02867633974395242,
-    "Security_JA": "ユナイテッド・エアラインズ・ホールディングス"
+    "Security_JA": "ユナイテッド・エアラインズ・ホールディングス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "UPS",
@@ -4617,7 +5078,8 @@
     "Symbol_YF": "UPS",
     "Exchange": "NYSE",
     "Daily_Change": -0.011305147058823566,
-    "Security_JA": "ユナイテッド･パーセル･サービス クラスB"
+    "Security_JA": "ユナイテッド･パーセル･サービス クラスB",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "URI",
@@ -4627,7 +5089,8 @@
     "Symbol_YF": "URI",
     "Exchange": "NYSE",
     "Daily_Change": -0.011053925654275727,
-    "Security_JA": "ユナイテッド・レンタルズ"
+    "Security_JA": "ユナイテッド・レンタルズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "UNH",
@@ -4637,7 +5100,8 @@
     "Symbol_YF": "UNH",
     "Exchange": "NYSE",
     "Daily_Change": -0.004588641762038559,
-    "Security_JA": "ユナイテッドヘルス・グループ"
+    "Security_JA": "ユナイテッドヘルス・グループ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "UHS",
@@ -4647,7 +5111,8 @@
     "Symbol_YF": "UHS",
     "Exchange": "NYSE",
     "Daily_Change": -0.0075473940690557444,
-    "Security_JA": "ユニバーサル・ヘルス・サービシズ クラスB"
+    "Security_JA": "ユニバーサル・ヘルス・サービシズ クラスB",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "VLO",
@@ -4657,7 +5122,8 @@
     "Symbol_YF": "VLO",
     "Exchange": "NYSE",
     "Daily_Change": -0.022606698867685515,
-    "Security_JA": "バレロ・エナジー"
+    "Security_JA": "バレロ・エナジー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "VTR",
@@ -4667,7 +5133,8 @@
     "Symbol_YF": "VTR",
     "Exchange": "NYSE",
     "Daily_Change": 0.0018210789893011222,
-    "Security_JA": "ベンタス"
+    "Security_JA": "ベンタス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "VLTO",
@@ -4677,7 +5144,8 @@
     "Symbol_YF": "VLTO",
     "Exchange": "NYSE",
     "Daily_Change": -0.006462585034013689,
-    "Security_JA": "ヴェラルト"
+    "Security_JA": "ヴェラルト",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "VRSN",
@@ -4687,7 +5155,8 @@
     "Symbol_YF": "VRSN",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.014069828035435019,
-    "Security_JA": "ベリサイン"
+    "Security_JA": "ベリサイン",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "VRSK",
@@ -4697,7 +5166,8 @@
     "Symbol_YF": "VRSK",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.018320776193831618,
-    "Security_JA": "ベリスク・アナリティックス"
+    "Security_JA": "ベリスク・アナリティックス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "VZ",
@@ -4707,7 +5177,8 @@
     "Symbol_YF": "VZ",
     "Exchange": "NYSE",
     "Daily_Change": 0.0016656256506349843,
-    "Security_JA": "ベライゾン・コミュニケーションズ"
+    "Security_JA": "ベライゾン・コミュニケーションズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "VRTX",
@@ -4717,7 +5188,8 @@
     "Symbol_YF": "VRTX",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.008095839767888014,
-    "Security_JA": "バーテックス・ファーマシューティカルズ"
+    "Security_JA": "バーテックス・ファーマシューティカルズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "VRT",
@@ -4727,7 +5199,8 @@
     "Symbol_YF": "VRT",
     "Exchange": "NYSE",
     "Daily_Change": -0.0005479618862066024,
-    "Security_JA": "バーティブ・ホールディングス"
+    "Security_JA": "バーティブ・ホールディングス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "VTRS",
@@ -4737,7 +5210,8 @@
     "Symbol_YF": "VTRS",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.006693440428380164,
-    "Security_JA": "ビアトリス"
+    "Security_JA": "ビアトリス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "VICI",
@@ -4747,7 +5221,8 @@
     "Symbol_YF": "VICI",
     "Exchange": "NYSE",
     "Daily_Change": -0.0212328767123288,
-    "Security_JA": "VICIプロパティーズ"
+    "Security_JA": "VICIプロパティーズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "V",
@@ -4757,7 +5232,8 @@
     "Symbol_YF": "V",
     "Exchange": "NYSE",
     "Daily_Change": -0.00548750909531895,
-    "Security_JA": "ビザ クラスA"
+    "Security_JA": "ビザ クラスA",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "VST",
@@ -4767,7 +5243,8 @@
     "Symbol_YF": "VST",
     "Exchange": "NYSE",
     "Daily_Change": -0.016218955904713648,
-    "Security_JA": "ビストラ・エナジー"
+    "Security_JA": "ビストラ・エナジー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "VMC",
@@ -4777,7 +5254,8 @@
     "Symbol_YF": "VMC",
     "Exchange": "NYSE",
     "Daily_Change": -0.014648372771260078,
-    "Security_JA": "バルカン・マテリアルズ"
+    "Security_JA": "バルカン・マテリアルズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "WRB",
@@ -4787,7 +5265,8 @@
     "Symbol_YF": "WRB",
     "Exchange": "NYSE",
     "Daily_Change": -0.006733502917851307,
-    "Security_JA": "ダブリューアール・バークレー"
+    "Security_JA": "ダブリューアール・バークレー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "GWW",
@@ -4797,7 +5276,8 @@
     "Symbol_YF": "GWW",
     "Exchange": "NYSE",
     "Daily_Change": -0.01096138115124641,
-    "Security_JA": "ダブリュー・ダブリュー・グレインジャー"
+    "Security_JA": "ダブリュー・ダブリュー・グレインジャー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "WAB",
@@ -4807,7 +5287,8 @@
     "Symbol_YF": "WAB",
     "Exchange": "NYSE",
     "Daily_Change": -0.01830375338100707,
-    "Security_JA": "ワブテック"
+    "Security_JA": "ワブテック",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "WMT",
@@ -4817,7 +5298,8 @@
     "Symbol_YF": "WMT",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.0025014020691730083,
-    "Security_JA": "ウォルマート"
+    "Security_JA": "ウォルマート",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "DIS",
@@ -4827,7 +5309,8 @@
     "Symbol_YF": "DIS",
     "Exchange": "NYSE",
     "Daily_Change": -0.0064578313253012215,
-    "Security_JA": "ウォルト・ディズニー"
+    "Security_JA": "ウォルト・ディズニー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "WBD",
@@ -4837,7 +5320,8 @@
     "Symbol_YF": "WBD",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.0029574861367838022,
-    "Security_JA": "ワーナーブラザース・ディスカバリー・インク"
+    "Security_JA": "ワーナーブラザース・ディスカバリー・インク",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "WM",
@@ -4847,7 +5331,8 @@
     "Symbol_YF": "WM",
     "Exchange": "NYSE",
     "Daily_Change": -0.01625456890991185,
-    "Security_JA": "ウェースト・マネジメント"
+    "Security_JA": "ウェースト・マネジメント",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "WAT",
@@ -4857,7 +5342,8 @@
     "Symbol_YF": "WAT",
     "Exchange": "NYSE",
     "Daily_Change": -0.0068234000582091435,
-    "Security_JA": "ウォーターズ"
+    "Security_JA": "ウォーターズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "WEC",
@@ -4867,7 +5353,8 @@
     "Symbol_YF": "WEC",
     "Exchange": "NYSE",
     "Daily_Change": -0.004069866033576428,
-    "Security_JA": "ウィスコンシン・エナジー"
+    "Security_JA": "ウィスコンシン・エナジー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "WFC",
@@ -4877,7 +5364,8 @@
     "Symbol_YF": "WFC",
     "Exchange": "NYSE",
     "Daily_Change": -0.017268636750577666,
-    "Security_JA": "ウェルズ・ファーゴ"
+    "Security_JA": "ウェルズ・ファーゴ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "WELL",
@@ -4887,7 +5375,8 @@
     "Symbol_YF": "WELL",
     "Exchange": "NYSE",
     "Daily_Change": -0.001978466918192725,
-    "Security_JA": "ウェルタワー"
+    "Security_JA": "ウェルタワー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "WST",
@@ -4897,7 +5386,8 @@
     "Symbol_YF": "WST",
     "Exchange": "NYSE",
     "Daily_Change": 0.010383413421150012,
-    "Security_JA": "ウェスト・ファーマシューティカル・サービシズ"
+    "Security_JA": "ウェスト・ファーマシューティカル・サービシズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "WDC",
@@ -4907,7 +5397,8 @@
     "Symbol_YF": "WDC",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.006904170118751727,
-    "Security_JA": "ウェスタン・デジタル"
+    "Security_JA": "ウェスタン・デジタル",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "WY",
@@ -4917,7 +5408,8 @@
     "Symbol_YF": "WY",
     "Exchange": "NYSE",
     "Daily_Change": -0.0216150081566069,
-    "Security_JA": "ウェアーハウザー"
+    "Security_JA": "ウェアーハウザー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "WSM",
@@ -4927,7 +5419,8 @@
     "Symbol_YF": "WSM",
     "Exchange": "NYSE",
     "Daily_Change": -0.006732520280337723,
-    "Security_JA": "ウィリアムズソノマ"
+    "Security_JA": "ウィリアムズソノマ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "WMB",
@@ -4937,7 +5430,8 @@
     "Symbol_YF": "WMB",
     "Exchange": "NYSE",
     "Daily_Change": -0.010090420652601179,
-    "Security_JA": "ウィリアムズ・カンパニーズ"
+    "Security_JA": "ウィリアムズ・カンパニーズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "WTW",
@@ -4947,7 +5441,8 @@
     "Symbol_YF": "WTW",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.0005465261941081834,
-    "Security_JA": "ウィリス・タワーズ・ワトソン・パブリック"
+    "Security_JA": "ウィリス・タワーズ・ワトソン・パブリック",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "WDAY",
@@ -4957,7 +5452,8 @@
     "Symbol_YF": "WDAY",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.037254901960784216,
-    "Security_JA": "ワークデイ クラスA"
+    "Security_JA": "ワークデイ クラスA",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "WYNN",
@@ -4967,7 +5463,8 @@
     "Symbol_YF": "WYNN",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.010549901969937405,
-    "Security_JA": "ウィン・リゾーツ"
+    "Security_JA": "ウィン・リゾーツ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "XEL",
@@ -4977,7 +5474,8 @@
     "Symbol_YF": "XEL",
     "Exchange": "NASDAQ",
     "Daily_Change": -0.004460578392973046,
-    "Security_JA": "エクセル・エナジー"
+    "Security_JA": "エクセル・エナジー",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "XYL",
@@ -4987,7 +5485,8 @@
     "Symbol_YF": "XYL",
     "Exchange": "NYSE",
     "Daily_Change": -0.023612051455653284,
-    "Security_JA": "ザイレム"
+    "Security_JA": "ザイレム",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "YUM",
@@ -4997,7 +5496,8 @@
     "Symbol_YF": "YUM",
     "Exchange": "NYSE",
     "Daily_Change": -0.008080175383651689,
-    "Security_JA": "ヤム・ブランズ"
+    "Security_JA": "ヤム・ブランズ",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ZBRA",
@@ -5007,7 +5507,8 @@
     "Symbol_YF": "ZBRA",
     "Exchange": "NASDAQ",
     "Daily_Change": 0.0036241492088748416,
-    "Security_JA": "ゼブラ・テクノロジーズ クラスA"
+    "Security_JA": "ゼブラ・テクノロジーズ クラスA",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ZBH",
@@ -5017,7 +5518,8 @@
     "Symbol_YF": "ZBH",
     "Exchange": "NYSE",
     "Daily_Change": 0.005701807594322441,
-    "Security_JA": "ジンマー・バイオメット・ホールディングス"
+    "Security_JA": "ジンマー・バイオメット・ホールディングス",
+    "Index": "S&P 500"
   },
   {
     "Symbol": "ZTS",
@@ -5027,6 +5529,7 @@
     "Symbol_YF": "ZTS",
     "Exchange": "NYSE",
     "Daily_Change": -0.007045316169435525,
-    "Security_JA": "ゾエティス"
+    "Security_JA": "ゾエティス",
+    "Index": "S&P 500"
   }
 ]

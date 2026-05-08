@@ -174,12 +174,12 @@ def main():
         print("Test mode active: Fetching MSFT and SPY only.")
         symbols = ["MSFT", "SPY"]
     else:
-        print("Fetching S&P 500 list...")
-        df_sp500 = market_data.fetch_sp500_companies_optimized()
-        if df_sp500.is_empty():
+        print("Fetching S&P 500 / 400 / 600 lists...")
+        df_stocks = market_data.fetch_sp_indices_companies()
+        if df_stocks.is_empty():
             symbols = ["AAPL", "MSFT", "GOOGL", "AMZN", "META"]
         else:
-            symbols = df_sp500['Symbol_YF'].to_list()
+            symbols = df_stocks['Symbol_YF'].to_list()
         for etf in SECTOR_ETFS:
             if etf not in symbols:
                 symbols.append(etf)

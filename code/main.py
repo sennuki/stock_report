@@ -31,7 +31,7 @@ if R2_ACCOUNT_ID and R2_ACCESS_KEY_ID and R2_SECRET_ACCESS_KEY:
     )
 
 def export_stocks_json(df):
-    """S&P 500の銘柄リストをAstro用のJSONデータとして保存する"""
+    """S&P 500/400/600 の銘柄リストを Astro 用の JSON データとして保存する"""
     base_dir = os.path.dirname(os.path.abspath(__file__))
     dest_path = os.path.join(base_dir, "../stock-blog/src/data/stocks.json")
     try:
@@ -43,12 +43,12 @@ def export_stocks_json(df):
     except Exception as e:
         print(f"JSON保存エラー: {e}")
 
-def upload_base_stocks_list_to_r2(df_sp500):
+def upload_base_stocks_list_to_r2(df_stocks):
     """
-    S&P500の基本銘柄リストをR2の raw/stocks_list.json としてアップロードする
+    S&P 500/400/600 の基本銘柄リストを R2 の raw/stocks_list.json としてアップロードする
     """
     try:
-        data = df_sp500.to_dicts()
+        data = df_stocks.to_dicts()
         json_data = json.dumps(data, ensure_ascii=False, indent=2)
 
         if s3_client:
@@ -75,12 +75,13 @@ if __name__ == "__main__":
         utils.log_event("ERROR", "SYSTEM", f"Failed during fetch_raw_data.main(): {e}")
 
     # ベース銘柄リストのアップロード (TypeScript側で一覧表示等に利用するため)
+    # S&P 500 / 400 / 600 を統合して取得し、Index カラムで識別する
     try:
-        df_sp500 = market_data.fetch_sp500_companies_optimized()
-        if not df_sp500.is_empty():
+        df_stocks = market_data.fetch_sp_indices_companies()
+        if not df_stocks.is_empty():
             # stocks.json にエクスポート（TypeScript側で読み込む）
-            export_stocks_json(df_sp500)
-            upload_base_stocks_list_to_r2(df_sp500)
+            export_stocks_json(df_stocks)
+            upload_base_stocks_list_to_r2(df_stocks)
     except Exception as e:
         pass
 
