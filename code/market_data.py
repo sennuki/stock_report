@@ -489,10 +489,54 @@ def _fetch_index_constituents(index_label: str, url: str):
       - GICS Sub-Industry
       - Index (引数の index_label がそのまま入る)
     """
-    print(f"{index_label} リストを取得中...")
+    print(f"{index_label} リストを取得中... URL={url}")
     try:
-        wiki_df = pd.read_html(StringIO(requests.get(url, headers={"User-Agent": "Mozilla/5.0"}).text))[0]
-        df = pl.from_pandas(wiki_df).select(['Symbol', 'Security', 'GICS Sector', 'GICS Sub-Industry'])
+        html = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=30).text
+
+        # Wikipedia の銘柄リストページは通常 id="constituents" の table を持つ。
+        # それを優先して取得し、見つからない場合は最初のテーブルにフォールバック。
+        wiki_df = None
+        try:
+            tables = pd.read_html(StringIO(html), attrs={"id": "constituents"})
+            if tables:
+                wiki_df = tables[0]
+                print(f"  → constituents テーブルを検出 ({len(wiki_df)} 行)")
+        except Exception as e_inner:
+            print(f"  → id=constituents で取得不可 ({e_inner})、最初のテーブルにフォールバック")
+
+        if wiki_df is None:
+            tables = pd.read_html(StringIO(html))
+            print(f"  → ページ内テーブル数: {len(tables)}")
+            # Symbol カラムを持つ最初のテーブルを採用する
+            for i, t in enumerate(tables):
+                cols = [str(c).strip() for c in t.columns]
+                if any(c.lower() in ("symbol", "ticker", "ticker symbol") for c in cols):
+                    wiki_df = t
+                    print(f"  → table[{i}] を採用 ({len(wiki_df)} 行) cols={cols[:6]}")
+                    break
+
+        if wiki_df is None or wiki_df.empty:
+            print(f"  ✗ {index_label}: 構成銘柄テーブルが見つかりませんでした")
+            return pl.DataFrame()
+
+        # カラム名のゆらぎ吸収（'Ticker symbol' → 'Symbol' など）
+        rename_map = {}
+        for c in wiki_df.columns:
+            cs = str(c).strip()
+            if cs.lower() in ("ticker symbol", "ticker"):
+                rename_map[c] = "Symbol"
+            elif cs.lower() in ("company", "security name"):
+                rename_map[c] = "Security"
+        if rename_map:
+            wiki_df = wiki_df.rename(columns=rename_map)
+
+        required_cols = ["Symbol", "Security", "GICS Sector", "GICS Sub-Industry"]
+        missing = [c for c in required_cols if c not in wiki_df.columns]
+        if missing:
+            print(f"  ✗ {index_label}: 必須カラムが欠けています: {missing} (実際のカラム: {list(wiki_df.columns)[:8]})")
+            return pl.DataFrame()
+
+        df = pl.from_pandas(wiki_df).select(required_cols)
 
         # Symbol_YF: Yahoo Finance用 (ドットをハイフンに変換: BRK.B -> BRK-B)
         # Symbol: 表示用 (ドットに統一: BRK-B -> BRK.B)
@@ -501,9 +545,10 @@ def _fetch_index_constituents(index_label: str, url: str):
             pl.col('Symbol').str.replace(r"-", ".", literal=False).alias('Symbol'),
             pl.lit(index_label).alias('Index'),
         ])
+        print(f"  ✓ {index_label}: {len(df)} 銘柄を取得")
         return df
     except Exception as e:
-        print(f"Failed to fetch {index_label} list: {e}")
+        print(f"  ✗ Failed to fetch {index_label} list: {e}")
         return pl.DataFrame()
 
 def _enrich_with_market_info(df):

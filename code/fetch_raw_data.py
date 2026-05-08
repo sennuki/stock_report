@@ -163,7 +163,13 @@ def fetch_raw_data_for_ticker(symbol):
         print(f"Failed to fetch {symbol}: {e}")
         return False
 
-def main():
+def main(symbols_override=None):
+    """
+    生データを取得して R2 にアップロードする。
+
+    symbols_override が与えられればそのリストを使い、
+    与えられなければ S&P 500 / 400 / 600 を Wikipedia から取得する。
+    """
     import sys
     args = [a for a in sys.argv[1:] if not a.startswith('--')]
 
@@ -173,6 +179,12 @@ def main():
     elif "--test-msft-only" in sys.argv or os.getenv("TEST_MODE") == "true":
         print("Test mode active: Fetching MSFT and SPY only.")
         symbols = ["MSFT", "SPY"]
+    elif symbols_override:
+        print(f"Using provided symbol list ({len(symbols_override)} symbols)")
+        symbols = list(symbols_override)
+        for etf in SECTOR_ETFS:
+            if etf not in symbols:
+                symbols.append(etf)
     else:
         print("Fetching S&P 500 / 400 / 600 lists...")
         df_stocks = market_data.fetch_sp_indices_companies()
@@ -183,6 +195,7 @@ def main():
         for etf in SECTOR_ETFS:
             if etf not in symbols:
                 symbols.append(etf)
+    print(f"Total symbols to process: {len(symbols)}")
 
     # 当日取得済みの銘柄をスキップ（同日リトライ・再実行対策）
     fetch_status = _load_status()

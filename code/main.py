@@ -67,22 +67,32 @@ def upload_base_stocks_list_to_r2(df_stocks):
 if __name__ == "__main__":
     utils.log_event("INFO", "SYSTEM", "--- Python Data Fetch Pipeline Started ---")
 
-    # fetch_raw_data.py の main を実行して、全銘柄データをR2に保存
-    try:
-        fetch_raw_data.main()
-        utils.log_event("SUCCESS", "SYSTEM", "Fetched all raw data and uploaded to R2")
-    except Exception as e:
-        utils.log_event("ERROR", "SYSTEM", f"Failed during fetch_raw_data.main(): {e}")
-
-    # ベース銘柄リストのアップロード (TypeScript側で一覧表示等に利用するため)
-    # S&P 500 / 400 / 600 を統合して取得し、Index カラムで識別する
+    # 1. ベース銘柄リストの取得（S&P 500 / 400 / 600 を統合）
+    #    先に取得しておき、stocks.json と raw データ取得の両方に使い回す
+    df_stocks = None
+    symbols = None
     try:
         df_stocks = market_data.fetch_sp_indices_companies()
-        if not df_stocks.is_empty():
+        if df_stocks is not None and not df_stocks.is_empty():
+            from collections import Counter
+            cnt = Counter(df_stocks['Index'].to_list())
+            utils.log_event("SUCCESS", "SYSTEM",
+                            f"Fetched {len(df_stocks)} stocks from Wikipedia: {dict(cnt)}")
             # stocks.json にエクスポート（TypeScript側で読み込む）
             export_stocks_json(df_stocks)
             upload_base_stocks_list_to_r2(df_stocks)
+            symbols = df_stocks['Symbol_YF'].to_list()
+        else:
+            utils.log_event("WARNING", "SYSTEM",
+                            "fetch_sp_indices_companies returned empty - falling back to default behavior")
     except Exception as e:
-        pass
+        utils.log_event("ERROR", "SYSTEM", f"Failed to fetch base stocks list: {e}")
+
+    # 2. fetch_raw_data: 取得した銘柄リストを引き継いで生データを取得 → R2 にアップ
+    try:
+        fetch_raw_data.main(symbols_override=symbols)
+        utils.log_event("SUCCESS", "SYSTEM", "Fetched all raw data and uploaded to R2")
+    except Exception as e:
+        utils.log_event("ERROR", "SYSTEM", f"Failed during fetch_raw_data.main(): {e}")
 
     utils.log_event("INFO", "SYSTEM", "--- Python Data Fetch Pipeline Finished ---")
