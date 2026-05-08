@@ -7,83 +7,84 @@ import { SITE } from "@/config";
 import stocks from "@/data/stocks.json";
 import fs from "node:fs";
 import path from "node:path";
+import { env } from "cloudflare:workers";
 import ChartJs from "@/components/report/ChartJs.astro";
 import TradingViewWidget from "@/components/report/TradingViewWidget.astro";
 import PeerLinks from "@/components/report/PeerLinks.astro";
 import ShareCard from "@/components/report/ShareCard.astro";
 
-export async function getStaticPaths() {
-  // Use stocks.json as the source of truth for symbols
-  return (stocks as any[]).map((stock: any) => ({
-    params: { symbol: stock.Symbol_YF },
-  }));
-}
+export const prerender = false;
 
 const { symbol } = Astro.params;
 
 let reportData: any = null;
 let lastUpdated: string = "";
 
-// 堅牢なファイル検索ロジック
-const possibleRoots = [
-  '/home/linux/gemini/stock-blog',
-  process.cwd(),
-  path.join(process.cwd(), 'stock-blog')
-];
-
-let jsonPath = "";
-for (const root of possibleRoots) {
-  const testPath = path.resolve(root, "public", "reports", `${symbol}.json`);
-  if (fs.existsSync(testPath)) {
-    jsonPath = testPath;
-    break;
-  }
-}
-
-if (jsonPath && fs.existsSync(jsonPath)) {
-  const stats = fs.statSync(jsonPath);
-  if (stats.size > 0) {
-    lastUpdated = new Intl.DateTimeFormat("ja-JP", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    }).format(stats.mtime);
-
-    try {
-      let content = fs.readFileSync(jsonPath, "utf-8");
-      content = content.replace(/\bNaN\b/g, "null");
-      reportData = JSON.parse(content);
-    } catch (e) {
-      console.error(`Error parsing JSON for ${symbol}:`, e);
-      reportData = null;
-    }
-  } else {
-    console.warn(`Empty JSON file found for ${symbol}`);
-    reportData = null;
-  }
-} else {
-  // フォールバック: fetch で自身のサーバーから取得を試みる。
-  // response.json() は標準 JSON のみ受け付け NaN/Infinity リテラルを
-  // 含むファイルではエラーになるため、text() → 置換 → JSON.parse で
-  // 取り扱う。
-  try {
-    const origin = Astro.url.origin;
-    const response = await fetch(`${origin}/reports/${symbol}.json`);
-    if (response.ok) {
-      const raw = await response.text();
+// 1) 本番 (Cloudflare Worker): R2 バインディングから直接読む。
+//    S&P 400/600 のレポートは git にコミットされていないが、ワーカーが
+//    R2 に書き込んだものを実行時に取得できる。
+try {
+  const bucket = (env as any)?.STOCK_DATA;
+  if (bucket && symbol) {
+    const object = await bucket.get(`reports/${symbol}.json`);
+    if (object) {
+      const raw = await object.text();
       const sanitized = raw
         .replace(/\bNaN\b/g, "null")
         .replace(/-?\bInfinity\b/g, "null");
-      try {
-        reportData = JSON.parse(sanitized);
-        lastUpdated = "Web取得";
-      } catch (parseErr) {
-        if (import.meta.env.DEV) console.error(`JSON parse failed for ${symbol}`, parseErr);
-        reportData = null;
+      reportData = JSON.parse(sanitized);
+      const uploaded = (object as any).uploaded;
+      if (uploaded) {
+        lastUpdated = new Intl.DateTimeFormat("ja-JP", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        }).format(new Date(uploaded));
+      } else {
+        lastUpdated = "R2取得";
       }
     }
-  } catch(e) {
-    // 無視
+  }
+} catch (e) {
+  if (import.meta.env.DEV) console.error(`R2 fetch failed for ${symbol}:`, e);
+}
+
+// 2) ローカル開発時のフォールバック: public/reports/{symbol}.json を読む
+if (!reportData) {
+  const possibleRoots = [
+    process.cwd(),
+    path.join(process.cwd(), 'stock-blog')
+  ];
+
+  let jsonPath = "";
+  for (const root of possibleRoots) {
+    try {
+      const testPath = path.resolve(root, "public", "reports", `${symbol}.json`);
+      if (fs.existsSync(testPath)) {
+        jsonPath = testPath;
+        break;
+      }
+    } catch {
+      // Cloudflare ランタイムでは fs が使えない場合がある。無視。
+    }
+  }
+
+  if (jsonPath) {
+    try {
+      const stats = fs.statSync(jsonPath);
+      if (stats.size > 0) {
+        lastUpdated = new Intl.DateTimeFormat("ja-JP", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        }).format(stats.mtime);
+        let content = fs.readFileSync(jsonPath, "utf-8");
+        content = content.replace(/\bNaN\b/g, "null");
+        reportData = JSON.parse(content);
+      }
+    } catch (e) {
+      if (import.meta.env.DEV) console.error(`Local JSON read failed for ${symbol}:`, e);
+    }
   }
 }
 
