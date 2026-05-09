@@ -89,9 +89,9 @@ async function pMap(items, fn, concurrency) {
       const idx = cursor++;
       if (idx >= total) return;
       try {
-        results[idx] = { ok: true, value: await fn(items[idx], idx) };
+        results[idx] = { ok: true, item: items[idx], value: await fn(items[idx], idx) };
       } catch (e) {
-        results[idx] = { ok: false, error: e };
+        results[idx] = { ok: false, item: items[idx], error: e };
       }
       done++;
       if (done % 50 === 0 || done === total) {
@@ -561,7 +561,12 @@ async function main() {
     CONCURRENCY,
   );
   const dlFails = dlResults.filter((r) => !r.ok).length;
-  if (dlFails) console.log(`  ${dlFails} downloads failed`);
+  if (dlFails) {
+    console.log(`  ${dlFails} downloads failed`);
+    for (const r of dlResults.filter((x) => !x.ok)) {
+      console.log(`    key=${r.item}: error: ${r.error?.message || r.error}`);
+    }
+  }
 
   console.log("Computing risk-return / sector / sub-industry maps...");
   const riskReturnMetrics = [];
