@@ -20,43 +20,67 @@ const { symbol } = Astro.params;
 let reportData: any = null;
 let lastUpdated: string = "";
 
+// データ取得試行のデバッグ情報。reportData が null になる原因を切り分ける
+// ためページ末尾に HTML コメントとして埋め込む。問題が解決したら削除する。
+const _debug = {
+  symbol,
+  public_worker_api_url: (import.meta.env.PUBLIC_WORKER_API_URL as string | undefined) || null,
+  paths: [] as Array<Record<string, any>>,
+  result: "no-data",
+};
+
 // 1) 本番 (Cloudflare Worker / 自前ドメイン): R2 バインディングから直接読む。
 //    S&P 400/600 のレポートは git にコミットされていないが、ワーカーが
 //    R2 に書き込んだものを実行時に取得できる。
-try {
-  const bucket = (env as any)?.STOCK_DATA ?? (Astro.locals as any)?.runtime?.env?.STOCK_DATA;
-  if (bucket && symbol) {
-    const object = await bucket.get(`reports/${symbol}.json`);
-    if (object) {
-      const raw = await object.text();
-      const sanitized = raw
-        .replace(/\bNaN\b/g, "null")
-        .replace(/-?\bInfinity\b/g, "null");
-      reportData = JSON.parse(sanitized);
-      const uploaded = (object as any).uploaded;
-      if (uploaded) {
-        lastUpdated = new Intl.DateTimeFormat("ja-JP", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        }).format(new Date(uploaded));
-      } else {
-        lastUpdated = "R2取得";
+{
+  const p: Record<string, any> = { name: "r2_binding" };
+  try {
+    const fromCfWorkers = (env as any)?.STOCK_DATA;
+    const fromAstroLocals = (Astro.locals as any)?.runtime?.env?.STOCK_DATA;
+    p.has_cloudflare_workers_env = !!fromCfWorkers;
+    p.has_astro_locals_runtime_env = !!fromAstroLocals;
+    const bucket = fromCfWorkers ?? fromAstroLocals;
+    if (bucket && symbol) {
+      const object = await bucket.get(`reports/${symbol}.json`);
+      p.r2_object_found = !!object;
+      if (object) {
+        const raw = await object.text();
+        const sanitized = raw
+          .replace(/\bNaN\b/g, "null")
+          .replace(/-?\bInfinity\b/g, "null");
+        reportData = JSON.parse(sanitized);
+        const uploaded = (object as any).uploaded;
+        if (uploaded) {
+          lastUpdated = new Intl.DateTimeFormat("ja-JP", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          }).format(new Date(uploaded));
+        } else {
+          lastUpdated = "R2取得";
+        }
+        _debug.result = "r2_binding";
       }
     }
+  } catch (e: any) {
+    p.error = String(e?.message || e);
+    if (import.meta.env.DEV) console.error(`R2 fetch failed for ${symbol}:`, e);
   }
-} catch (e) {
-  if (import.meta.env.DEV) console.error(`R2 fetch failed for ${symbol}:`, e);
+  _debug.paths.push(p);
 }
 
 // 2) Cloudflare Pages のプレビューデプロイなど R2 バインディングが
 //    無い環境でも動くよう、Worker の HTTP API にフォールバックする。
 if (!reportData && symbol) {
+  const p: Record<string, any> = { name: "worker_http_api" };
   const apiBase = import.meta.env.PUBLIC_WORKER_API_URL as string | undefined;
+  p.api_base = apiBase || null;
   if (apiBase) {
+    const apiUrl = `${apiBase.replace(/\/$/, "")}/api/report/${encodeURIComponent(symbol)}`;
+    p.api_url = apiUrl;
     try {
-      const apiUrl = `${apiBase.replace(/\/$/, "")}/api/report/${encodeURIComponent(symbol)}`;
       const resp = await fetch(apiUrl);
+      p.status = resp.status;
       if (resp.ok) {
         const raw = await resp.text();
         const sanitized = raw
@@ -71,37 +95,38 @@ if (!reportData && symbol) {
               day: "numeric",
             }).format(new Date(lastModified))
           : "Worker API取得";
-      } else if (import.meta.env.DEV) {
-        console.error(`Worker API returned ${resp.status} for ${symbol}`);
+        _debug.result = "worker_http_api";
       }
-    } catch (e) {
+    } catch (e: any) {
+      p.error = String(e?.message || e);
       if (import.meta.env.DEV) console.error(`Worker API fetch failed for ${symbol}:`, e);
     }
+  } else {
+    p.skipped_reason = "PUBLIC_WORKER_API_URL is empty";
   }
+  _debug.paths.push(p);
 }
 
-// 3) ローカル開発時のフォールバック: public/reports/{symbol}.json を読む
-if (!reportData) {
-  const possibleRoots = [
-    process.cwd(),
-    path.join(process.cwd(), 'stock-blog')
-  ];
+// 3) ローカル開発時のフォールバック: public/reports/{symbol}.json を読む。
+//    Cloudflare ランタイム（Workers/Pages）では fs / process.cwd が
+//    使えないため、import.meta.env.DEV のときのみ実行する。
+if (!reportData && import.meta.env.DEV) {
+  try {
+    const possibleRoots = [
+      process.cwd(),
+      path.join(process.cwd(), 'stock-blog')
+    ];
 
-  let jsonPath = "";
-  for (const root of possibleRoots) {
-    try {
+    let jsonPath = "";
+    for (const root of possibleRoots) {
       const testPath = path.resolve(root, "public", "reports", `${symbol}.json`);
       if (fs.existsSync(testPath)) {
         jsonPath = testPath;
         break;
       }
-    } catch {
-      // Cloudflare ランタイムでは fs が使えない場合がある。無視。
     }
-  }
 
-  if (jsonPath) {
-    try {
+    if (jsonPath) {
       const stats = fs.statSync(jsonPath);
       if (stats.size > 0) {
         lastUpdated = new Intl.DateTimeFormat("ja-JP", {
@@ -113,9 +138,9 @@ if (!reportData) {
         content = content.replace(/\bNaN\b/g, "null");
         reportData = JSON.parse(content);
       }
-    } catch (e) {
-      if (import.meta.env.DEV) console.error(`Local JSON read failed for ${symbol}:`, e);
     }
+  } catch (e) {
+    console.error(`Local JSON read failed for ${symbol}:`, e);
   }
 }
 
@@ -268,6 +293,10 @@ if (reportData?.analyst_ratings) {
         <div class="report-content bg-skin-card p-10 rounded-lg border border-skin-line shadow-sm text-center">
           <p class="text-xl">レポートが見つかりません: {symbol}</p>
           <p class="mt-4 text-gray-500">データ生成プロセスを実行してください。</p>
+          <details class="mt-6 text-left text-sm">
+            <summary class="cursor-pointer text-gray-500">デバッグ情報</summary>
+            <pre class="mt-2 p-4 bg-gray-100 dark:bg-gray-800 rounded overflow-x-auto text-xs">{JSON.stringify(_debug, null, 2)}</pre>
+          </details>
         </div>
     ) : (
       <div class="report-content bg-skin-card p-4 sm:p-8 rounded-lg border border-skin-line shadow-sm" data-pagefind-body>
@@ -1723,6 +1752,7 @@ if (reportData?.analyst_ratings) {
   </main>
   <Footer />
 </Layout>
+<Fragment set:html={`<!-- DEBUG_REPORT_FETCH ${JSON.stringify(_debug)} -->`} />
 
 <style>
   .report-content {

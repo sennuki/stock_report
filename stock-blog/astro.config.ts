@@ -66,11 +66,8 @@ export default defineConfig({
         context: "server",
         optional: true,
       }),
-      PUBLIC_WORKER_API_URL: envField.string({
-        access: "public",
-        context: "server",
-        optional: true,
-      }),
+      // PUBLIC_WORKER_API_URL は schema 登録すると import.meta.env 経由で
+      // 取りにくくなるため、Vite の素の PUBLIC_* プレフィックス挙動に任せる。
     },
   },
 });
