@@ -190,20 +190,11 @@ jobs:
               "https://api.github.com/repos/${{ github.repository }}/commits/${GITHUB_SHA}/check-runs?per_page=100" \
               || echo '{"check_runs":[]}')
 
-            PREVIEW_URL=$(echo "$RESPONSE" | python3 -c "
-import json, sys, re
-data = json.load(sys.stdin)
-for run in data.get('check_runs', []):
-    name = (run.get('name') or '').lower()
-    slug = ((run.get('app') or {}).get('slug') or '').lower()
-    status = run.get('status')
-    conclusion = run.get('conclusion')
-    details = run.get('details_url') or ''
-    if 'cloudflare-pages' in slug or 'cloudflare pages' in name or 'pages.dev' in details:
-        if status == 'completed' and conclusion == 'success' and details:
-            print(details)
-            break
-" 2>/dev/null || echo "")
+            # check-runs レスポンスから *.pages.dev の URL を抽出。
+            # Cloudflare Pages の details_url が該当する。
+            PREVIEW_URL=$(echo "$RESPONSE" \
+              | grep -oE 'https://[a-zA-Z0-9.-]+\.pages\.dev[^"]*' \
+              | head -n 1 || true)
 
             if [ -n "$PREVIEW_URL" ]; then
               echo "Found Cloudflare Pages preview: $PREVIEW_URL"
