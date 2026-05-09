@@ -10,8 +10,8 @@ interface Props {
 const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.props;
 ---
 
-<div
-  class="chartjs-wrapper mt-24 mb-8 bg-transparent"
+<div 
+  class="chartjs-wrapper mt-24 mb-8 bg-transparent" 
   data-chart={JSON.stringify(chartData || {})}
   data-symbol={chartData?.symbol}
   data-y-axis-position={yAxisPosition}
@@ -23,22 +23,9 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
     </div>
   ) : (
     <>
+      <div class="chart-controls flex justify-center gap-2 mb-8"></div>
       <div class="chartjs-graph-div w-full relative" style={`height: ${height}px;`}>
         <canvas id={id}></canvas>
-      </div>
-      <div class="chart-actions flex justify-end gap-2 mt-3">
-        <button
-          type="button"
-          class="chart-download-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md border border-skin-line bg-skin-card hover:border-skin-accent hover:text-skin-accent transition-colors"
-          data-canvas-id={id}
-          aria-label="グラフを画像として保存"
-          title="グラフを画像として保存（PNG）"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3" />
-          </svg>
-          <span>画像を保存</span>
-        </button>
       </div>
     </>
   )}
@@ -52,66 +39,193 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
     const isDark = html.classList.contains('dark') || html.getAttribute('data-theme') === 'dark';
     return {
       isDark,
-      textColor: isDark ? '#e5e7eb' : '#1f2937',
+      textColor: isDark ? '#e5e7eb' : '#1f2937', 
       gridColor: isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.1)'
     };
   }
 
-  // chart データから Chart.js の type を推定する。
-  //   - dataset.data の各要素が {x, y} オブジェクトなら scatter
-  //   - dataset 個別に type 指定があれば mixed (chart 全体の type は最初の dataset に従う)
-  //   - borderColor だけ持ち backgroundColor が無い → line
-  //   - それ以外 (labels + 数値配列) → bar
-  function detectChartType(srcData: any): string {
-    const datasets = srcData.datasets || [];
-    if (datasets.length === 0) return 'bar';
-
-    const first = datasets[0];
-    const sample = Array.isArray(first.data) ? first.data[0] : null;
-
-    // scatter: {x, y} 形式の data
-    if (sample && typeof sample === 'object' && 'x' in sample && 'y' in sample) {
-      return 'scatter';
-    }
-
-    // 各 dataset に明示的な type が指定されていれば mixed として最初の type を返す
-    const explicitTypes = datasets.map((d: any) => d.type).filter(Boolean);
-    if (explicitTypes.length > 0) return explicitTypes[0];
-
-    // line chart の特徴: fill === false かつ borderColor あり (background なし or 透明)
-    const looksLikeLine = first.fill === false || (!!first.borderColor && !first.backgroundColor);
-    if (looksLikeLine) return 'line';
-
-    return 'bar';
-  }
-
-  function applyThemeColors(chart: any) {
+  function applyThemeToChart(chart: any) {
     const { textColor, gridColor, isDark } = getThemeColors();
     chart.options.color = textColor;
-    if (chart.options.scales) {
-      for (const key of Object.keys(chart.options.scales)) {
-        const scale = chart.options.scales[key];
-        if (scale.ticks) scale.ticks.color = textColor;
-        if (scale.grid) {
-          scale.grid.color = key === 'y'
-            ? (ctx: any) => ctx.tick?.value === 0
-                ? (isDark ? 'rgba(229, 231, 235, 0.4)' : 'rgba(31, 41, 55, 0.4)')
-                : gridColor
-            : gridColor;
-        }
-      }
+    if (chart.options.scales.x) {
+      chart.options.scales.x.ticks.color = textColor;
+      chart.options.scales.x.grid.color = gridColor;
     }
-    if (chart.options.plugins?.legend?.labels) {
+    if (chart.options.scales.y) {
+      chart.options.scales.y.ticks.color = textColor;
+      chart.options.scales.y.grid.color = (ctx: any) => 
+        ctx.tick?.value === 0 ? (isDark ? 'rgba(229, 231, 235, 0.4)' : 'rgba(31, 41, 55, 0.4)') : gridColor;
+    }
+    if (chart.options.scales.y1) chart.options.scales.y1.ticks.color = textColor;
+    if (chart.options.plugins.legend && chart.options.plugins.legend.labels) {
       chart.options.plugins.legend.labels.color = textColor;
     }
     chart.update('none');
   }
 
-  function formatYValueAbbreviated(v: any, isPercent: boolean, isPerformance = false, canvasId = '') {
+  function initChartJs() {
+    const { textColor } = getThemeColors();
+    Chart.defaults.color = textColor;
+
+    document.querySelectorAll('.chartjs-graph-div canvas').forEach(canvas => {
+      const chartInstance = (canvas as any)._chart_instance;
+      if ((canvas as any)._chart_initialized && chartInstance) {
+        applyThemeToChart(chartInstance);
+        return;
+      }
+      const container = canvas.closest('.chartjs-graph-div') as HTMLElement;
+      const wrapper = container.closest('.chartjs-wrapper') as HTMLElement;
+      if (!wrapper) return;
+      const chartData = JSON.parse(wrapper.dataset.chart || '{}');
+      renderChartJs(wrapper, canvas as HTMLCanvasElement, chartData);
+      (canvas as any)._chart_initialized = true;
+    });
+  }
+
+  function renderChartJs(wrapper: HTMLElement, canvas: HTMLCanvasElement, plotlyData: any) {
+    if (!plotlyData || !plotlyData.data) return;
+    const { isDark, textColor, gridColor } = getThemeColors();
+    const yAxisPosition = wrapper.dataset.yAxisPosition || 'left';
+    const config = transformPlotlyToChartJs(plotlyData, isDark, textColor, gridColor, yAxisPosition, canvas.id);
+    if (!config) {
+      if (canvas.id === 'chart-performance') console.warn('ChartJs: Config transformation failed for performance chart');
+      return;
+    }
+    
+    if (canvas.id === 'chart-performance') {
+      console.log('ChartJs: Rendering performance chart with', config.data.datasets.length, 'datasets');
+    }
+    
+    // 既存のチャートを確実に破棄
+    const existingChart = Chart.getChart(canvas);
+    if (existingChart) existingChart.destroy();
+    if ((canvas as any)._chart_instance) (canvas as any)._chart_instance.destroy();
+    
+    const chart = new Chart(canvas, {
+      ...config as any,
+      plugins: [
+        {
+          id: 'barDataLabels',
+          afterDatasetsDraw: (chart: any) => {
+            const { ctx, data } = chart;
+            // 棒グラフかつ、特定の財務・配当チャートを対象とする
+            const targetIds = ['chart-bs', 'chart-is', 'chart-cf', 'chart-tp', 'chart-dps', 'chart-segment', 'chart-geo'];
+            if (!targetIds.includes(canvas.id)) return;
+
+            // スマホ画面かつ「権利落日別」タブの場合は配当チャートの数値を非表示にする
+            const isMobile = window.innerWidth < 640;
+            if (canvas.id === 'chart-dps' && chart._activeGroup === '権利落日別' && isMobile) {
+              return;
+            }
+
+            ctx.save();
+            data.datasets.forEach((dataset: any, i: number) => {
+              const meta = chart.getDatasetMeta(i);
+              if (meta.hidden || !chart.isDatasetVisible(i) || dataset.type !== 'bar') return;
+
+              meta.data.forEach((element: any, index: number) => {
+                const dataValue = dataset.data[index];
+                if (dataValue === null || dataValue === 0) return;
+
+                // 棒の高さがラベルを表示するのに十分か確認
+                if (Math.abs(element.height) < 12) return;
+
+                const label = formatYValueAbbreviated(dataValue, false);
+                
+                // 背景色（棒の色）に応じて文字色を調整（簡易版）
+                ctx.fillStyle = '#ffffff'; 
+                ctx.font = 'bold 10px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                
+                // 積み上げ棒の中央に描画
+                const x = element.x;
+                const y = element.y + (element.height / 2);
+                
+                // 文字が重ならないように、非常に狭い棒の場合は描画しない等の処理も可能
+                ctx.fillText(label, x, y);
+              });
+            });
+            ctx.restore();
+          }
+        },
+        {
+          id: 'latestValueLabel',
+          afterDatasetsDraw: (chart: any) => {
+            const { ctx } = chart;
+            const datasets = chart.data.datasets;
+            
+            // Skip for scatter charts
+            const isScatterChart = chart.config.type === 'scatter';
+            if (isScatterChart) return;
+            
+            // Strictly define performance period labels
+            const periodLabels = ['1ヶ月', '3ヶ月', '6ヶ月', '年初来', '1年', '3年', '5年', '10年'];
+            const isPerformanceChart = datasets.some((ds: any) => 
+              periodLabels.some(p => ds.label.includes(`(${p})`))
+            );
+            if (!isPerformanceChart) return;
+            
+            ctx.save();
+            datasets.forEach((ds: any, i: number) => {
+              if (!chart.isDatasetVisible(i)) return;
+              
+              const meta = chart.getDatasetMeta(i);
+              if (!meta.data || meta.data.length === 0) return;
+              
+              // Find the last valid data point (not null)
+              // This handles cases where some stocks have shorter history than others (e.g. IPO stocks vs S&P 500)
+              let lastValidIdx = -1;
+              for (let j = ds.data.length - 1; j >= 0; j--) {
+                if (ds.data[j] !== null && ds.data[j] !== undefined) {
+                  lastValidIdx = j;
+                  break;
+                }
+              }
+
+              if (lastValidIdx === -1) return;
+              
+              const lastPoint = meta.data[lastValidIdx];
+              if (!lastPoint || lastPoint.skip) return;
+              
+              const value = ds.data[lastValidIdx];
+              
+              // Only draw for performance datasets
+              if (!periodLabels.some(p => ds.label.includes(`(${p})`))) return;
+              
+              const val = value * 100;
+              const text = (val >= 0 ? '+' : '') + val.toFixed(2) + '%';
+
+              
+              ctx.fillStyle = ds.borderColor;
+              ctx.font = 'bold 12px sans-serif';
+              ctx.textAlign = 'left';
+              ctx.textBaseline = 'middle';
+              // マーカーの右側に 10px 離して数値を描画
+              ctx.fillText(text, lastPoint.x + 10, lastPoint.y);
+            });
+            ctx.restore();
+          }
+        }
+      ]
+    });
+    (canvas as any)._chart_instance = chart;
+    setupControls(wrapper, chart, plotlyData);
+  }
+
+  function formatYValueAbbreviated(v: any, isPercent: boolean, isPerformance: boolean = false, canvasId: string = '') {
     if (v === null || v === undefined || isNaN(v)) return '';
     if (isPercent) {
+      // 損益計算書(chart-is)と株主還元(chart-tp)の比率は小数点1桁にする
       const isFinRatio = ['chart-is', 'chart-tp'].includes(canvasId);
-      const decimals = (isPerformance || isFinRatio) ? 1 : 2;
+      
+      // パフォーマンスチャートは1桁
+      // 財務比率(利益率、総還元性向)も1桁
+      // それ以外（配当利回りなど）は2桁
+      let decimals = 2;
+      if (isPerformance || isFinRatio) {
+        decimals = 1;
+      }
       return (parseFloat(v) * 100).toFixed(decimals) + '%';
     }
     const absV = Math.abs(v);
@@ -129,289 +243,526 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
     return Math.round(v / 1e6).toLocaleString() + 'M';
   }
 
-  function buildConfig(srcData: any, canvasId: string, yAxisPosition: string) {
-    const { textColor, gridColor, isDark } = getThemeColors();
-    const chartType = detectChartType(srcData);
-    const isScatter = chartType === 'scatter';
-    const isPerformance = canvasId === 'chart-performance' || chartType === 'line';
+  function setupControls(wrapper: HTMLElement, chart: any, plotlyData: any) {
+    const controlsContainer = wrapper.querySelector('.chart-controls');
+    if (!controlsContainer) return;
 
-    // y1 軸を使う dataset があれば右側 y 軸を有効化
-    const hasY1 = (srcData.datasets || []).some((d: any) => d.yAxisID === 'y1');
+    // Check if we have updatemenus OR multiple groups in labels
+    const datasets = chart.data.datasets;
+    const groups = new Set<string>();
+    datasets.forEach((ds: any) => {
+      const match = ds.label.match(/\(([^)]+)\)$/);
+      if (match) groups.add(match[1]);
+    });
 
-    // bar の積み上げ: chart-bs / chart-cf / chart-segment / chart-geo は stack を使う
-    const stackedCharts = ['chart-bs', 'chart-cf', 'chart-segment', 'chart-geo'];
-    const stacked = stackedCharts.includes(canvasId);
+    const hasUpdateMenus = !!(plotlyData.layout?.updatemenus && plotlyData.layout.updatemenus.length > 0);
+    const hasGroups = groups.size > 1;
+
+    if (!hasUpdateMenus && !hasGroups) return;
+
+    controlsContainer.innerHTML = '';
+    const isScatterChart = chart.config.type === 'scatter';
+
+    const updateLabelsAndScales = () => {
+      // Find ALL datasets in the new group
+      const groupTraces = chart.data.datasets.filter((ds: any) => {
+        return chart._activeGroup ? ds.label.includes(`(${chart._activeGroup})`) : true;
+      });
+
+      if (!isScatterChart && groupTraces.length > 0) {
+        // Find the trace with most points to use as labels (avoiding truncation if Target has less data than S&P 500)
+        let bestTraceIdx = -1;
+        let maxLen = -1;
+        
+        groupTraces.forEach((ds: any) => {
+          const plotlyDs = plotlyData.data[ds.originalIndex];
+          if (plotlyDs && plotlyDs.x && plotlyDs.x.length > maxLen) {
+            maxLen = plotlyDs.x.length;
+            bestTraceIdx = ds.originalIndex;
+          }
+        });
+
+        if (bestTraceIdx !== -1) {
+          const originalDataSeries = plotlyData.data[bestTraceIdx];
+          
+          // Update the global labels
+          chart.data.labels = originalDataSeries.x;
+          
+          // Synchronize data for ALL datasets based on their original data in Plotly
+          chart.data.datasets.forEach((chartDs: any) => {
+            const plotlyDs = plotlyData.data[chartDs.originalIndex];
+            if (plotlyDs && plotlyDs.y) {
+              // Ensure alignment with new labels
+              chartDs.data = chart.data.labels.map((label: any) => {
+                const xIdx = (plotlyDs.x || []).findIndex((xv: any) => String(xv) === String(label));
+                return xIdx !== -1 ? plotlyDs.y[xIdx] : null;
+              });
+            }
+          });
+        }
+      }
+
+      // Recalculate scales for scatter charts
+      if (isScatterChart) {
+        const visibleDatasets = chart.data.datasets.filter((_ds: any, i: number) => chart.isDatasetVisible(i));
+        if (visibleDatasets.length > 0) {
+          const yValues = visibleDatasets.flatMap((ds: any) => ds.data.map((p: any) => p.y)).filter((v: any) => v !== null && !isNaN(v));
+          if (yValues.length > 0 && chart.options.scales.y) {
+            const minV = Math.min(...yValues);
+            const maxV = Math.max(...yValues);
+            const range = maxV - minV;
+            const padding = range === 0 ? Math.abs(maxV) * 0.05 || 0.01 : range * 0.05;
+            chart.options.scales.y.min = minV - padding;
+            chart.options.scales.y.max = maxV + padding;
+          }
+          if (chart.options.scales.x) {
+            const xValues = visibleDatasets.flatMap((ds: any) => ds.data.map((p: any) => p.x)).filter((v: any) => v !== null && !isNaN(v));
+            if (xValues.length > 0) {
+              const maxX = Math.max(...xValues);
+              const rangeX = maxX;
+              const paddingX = rangeX === 0 ? Math.abs(maxX) * 0.05 || 0.01 : rangeX * 0.05;
+              chart.options.scales.x.min = 0;
+              chart.options.scales.x.max = maxX + paddingX;
+            }
+          }
+        }
+      }
+    };
+
+    if (hasGroups) {
+      const order = ["1ヶ月", "3ヶ月", "6ヶ月", "年初来", "1年", "3年", "5年", "10年", "通年", "四半期", "年間推移", "権利落日別"];
+      const groupList = Array.from(groups).sort((a, b) => {
+        const indexA = order.indexOf(a);
+        const indexB = order.indexOf(b);
+        if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+        if (indexA !== -1) return -1;
+        if (indexB !== -1) return 1;
+        return a.localeCompare(b);
+      });
+      
+      // Determine default active group based on order preference
+      let defaultGroup = groupList[0];
+      
+      // Explicitly prefer '通年' (Annual) as default if available
+      if (groupList.includes('通年')) {
+        defaultGroup = '通年';
+      } else if (groupList.includes('1年')) {
+        // Fallback for performance charts
+        defaultGroup = '1年';
+      } else {
+        const initiallyVisibleDs = chart.data.datasets.find((ds: any) => ds._periodVisible);
+        if (initiallyVisibleDs) {
+          const match = initiallyVisibleDs.label.match(/\(([^)]+)\)$/);
+          if (match) defaultGroup = match[1];
+        }
+      }
+      chart._activeGroup = defaultGroup;
+
+      // Ensure initial visibility is synced with the default group
+      chart.data.datasets.forEach((ds: any, idx: number) => {
+        const inActiveGroup = ds.label.includes(`(${defaultGroup})`);
+        const isUserHidden = chart._userHiddenLabels && chart._userHiddenLabels.has(ds.label);
+        chart.setDatasetVisibility(idx, inActiveGroup && !isUserHidden);
+      });
+
+      const groupControls = document.createElement('div');
+      groupControls.className = "flex justify-center gap-2 mb-4 w-full";
+      
+      groupList.forEach(groupName => {
+        const btn = document.createElement('button');
+        btn.textContent = groupName;
+        const isActive = groupName === chart._activeGroup;
+        btn.className = `px-3 py-1 text-xs font-medium rounded-full border transition-colors ${isActive ? 'bg-accent text-white border-accent' : 'bg-background text-foreground border-border'}`;
+        
+        btn.onclick = () => {
+          groupControls.querySelectorAll('button').forEach(b => {
+            b.classList.remove('bg-accent', 'text-white', 'border-accent');
+            b.classList.add('bg-background', 'text-foreground', 'border-border');
+          });
+          btn.classList.add('bg-accent', 'text-white', 'border-accent');
+          btn.classList.remove('bg-background', 'text-foreground', 'border-border');
+          
+          chart._activeGroup = groupName;
+          
+          // Re-evaluate visibility for all datasets based on new group
+          chart.data.datasets.forEach((ds: any, idx: number) => {
+            const inActiveGroup = ds.label.includes(`(${groupName})`);
+            const isUserHidden = chart._userHiddenLabels && chart._userHiddenLabels.has(ds.label);
+            
+            // For grouped charts, being in the active group is the primary visibility trigger.
+            // We ignore the initial plotlyData.visible (ds._periodVisible) here because 
+            // the tabs themselves represent the visibility toggle.
+            chart.setDatasetVisibility(idx, inActiveGroup && !isUserHidden);
+          });
+
+          updateLabelsAndScales();
+          chart.update();
+        };
+        groupControls.appendChild(btn);
+      });
+      controlsContainer.appendChild(groupControls);
+
+      // Perform initial labels/data synchronization for the default group
+      updateLabelsAndScales();
+      chart.update();
+    }
+
+    const updateChartData = (btn: any) => {
+      if (btn.args && btn.args[0]) {
+        const visMask = btn.args[0].visible; 
+        if (!chart._userHiddenLabels) chart._userHiddenLabels = new Set();
+        chart.data.datasets.forEach((ds: any, idx: number) => {
+          const originalIdx = ds.originalIndex;
+          const isPeriodVisible = visMask ? (visMask[originalIdx] === true) : true;
+          const isUserHidden = chart._userHiddenLabels.has(ds.label);
+          ds._periodVisible = isPeriodVisible;
+          
+          const inActiveGroup = chart._activeGroup ? ds.label.includes(`(${chart._activeGroup})`) : true;
+          chart.setDatasetVisibility(idx, isPeriodVisible && !isUserHidden && inActiveGroup);
+        });
+
+        updateLabelsAndScales();
+        chart.update();
+      }
+    };
+
+    const select = document.createElement('select');
+    select.className = "px-4 py-2 text-sm font-medium rounded-md border bg-background text-foreground border-border outline-none focus:ring-2 focus:ring-accent w-[200px] text-center mb-4 sm:hidden";
+    const btnGroup = document.createElement('div');
+    btnGroup.className = "flex justify-center flex-wrap gap-2 mb-4";
+    const buttons: HTMLButtonElement[] = [];
+    let activeIdx = 0;
+    
+    if (hasUpdateMenus) {
+      plotlyData.layout.updatemenus[0].buttons.forEach((btn: any, btnIdx: number) => {
+        // Find active button based on initial visibility
+        const isVisibleArr = btn.args && btn.args[0] && btn.args[0].visible;
+        if (isVisibleArr && Array.isArray(isVisibleArr)) {
+          const matches = isVisibleArr.every((v: any, i: number) => {
+            const traceVisible = plotlyData.data[i]?.visible !== false;
+            return (v === true) === traceVisible;
+          });
+          if (matches) activeIdx = btnIdx;
+        }
+
+        const option = document.createElement('option');
+        option.value = btnIdx.toString();
+        option.textContent = btn.label;
+        select.appendChild(option);
+        const button = document.createElement('button');
+        button.textContent = btn.label;
+        button.className = `px-4 py-1.5 text-sm font-medium rounded-md border transition-colors bg-background text-foreground border-border hover:border-accent`;
+        buttons.push(button);
+        btnGroup.appendChild(button);
+        button.onclick = () => {
+          select.value = btnIdx.toString();
+          buttons.forEach(b => {
+            b.classList.remove('bg-foreground', 'text-white', 'border-foreground');
+            b.classList.add('bg-background', 'text-foreground', 'border-border');
+          });
+          button.classList.add('bg-foreground', 'text-white', 'border-foreground');
+          updateChartData(btn);
+        };
+      });
+      
+      // Hide buttons if screen is small, otherwise hide select
+      btnGroup.classList.add('hidden', 'sm:flex');
+
+      select.onchange = (e) => buttons[parseInt((e.target as HTMLSelectElement).value, 10)].click();
+      if (buttons[activeIdx]) {
+        buttons[activeIdx].classList.add('bg-foreground', 'text-white', 'border-foreground');
+        select.value = activeIdx.toString();
+      }
+      const selectWrapper = document.createElement('div');
+      selectWrapper.className = "w-full flex justify-center sm:hidden";
+      selectWrapper.appendChild(select);
+      controlsContainer.appendChild(selectWrapper);
+      controlsContainer.appendChild(btnGroup);
+    }
+  }
+
+  function transformPlotlyToChartJs(plotlyData: any, isDark: boolean, textColor: string, gridColor: string, yAxisPosition: string = 'left', canvasId: string = '') {
+    const data = plotlyData.data || [];
+    const layout = plotlyData.layout || {};
+    if (data.length === 0) return null;
+
+    const isScatterChart = data.some((d: any) => d.type === 'scatter' && d.mode && d.mode.includes('markers')) && !data.some((d: any) => d.type === 'bar');
+
+    // Determine global labels for synchronized category axis (before allSeries)
+    const initialVisibleTraces = data.filter((d: any) => d.visible !== false);
+    const firstTrace = initialVisibleTraces[0] || data[0];
+    const labels = !isScatterChart ? (firstTrace?.x || []) : [];
+
+    const allSeries = data.map((d: any, idx: number) => {
+      const name = d.name || '';
+      const isRatio = name.includes('率') || name.includes('性向');
+      const type = (d.type === 'bar') ? 'bar' : (isScatterChart ? 'scatter' : (isRatio ? 'line' : 'line'));
+      
+      // Prioritize marker color from Plotly (explicitly set for segments)
+      let baseColor = d.marker?.color || d.line?.color || (isDark ? '#ff6b01' : '#006cac');
+      if (isScatterChart && name.includes('S&P') && !name.includes('銘柄')) baseColor = '#22c55e';
+
+      const nameMatch = name.match(/\(([^)]+)\)$/);
+      const isPerformanceChart = name.includes('リターン') || (nameMatch && ['(1ヶ月)', '(3ヶ月)', '(6ヶ月)', '(年初来)', '(1年)', '(3年)', '(5年)', '(10年)', '(全期間)'].some(p => name.endsWith(p)));
+
+      const s: any = {
+        label: name,
+        type: type,
+        yAxisID: isRatio ? 'y1' : (d.yaxis === 'y2' ? 'y1' : 'y'),
+        originalIndex: idx,
+        hidden: d.visible === false,
+        _periodVisible: d.visible !== false,
+        backgroundColor: baseColor,
+        borderColor: baseColor,
+        borderWidth: type === 'line' ? 2 : (type === 'scatter' ? 1 : 0),
+        pointRadius: type === 'line' 
+          ? (isPerformanceChart ? ( (d.y || []).map((_: any, i: number, arr: any[]) => i === arr.length - 1 ? 4 : 0) ) : 4)
+          : (type === 'scatter' 
+            ? (name.includes('S&P500銘柄') ? 2.5 : 7) 
+            : 0),
+        pointHoverRadius: 12,
+        pointBorderWidth: (type === 'scatter' && !name.includes('S&P500銘柄')) ? 2 : 0,
+        pointBorderColor: '#fff',
+        pointStyle: 'circle',
+        tension: 0.4,
+        order: isScatterChart ? (name.includes('対象') ? 1 : (name.includes('セクター') || name.includes('ETF')) ? 2 : (name.includes('S&P') && !name.includes('銘柄')) ? 3 : 10) : (type === 'line' ? 1 : 2)
+      };
+
+      if (isScatterChart) {
+        s.data = (d.x || []).map((xv:any, i:number)=>({
+          x: xv, y: d.y[i], 
+          symbol: d.text ? (Array.isArray(d.text) ? d.text[i] : d.text) : '',
+          origX: (d.customdata && d.customdata[i]) ? d.customdata[i][0] : xv,
+          origY: (d.customdata && d.customdata[i]) ? d.customdata[i][1] : d.y[i],
+          customText: (d.customdata && d.customdata[i]) ? d.customdata[i][2] : (d.text ? (Array.isArray(d.text) ? d.text[i] : d.text) : '')
+        }));
+      } else {
+        // Important: Map individual trace data to global labels to ensure correct alignment
+        // Plotly traces can have different x-axis lengths/ranges, but Chart.js category axis requires synchronized indices
+        s.data = labels.map((label: any) => {
+          const xIdx = (d.x || []).findIndex((xv: any) => String(xv) === String(label));
+          return xIdx !== -1 ? d.y[xIdx] : null;
+        });
+      }
+
+      // BS/Payout stacking order
+      if (name.includes('固定資産')) s._originalOrder = 1;
+      else if (name.includes('流動資産')) s._originalOrder = 2;
+      else if (name.includes('純資産')) s._originalOrder = 1;
+      else if (name.includes('固定負債')) s._originalOrder = 2;
+      else if (name.includes('流動負債')) s._originalOrder = 3;
+      else if (name.includes('配当金')) s._originalOrder = 1; // Base of stack
+      else if (name.includes('自社株買い')) s._originalOrder = 2; // Top of stack
+      else s._originalOrder = 9;
+
+      // Use offsetgroup as stack ID if available, otherwise use calculated stack
+      const offsetGroup = d.offsetgroup !== undefined ? `group-${d.offsetgroup}` : null;
+
+      if (name.includes('資産')) s.stack = offsetGroup || 'assets';
+      else if (name.includes('負債') || name.includes('純資産')) s.stack = offsetGroup || 'liabilities';
+      else if (name.includes('配当金') || name.includes('自社株買い')) s.stack = offsetGroup || 'payout';
+      else if (name.includes('純利益') && !isRatio) s.stack = offsetGroup || (data.some((os: any) => os.name && os.name.includes('営業CF')) ? 'net_income_cf' : 'net_income_is');
+      else if (canvasId === 'chart-segment') s.stack = offsetGroup || 'segment';
+      else if (canvasId === 'chart-geo') s.stack = offsetGroup || 'geography';
+      else if (type === 'bar') s.stack = offsetGroup || name.replace(' (Q)', '').replace(' (年間推移)', '');
+
+      return s;
+      });
+
+      const hasBar = allSeries.some((s: any) => s.type === 'bar');
+      const isBarmodeGroup = layout.barmode === 'group';
+      // Allow stacking even in group mode if offsetgroups (custom stacks) are present
+      const hasOffsetGroups = data.some((d: any) => d.offsetgroup !== undefined);
+      const hasStacking = hasBar && !isScatterChart && (!isBarmodeGroup || hasOffsetGroups);
+
+      if (hasStacking) {
+      allSeries.sort((a: any, b: any) => {
+        const groupPriority: any = { 
+          'group-0': 10, 'assets': 10,
+          'group-1': 60, 'liabilities': 60,
+          'net_income_cf': 5, '売上高': 10, '売上総利益': 20, '営業利益': 30, 'net_income_is': 50, 
+          '営業CF': 10, '投資CF': 20, '財務CF': 30, 'フリーCF': 40, 'payout': 70, 'segment': 80, 'geography': 90
+        };
+        const pA = groupPriority[a.stack] || 99;
+        const pB = groupPriority[b.stack] || 99;
+        if (pA !== pB) return pA - pB;
+        if (a.type !== b.type) return a.type === 'bar' ? -1 : 1;
+        // Correct order for stacking: smaller _originalOrder is bottom
+        if (a.stack === b.stack && a._originalOrder !== b._originalOrder) return a._originalOrder - b._originalOrder;
+        return a.originalIndex - b.originalIndex;
+      });
+    }
+
+    const initialVisible = allSeries.filter((s: any) => s._periodVisible);
+    
+    let initialMinY, initialMaxY;
+    if (isScatterChart) {
+      const allInitialY = initialVisible.flatMap((ds: any) => ds.data.map((p: any) => p.y)).filter((v: any) => v !== null && !isNaN(v));
+      if (allInitialY.length > 0) {
+        const minV = Math.min(...allInitialY);
+        const maxV = Math.max(...allInitialY);
+        const range = maxV - minV;
+        const padding = range === 0 ? Math.abs(maxV) * 0.05 || 0.01 : range * 0.05;
+        initialMinY = minV - padding; initialMaxY = maxV + padding;
+      }
+    }
+
+    let xOpts: any = { 
+      type: isScatterChart ? 'linear' : 'category', 
+      grid: { color: gridColor }, 
+      ticks: { 
+        color: textColor,
+        maxTicksLimit: 8,
+        autoSkip: true,
+        callback: function(this: any, val: any): any {
+          // For category axis, we get the label string
+          const label: any = this.getLabelForValue(val);
+          if (typeof label === 'string') {
+            const datePart = label.split('T')[0];
+            if (datePart.match(/^\d{4}-\d{2}-\d{2}$/)) {
+              return datePart.replace(/-/g, '/');
+            }
+            return datePart;
+          }
+          return label;
+        }
+      } 
+    };
+    if (isScatterChart) {
+      const allInitialX = initialVisible.flatMap((ds: any) => ds.data.map((p: any) => p.x)).filter((v: any) => v !== null && !isNaN(v));
+      if (allInitialX.length > 0) {
+        const maxX = Math.max(...allInitialX);
+        const rangeX = maxX;
+        const paddingX = rangeX === 0 ? Math.abs(maxX) * 0.05 || 0.01 : rangeX * 0.05;
+        xOpts.min = 0;
+        xOpts.max = maxX + paddingX;
+      }
+      xOpts.ticks.callback = (value: any) => (value * 100).toFixed(0) + '%';
+    }
+
+    // Strictly define performance period labels
+    const periodLabels = ['1ヶ月', '3ヶ月', '6ヶ月', '年初来', '1年', '3年', '5年', '10年'];
+    const isPerformanceChart = allSeries.some((s: any) => 
+      periodLabels.some(p => s.label.includes(`(${p})`))
+    );
 
     return {
-      type: chartType as any,
-      data: {
-        labels: srcData.labels || undefined,
-        datasets: srcData.datasets || [],
-      },
+      type: (isScatterChart ? 'scatter' : (isPerformanceChart ? 'line' : 'bar')),
+      data: { labels: labels, datasets: allSeries },
       options: {
+        layout: { padding: { right: isPerformanceChart ? 80 : 0 } },
+        color: textColor,
         responsive: true,
         maintainAspectRatio: false,
         animation: { duration: 400 },
-        color: textColor,
-        layout: { padding: { right: isPerformance ? 60 : 0 } },
-        interaction: { mode: isScatter ? 'nearest' : 'index', intersect: isScatter },
+        interaction: { mode: isScatterChart ? 'nearest' : 'index', intersect: isScatterChart },
         plugins: {
           legend: {
             position: 'top',
-            labels: { color: textColor, usePointStyle: true },
+            labels: { 
+              color: textColor, 
+              usePointStyle: true,
+              generateLabels: function(chart: any) {
+                const datasets = chart.data.datasets;
+                const labels: any[] = [];
+                const seen = new Set();
+                const userHidden = chart._userHiddenLabels || new Set();
+                // Ensure legend text uses correct theme color
+                const currentIsDark = document.documentElement.classList.contains('dark') || document.documentElement.getAttribute('data-theme') === 'dark';
+                const currentTextColor = currentIsDark ? '#e5e7eb' : '#1f2937';
+
+                const sortedForLegend = [...datasets].sort((a, b) => (a.order || 0) - (b.order || 0));
+                sortedForLegend.forEach((ds: any) => {
+                  const label = ds.label.replace(/\([^)]+\)$/, '').trim();
+                  if (seen.has(label)) return;
+                  if (chart._activeGroup && !ds.label.includes(`(${chart._activeGroup})`)) return;
+                  seen.add(label);
+                  labels.push({ text: label, fillStyle: ds.backgroundColor, strokeStyle: ds.borderColor, lineWidth: ds.borderWidth, hidden: userHidden.has(ds.label), pointStyle: ds.pointStyle, fontColor: currentTextColor });
+                });
+                return labels;
+              }
+            },
+            onClick: function(_e: any, legendItem: any, legend: any) {
+              const labelText = legendItem.text;
+              const ci = legend.chart;
+              if (!ci._userHiddenLabels) ci._userHiddenLabels = new Set();
+              
+              // Find all datasets that match this label (across groups)
+              const matchingDatasets = ci.data.datasets.filter((d: any) => d.label.startsWith(labelText));
+              const isCurrentlyHidden = ci._userHiddenLabels.has(matchingDatasets[0]?.label);
+              
+              matchingDatasets.forEach((ds: any) => {
+                if (isCurrentlyHidden) ci._userHiddenLabels.delete(ds.label);
+                else ci._userHiddenLabels.add(ds.label);
+              });
+
+              ci.data.datasets.forEach((ds: any, i: number) => {
+                const inActiveGroup = ci._activeGroup ? ds.label.includes(`(${ci._activeGroup})`) : true;
+                const isUserHidden = ci._userHiddenLabels.has(ds.label);
+                ci.setDatasetVisibility(i, ds._periodVisible && !isUserHidden && inActiveGroup);
+              });
+              ci.update();
+            }
           },
           tooltip: {
             callbacks: {
-              label: (context: any) => {
-                if (isScatter) {
+              label: function(context: any) {
+                if (isScatterChart) {
                   const p = context.raw;
-                  const sym = p.symbol || context.dataset.label;
-                  return `${sym} - リスク: ${(p.x * 100).toFixed(1)}%, リターン: ${(p.y * 100).toFixed(1)}%`;
+                  const xVal = p.origX !== undefined ? p.origX : p.x;
+                  const yVal = p.origY !== undefined ? p.origY : p.y;
+                  const symbol = p.customText || p.symbol || context.dataset.label;
+                  return `${symbol} - リスク: ${(xVal * 100).toFixed(1)}%, リターン: ${(yVal * 100).toFixed(1)}%`;
                 }
+                
                 const value = context.raw;
-                if (isPerformance && typeof value === 'number') {
-                  const pct = value * 100;
-                  return context.dataset.label + ': ' + (pct >= 0 ? '+' : '') + pct.toFixed(1) + '%';
+                if (isPerformanceChart && typeof value === 'number') {
+                  const val = value * 100;
+                  return context.dataset.label + ': ' + (val >= 0 ? '+' : '') + val.toFixed(1) + '%';
                 }
+                
                 return context.dataset.label + ': ' + formatYValueMillions(value, context.dataset.yAxisID === 'y1');
-              },
-            },
-          },
+              }
+            }
+          }
         },
         scales: {
-          x: {
-            type: isScatter ? 'linear' : 'category',
-            grid: { color: gridColor },
-            stacked: stacked && !isScatter,
-            ticks: {
-              color: textColor,
-              maxTicksLimit: 8,
-              autoSkip: true,
-              callback: function(this: any, val: any): any {
-                if (isScatter) return (val * 100).toFixed(0) + '%';
-                const label: any = this.getLabelForValue(val);
-                if (typeof label === 'string') {
-                  const datePart = label.split('T')[0];
-                  if (datePart.match(/^\d{4}-\d{2}-\d{2}$/)) return datePart.replace(/-/g, '/');
-                  return datePart;
-                }
-                return label;
-              },
-            },
-          },
+          x: xOpts,
           y: {
             type: 'linear',
+            display: true,
             position: yAxisPosition as any,
-            stacked: stacked,
-            beginAtZero: !isScatter,
-            grid: {
-              color: (ctx: any) => ctx.tick?.value === 0
-                ? (isDark ? 'rgba(229, 231, 235, 0.4)' : 'rgba(31, 41, 55, 0.4)')
-                : gridColor,
-              lineWidth: (ctx: any) => ctx.tick?.value === 0 ? 2 : 1,
-            },
-            ticks: {
-              color: textColor,
-              callback: (value: any) => formatYValueAbbreviated(value, isScatter || isPerformance, isPerformance, canvasId),
-            },
+            grid: { color: (ctx: any) => ctx.tick?.value === 0 ? (getThemeColors().isDark ? 'rgba(229, 231, 235, 0.4)' : 'rgba(31, 41, 55, 0.4)') : gridColor, lineWidth: (ctx: any) => ctx.tick?.value === 0 ? 2 : 1 },
+            ticks: { color: textColor, callback: (value: any) => formatYValueAbbreviated(value, isScatterChart || isPerformanceChart, isPerformanceChart, canvasId) },
+            stacked: hasStacking,
+            title: { display: !!layout.yaxis?.title?.text, text: layout.yaxis?.title?.text, color: textColor },
+            min: isScatterChart ? initialMinY : undefined, max: isScatterChart ? initialMaxY : undefined,
+            beginAtZero: !isScatterChart
           },
-          ...(hasY1 ? {
-            y1: {
-              type: 'linear',
-              position: 'right',
-              grid: { drawOnChartArea: false },
-              ticks: {
-                color: textColor,
-                callback: (value: any) => formatYValueAbbreviated(value, true, false, canvasId),
-              },
-            },
-          } : {}),
-        },
-      },
+          y1: {
+            type: 'linear',
+            display: data.some((s: any) => s.name.includes('率') || s.name.includes('性向') || s.name.includes('利回り')),
+            position: 'right',
+            grid: { drawOnChartArea: false },
+            ticks: { color: textColor, callback: (value: any) => formatYValueAbbreviated(value, true, false, canvasId) },
+            stacked: false,
+            title: { display: !!layout.yaxis2?.title?.text, text: layout.yaxis2?.title?.text, color: textColor }
+          }
+        }
+      }
     };
   }
 
-  function renderChartJs(canvas: HTMLCanvasElement, srcData: any) {
-    if (!srcData || !srcData.datasets || srcData.datasets.length === 0) return;
-
-    const wrapper = canvas.closest('.chartjs-wrapper') as HTMLElement | null;
-    const yAxisPosition = wrapper?.dataset.yAxisPosition || 'left';
-    const config = buildConfig(srcData, canvas.id, yAxisPosition);
-
-    // 既存のチャートを破棄
-    const existing = Chart.getChart(canvas);
-    if (existing) existing.destroy();
-    if ((canvas as any)._chart_instance && typeof (canvas as any)._chart_instance.destroy === 'function') {
-      (canvas as any)._chart_instance.destroy();
-    }
-
-    const chart = new Chart(canvas, {
-      ...config as any,
-      plugins: [
-        {
-          // 棒グラフ内に値ラベルを描画
-          id: 'barDataLabels',
-          afterDatasetsDraw: (chart: any) => {
-            const targetIds = ['chart-bs', 'chart-is', 'chart-cf', 'chart-tp', 'chart-dps', 'chart-segment', 'chart-geo'];
-            if (!targetIds.includes(canvas.id)) return;
-            const { ctx, data } = chart;
-            ctx.save();
-            data.datasets.forEach((ds: any, i: number) => {
-              const meta = chart.getDatasetMeta(i);
-              if (meta.hidden || !chart.isDatasetVisible(i) || (ds.type && ds.type !== 'bar') || (!ds.type && config.type !== 'bar')) return;
-              meta.data.forEach((element: any, idx: number) => {
-                const v = ds.data[idx];
-                if (v === null || v === 0) return;
-                const h = element.height || (element.y - element.base);
-                if (Math.abs(h) < 12) return;
-                const label = formatYValueAbbreviated(v, false);
-                ctx.fillStyle = '#ffffff';
-                ctx.font = 'bold 10px sans-serif';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText(label, element.x, element.y + h / 2);
-              });
-            });
-            ctx.restore();
-          },
-        },
-        {
-          // ライン末尾に最終値ラベル (パフォーマンスチャート用)
-          id: 'latestValueLabel',
-          afterDatasetsDraw: (chart: any) => {
-            if (chart.config.type === 'scatter') return;
-            const isPerf = canvas.id === 'chart-performance';
-            if (!isPerf) return;
-            const { ctx } = chart;
-            ctx.save();
-            chart.data.datasets.forEach((ds: any, i: number) => {
-              if (!chart.isDatasetVisible(i)) return;
-              const meta = chart.getDatasetMeta(i);
-              if (!meta.data || meta.data.length === 0) return;
-              let lastIdx = -1;
-              for (let j = ds.data.length - 1; j >= 0; j--) {
-                if (ds.data[j] !== null && ds.data[j] !== undefined) { lastIdx = j; break; }
-              }
-              if (lastIdx === -1) return;
-              const last = meta.data[lastIdx];
-              if (!last || last.skip) return;
-              const val = ds.data[lastIdx] * 100;
-              const text = (val >= 0 ? '+' : '') + val.toFixed(1) + '%';
-              ctx.fillStyle = ds.borderColor;
-              ctx.font = 'bold 11px sans-serif';
-              ctx.textAlign = 'left';
-              ctx.textBaseline = 'middle';
-              ctx.fillText(text, last.x + 8, last.y);
-            });
-            ctx.restore();
-          },
-        },
-      ],
-    });
-    (canvas as any)._chart_instance = chart;
-  }
-
-  function initChartJs() {
-    const { textColor } = getThemeColors();
-    Chart.defaults.color = textColor;
-
-    document.querySelectorAll('.chartjs-graph-div canvas').forEach(canvas => {
-      const inst = (canvas as any)._chart_instance;
-      if ((canvas as any)._chart_initialized && inst) {
-        applyThemeColors(inst);
-        return;
-      }
-      const wrapper = (canvas as HTMLElement).closest('.chartjs-wrapper') as HTMLElement | null;
-      if (!wrapper) return;
-      const chartData = JSON.parse(wrapper.dataset.chart || '{}');
-      renderChartJs(canvas as HTMLCanvasElement, chartData);
-      (canvas as any)._chart_initialized = true;
-    });
-  }
-
-  function downloadChartImage(canvasId: string) {
-    const canvas = document.getElementById(canvasId) as HTMLCanvasElement | null;
-    if (!canvas) return;
-    const isDark = document.documentElement.classList.contains('dark') ||
-                   document.documentElement.getAttribute('data-theme') === 'dark';
-    const bgColor = isDark ? '#1e1e1e' : '#ffffff';
-    const watermarkColor = isDark ? 'rgba(229,231,235,0.55)' : 'rgba(31,41,55,0.55)';
-    const wrapper = canvas.closest('.chartjs-wrapper') as HTMLElement | null;
-    const chartData = wrapper ? JSON.parse(wrapper.dataset.chart || '{}') : {};
-    const symbol = wrapper?.dataset?.symbol || chartData?.symbol || '';
-    const titleEl = wrapper?.querySelector('h3');
-    const titleText = titleEl?.textContent?.trim() || '';
-
-    const padding = 40;
-    const headerHeight = (titleText || symbol) ? 80 : 0;
-    const footerHeight = 40;
-    const outW = canvas.width + padding * 2;
-    const outH = canvas.height + headerHeight + footerHeight + padding;
-
-    const out = document.createElement('canvas');
-    out.width = outW;
-    out.height = outH;
-    const ctx = out.getContext('2d');
-    if (!ctx) return;
-
-    ctx.fillStyle = bgColor;
-    ctx.fillRect(0, 0, outW, outH);
-
-    if (titleText || symbol) {
-      ctx.fillStyle = isDark ? '#e5e7eb' : '#1f2937';
-      ctx.font = 'bold 22px system-ui, -apple-system, sans-serif';
-      ctx.textBaseline = 'top';
-      ctx.textAlign = 'left';
-      let header = '';
-      if (symbol) header += symbol;
-      if (symbol && titleText) header += '  -  ';
-      if (titleText) header += titleText;
-      ctx.fillText(header, padding, padding / 2 + 10);
-    }
-
-    ctx.drawImage(canvas, padding, headerHeight + padding / 2);
-
-    ctx.fillStyle = watermarkColor;
-    ctx.font = '12px system-ui, -apple-system, sans-serif';
-    ctx.textBaseline = 'bottom';
-    ctx.textAlign = 'right';
-    const url = (window.location.origin || '') + window.location.pathname;
-    ctx.fillText(url, outW - padding, outH - 12);
-    ctx.textAlign = 'left';
-    ctx.fillText(`Generated: ${new Date().toISOString().slice(0, 10)}`, padding, outH - 12);
-
-    const dataUrl = out.toDataURL('image/png');
-    const a = document.createElement('a');
-    const safeSymbol = (symbol || 'chart').replace(/[^A-Za-z0-9_-]/g, '');
-    a.href = dataUrl;
-    a.download = `${safeSymbol}_${canvasId}.png`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  }
-
-  function bindDownloadButtons() {
-    document.querySelectorAll<HTMLButtonElement>('.chart-download-btn').forEach(btn => {
-      if ((btn as any)._bound) return;
-      (btn as any)._bound = true;
-      btn.addEventListener('click', () => {
-        const id = btn.dataset.canvasId;
-        if (id) downloadChartImage(id);
-      });
-    });
-  }
-
+  // Run on initial script load
   initChartJs();
-  bindDownloadButtons();
 
+  // Run on page transitions (View Transitions)
   document.addEventListener('astro:page-load', () => {
+    // Reset initialization flags on page load to ensure fresh rendering
     document.querySelectorAll('.chartjs-graph-div canvas').forEach(c => {
       (c as any)._chart_initialized = false;
     });
-    setTimeout(() => {
-      initChartJs();
-      bindDownloadButtons();
-    }, 50);
+    setTimeout(initChartJs, 50);
   });
 
   const themeObserver = new MutationObserver(() => initChartJs());
