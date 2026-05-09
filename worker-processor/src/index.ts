@@ -215,8 +215,8 @@ export async function processAllStocks(env: Env) {
       business_summary_ja: rawData.info?.longBusinessSummary || null,
       sector: sector,
       sub_industry: subInd,
-      exchange: rawData.info?.exchange || "NASDAQ",
-      full_symbol: `${rawData.info?.exchange || 'NASDAQ'}:${symbol.replace("-", ".")}`,
+      exchange: toTradingViewExchange(rawData.info?.exchange),
+      full_symbol: `${toTradingViewExchange(rawData.info?.exchange)}:${symbol.replace("-", ".")}`,
       sector_etf: sectorEtf,
       is_financial: ["Financials", "Real Estate"].includes(sector),
       is_available_monex: true,
@@ -313,6 +313,17 @@ function getSectorETF(sector?: string) {
     "Information Technology": "XLK", "Materials": "XLB", "Real Estate": "XLRE", "Utilities": "XLU"
   };
   return sector && map[sector] ? map[sector] : "SPY";
+}
+
+function toTradingViewExchange(yfExchange?: string): string {
+  const map: Record<string, string> = {
+    NMS: "NASDAQ", NGM: "NASDAQ", NCM: "NASDAQ", NAS: "NASDAQ",
+    NYQ: "NYSE", NYS: "NYSE",
+    ASE: "AMEX", AMX: "AMEX",
+    PCX: "NYSEARCA", BATS: "BATS", BTS: "BATS",
+  };
+  if (!yfExchange) return "NASDAQ";
+  return map[yfExchange] || yfExchange;
 }
 
 function extractHighlights(rawData: any) {
