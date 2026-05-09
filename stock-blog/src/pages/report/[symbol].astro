@@ -20,11 +20,11 @@ const { symbol } = Astro.params;
 let reportData: any = null;
 let lastUpdated: string = "";
 
-// 1) 本番 (Cloudflare Worker): R2 バインディングから直接読む。
+// 1) 本番 (Cloudflare Worker / 自前ドメイン): R2 バインディングから直接読む。
 //    S&P 400/600 のレポートは git にコミットされていないが、ワーカーが
 //    R2 に書き込んだものを実行時に取得できる。
 try {
-  const bucket = (env as any)?.STOCK_DATA;
+  const bucket = (env as any)?.STOCK_DATA ?? (Astro.locals as any)?.runtime?.env?.STOCK_DATA;
   if (bucket && symbol) {
     const object = await bucket.get(`reports/${symbol}.json`);
     if (object) {
@@ -49,7 +49,38 @@ try {
   if (import.meta.env.DEV) console.error(`R2 fetch failed for ${symbol}:`, e);
 }
 
-// 2) ローカル開発時のフォールバック: public/reports/{symbol}.json を読む
+// 2) Cloudflare Pages のプレビューデプロイなど R2 バインディングが
+//    無い環境でも動くよう、Worker の HTTP API にフォールバックする。
+if (!reportData && symbol) {
+  const apiBase = import.meta.env.PUBLIC_WORKER_API_URL as string | undefined;
+  if (apiBase) {
+    try {
+      const apiUrl = `${apiBase.replace(/\/$/, "")}/api/report/${encodeURIComponent(symbol)}`;
+      const resp = await fetch(apiUrl);
+      if (resp.ok) {
+        const raw = await resp.text();
+        const sanitized = raw
+          .replace(/\bNaN\b/g, "null")
+          .replace(/-?\bInfinity\b/g, "null");
+        reportData = JSON.parse(sanitized);
+        const lastModified = resp.headers.get("last-modified");
+        lastUpdated = lastModified
+          ? new Intl.DateTimeFormat("ja-JP", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            }).format(new Date(lastModified))
+          : "Worker API取得";
+      } else if (import.meta.env.DEV) {
+        console.error(`Worker API returned ${resp.status} for ${symbol}`);
+      }
+    } catch (e) {
+      if (import.meta.env.DEV) console.error(`Worker API fetch failed for ${symbol}:`, e);
+    }
+  }
+}
+
+// 3) ローカル開発時のフォールバック: public/reports/{symbol}.json を読む
 if (!reportData) {
   const possibleRoots = [
     process.cwd(),

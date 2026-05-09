@@ -3,17 +3,60 @@ export interface Env {
   GEMINI_API_KEY?: string;
 }
 
+const CORS_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+};
+
 export default {
   async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext) {
     ctx.waitUntil(processAllStocks(env));
   },
   async fetch(request: Request, env: Env, ctx: ExecutionContext) {
     const url = new URL(request.url);
+
+    if (request.method === 'OPTIONS') {
+      return new Response(null, { status: 204, headers: CORS_HEADERS });
+    }
+
     if (url.pathname === '/batch') {
       ctx.waitUntil(processAllStocks(env));
       return new Response("Batch processing started in background.", { status: 202 });
     }
-    return new Response("Use /batch to trigger processing.", { status: 400 });
+
+    // Cloudflare Pages の preview デプロイから R2 バインディングなしでも
+    // レポート JSON にアクセスできるよう HTTP API を提供する。
+    // 例: GET /api/report/AAPL → reports/AAPL.json
+    const reportMatch = url.pathname.match(/^\/api\/report\/([^/]+)$/);
+    if (reportMatch && request.method === 'GET') {
+      const symbol = decodeURIComponent(reportMatch[1]);
+      try {
+        const obj = await env.STOCK_DATA.get(`reports/${symbol}.json`);
+        if (!obj) {
+          return new Response(JSON.stringify({ error: 'not_found', symbol }), {
+            status: 404,
+            headers: { 'Content-Type': 'application/json', ...CORS_HEADERS },
+          });
+        }
+        const body = await obj.text();
+        return new Response(body, {
+          status: 200,
+          headers: {
+            'Content-Type': 'application/json',
+            'Cache-Control': 'public, max-age=300',
+            ...CORS_HEADERS,
+          },
+        });
+      } catch (e: any) {
+        return new Response(JSON.stringify({ error: 'internal', message: String(e?.message || e) }), {
+          status: 500,
+          headers: { 'Content-Type': 'application/json', ...CORS_HEADERS },
+        });
+      }
+    }
+
+    return new Response("Use /batch to trigger processing, or /api/report/{symbol} to fetch a report.", { status: 400 });
   }
 };
 

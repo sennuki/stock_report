@@ -66,6 +66,11 @@ export default defineConfig({
         context: "server",
         optional: true,
       }),
+      PUBLIC_WORKER_API_URL: envField.string({
+        access: "public",
+        context: "server",
+        optional: true,
+      }),
     },
   },
 });
