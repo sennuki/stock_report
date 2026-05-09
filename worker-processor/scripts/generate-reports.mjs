@@ -147,6 +147,27 @@ function getSectorETF(sector) {
   return sector && map[sector] ? map[sector] : "SPY";
 }
 
+// yfinance の exchange コードを TradingView の exchange プレフィックスに変換する。
+// NMS / NGM / NCM はすべて NASDAQ、NYQ は NYSE、ASE は AMEX、 PCX は NYSEARCA。
+// 不明な値は NASDAQ にフォールバックする (S&P 銘柄は基本的に主要取引所)。
+function toTradingViewExchange(yfExchange) {
+  const map = {
+    NMS: "NASDAQ",
+    NGM: "NASDAQ",
+    NCM: "NASDAQ",
+    NAS: "NASDAQ",
+    NYQ: "NYSE",
+    NYS: "NYSE",
+    ASE: "AMEX",
+    AMX: "AMEX",
+    PCX: "NYSEARCA",
+    BATS: "BATS",
+    BTS: "BATS",
+  };
+  if (!yfExchange) return "NASDAQ";
+  return map[yfExchange] || yfExchange;
+}
+
 function extractHighlights(rawData) {
   const info = rawData.info || {};
   return {
@@ -669,8 +690,8 @@ async function main() {
         business_summary_ja: rawData.info?.longBusinessSummary || null,
         sector,
         sub_industry: subInd,
-        exchange: rawData.info?.exchange || "NASDAQ",
-        full_symbol: `${rawData.info?.exchange || "NASDAQ"}:${symbol.replace("-", ".")}`,
+        exchange: toTradingViewExchange(rawData.info?.exchange),
+        full_symbol: `${toTradingViewExchange(rawData.info?.exchange)}:${symbol.replace("-", ".")}`,
         sector_etf: sectorEtf,
         is_financial: ["Financials", "Real Estate"].includes(sector),
         is_available_monex: true,
