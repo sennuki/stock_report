@@ -80,28 +80,26 @@ if (!reportData && symbol) {
   }
 }
 
-// 3) ローカル開発時のフォールバック: public/reports/{symbol}.json を読む
-if (!reportData) {
-  const possibleRoots = [
-    process.cwd(),
-    path.join(process.cwd(), 'stock-blog')
-  ];
+// 3) ローカル開発時のフォールバック: public/reports/{symbol}.json を読む。
+//    Cloudflare ランタイム（Workers/Pages）では fs / process.cwd が
+//    使えないため、import.meta.env.DEV のときのみ実行する。
+if (!reportData && import.meta.env.DEV) {
+  try {
+    const possibleRoots = [
+      process.cwd(),
+      path.join(process.cwd(), 'stock-blog')
+    ];
 
-  let jsonPath = "";
-  for (const root of possibleRoots) {
-    try {
+    let jsonPath = "";
+    for (const root of possibleRoots) {
       const testPath = path.resolve(root, "public", "reports", `${symbol}.json`);
       if (fs.existsSync(testPath)) {
         jsonPath = testPath;
         break;
       }
-    } catch {
-      // Cloudflare ランタイムでは fs が使えない場合がある。無視。
     }
-  }
 
-  if (jsonPath) {
-    try {
+    if (jsonPath) {
       const stats = fs.statSync(jsonPath);
       if (stats.size > 0) {
         lastUpdated = new Intl.DateTimeFormat("ja-JP", {
@@ -113,9 +111,9 @@ if (!reportData) {
         content = content.replace(/\bNaN\b/g, "null");
         reportData = JSON.parse(content);
       }
-    } catch (e) {
-      if (import.meta.env.DEV) console.error(`Local JSON read failed for ${symbol}:`, e);
     }
+  } catch (e) {
+    console.error(`Local JSON read failed for ${symbol}:`, e);
   }
 }
 
