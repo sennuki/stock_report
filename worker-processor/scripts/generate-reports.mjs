@@ -8,75 +8,90 @@
  * sub-request 制限がなく、 socket pool の concurrency 制御だけで完走する。
  *
  * worker-processor/src/index.ts の純粋ロジック群をそのまま JS に移植してある。
- * R2 binding (env.STOCK_DATA) 部分のみ AWS SDK の S3 client に差し替え。
+ * R2 binding (env.STOCK_DATA) 部分のみ Cloudflare REST API に差し替え。
+ * (upload-raw-to-r2.mjs と同じ認証方式に揃え、 S3 互換キー無しで動かす)
  */
-import {
-  S3Client,
-  ListObjectsV2Command,
-  GetObjectCommand,
-  PutObjectCommand,
-} from "@aws-sdk/client-s3";
-
-const ACCOUNT_ID = process.env.R2_ACCOUNT_ID || process.env.CLOUDFLARE_ACCOUNT_ID;
-const ACCESS_KEY = process.env.R2_ACCESS_KEY_ID;
-const SECRET_KEY = process.env.R2_SECRET_ACCESS_KEY;
+const ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID || process.env.R2_ACCOUNT_ID;
+const API_TOKEN = process.env.CLOUDFLARE_API_TOKEN;
 const BUCKET = process.env.R2_BUCKET_NAME || "stock-data-c1";
 const CONCURRENCY = Number(process.env.GENERATE_REPORTS_CONCURRENCY || 50);
 
-if (!ACCOUNT_ID || !ACCESS_KEY || !SECRET_KEY) {
+if (!ACCOUNT_ID || !API_TOKEN) {
   console.error(
-    "ERROR: R2_ACCOUNT_ID / R2_ACCESS_KEY_ID / R2_SECRET_ACCESS_KEY が必要です",
+    "ERROR: CLOUDFLARE_ACCOUNT_ID / CLOUDFLARE_API_TOKEN が必要です",
   );
   process.exit(1);
 }
 
-const s3 = new S3Client({
-  region: "auto",
-  endpoint: `https://${ACCOUNT_ID}.r2.cloudflarestorage.com`,
-  credentials: { accessKeyId: ACCESS_KEY, secretAccessKey: SECRET_KEY },
-  maxAttempts: 4,
-});
+const API_BASE = `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/r2/buckets/${BUCKET}`;
+const AUTH_HEADERS = { Authorization: `Bearer ${API_TOKEN}` };
 
-async function streamToString(stream) {
-  const chunks = [];
-  for await (const chunk of stream) chunks.push(chunk);
-  return Buffer.concat(chunks).toString("utf-8");
+async function fetchWithRetry(url, init = {}, attempts = 4) {
+  let lastErr;
+  for (let i = 0; i < attempts; i++) {
+    try {
+      const resp = await fetch(url, init);
+      // 5xx と 429 はリトライ対象
+      if (resp.status >= 500 || resp.status === 429) {
+        lastErr = new Error(`HTTP ${resp.status}`);
+      } else {
+        return resp;
+      }
+    } catch (e) {
+      lastErr = e;
+    }
+    // 指数バックオフ: 250ms, 500ms, 1000ms
+    await new Promise((r) => setTimeout(r, 250 * 2 ** i));
+  }
+  throw lastErr;
 }
 
 async function listAll(prefix) {
   const keys = [];
-  let token;
+  let cursor;
   do {
-    const res = await s3.send(
-      new ListObjectsV2Command({
-        Bucket: BUCKET,
-        Prefix: prefix,
-        ContinuationToken: token,
-      }),
-    );
-    for (const obj of res.Contents ?? []) keys.push(obj.Key);
-    token = res.IsTruncated ? res.NextContinuationToken : undefined;
-  } while (token);
+    const url = new URL(`${API_BASE}/objects`);
+    url.searchParams.set("prefix", prefix);
+    url.searchParams.set("per_page", "1000");
+    if (cursor) url.searchParams.set("cursor", cursor);
+    const resp = await fetchWithRetry(url.toString(), { headers: AUTH_HEADERS });
+    if (!resp.ok) {
+      throw new Error(
+        `List ${prefix} failed: HTTP ${resp.status}: ${(await resp.text()).slice(0, 300)}`,
+      );
+    }
+    const data = await resp.json();
+    for (const obj of data.result ?? []) keys.push(obj.key);
+    // Cloudflare API は次ページがあるときのみ result_info.cursor を返す
+    cursor = data.result_info?.is_truncated ? data.result_info.cursor : undefined;
+  } while (cursor);
   return keys;
 }
 
 async function getJson(key) {
-  const res = await s3.send(new GetObjectCommand({ Bucket: BUCKET, Key: key }));
-  const text = await streamToString(res.Body);
+  const url = `${API_BASE}/objects/${encodeURIComponent(key)}`;
+  const resp = await fetchWithRetry(url, { headers: AUTH_HEADERS });
+  if (!resp.ok) {
+    throw new Error(`Get ${key} failed: HTTP ${resp.status}`);
+  }
+  const text = await resp.text();
   return JSON.parse(
     text.replace(/\bNaN\b/g, "null").replace(/-?\bInfinity\b/g, "null"),
   );
 }
 
 async function putJson(key, value) {
-  await s3.send(
-    new PutObjectCommand({
-      Bucket: BUCKET,
-      Key: key,
-      Body: JSON.stringify(value),
-      ContentType: "application/json",
-    }),
-  );
+  const url = `${API_BASE}/objects/${encodeURIComponent(key)}`;
+  const resp = await fetchWithRetry(url, {
+    method: "PUT",
+    headers: { ...AUTH_HEADERS, "Content-Type": "application/json" },
+    body: JSON.stringify(value),
+  });
+  if (!resp.ok) {
+    throw new Error(
+      `Put ${key} failed: HTTP ${resp.status}: ${(await resp.text()).slice(0, 300)}`,
+    );
+  }
 }
 
 async function pMap(items, fn, concurrency) {
