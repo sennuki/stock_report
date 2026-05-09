@@ -115,11 +115,11 @@ jobs:
           # processAllStocks のロジックを Node.js script に移植したものを実行。
           # GitHub Actions runner なら Cloudflare Workers の sub-request 制限を
           # 受けないため、 1500銘柄 × GET+PUT を完走できる。
+          # R2 アクセスは upload-raw-to-r2.mjs と同様 Cloudflare REST API 経由。
           node scripts/generate-reports.mjs
         env:
-          R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
-          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           R2_BUCKET_NAME: "stock-data-c1"
 
       - name: Sync reports/stocks.json to build dir
