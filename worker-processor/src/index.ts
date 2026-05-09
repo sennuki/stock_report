@@ -25,6 +25,37 @@ export default {
       return new Response("Batch processing started in background.", { status: 202 });
     }
 
+    // R2 内の状態を覗くデバッグ用エンドポイント。
+    // GET /api/list?prefix=reports/&limit=5 のように使う。
+    if (url.pathname === '/api/list' && request.method === 'GET') {
+      const prefix = url.searchParams.get('prefix') ?? '';
+      const limit = Math.min(Number(url.searchParams.get('limit') ?? '20'), 1000);
+      try {
+        let total = 0;
+        const sample: Array<{ key: string; size: number; uploaded: string }> = [];
+        let cursor: string | undefined = undefined;
+        do {
+          const res: any = await env.STOCK_DATA.list({ prefix, cursor, limit: 1000 });
+          total += res.objects.length;
+          for (const o of res.objects) {
+            if (sample.length < limit) {
+              sample.push({ key: o.key, size: o.size, uploaded: String(o.uploaded) });
+            }
+          }
+          cursor = res.truncated ? res.cursor : undefined;
+        } while (cursor);
+        return new Response(JSON.stringify({ prefix, total, sample }, null, 2), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json', ...CORS_HEADERS },
+        });
+      } catch (e: any) {
+        return new Response(JSON.stringify({ error: String(e?.message || e) }), {
+          status: 500,
+          headers: { 'Content-Type': 'application/json', ...CORS_HEADERS },
+        });
+      }
+    }
+
     // Cloudflare Pages の preview デプロイから R2 バインディングなしでも
     // レポート JSON にアクセスできるよう HTTP API を提供する。
     // 例: GET /api/report/AAPL → reports/AAPL.json
