@@ -32,14 +32,13 @@ const _debug = {
 // 1) 本番 (Cloudflare Worker / 自前ドメイン): R2 バインディングから直接読む。
 //    S&P 400/600 のレポートは git にコミットされていないが、ワーカーが
 //    R2 に書き込んだものを実行時に取得できる。
+//    Astro v6 で Astro.locals.runtime.env は削除されたため、cloudflare:workers
+//    の env のみ参照する。Cloudflare Pages では binding が無いので skip される。
 {
   const p: Record<string, any> = { name: "r2_binding" };
   try {
-    const fromCfWorkers = (env as any)?.STOCK_DATA;
-    const fromAstroLocals = (Astro.locals as any)?.runtime?.env?.STOCK_DATA;
-    p.has_cloudflare_workers_env = !!fromCfWorkers;
-    p.has_astro_locals_runtime_env = !!fromAstroLocals;
-    const bucket = fromCfWorkers ?? fromAstroLocals;
+    const bucket = (env as any)?.STOCK_DATA;
+    p.has_cloudflare_workers_env = !!bucket;
     if (bucket && symbol) {
       const object = await bucket.get(`reports/${symbol}.json`);
       p.r2_object_found = !!object;
