@@ -143,21 +143,83 @@ jobs:
           cd stock-blog
           export NODE_OPTIONS="--max-old-space-size=6656"
           pnpm install --no-frozen-lockfile
+
+          # WORKER_URL は前段の "Deploy Worker Processor" ステップで $GITHUB_ENV に
+          # 書き込まれている。Cloudflare Pages のプレビューデプロイは R2 バインディング
+          # を持たないため、SSR 時に Worker の HTTP API 経由でレポートを取得する。
+          export PUBLIC_WORKER_API_URL="$WORKER_URL"
+          echo "Building with PUBLIC_WORKER_API_URL=$PUBLIC_WORKER_API_URL"
           pnpm run build
-          
+
           # Workerとしてデプロイ (wrangler.jsonc の設定を使用)
           DEPLOY_OUTPUT=$(npx wrangler deploy)
           echo "$DEPLOY_OUTPUT"
-          
+
           # デプロイされたWorkerのURLを抽出
           DEPLOY_URL=$(echo "$DEPLOY_OUTPUT" | grep -oE "https://[a-zA-Z0-9.-]+\.workers\.dev" | head -n 1)
-          
-          # GitHub Job Summaryに書き込み
-          echo "### 🚀 Pipeline & Deployment Successful!" >> $GITHUB_STEP_SUMMARY
-          echo "The Astro site has been deployed to Cloudflare Workers." >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Site URL:** [$DEPLOY_URL]($DEPLOY_URL)" >> $GITHUB_STEP_SUMMARY
-          echo "**Branch:** \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "WORKERS_DEPLOY_URL=$DEPLOY_URL" >> $GITHUB_ENV
+
+          # GitHub Job Summary に書き込み（Workers）
+          {
+            echo "### 🚀 Pipeline & Deployment Successful!"
+            echo ""
+            echo "**Branch:** \`${{ github.ref_name }}\`"
+            echo "**Commit:** [\`${GITHUB_SHA:0:7}\`](https://github.com/${{ github.repository }}/commit/${GITHUB_SHA})"
+            echo ""
+            echo "#### ☁️ Cloudflare Workers (本番)"
+            echo "- Site URL: [$DEPLOY_URL]($DEPLOY_URL)"
+            echo "- Worker API: [$WORKER_URL]($WORKER_URL)"
+          } >> $GITHUB_STEP_SUMMARY
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Resolve Cloudflare Pages Preview URL
+        if: always()
+        run: |
+          # Cloudflare Pages の GitHub アプリは commit に対して check-run を作成する。
+          # その details_url が当該コミットのプレビュー URL になる。
+          # Pages のビルドが本ジョブと並行して走るため、最大数分間ポーリングする。
+          MAX_ATTEMPTS=24
+          WAIT_SECS=15
+          PREVIEW_URL=""
+          for i in $(seq 1 $MAX_ATTEMPTS); do
+            RESPONSE=$(curl -sf \
+              -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${{ github.repository }}/commits/${GITHUB_SHA}/check-runs?per_page=100" \
+              || echo '{"check_runs":[]}')
+
+            PREVIEW_URL=$(echo "$RESPONSE" | python3 -c "
+import json, sys, re
+data = json.load(sys.stdin)
+for run in data.get('check_runs', []):
+    name = (run.get('name') or '').lower()
+    slug = ((run.get('app') or {}).get('slug') or '').lower()
+    status = run.get('status')
+    conclusion = run.get('conclusion')
+    details = run.get('details_url') or ''
+    if 'cloudflare-pages' in slug or 'cloudflare pages' in name or 'pages.dev' in details:
+        if status == 'completed' and conclusion == 'success' and details:
+            print(details)
+            break
+" 2>/dev/null || echo "")
+
+            if [ -n "$PREVIEW_URL" ]; then
+              echo "Found Cloudflare Pages preview: $PREVIEW_URL"
+              break
+            fi
+            echo "Cloudflare Pages preview not ready (attempt $i/$MAX_ATTEMPTS). Waiting ${WAIT_SECS}s..."
+            sleep $WAIT_SECS
+          done
+
+          {
+            echo ""
+            echo "#### 📄 Cloudflare Pages (コミットプレビュー)"
+            if [ -n "$PREVIEW_URL" ]; then
+              echo "- Preview URL: [$PREVIEW_URL]($PREVIEW_URL)"
+              echo "- このコミット (\`${GITHUB_SHA:0:7}\`) でビルドされたプレビューデプロイです。"
+            else
+              echo "- プレビューが見つかりませんでした。Cloudflare Dashboard の Pages → Deployments を確認してください。"
+            fi
+          } >> $GITHUB_STEP_SUMMARY
