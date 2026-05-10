@@ -347,17 +347,17 @@ function extractHighlights(rawData: any) {
 }
 
 function extractEarningsSurprise(rawData: any) {
-  const datesObj = rawData.earnings_dates || {};
-  const dates = Object.keys(datesObj).sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+  const ed = rawData.earnings_dates;
+  if (!ed || !Array.isArray(ed) || ed.length === 0) return null;
+  const sorted = [...ed].sort((a, b) => new Date(b.index || b.Date).getTime() - new Date(a.index || a.Date).getTime());
   
-  for (const date of dates) {
-    const d = datesObj[date];
-    if (d && d['Reported EPS'] !== null && d['Reported EPS'] !== undefined) {
+  for (const item of sorted) {
+    if (item['Reported EPS'] !== null && item['Reported EPS'] !== undefined) {
       return {
-        date: date.split(' ')[0],
-        actual: d['Reported EPS'],
-        estimate: d['EPS Estimate'],
-        surprise_pct: d['Surprise(%)']
+        date: String(item.index || item.Date).split(' ')[0],
+        actual: item['Reported EPS'],
+        estimate: item['EPS Estimate'],
+        surprise_pct: item['Surprise(%)']
       };
     }
   }
@@ -365,19 +365,18 @@ function extractEarningsSurprise(rawData: any) {
 }
 
 function extractNextEarnings(rawData: any) {
-  const datesObj = rawData.earnings_dates || {};
-  const dates = Object.keys(datesObj).sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+  const ed = rawData.earnings_dates;
+  if (!ed || !Array.isArray(ed) || ed.length === 0) return null;
   const now = new Date();
+  const sorted = [...ed].sort((a, b) => new Date(a.index || a.Date).getTime() - new Date(b.index || b.Date).getTime());
   
-  for (const date of dates) {
-    if (new Date(date) >= now) {
-      const d = datesObj[date];
-      if (d && (d['Reported EPS'] === null || d['Reported EPS'] === undefined)) {
-        return {
-          date: date.split(' ')[0],
-          estimate: d['EPS Estimate'] || rawData.info?.earningsAverage || null
-        };
-      }
+  for (const item of sorted) {
+    const d = new Date(item.index || item.Date);
+    if (d >= now && (item['Reported EPS'] === null || item['Reported EPS'] === undefined)) {
+      return {
+        date: String(item.index || item.Date).split(' ')[0],
+        estimate: item['EPS Estimate'] || rawData.info?.earningsAverage || null
+      };
     }
   }
   
@@ -399,35 +398,36 @@ function extractConsensus(rawData: any) {
   return {
     earnings: {
       "0q": {
-        avg: info.earningsAverage,
-        low: info.earningsLow,
-        high: info.earningsHigh,
-        growth: info.earningsGrowth,
-        numberOfAnalysts: info.numberOfAnalystOpinions
+        avg: info.earningsAverage || null,
+        low: info.earningsLow || null,
+        high: info.earningsHigh || null,
+        growth: info.earningsGrowth || null,
+        numberOfAnalysts: info.numberOfAnalystOpinions || 0
       }
     },
     revenue: {
       "0q": {
-        avg: info.revenueAverage,
-        low: info.revenueLow,
-        high: info.revenueHigh,
-        growth: info.revenueGrowth,
-        numberOfAnalysts: info.numberOfAnalystOpinions
+        avg: info.revenueAverage || null,
+        low: info.revenueLow || null,
+        high: info.revenueHigh || null,
+        growth: info.revenueGrowth || null,
+        numberOfAnalysts: info.numberOfAnalystOpinions || 0
       }
     }
   };
 }
 
 function extractRatingChanges(rawData: any) {
-  const ud = rawData.upgrades_downgrades || {};
-  const dates = Object.keys(ud).sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
-  return dates.slice(0, 10).map(date => {
+  const ud = rawData.upgrades_downgrades;
+  if (!ud || !Array.isArray(ud)) return [];
+  const sorted = [...ud].sort((a, b) => new Date(b.index || b.Date).getTime() - new Date(a.index || a.Date).getTime());
+  return sorted.slice(0, 10).map(x => {
     return {
-      GradeDate: date.split(' ')[0],
-      Firm: ud[date]?.Firm || ud[date]?.firm,
-      ToGrade: ud[date]?.ToGrade || ud[date]?.toGrade,
-      FromGrade: ud[date]?.FromGrade || ud[date]?.fromGrade,
-      Action: ud[date]?.Action || ud[date]?.action
+      GradeDate: String(x.index || x.Date).split(' ')[0],
+      Firm: x.Firm || x.firm,
+      ToGrade: x.ToGrade || x.toGrade || x["To Grade"],
+      FromGrade: x.FromGrade || x.fromGrade || x["From Grade"],
+      Action: x.Action || x.action
     };
   });
 }
@@ -453,7 +453,7 @@ function generateRiskReturnChart(allMetrics: any[], targetSymbol: string) {
 
   const datasets: any[] = [
     {
-      label: 'Other S&P 500',
+      label: 'その他のS&P 500銘柄',
       data: others.map(m => ({ x: m.hv, y: m.ret, symbol: m.symbol })),
       backgroundColor: 'rgba(200, 200, 200, 0.5)',
       pointRadius: 4
@@ -490,11 +490,25 @@ function generateFinancialChart(data: any[], fields: string[], type: string, bar
     { bg: 'rgba(255, 159, 64, 0.5)', border: 'rgb(255, 159, 64)' }
   ];
 
+  const labelMap: Record<string, string> = {
+    "Total Revenue": "売上高",
+    "Gross Profit": "売上総利益",
+    "Operating Income": "営業利益",
+    "Net Income": "純利益",
+    "Total Assets": "総資産",
+    "Total Liabilities Net Minority Interest": "総負債",
+    "Stockholders Equity": "純資産",
+    "Operating Cash Flow": "営業CF",
+    "Investing Cash Flow": "投資CF",
+    "Financing Cash Flow": "財務CF",
+    "Free Cash Flow": "フリーCF"
+  };
+
   return {
     labels: dates.map(d => d.split(' ')[0]),
     datasets: fields.map((field, i) => {
       return {
-        label: field,
+        label: labelMap[field] || field,
         data: dates.map(d => getValFromArray(data, field, d)),
         backgroundColor: colors[i % colors.length].bg,
         borderColor: colors[i % colors.length].border,
@@ -578,11 +592,11 @@ function generateTpChart(cf: any[], is: any[]) {
   return {
     labels: dates.map(d => d.split(' ')[0]),
     datasets: [
-      { type: 'bar', label: 'Net Income', data: niData, backgroundColor: 'rgba(44, 160, 44, 0.6)', yAxisID: 'y' },
-      { type: 'bar', label: 'Dividends Paid', data: divData, backgroundColor: 'rgba(174, 199, 232, 0.6)', yAxisID: 'y' },
-      { type: 'bar', label: 'Stock Repurchase', data: repoData, backgroundColor: 'rgba(31, 119, 180, 0.6)', yAxisID: 'y' },
-      { type: 'line', label: 'Dividend Payout Ratio', data: divRatio, borderColor: '#ffbb78', yAxisID: 'y1' },
-      { type: 'line', label: 'Total Payout Ratio', data: totalRatio, borderColor: '#ff7f0e', yAxisID: 'y1' }
+      { type: 'bar', label: '純利益', data: niData, backgroundColor: 'rgba(44, 160, 44, 0.6)', yAxisID: 'y' },
+      { type: 'bar', label: '配当金', data: divData, backgroundColor: 'rgba(174, 199, 232, 0.6)', yAxisID: 'y' },
+      { type: 'bar', label: '自社株買い', data: repoData, backgroundColor: 'rgba(31, 119, 180, 0.6)', yAxisID: 'y' },
+      { type: 'line', label: '配当性向', data: divRatio, borderColor: '#ffbb78', yAxisID: 'y1' },
+      { type: 'line', label: '総還元性向', data: totalRatio, borderColor: '#ff7f0e', yAxisID: 'y1' }
     ]
   };
 }
@@ -606,7 +620,7 @@ function generateDpsEpsChart(dividends: any[]) {
     labels,
     datasets: [{
       type: 'bar',
-      label: 'Annual Dividends',
+      label: '年間配当金',
       data: labels.map(y => annual[y]),
       backgroundColor: 'rgba(31, 119, 180, 0.8)'
     }]

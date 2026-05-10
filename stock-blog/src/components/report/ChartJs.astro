@@ -82,68 +82,179 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
     });
   }
 
-  function renderChartJs(wrapper: HTMLElement, canvas: HTMLCanvasElement, plotlyData: any) {
-    if (!plotlyData || !plotlyData.data) return;
+  function renderChartJs(wrapper: HTMLElement, canvas: HTMLCanvasElement, chartData: any) {
+    if (!chartData) return;
+    
     const { isDark, textColor, gridColor } = getThemeColors();
     const yAxisPosition = wrapper.dataset.yAxisPosition || 'left';
-    const config = transformPlotlyToChartJs(plotlyData, isDark, textColor, gridColor, yAxisPosition, canvas.id);
-    if (!config) {
-      if (canvas.id === 'chart-performance') console.warn('ChartJs: Config transformation failed for performance chart');
+    
+    let config: any;
+    
+    // Detect format: New format has 'labels' and 'datasets', Old format (Plotly) has 'data'
+    if (chartData.labels && chartData.datasets) {
+      // Direct Chart.js format
+      const isPerformanceChart = canvas.id === 'chart-performance' || chartData.datasets.some((ds: any) => ds.label && (ds.label.includes('リターン') || ds.label.includes('パフォーマンス')));
+      const isScatterChart = chartData.datasets.some((ds: any) => ds.type === 'scatter') || canvas.id === 'chart-risk-return';
+      const hasStacking = ['chart-bs', 'chart-tp', 'chart-segment', 'chart-geo'].includes(canvas.id);
+      
+      // Apply defaults and specific ordering
+      if (canvas.id === 'chart-is' || canvas.id === 'chart-cf' || canvas.id === 'chart-bs' || canvas.id === 'chart-tp') {
+        const groupPriority: any = { 
+          'Total Revenue': 10, '売上高': 10,
+          'Gross Profit': 20, '売上総利益': 20,
+          'Operating Income': 30, '営業利益': 30,
+          'Net Income': 50, '純利益': 50,
+          'Total Assets': 10, '総資産': 10, '資産': 10,
+          'Total Liabilities Net Minority Interest': 20, '総負債': 20, '負債': 20,
+          'Stockholders Equity': 30, '純資産': 30,
+          'Operating Cash Flow': 10, '営業CF': 10,
+          'Investing Cash Flow': 20, '投資CF': 20,
+          'Financing Cash Flow': 30, '財務CF': 30,
+          'Free Cash Flow': 40, 'フリーCF': 40
+        };
+        
+        chartData.datasets.sort((a: any, b: any) => {
+          const pA = groupPriority[a.label] || 99;
+          const pB = groupPriority[b.label] || 99;
+          if (pA !== pB) return pA - pB;
+          return 0;
+        });
+      }
+
+      chartData.datasets.forEach((ds: any) => {
+        if (!ds.type) ds.type = isPerformanceChart ? 'line' : (isScatterChart ? 'scatter' : 'bar');
+        if (ds.type === 'line' && ds.pointRadius === undefined) {
+          ds.pointRadius = isPerformanceChart ? 0 : 4;
+        }
+        if (ds.type === 'scatter') {
+          ds.pointRadius = (ds.label && ds.label.includes('S&P500銘柄')) ? 2.5 : 7;
+          ds.pointHoverRadius = 12;
+        }
+        if (hasStacking && ds.type === 'bar') {
+          ds.stack = ds.stack || (ds.label && ds.label.includes('資産') ? 'assets' : 'liabilities');
+        }
+        // Ensure yAxisID compatibility
+        if (ds.yAxisID === 'y2') ds.yAxisID = 'y1';
+      });
+
+      config = {
+        type: chartData.datasets[0]?.type || 'bar',
+        data: chartData,
+        options: {
+          layout: { padding: { right: isPerformanceChart ? 80 : 0 } },
+          color: textColor,
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: { duration: 400 },
+          interaction: { 
+            mode: isScatterChart ? 'nearest' : 'index', 
+            intersect: isScatterChart 
+          },
+          plugins: {
+            legend: {
+              position: 'top',
+              labels: { 
+                color: textColor, 
+                usePointStyle: true,
+                generateLabels: (chart: any) => getCustomLegendLabels(chart, textColor)
+              },
+              onClick: (e: any, legendItem: any, legend: any) => handleLegendClick(e, legendItem, legend)
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context: any) {
+                  return getTooltipLabel(context, isScatterChart, isPerformanceChart);
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              type: isScatterChart ? 'linear' : 'category',
+              grid: { color: gridColor },
+              stacked: hasStacking,
+              ticks: { 
+                color: textColor,
+                maxTicksLimit: 8,
+                autoSkip: true,
+                callback: function(this: any, val: any): any {
+                  if (isScatterChart) return (val * 100).toFixed(0) + '%';
+                  const label = this.getLabelForValue(val);
+                  if (typeof label === 'string') {
+                    return label.split('T')[0].replace(/-/g, '/');
+                  }
+                  return label;
+                }
+              }
+            },
+            y: {
+              type: 'linear',
+              position: yAxisPosition as any,
+              stacked: hasStacking,
+              grid: { 
+                color: (ctx: any) => ctx.tick?.value === 0 ? (isDark ? 'rgba(229, 231, 235, 0.4)' : 'rgba(31, 41, 55, 0.4)') : gridColor,
+                lineWidth: (ctx: any) => ctx.tick?.value === 0 ? 2 : 1
+              },
+              ticks: { 
+                color: textColor,
+                callback: (value: any) => formatYValueAbbreviated(value, isScatterChart || isPerformanceChart, isPerformanceChart, canvas.id)
+              },
+              beginAtZero: !isScatterChart
+            }
+          }
+        }
+      };
+
+      if (chartData.datasets.some((ds: any) => ds.yAxisID === 'y1')) {
+        config.options.scales.y1 = {
+          type: 'linear',
+          position: 'right',
+          grid: { drawOnChartArea: false },
+          ticks: { 
+            color: textColor,
+            callback: (value: any) => formatYValueAbbreviated(value, true, false, canvas.id)
+          }
+        };
+      }
+    } else if (chartData.data) {
+      // Plotly format (legacy support)
+      config = transformPlotlyToChartJs(chartData, isDark, textColor, gridColor, yAxisPosition, canvas.id);
+    } else {
       return;
     }
-    
-    if (canvas.id === 'chart-performance') {
-      console.log('ChartJs: Rendering performance chart with', config.data.datasets.length, 'datasets');
-    }
+
+    if (!config) return;
     
     // 既存のチャートを確実に破棄
     const existingChart = Chart.getChart(canvas);
     if (existingChart) existingChart.destroy();
-    if ((canvas as any)._chart_instance) (canvas as any)._chart_instance.destroy();
     
     const chart = new Chart(canvas, {
       ...config as any,
       plugins: [
+        ...(config.plugins || []),
         {
           id: 'barDataLabels',
           afterDatasetsDraw: (chart: any) => {
             const { ctx, data } = chart;
-            // 棒グラフかつ、特定の財務・配当チャートを対象とする
             const targetIds = ['chart-bs', 'chart-is', 'chart-cf', 'chart-tp', 'chart-dps', 'chart-segment', 'chart-geo'];
             if (!targetIds.includes(canvas.id)) return;
-
-            // スマホ画面かつ「権利落日別」タブの場合は配当チャートの数値を非表示にする
             const isMobile = window.innerWidth < 640;
-            if (canvas.id === 'chart-dps' && chart._activeGroup === '権利落日別' && isMobile) {
-              return;
-            }
+            if (canvas.id === 'chart-dps' && chart._activeGroup === '権利落日別' && isMobile) return;
 
             ctx.save();
             data.datasets.forEach((dataset: any, i: number) => {
               const meta = chart.getDatasetMeta(i);
               if (meta.hidden || !chart.isDatasetVisible(i) || dataset.type !== 'bar') return;
-
               meta.data.forEach((element: any, index: number) => {
                 const dataValue = dataset.data[index];
-                if (dataValue === null || dataValue === 0) return;
-
-                // 棒の高さがラベルを表示するのに十分か確認
-                if (Math.abs(element.height) < 12) return;
-
+                if (dataValue === null || dataValue === 0 || Math.abs(element.height) < 12) return;
                 const label = formatYValueAbbreviated(dataValue, false);
-                
-                // 背景色（棒の色）に応じて文字色を調整（簡易版）
                 ctx.fillStyle = '#ffffff'; 
                 ctx.font = 'bold 10px sans-serif';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                
-                // 積み上げ棒の中央に描画
-                const x = element.x;
-                const y = element.y + (element.height / 2);
-                
-                // 文字が重ならないように、非常に狭い棒の場合は描画しない等の処理も可能
-                ctx.fillText(label, x, y);
+                ctx.fillText(label, element.x, element.y + (element.height / 2));
               });
             });
             ctx.restore();
@@ -154,27 +265,16 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
           afterDatasetsDraw: (chart: any) => {
             const { ctx } = chart;
             const datasets = chart.data.datasets;
-            
-            // Skip for scatter charts
-            const isScatterChart = chart.config.type === 'scatter';
-            if (isScatterChart) return;
-            
-            // Strictly define performance period labels
+            if (chart.config.type === 'scatter') return;
             const periodLabels = ['1ヶ月', '3ヶ月', '6ヶ月', '年初来', '1年', '3年', '5年', '10年'];
-            const isPerformanceChart = datasets.some((ds: any) => 
-              periodLabels.some(p => ds.label.includes(`(${p})`))
-            );
+            const isPerformanceChart = datasets.some((ds: any) => periodLabels.some(p => ds.label.includes(`(${p})`)) || ds.label.includes('リターン'));
             if (!isPerformanceChart) return;
             
             ctx.save();
             datasets.forEach((ds: any, i: number) => {
               if (!chart.isDatasetVisible(i)) return;
-              
               const meta = chart.getDatasetMeta(i);
               if (!meta.data || meta.data.length === 0) return;
-              
-              // Find the last valid data point (not null)
-              // This handles cases where some stocks have shorter history than others (e.g. IPO stocks vs S&P 500)
               let lastValidIdx = -1;
               for (let j = ds.data.length - 1; j >= 0; j--) {
                 if (ds.data[j] !== null && ds.data[j] !== undefined) {
@@ -182,26 +282,16 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
                   break;
                 }
               }
-
               if (lastValidIdx === -1) return;
-              
               const lastPoint = meta.data[lastValidIdx];
               if (!lastPoint || lastPoint.skip) return;
-              
               const value = ds.data[lastValidIdx];
-              
-              // Only draw for performance datasets
-              if (!periodLabels.some(p => ds.label.includes(`(${p})`))) return;
-              
               const val = value * 100;
               const text = (val >= 0 ? '+' : '') + val.toFixed(2) + '%';
-
-              
               ctx.fillStyle = ds.borderColor;
               ctx.font = 'bold 12px sans-serif';
               ctx.textAlign = 'left';
               ctx.textBaseline = 'middle';
-              // マーカーの右側に 10px 離して数値を描画
               ctx.fillText(text, lastPoint.x + 10, lastPoint.y);
             });
             ctx.restore();
@@ -210,18 +300,72 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
       ]
     });
     (canvas as any)._chart_instance = chart;
-    setupControls(wrapper, chart, plotlyData);
+    setupControls(wrapper, chart, chartData);
+  }
+
+  function getCustomLegendLabels(chart: any, textColor: string) {
+    const datasets = chart.data.datasets;
+    const labels: any[] = [];
+    const seen = new Set();
+    const userHidden = chart._userHiddenLabels || new Set();
+    const sortedForLegend = [...datasets].sort((a, b) => (a.order || 0) - (b.order || 0));
+    sortedForLegend.forEach((ds: any) => {
+      const label = ds.label.replace(/\([^)]+\)$/, '').trim();
+      if (seen.has(label)) return;
+      if (chart._activeGroup && !ds.label.includes(`(${chart._activeGroup})`)) return;
+      seen.add(label);
+      labels.push({ 
+        text: label, 
+        fillStyle: ds.backgroundColor, 
+        strokeStyle: ds.borderColor, 
+        lineWidth: ds.borderWidth, 
+        hidden: userHidden.has(ds.label), 
+        pointStyle: ds.pointStyle, 
+        fontColor: textColor 
+      });
+    });
+    return labels;
+  }
+
+  function handleLegendClick(_e: any, legendItem: any, legend: any) {
+    const labelText = legendItem.text;
+    const ci = legend.chart;
+    if (!ci._userHiddenLabels) ci._userHiddenLabels = new Set();
+    const matchingDatasets = ci.data.datasets.filter((d: any) => d.label.startsWith(labelText));
+    const isCurrentlyHidden = ci._userHiddenLabels.has(matchingDatasets[0]?.label);
+    matchingDatasets.forEach((ds: any) => {
+      if (isCurrentlyHidden) ci._userHiddenLabels.delete(ds.label);
+      else ci._userHiddenLabels.add(ds.label);
+    });
+    ci.data.datasets.forEach((ds: any, i: number) => {
+      const inActiveGroup = ci._activeGroup ? ds.label.includes(`(${ci._activeGroup})`) : true;
+      const isUserHidden = ci._userHiddenLabels.has(ds.label);
+      ci.setDatasetVisibility(i, (ds._periodVisible !== false) && !isUserHidden && inActiveGroup);
+    });
+    ci.update();
+  }
+
+  function getTooltipLabel(context: any, isScatterChart: boolean, isPerformanceChart: boolean) {
+    const label = context.dataset.label || '';
+    const value = context.raw;
+    if (isScatterChart) {
+      const p = context.raw;
+      const xVal = p.origX !== undefined ? p.origX : p.x;
+      const yVal = p.origY !== undefined ? p.origY : p.y;
+      const symbol = p.customText || p.symbol || label;
+      return `${symbol} - リスク: ${(xVal * 100).toFixed(1)}%, リターン: ${(yVal * 100).toFixed(1)}%`;
+    }
+    if (isPerformanceChart && typeof value === 'number') {
+      const val = value * 100;
+      return label + ': ' + (val >= 0 ? '+' : '') + val.toFixed(1) + '%';
+    }
+    return label + ': ' + formatYValueMillions(value, context.dataset.yAxisID === 'y1');
   }
 
   function formatYValueAbbreviated(v: any, isPercent: boolean, isPerformance: boolean = false, canvasId: string = '') {
     if (v === null || v === undefined || isNaN(v)) return '';
     if (isPercent) {
-      // 損益計算書(chart-is)と株主還元(chart-tp)の比率は小数点1桁にする
       const isFinRatio = ['chart-is', 'chart-tp'].includes(canvasId);
-      
-      // パフォーマンスチャートは1桁
-      // 財務比率(利益率、総還元性向)も1桁
-      // それ以外（配当利回りなど）は2桁
       let decimals = 2;
       if (isPerformance || isFinRatio) {
         decimals = 1;
@@ -251,7 +395,7 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
     const datasets = chart.data.datasets;
     const groups = new Set<string>();
     datasets.forEach((ds: any) => {
-      const match = ds.label.match(/\(([^)]+)\)$/);
+      const match = ds.label && ds.label.match(/\(([^)]+)\)$/);
       if (match) groups.add(match[1]);
     });
 
@@ -264,45 +408,37 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
     const isScatterChart = chart.config.type === 'scatter';
 
     const updateLabelsAndScales = () => {
-      // Find ALL datasets in the new group
       const groupTraces = chart.data.datasets.filter((ds: any) => {
         return chart._activeGroup ? ds.label.includes(`(${chart._activeGroup})`) : true;
       });
 
-      if (!isScatterChart && groupTraces.length > 0) {
-        // Find the trace with most points to use as labels (avoiding truncation if Target has less data than S&P 500)
+      if (!isScatterChart && groupTraces.length > 0 && plotlyData.data) {
         let bestTraceIdx = -1;
         let maxLen = -1;
         
         groupTraces.forEach((ds: any) => {
-          const plotlyDs = plotlyData.data[ds.originalIndex];
-          if (plotlyDs && plotlyDs.x && plotlyDs.x.length > maxLen) {
-            maxLen = plotlyDs.x.length;
+          const pDs = plotlyData.data[ds.originalIndex];
+          if (pDs && pDs.x && pDs.x.length > maxLen) {
+            maxLen = pDs.x.length;
             bestTraceIdx = ds.originalIndex;
           }
         });
 
         if (bestTraceIdx !== -1) {
           const originalDataSeries = plotlyData.data[bestTraceIdx];
-          
-          // Update the global labels
           chart.data.labels = originalDataSeries.x;
-          
-          // Synchronize data for ALL datasets based on their original data in Plotly
           chart.data.datasets.forEach((chartDs: any) => {
-            const plotlyDs = plotlyData.data[chartDs.originalIndex];
-            if (plotlyDs && plotlyDs.y) {
-              // Ensure alignment with new labels
+            const pDs = plotlyData.data[chartDs.originalIndex];
+            if (pDs && pDs.y) {
               chartDs.data = chart.data.labels.map((label: any) => {
-                const xIdx = (plotlyDs.x || []).findIndex((xv: any) => String(xv) === String(label));
-                return xIdx !== -1 ? plotlyDs.y[xIdx] : null;
+                const xIdx = (pDs.x || []).findIndex((xv: any) => String(xv) === String(label));
+                return xIdx !== -1 ? pDs.y[xIdx] : null;
               });
             }
           });
         }
       }
 
-      // Recalculate scales for scatter charts
       if (isScatterChart) {
         const visibleDatasets = chart.data.datasets.filter((_ds: any, i: number) => chart.isDatasetVisible(i));
         if (visibleDatasets.length > 0) {
@@ -319,8 +455,7 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
             const xValues = visibleDatasets.flatMap((ds: any) => ds.data.map((p: any) => p.x)).filter((v: any) => v !== null && !isNaN(v));
             if (xValues.length > 0) {
               const maxX = Math.max(...xValues);
-              const rangeX = maxX;
-              const paddingX = rangeX === 0 ? Math.abs(maxX) * 0.05 || 0.01 : rangeX * 0.05;
+              const paddingX = maxX * 0.05 || 0.01;
               chart.options.scales.x.min = 0;
               chart.options.scales.x.max = maxX + paddingX;
             }
@@ -340,16 +475,10 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
         return a.localeCompare(b);
       });
       
-      // Determine default active group based on order preference
       let defaultGroup = groupList[0];
-      
-      // Explicitly prefer '通年' (Annual) as default if available
-      if (groupList.includes('通年')) {
-        defaultGroup = '通年';
-      } else if (groupList.includes('1年')) {
-        // Fallback for performance charts
-        defaultGroup = '1年';
-      } else {
+      if (groupList.includes('通年')) defaultGroup = '通年';
+      else if (groupList.includes('1年')) defaultGroup = '1年';
+      else {
         const initiallyVisibleDs = chart.data.datasets.find((ds: any) => ds._periodVisible);
         if (initiallyVisibleDs) {
           const match = initiallyVisibleDs.label.match(/\(([^)]+)\)$/);
@@ -358,7 +487,6 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
       }
       chart._activeGroup = defaultGroup;
 
-      // Ensure initial visibility is synced with the default group
       chart.data.datasets.forEach((ds: any, idx: number) => {
         const inActiveGroup = ds.label.includes(`(${defaultGroup})`);
         const isUserHidden = chart._userHiddenLabels && chart._userHiddenLabels.has(ds.label);
@@ -367,13 +495,11 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
 
       const groupControls = document.createElement('div');
       groupControls.className = "flex justify-center gap-2 mb-4 w-full";
-      
       groupList.forEach(groupName => {
         const btn = document.createElement('button');
         btn.textContent = groupName;
         const isActive = groupName === chart._activeGroup;
         btn.className = `px-3 py-1 text-xs font-medium rounded-full border transition-colors ${isActive ? 'bg-accent text-white border-accent' : 'bg-background text-foreground border-border'}`;
-        
         btn.onclick = () => {
           groupControls.querySelectorAll('button').forEach(b => {
             b.classList.remove('bg-accent', 'text-white', 'border-accent');
@@ -381,28 +507,18 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
           });
           btn.classList.add('bg-accent', 'text-white', 'border-accent');
           btn.classList.remove('bg-background', 'text-foreground', 'border-border');
-          
           chart._activeGroup = groupName;
-          
-          // Re-evaluate visibility for all datasets based on new group
           chart.data.datasets.forEach((ds: any, idx: number) => {
             const inActiveGroup = ds.label.includes(`(${groupName})`);
             const isUserHidden = chart._userHiddenLabels && chart._userHiddenLabels.has(ds.label);
-            
-            // For grouped charts, being in the active group is the primary visibility trigger.
-            // We ignore the initial plotlyData.visible (ds._periodVisible) here because 
-            // the tabs themselves represent the visibility toggle.
             chart.setDatasetVisibility(idx, inActiveGroup && !isUserHidden);
           });
-
           updateLabelsAndScales();
           chart.update();
         };
         groupControls.appendChild(btn);
       });
       controlsContainer.appendChild(groupControls);
-
-      // Perform initial labels/data synchronization for the default group
       updateLabelsAndScales();
       chart.update();
     }
@@ -416,26 +532,23 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
           const isPeriodVisible = visMask ? (visMask[originalIdx] === true) : true;
           const isUserHidden = chart._userHiddenLabels.has(ds.label);
           ds._periodVisible = isPeriodVisible;
-          
           const inActiveGroup = chart._activeGroup ? ds.label.includes(`(${chart._activeGroup})`) : true;
           chart.setDatasetVisibility(idx, isPeriodVisible && !isUserHidden && inActiveGroup);
         });
-
         updateLabelsAndScales();
         chart.update();
       }
     };
 
-    const select = document.createElement('select');
-    select.className = "px-4 py-2 text-sm font-medium rounded-md border bg-background text-foreground border-border outline-none focus:ring-2 focus:ring-accent w-[200px] text-center mb-4 sm:hidden";
-    const btnGroup = document.createElement('div');
-    btnGroup.className = "flex justify-center flex-wrap gap-2 mb-4";
-    const buttons: HTMLButtonElement[] = [];
-    let activeIdx = 0;
-    
     if (hasUpdateMenus) {
+      const select = document.createElement('select');
+      select.className = "px-4 py-2 text-sm font-medium rounded-md border bg-background text-foreground border-border outline-none focus:ring-2 focus:ring-accent w-[200px] text-center mb-4 sm:hidden";
+      const btnGroup = document.createElement('div');
+      btnGroup.className = "flex justify-center flex-wrap gap-2 mb-4";
+      const buttons: HTMLButtonElement[] = [];
+      let activeIdx = 0;
+      
       plotlyData.layout.updatemenus[0].buttons.forEach((btn: any, btnIdx: number) => {
-        // Find active button based on initial visibility
         const isVisibleArr = btn.args && btn.args[0] && btn.args[0].visible;
         if (isVisibleArr && Array.isArray(isVisibleArr)) {
           const matches = isVisibleArr.every((v: any, i: number) => {
@@ -444,7 +557,6 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
           });
           if (matches) activeIdx = btnIdx;
         }
-
         const option = document.createElement('option');
         option.value = btnIdx.toString();
         option.textContent = btn.label;
@@ -464,10 +576,7 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
           updateChartData(btn);
         };
       });
-      
-      // Hide buttons if screen is small, otherwise hide select
       btnGroup.classList.add('hidden', 'sm:flex');
-
       select.onchange = (e) => buttons[parseInt((e.target as HTMLSelectElement).value, 10)].click();
       if (buttons[activeIdx]) {
         buttons[activeIdx].classList.add('bg-foreground', 'text-white', 'border-foreground');
@@ -487,8 +596,6 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
     if (data.length === 0) return null;
 
     const isScatterChart = data.some((d: any) => d.type === 'scatter' && d.mode && d.mode.includes('markers')) && !data.some((d: any) => d.type === 'bar');
-
-    // Determine global labels for synchronized category axis (before allSeries)
     const initialVisibleTraces = data.filter((d: any) => d.visible !== false);
     const firstTrace = initialVisibleTraces[0] || data[0];
     const labels = !isScatterChart ? (firstTrace?.x || []) : [];
@@ -497,11 +604,8 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
       const name = d.name || '';
       const isRatio = name.includes('率') || name.includes('性向');
       const type = (d.type === 'bar') ? 'bar' : (isScatterChart ? 'scatter' : (isRatio ? 'line' : 'line'));
-      
-      // Prioritize marker color from Plotly (explicitly set for segments)
       let baseColor = d.marker?.color || d.line?.color || (isDark ? '#ff6b01' : '#006cac');
       if (isScatterChart && name.includes('S&P') && !name.includes('銘柄')) baseColor = '#22c55e';
-
       const nameMatch = name.match(/\(([^)]+)\)$/);
       const isPerformanceChart = name.includes('リターン') || (nameMatch && ['(1ヶ月)', '(3ヶ月)', '(6ヶ月)', '(年初来)', '(1年)', '(3年)', '(5年)', '(10年)', '(全期間)'].some(p => name.endsWith(p)));
 
@@ -517,9 +621,7 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
         borderWidth: type === 'line' ? 2 : (type === 'scatter' ? 1 : 0),
         pointRadius: type === 'line' 
           ? (isPerformanceChart ? ( (d.y || []).map((_: any, i: number, arr: any[]) => i === arr.length - 1 ? 4 : 0) ) : 4)
-          : (type === 'scatter' 
-            ? (name.includes('S&P500銘柄') ? 2.5 : 7) 
-            : 0),
+          : (type === 'scatter' ? (name.includes('S&P500銘柄') ? 2.5 : 7) : 0),
         pointHoverRadius: 12,
         pointBorderWidth: (type === 'scatter' && !name.includes('S&P500銘柄')) ? 2 : 0,
         pointBorderColor: '#fff',
@@ -537,27 +639,22 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
           customText: (d.customdata && d.customdata[i]) ? d.customdata[i][2] : (d.text ? (Array.isArray(d.text) ? d.text[i] : d.text) : '')
         }));
       } else {
-        // Important: Map individual trace data to global labels to ensure correct alignment
-        // Plotly traces can have different x-axis lengths/ranges, but Chart.js category axis requires synchronized indices
         s.data = labels.map((label: any) => {
           const xIdx = (d.x || []).findIndex((xv: any) => String(xv) === String(label));
           return xIdx !== -1 ? d.y[xIdx] : null;
         });
       }
 
-      // BS/Payout stacking order
       if (name.includes('固定資産')) s._originalOrder = 1;
       else if (name.includes('流動資産')) s._originalOrder = 2;
       else if (name.includes('純資産')) s._originalOrder = 1;
       else if (name.includes('固定負債')) s._originalOrder = 2;
       else if (name.includes('流動負債')) s._originalOrder = 3;
-      else if (name.includes('配当金')) s._originalOrder = 1; // Base of stack
-      else if (name.includes('自社株買い')) s._originalOrder = 2; // Top of stack
+      else if (name.includes('配当金')) s._originalOrder = 1;
+      else if (name.includes('自社株買い')) s._originalOrder = 2;
       else s._originalOrder = 9;
 
-      // Use offsetgroup as stack ID if available, otherwise use calculated stack
       const offsetGroup = d.offsetgroup !== undefined ? `group-${d.offsetgroup}` : null;
-
       if (name.includes('資産')) s.stack = offsetGroup || 'assets';
       else if (name.includes('負債') || name.includes('純資産')) s.stack = offsetGroup || 'liabilities';
       else if (name.includes('配当金') || name.includes('自社株買い')) s.stack = offsetGroup || 'payout';
@@ -565,17 +662,15 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
       else if (canvasId === 'chart-segment') s.stack = offsetGroup || 'segment';
       else if (canvasId === 'chart-geo') s.stack = offsetGroup || 'geography';
       else if (type === 'bar') s.stack = offsetGroup || name.replace(' (Q)', '').replace(' (年間推移)', '');
-
       return s;
-      });
+    });
 
-      const hasBar = allSeries.some((s: any) => s.type === 'bar');
-      const isBarmodeGroup = layout.barmode === 'group';
-      // Allow stacking even in group mode if offsetgroups (custom stacks) are present
-      const hasOffsetGroups = data.some((d: any) => d.offsetgroup !== undefined);
-      const hasStacking = hasBar && !isScatterChart && (!isBarmodeGroup || hasOffsetGroups);
+    const hasBar = allSeries.some((s: any) => s.type === 'bar');
+    const isBarmodeGroup = layout.barmode === 'group';
+    const hasOffsetGroups = data.some((d: any) => d.offsetgroup !== undefined);
+    const hasStacking = hasBar && !isScatterChart && (!isBarmodeGroup || hasOffsetGroups);
 
-      if (hasStacking) {
+    if (hasStacking) {
       allSeries.sort((a: any, b: any) => {
         const groupPriority: any = { 
           'group-0': 10, 'assets': 10,
@@ -587,14 +682,12 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
         const pB = groupPriority[b.stack] || 99;
         if (pA !== pB) return pA - pB;
         if (a.type !== b.type) return a.type === 'bar' ? -1 : 1;
-        // Correct order for stacking: smaller _originalOrder is bottom
         if (a.stack === b.stack && a._originalOrder !== b._originalOrder) return a._originalOrder - b._originalOrder;
         return a.originalIndex - b.originalIndex;
       });
     }
 
     const initialVisible = allSeries.filter((s: any) => s._periodVisible);
-    
     let initialMinY, initialMaxY;
     if (isScatterChart) {
       const allInitialY = initialVisible.flatMap((ds: any) => ds.data.map((p: any) => p.y)).filter((v: any) => v !== null && !isNaN(v));
@@ -615,14 +708,10 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
         maxTicksLimit: 8,
         autoSkip: true,
         callback: function(this: any, val: any): any {
-          // For category axis, we get the label string
           const label: any = this.getLabelForValue(val);
           if (typeof label === 'string') {
             const datePart = label.split('T')[0];
-            if (datePart.match(/^\d{4}-\d{2}-\d{2}$/)) {
-              return datePart.replace(/-/g, '/');
-            }
-            return datePart;
+            return datePart.replace(/-/g, '/');
           }
           return label;
         }
@@ -640,11 +729,8 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
       xOpts.ticks.callback = (value: any) => (value * 100).toFixed(0) + '%';
     }
 
-    // Strictly define performance period labels
     const periodLabels = ['1ヶ月', '3ヶ月', '6ヶ月', '年初来', '1年', '3年', '5年', '10年'];
-    const isPerformanceChart = allSeries.some((s: any) => 
-      periodLabels.some(p => s.label.includes(`(${p})`))
-    );
+    const isPerformanceChart = allSeries.some((s: any) => periodLabels.some(p => s.label.includes(`(${p})`)));
 
     return {
       type: (isScatterChart ? 'scatter' : (isPerformanceChart ? 'line' : 'bar')),
@@ -662,66 +748,14 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
             labels: { 
               color: textColor, 
               usePointStyle: true,
-              generateLabels: function(chart: any) {
-                const datasets = chart.data.datasets;
-                const labels: any[] = [];
-                const seen = new Set();
-                const userHidden = chart._userHiddenLabels || new Set();
-                // Ensure legend text uses correct theme color
-                const currentIsDark = document.documentElement.classList.contains('dark') || document.documentElement.getAttribute('data-theme') === 'dark';
-                const currentTextColor = currentIsDark ? '#e5e7eb' : '#1f2937';
-
-                const sortedForLegend = [...datasets].sort((a, b) => (a.order || 0) - (b.order || 0));
-                sortedForLegend.forEach((ds: any) => {
-                  const label = ds.label.replace(/\([^)]+\)$/, '').trim();
-                  if (seen.has(label)) return;
-                  if (chart._activeGroup && !ds.label.includes(`(${chart._activeGroup})`)) return;
-                  seen.add(label);
-                  labels.push({ text: label, fillStyle: ds.backgroundColor, strokeStyle: ds.borderColor, lineWidth: ds.borderWidth, hidden: userHidden.has(ds.label), pointStyle: ds.pointStyle, fontColor: currentTextColor });
-                });
-                return labels;
-              }
+              generateLabels: (chart: any) => getCustomLegendLabels(chart, textColor)
             },
-            onClick: function(_e: any, legendItem: any, legend: any) {
-              const labelText = legendItem.text;
-              const ci = legend.chart;
-              if (!ci._userHiddenLabels) ci._userHiddenLabels = new Set();
-              
-              // Find all datasets that match this label (across groups)
-              const matchingDatasets = ci.data.datasets.filter((d: any) => d.label.startsWith(labelText));
-              const isCurrentlyHidden = ci._userHiddenLabels.has(matchingDatasets[0]?.label);
-              
-              matchingDatasets.forEach((ds: any) => {
-                if (isCurrentlyHidden) ci._userHiddenLabels.delete(ds.label);
-                else ci._userHiddenLabels.add(ds.label);
-              });
-
-              ci.data.datasets.forEach((ds: any, i: number) => {
-                const inActiveGroup = ci._activeGroup ? ds.label.includes(`(${ci._activeGroup})`) : true;
-                const isUserHidden = ci._userHiddenLabels.has(ds.label);
-                ci.setDatasetVisibility(i, ds._periodVisible && !isUserHidden && inActiveGroup);
-              });
-              ci.update();
-            }
+            onClick: (e: any, legendItem: any, legend: any) => handleLegendClick(e, legendItem, legend)
           },
           tooltip: {
             callbacks: {
               label: function(context: any) {
-                if (isScatterChart) {
-                  const p = context.raw;
-                  const xVal = p.origX !== undefined ? p.origX : p.x;
-                  const yVal = p.origY !== undefined ? p.origY : p.y;
-                  const symbol = p.customText || p.symbol || context.dataset.label;
-                  return `${symbol} - リスク: ${(xVal * 100).toFixed(1)}%, リターン: ${(yVal * 100).toFixed(1)}%`;
-                }
-                
-                const value = context.raw;
-                if (isPerformanceChart && typeof value === 'number') {
-                  const val = value * 100;
-                  return context.dataset.label + ': ' + (val >= 0 ? '+' : '') + val.toFixed(1) + '%';
-                }
-                
-                return context.dataset.label + ': ' + formatYValueMillions(value, context.dataset.yAxisID === 'y1');
+                return getTooltipLabel(context, isScatterChart, isPerformanceChart);
               }
             }
           }
@@ -753,12 +787,9 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
     };
   }
 
-  // Run on initial script load
   initChartJs();
 
-  // Run on page transitions (View Transitions)
   document.addEventListener('astro:page-load', () => {
-    // Reset initialization flags on page load to ensure fresh rendering
     document.querySelectorAll('.chartjs-graph-div canvas').forEach(c => {
       (c as any)._chart_initialized = false;
     });

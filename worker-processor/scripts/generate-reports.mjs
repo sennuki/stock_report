@@ -4,48 +4,33 @@
  *
  * 元々は worker-processor の processAllStocks (ctx.waitUntil) で行っていたが、
  * Cloudflare Workers の sub-request 制限 (paid 1000) を 1500 銘柄 × GET+PUT で
- * 大幅に超過するため、 batch がほぼ動かなかった。runner 上の Node.js なら
- * sub-request 制限がなく、 socket pool の concurrency 制御だけで完走する。
- *
- * worker-processor/src/index.ts の純粋ロジック群をそのまま JS に移植してある。
- * R2 binding (env.STOCK_DATA) 部分のみ AWS SDK の S3 client に差し替え。
+ * 大幅に超過するため、外部（GitHub Actions）で一括生成して R2 に書き込む方式に変更。
  */
+
+import "dotenv/config";
 import {
   S3Client,
   ListObjectsV2Command,
   GetObjectCommand,
   PutObjectCommand,
 } from "@aws-sdk/client-s3";
+import pMap from "p-map";
 
-const ACCOUNT_ID = process.env.R2_ACCOUNT_ID || process.env.CLOUDFLARE_ACCOUNT_ID;
-const ACCESS_KEY = process.env.R2_ACCESS_KEY_ID;
-const SECRET_KEY = process.env.R2_SECRET_ACCESS_KEY;
-const BUCKET = process.env.R2_BUCKET_NAME || "stock-data-c1";
-const CONCURRENCY = Number(process.env.GENERATE_REPORTS_CONCURRENCY || 50);
-
-if (!ACCOUNT_ID || !ACCESS_KEY || !SECRET_KEY) {
-  console.error(
-    "ERROR: R2_ACCOUNT_ID / R2_ACCESS_KEY_ID / R2_SECRET_ACCESS_KEY が必要です",
-  );
-  process.exit(1);
-}
+const BUCKET = process.env.R2_BUCKET_NAME || "defeat-beta-stock-data";
+const CONCURRENCY = 20;
 
 const s3 = new S3Client({
   region: "auto",
-  endpoint: `https://${ACCOUNT_ID}.r2.cloudflarestorage.com`,
-  credentials: { accessKeyId: ACCESS_KEY, secretAccessKey: SECRET_KEY },
-  maxAttempts: 4,
+  endpoint: `https://${process.env.CF_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+  credentials: {
+    accessKeyId: process.env.R2_ACCESS_KEY_ID,
+    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
+  },
 });
 
-async function streamToString(stream) {
-  const chunks = [];
-  for await (const chunk of stream) chunks.push(chunk);
-  return Buffer.concat(chunks).toString("utf-8");
-}
-
 async function listAll(prefix) {
-  const keys = [];
-  let token;
+  let keys = [];
+  let token = null;
   do {
     const res = await s3.send(
       new ListObjectsV2Command({
@@ -54,57 +39,53 @@ async function listAll(prefix) {
         ContinuationToken: token,
       }),
     );
-    for (const obj of res.Contents ?? []) keys.push(obj.Key);
-    token = res.IsTruncated ? res.NextContinuationToken : undefined;
+    if (res.Contents) {
+      keys.push(...res.Contents.map((c) => c.Key));
+    }
+    token = res.NextContinuationToken;
   } while (token);
   return keys;
 }
 
 async function getJson(key) {
   const res = await s3.send(new GetObjectCommand({ Bucket: BUCKET, Key: key }));
-  const text = await streamToString(res.Body);
-  return JSON.parse(
-    text.replace(/\bNaN\b/g, "null").replace(/-?\bInfinity\b/g, "null"),
-  );
+  const body = await res.Body.transformToString();
+  return JSON.parse(body);
 }
 
-async function putJson(key, value) {
+async function putJson(key, data) {
   await s3.send(
     new PutObjectCommand({
       Bucket: BUCKET,
       Key: key,
-      Body: JSON.stringify(value),
+      Body: JSON.stringify(data),
       ContentType: "application/json",
     }),
   );
 }
 
-async function pMap(items, fn, concurrency) {
-  const results = new Array(items.length);
-  let cursor = 0;
-  let done = 0;
-  const total = items.length;
-  const workers = Array.from({ length: Math.min(concurrency, total) }, async () => {
-    while (true) {
-      const idx = cursor++;
-      if (idx >= total) return;
-      try {
-        results[idx] = { ok: true, item: items[idx], value: await fn(items[idx], idx) };
-      } catch (e) {
-        results[idx] = { ok: false, item: items[idx], error: e };
-      }
-      done++;
-      if (done % 50 === 0 || done === total) {
-        process.stdout.write(`\r  ${done}/${total}`);
-      }
-    }
-  });
-  await Promise.all(workers);
-  process.stdout.write("\n");
-  return results;
-}
+// === helpers ===
 
-// === 以下、worker-processor/src/index.ts の純粋ロジックを JS に移植 ===
+function calculateRiskReturn(history, symbol) {
+  if (!history || !Array.isArray(history) || history.length < 252) return null;
+  // returns: (Price(T) - Price(T-252)) / Price(T-252)
+  const last = history[history.length - 1].Close;
+  const first = history[history.length - 252].Close;
+  const ret = (last - first) / first;
+
+  // volatility (std of log returns)
+  const logReturns = [];
+  for (let i = history.length - 251; i < history.length; i++) {
+    logReturns.push(Math.log(history[i].Close / history[i - 1].Close));
+  }
+  const mean = logReturns.reduce((a, b) => a + b, 0) / logReturns.length;
+  const variance =
+    logReturns.reduce((a, b) => a + Math.pow(b - mean, 2), 0) /
+    (logReturns.length - 1);
+  const hv = Math.sqrt(variance * 252);
+
+  return { symbol, ret, hv };
+}
 
 function calculateDailyChange(history) {
   if (!history || history.length < 2) return 0;
@@ -113,25 +94,9 @@ function calculateDailyChange(history) {
   return (last - prev) / prev;
 }
 
-function calculateRiskReturn(history, symbol) {
-  if (!history || history.length < 5) return null;
-  const lastQuotes = history.slice(-252);
-  const returns = [];
-  for (let i = 1; i < lastQuotes.length; i++) {
-    returns.push(Math.log(lastQuotes[i].Close / lastQuotes[i - 1].Close));
-  }
-  if (returns.length === 0) return null;
-  const mean = returns.reduce((a, b) => a + b, 0) / returns.length;
-  const variance =
-    returns.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / (returns.length - 1);
-  const hv = Math.sqrt(variance) * Math.sqrt(252);
-  const totalReturn =
-    lastQuotes[lastQuotes.length - 1].Close / lastQuotes[0].Close - 1;
-  return { symbol, hv, ret: totalReturn };
-}
-
 function getSectorETF(sector) {
   const map = {
+    "Information Technology": "XLK",
     "Communication Services": "XLC",
     "Consumer Discretionary": "XLY",
     "Consumer Staples": "XLP",
@@ -139,72 +104,56 @@ function getSectorETF(sector) {
     Financials: "XLF",
     "Health Care": "XLV",
     Industrials: "XLI",
-    "Information Technology": "XLK",
     Materials: "XLB",
     "Real Estate": "XLRE",
     Utilities: "XLU",
   };
-  return sector && map[sector] ? map[sector] : "SPY";
+  return map[sector] || "SPY";
 }
 
-// yfinance の exchange コードを TradingView の exchange プレフィックスに変換する。
-// NMS / NGM / NCM はすべて NASDAQ、NYQ は NYSE、ASE は AMEX、 PCX は NYSEARCA。
-// 不明な値は NASDAQ にフォールバックする (S&P 銘柄は基本的に主要取引所)。
-function toTradingViewExchange(yfExchange) {
+function toTradingViewExchange(ex) {
   const map = {
-    NMS: "NASDAQ",
-    NGM: "NASDAQ",
-    NCM: "NASDAQ",
-    NAS: "NASDAQ",
-    NYQ: "NYSE",
-    NYS: "NYSE",
-    ASE: "AMEX",
-    AMX: "AMEX",
-    PCX: "NYSEARCA",
-    BATS: "BATS",
-    BTS: "BATS",
+    NMS: "NASDAQ", NGM: "NASDAQ", NCM: "NASDAQ", NAS: "NASDAQ",
+    NYQ: "NYSE", NYS: "NYSE",
+    ASE: "AMEX", AMX: "AMEX",
+    PCX: "NYSEARCA", BATS: "BATS", BTS: "BATS",
   };
-  if (!yfExchange) return "NASDAQ";
-  return map[yfExchange] || yfExchange;
+  if (!ex) return "NASDAQ";
+  return map[ex] || ex;
 }
 
 function extractHighlights(rawData) {
   const info = rawData.info || {};
   return {
-    revenue_growth: info.revenueGrowth,
-    earnings_growth: info.earningsGrowth,
-    profit_margins: info.profitMargins,
-    operating_margins: info.operatingMargins,
-    roe: info.returnOnEquity,
-    roa: info.returnOnAssets,
-    eps_ttm: info.trailingEps,
-    eps_forward: info.forwardEps,
-    pe_ttm: info.trailingPE,
-    pe_forward: info.forwardPE,
-    dividend_yield: info.dividendYield,
-    payout_ratio:
-      info.payoutRatio ||
-      (info.dividendRate && info.trailingEps
-        ? info.dividendRate / info.trailingEps
-        : null),
-    debt_to_equity: info.debtToEquity,
-    current_ratio: info.currentRatio,
+    revenue_growth: info.revenueGrowth || null,
+    roe: info.returnOnEquity || null,
+    operating_margins: info.operatingMargins || null,
+    pe_forward: info.forwardPE || null,
+    pe_ttm: info.trailingPE || null,
+    dividend_yield: info.dividendYield || null,
+    debt_to_equity: info.debtToEquity || null,
+    earnings_growth: info.earningsGrowth || null,
+    profit_margins: info.profitMargins || null,
+    current_ratio: info.currentRatio || null,
+    eps_ttm: info.trailingEps || null,
+    eps_forward: info.forwardEps || null,
+    payout_ratio: info.payoutRatio || null,
   };
 }
 
 function extractEarningsSurprise(rawData) {
-  const datesObj = rawData.earnings_dates || {};
-  const dates = Object.keys(datesObj).sort(
-    (a, b) => new Date(b).getTime() - new Date(a).getTime(),
-  );
-  for (const date of dates) {
-    const d = datesObj[date];
-    if (d && d["Reported EPS"] !== null && d["Reported EPS"] !== undefined) {
+  const ed = rawData.earnings_dates;
+  if (!ed || !Array.isArray(ed) || ed.length === 0) return null;
+  // yfinance provides a list where each element is a date's data
+  // We need to find the latest one that has a "Reported EPS"
+  const sorted = [...ed].sort((a, b) => new Date(b.index || b.Date).getTime() - new Date(a.index || a.Date).getTime());
+  for (const item of sorted) {
+    if (item["Reported EPS"] !== null && item["Reported EPS"] !== undefined) {
       return {
-        date: date.split(" ")[0],
-        actual: d["Reported EPS"],
-        estimate: d["EPS Estimate"],
-        surprise_pct: d["Surprise(%)"],
+        date: String(item.index || item.Date).split(" ")[0],
+        actual: item["Reported EPS"],
+        estimate: item["EPS Estimate"],
+        surprise_pct: item["Surprise(%)"],
       };
     }
   }
@@ -212,36 +161,25 @@ function extractEarningsSurprise(rawData) {
 }
 
 function extractNextEarnings(rawData) {
-  const datesObj = rawData.earnings_dates || {};
-  const dates = Object.keys(datesObj).sort(
-    (a, b) => new Date(a).getTime() - new Date(b).getTime(),
-  );
+  const ed = rawData.earnings_dates;
+  if (!ed || !Array.isArray(ed) || ed.length === 0) return null;
   const now = new Date();
-  for (const date of dates) {
-    if (new Date(date) >= now) {
-      const d = datesObj[date];
-      if (d && (d["Reported EPS"] === null || d["Reported EPS"] === undefined)) {
-        return {
-          date: date.split(" ")[0],
-          estimate: d["EPS Estimate"] || rawData.info?.earningsAverage || null,
-        };
-      }
-    }
-  }
-  if (rawData.calendar?.["Earnings Date"]) {
-    const cDates = Array.isArray(rawData.calendar["Earnings Date"])
-      ? rawData.calendar["Earnings Date"]
-      : [rawData.calendar["Earnings Date"]];
-    if (cDates.length > 0 && new Date(cDates[0]) >= now) {
+  const sorted = [...ed].sort((a, b) => new Date(a.index || a.Date).getTime() - new Date(b.index || b.Date).getTime());
+  for (const item of sorted) {
+    const d = new Date(item.index || item.Date);
+    if (d >= now && (item["Reported EPS"] === null || item["Reported EPS"] === undefined)) {
       return {
-        date: cDates[0].split(" ")[0],
-        estimate:
-          rawData.calendar["Earnings Average"] ||
-          rawData.calendar["EPS Estimate"] ||
-          rawData.info?.earningsAverage ||
-          null,
+        date: String(item.index || item.Date).split(" ")[0],
+        estimate: item["EPS Estimate"] || null,
       };
     }
+  }
+  const cal = rawData.calendar;
+  if (cal && cal["Earnings Date"] && cal["Earnings Date"][0]) {
+    return {
+      date: cal["Earnings Date"][0],
+      estimate: cal["Earnings Average"] || null,
+    };
   }
   return null;
 }
@@ -251,36 +189,34 @@ function extractConsensus(rawData) {
   return {
     earnings: {
       "0q": {
-        avg: info.earningsAverage,
-        low: info.earningsLow,
-        high: info.earningsHigh,
-        growth: info.earningsGrowth,
-        numberOfAnalysts: info.numberOfAnalystOpinions,
-      },
+        avg: info.earningsAverage || null,
+        low: info.earningsLow || null,
+        high: info.earningsHigh || null,
+        growth: info.earningsGrowth || null,
+        numberOfAnalysts: info.numberOfAnalystOpinions || 0
+      }
     },
     revenue: {
       "0q": {
-        avg: info.revenueAverage,
-        low: info.revenueLow,
-        high: info.revenueHigh,
-        growth: info.revenueGrowth,
-        numberOfAnalysts: info.numberOfAnalystOpinions,
-      },
-    },
+        avg: info.revenueAverage || null,
+        low: info.revenueLow || null,
+        high: info.revenueHigh || null,
+        growth: info.revenueGrowth || null,
+        numberOfAnalysts: info.numberOfAnalystOpinions || 0
+      }
+    }
   };
 }
 
 function extractRatingChanges(rawData) {
-  const ud = rawData.upgrades_downgrades || {};
-  const dates = Object.keys(ud).sort(
-    (a, b) => new Date(b).getTime() - new Date(a).getTime(),
-  );
-  return dates.slice(0, 10).map((date) => ({
-    GradeDate: date.split(" ")[0],
-    Firm: ud[date]?.Firm || ud[date]?.firm,
-    ToGrade: ud[date]?.ToGrade || ud[date]?.toGrade,
-    FromGrade: ud[date]?.FromGrade || ud[date]?.fromGrade,
-    Action: ud[date]?.Action || ud[date]?.action,
+  const ud = rawData.upgrades_downgrades;
+  if (!ud || !Array.isArray(ud)) return [];
+  return ud.slice(0, 10).map((x) => ({
+    GradeDate: String(x.index || x.Date).split(" ")[0],
+    Firm: x.Firm || x.firm,
+    ToGrade: x["To Grade"] || x.toGrade,
+    FromGrade: x["From Grade"] || x.fromGrade,
+    Action: x.Action || x.action,
   }));
 }
 
@@ -288,15 +224,97 @@ function extractAnalystRatings(rawData) {
   const info = rawData.info || {};
   const ratings = rawData.analyst_ratings || {};
   return {
-    targetHighPrice: info.targetHighPrice,
-    targetLowPrice: info.targetLowPrice,
-    targetMeanPrice: info.targetMeanPrice,
-    targetMedianPrice: info.targetMedianPrice,
-    currentPrice: info.currentPrice,
-    numberOfAnalystOpinions: info.numberOfAnalystOpinions,
-    recommendationKey: info.recommendationKey,
-    ...ratings,
+    recommendationKey: info.recommendationKey || "hold",
+    targetMeanPrice: info.targetMeanPrice || null,
+    targetHighPrice: info.targetHighPrice || null,
+    targetLowPrice: info.targetLowPrice || null,
+    targetMedianPrice: info.targetMedianPrice || null,
+    numberOfAnalystOpinions: info.numberOfAnalystOpinions || 0,
+    currentPrice: info.currentPrice || info.regularMarketPrice || null,
+    ...ratings
   };
+}
+
+function getValFromArray(arr, field, date) {
+  const row = arr.find((r) => r.index === field);
+  return row ? row[date] : null;
+}
+
+function generateFinancialChart(data, fields, type, barmode) {
+  if (data.length === 0) return null;
+  const dates = Object.keys(data[0])
+    .filter((k) => k !== "index")
+    .sort();
+  if (dates.length === 0) return null;
+  const colors = [
+    { bg: "rgba(54, 162, 235, 0.5)", border: "rgb(54, 162, 235)" },
+    { bg: "rgba(255, 99, 132, 0.5)", border: "rgb(255, 99, 132)" },
+    { bg: "rgba(75, 192, 192, 0.5)", border: "rgb(75, 192, 192)" },
+    { bg: "rgba(255, 159, 64, 0.5)", border: "rgb(255, 159, 64)" },
+  ];
+  
+  const labelMap = {
+    "Total Revenue": "売上高",
+    "Gross Profit": "売上総利益",
+    "Operating Income": "営業利益",
+    "Net Income": "純利益",
+    "Total Assets": "総資産",
+    "Total Liabilities Net Minority Interest": "総負債",
+    "Stockholders Equity": "純資産",
+    "Operating Cash Flow": "営業CF",
+    "Investing Cash Flow": "投資CF",
+    "Financing Cash Flow": "財務CF",
+    "Free Cash Flow": "フリーCF"
+  };
+
+  return {
+    labels: dates.map((d) => d.split(" ")[0]),
+    datasets: fields.map((field, i) => ({
+      label: labelMap[field] || field,
+      data: dates.map((d) => getValFromArray(data, field, d)),
+      backgroundColor: colors[i % colors.length].bg,
+      borderColor: colors[i % colors.length].border,
+      borderWidth: 1,
+    })),
+  };
+}
+
+function generatePerformanceChart(history, etfHistory, symbol, etfSymbol) {
+  if (!history || history.length === 0) return null;
+  const targetData = history.slice(-252);
+  const etfData = etfHistory ? etfHistory.slice(-252) : [];
+  const spyData = history.find((h) => h.symbol === "SPY") ? [] : []; // simplified
+
+  // In Action, we don't easily have other histories.
+  // We'll just provide the target's relative performance.
+  const dates = targetData.map((d) => String(d.Date || d.index).split(" ")[0]);
+  const base = targetData[0].Close;
+  const targetPerf = targetData.map((d) => (d.Close - base) / base);
+
+  const datasets = [
+    {
+      label: symbol,
+      data: targetPerf,
+      borderColor: "rgb(255, 99, 132)",
+      borderWidth: 2,
+      fill: false,
+      pointRadius: 0,
+    },
+  ];
+
+  if (etfData.length === targetData.length) {
+    const eBase = etfData[0].Close;
+    datasets.push({
+      label: etfSymbol,
+      data: etfData.map((d) => (d.Close - eBase) / eBase),
+      borderColor: "rgb(54, 162, 235)",
+      borderWidth: 2,
+      fill: false,
+      pointRadius: 0,
+    });
+  }
+
+  return { labels: dates, datasets };
 }
 
 function generateRiskReturnChart(allMetrics, targetSymbol) {
@@ -304,7 +322,7 @@ function generateRiskReturnChart(allMetrics, targetSymbol) {
   const target = allMetrics.find((m) => m.symbol === targetSymbol);
   const datasets = [
     {
-      label: "Other S&P 500",
+      label: "その他のS&P 500銘柄",
       data: others.map((m) => ({ x: m.hv, y: m.ret, symbol: m.symbol })),
       backgroundColor: "rgba(200, 200, 200, 0.5)",
       pointRadius: 4,
@@ -321,151 +339,60 @@ function generateRiskReturnChart(allMetrics, targetSymbol) {
   return { datasets };
 }
 
-function getValFromArray(data, itemLabel, date) {
-  const row = data.find((r) => r.index === itemLabel);
-  return row ? Number(row[date]) || 0 : 0;
-}
-
-function generateFinancialChart(data, fields, type, barmode) {
-  if (data.length === 0) return null;
-  const dates = Object.keys(data[0])
+function generateTpChart(cfData, isData) {
+  if (cfData.length === 0 || isData.length === 0) return null;
+  const dates = Object.keys(isData[0])
     .filter((k) => k !== "index")
     .sort();
   if (dates.length === 0) return null;
-  const colors = [
-    { bg: "rgba(54, 162, 235, 0.5)", border: "rgb(54, 162, 235)" },
-    { bg: "rgba(255, 99, 132, 0.5)", border: "rgb(255, 99, 132)" },
-    { bg: "rgba(75, 192, 192, 0.5)", border: "rgb(75, 192, 192)" },
-    { bg: "rgba(255, 159, 64, 0.5)", border: "rgb(255, 159, 64)" },
-  ];
-  return {
-    labels: dates.map((d) => d.split(" ")[0]),
-    datasets: fields.map((field, i) => ({
-      label: field,
-      data: dates.map((d) => getValFromArray(data, field, d)),
-      backgroundColor: colors[i % colors.length].bg,
-      borderColor: colors[i % colors.length].border,
-      borderWidth: 1,
-    })),
-  };
-}
 
-function generatePerformanceChart(history, etfHistory, symbol, etfSymbol) {
-  if (!history || history.length === 0) return null;
-  const targetData = history.slice(-252);
-  if (targetData.length === 0) return null;
-  const startClose = targetData[0].Close;
-  const dates = targetData.map((h) => (h.Date || h.index).split(" ")[0]);
-  const targetReturns = targetData.map((h) => h.Close / startClose - 1);
-  const datasets = [
-    {
-      label: symbol,
-      data: targetReturns,
-      borderColor: "#1f77b4",
-      borderWidth: 2,
-      fill: false,
-      pointRadius: 0,
-    },
-  ];
-  if (etfHistory && etfHistory.length > 0) {
-    const etfMap = new Map(
-      etfHistory.map((h) => [(h.Date || h.index).split(" ")[0], h.Close]),
-    );
-    let etfStartClose = etfMap.get(dates[0]);
-    if (!etfStartClose) {
-      for (const d of dates) {
-        if (etfMap.has(d)) {
-          etfStartClose = etfMap.get(d);
-          break;
-        }
-      }
-    }
-    if (etfStartClose) {
-      const etfReturns = dates.map((d) => {
-        const close = etfMap.get(d) || etfStartClose;
-        return close / etfStartClose - 1;
-      });
-      datasets.push({
-        label: `Sector ETF (${etfSymbol})`,
-        data: etfReturns,
-        borderColor: "#ff7f0e",
-        borderWidth: 2,
-        borderDash: [5, 5],
-        fill: false,
-        pointRadius: 0,
-      });
-    }
-  }
-  return { labels: dates, datasets };
-}
-
-function generateTpChart(cf, is) {
-  if (is.length === 0 && cf.length === 0) return null;
-  const dates = Object.keys(is[0] || cf[0] || {})
-    .filter((k) => k !== "index")
-    .sort();
-  if (dates.length === 0) return null;
-  const niKeys = [
-    "Net Income",
-    "Net Income From Continuing Operations",
-    "Net Income Common Stockholders",
-  ];
-  const divKeys = ["Cash Dividends Paid", "Common Stock Dividend Paid"];
-  const repoKeys = [
-    "Repurchase Of Capital Stock",
-    "Repurchase Of Common Stock",
-    "Common Stock Repurchased",
-  ];
-  const getAnyVal = (arr, keys, date) => {
-    for (const k of keys) {
-      const v = getValFromArray(arr, k, date);
-      if (v !== 0) return v;
-    }
-    return 0;
-  };
-  const niData = dates.map(
-    (d) => getAnyVal(is, niKeys, d) || getAnyVal(cf, niKeys, d),
+  const niData = dates.map((d) => getValFromArray(isData, "Net Income", d));
+  const divData = dates.map((d) =>
+    Math.abs(getValFromArray(cfData, "Cash Dividends Paid", d) || 0),
   );
-  const divData = dates.map((d) => Math.abs(getAnyVal(cf, divKeys, d)));
-  const repoData = dates.map((d) => Math.abs(getAnyVal(cf, repoKeys, d)));
+  const repoData = dates.map((d) =>
+    Math.abs(getValFromArray(cfData, "Repurchase of Capital Stock", d) || 0),
+  );
+
   const divRatio = niData.map((ni, i) => (ni > 0 ? divData[i] / ni : 0));
   const totalRatio = niData.map((ni, i) =>
     ni > 0 ? (divData[i] + repoData[i]) / ni : 0,
   );
+
   return {
     labels: dates.map((d) => d.split(" ")[0]),
     datasets: [
       {
         type: "bar",
-        label: "Net Income",
+        label: "純利益",
         data: niData,
         backgroundColor: "rgba(44, 160, 44, 0.6)",
         yAxisID: "y",
       },
       {
         type: "bar",
-        label: "Dividends Paid",
+        label: "配当金",
         data: divData,
         backgroundColor: "rgba(174, 199, 232, 0.6)",
         yAxisID: "y",
       },
       {
         type: "bar",
-        label: "Stock Repurchase",
+        label: "自社株買い",
         data: repoData,
         backgroundColor: "rgba(31, 119, 180, 0.6)",
         yAxisID: "y",
       },
       {
         type: "line",
-        label: "Dividend Payout Ratio",
+        label: "配当性向",
         data: divRatio,
         borderColor: "#ffbb78",
         yAxisID: "y1",
       },
       {
         type: "line",
-        label: "Total Payout Ratio",
+        label: "総還元性向",
         data: totalRatio,
         borderColor: "#ff7f0e",
         yAxisID: "y1",
@@ -479,20 +406,16 @@ function generateDpsEpsChart(dividends) {
     return null;
   const annual = {};
   dividends.forEach((d) => {
-    const dateStr = d.Date || d.index;
-    if (!dateStr) return;
-    const year = String(dateStr).substring(0, 4);
-    const val = Number(d.Dividends || d.Value || 0);
-    annual[year] = (annual[year] || 0) + val;
+    const y = new Date(d.Date || d.index).getFullYear();
+    annual[y] = (annual[y] || 0) + (d.Dividends || d.Value || 0);
   });
   const labels = Object.keys(annual).sort();
-  if (labels.length === 0) return null;
   return {
     labels,
     datasets: [
       {
         type: "bar",
-        label: "Annual Dividends",
+        label: "年間配当金",
         data: labels.map((y) => annual[y]),
         backgroundColor: "rgba(31, 119, 180, 0.8)",
       },

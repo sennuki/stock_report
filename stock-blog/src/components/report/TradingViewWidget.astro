@@ -140,7 +140,6 @@ const widgetId = containerId || `tv-widget-${Math.random().toString(36).substrin
       script.type = 'text/javascript';
       script.src = this.dataset.src || '';
       script.async = true;
-      script.crossOrigin = "anonymous";
       script.textContent = JSON.stringify(config);
       
       container.appendChild(script);
