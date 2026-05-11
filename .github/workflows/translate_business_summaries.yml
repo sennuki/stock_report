@@ -45,7 +45,7 @@ jobs:
           node scripts/translate-business-summaries.mjs
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          GEMINI_TRANSLATION_MODEL: "gemini-3.1-flash-lite-preview"
+          GEMINI_TRANSLATION_MODEL: "gemma-4-26b-a4b-it"
           TRANSLATION_LIMIT: ${{ github.event.inputs.limit || '3' }}
           TRANSLATION_SUMMARY_OUTPUT: "translation-summary.json"
           R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
