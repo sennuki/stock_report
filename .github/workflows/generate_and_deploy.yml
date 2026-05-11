@@ -5,6 +5,9 @@ on:
     - cron: '0 21 * * 1-5' # 平日毎日実行
   push:
     branches: [ master, c1 ]
+    paths-ignore:
+      - '.github/workflows/translate_business_summaries.yml'
+      - 'worker-processor/scripts/translate-business-summaries.mjs'
   workflow_dispatch:
 
 env:
