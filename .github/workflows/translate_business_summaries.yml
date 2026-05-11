@@ -37,7 +37,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd worker-processor
-          npm ci
+          npm install
 
       - name: Translate missing business summaries
         run: |
