@@ -18,6 +18,9 @@ import pMap from "p-map";
 
 const BUCKET = process.env.R2_BUCKET_NAME || "defeat-beta-stock-data";
 const CONCURRENCY = 20;
+const TRANSLATIONS_KEY =
+  process.env.BUSINESS_SUMMARY_TRANSLATIONS_KEY ||
+  "translations/business_summaries.json";
 
 const s3 = new S3Client({
   region: "auto",
@@ -139,6 +142,26 @@ function extractHighlights(rawData) {
     eps_forward: info.forwardEps || null,
     payout_ratio: info.payoutRatio || null,
   };
+}
+
+function hasJapaneseText(value) {
+  return typeof value === "string" && /[\u3040-\u30ff\u3400-\u9fff]/.test(value);
+}
+
+function getSavedTranslation(translations, symbol) {
+  const value = translations?.[symbol];
+  if (typeof value === "string") {
+    return hasJapaneseText(value)
+      ? { text: value, translationDate: null }
+      : null;
+  }
+  if (value && hasJapaneseText(value.business_summary_ja)) {
+    return {
+      text: value.business_summary_ja,
+      translationDate: value.translation_date || null,
+    };
+  }
+  return null;
 }
 
 function extractEarningsSurprise(rawData) {
@@ -471,6 +494,16 @@ async function main() {
     console.log("  raw/stocks_list.json not found, using empty metadata");
   }
 
+  let businessSummaryTranslations = {};
+  try {
+    businessSummaryTranslations = await getJson(TRANSLATIONS_KEY);
+    console.log(
+      `  loaded ${Object.keys(businessSummaryTranslations).length} business summary translations from ${TRANSLATIONS_KEY}`,
+    );
+  } catch {
+    console.log(`  ${TRANSLATIONS_KEY} not found, using existing report summaries only`);
+  }
+
   console.log(`Downloading ${rawKeys.length} raw objects...`);
   const rawDataMap = {};
   const dlResults = await pMap(
@@ -605,6 +638,25 @@ async function main() {
         metadata["GICS Sector"] || rawData.info?.sector || "Unknown";
       const subInd =
         metadata["GICS Sub-Industry"] || rawData.info?.industry || "Unknown";
+      let businessSummaryJa = rawData.info?.longBusinessSummary || null;
+      let translationDate = null;
+      const savedTranslation = getSavedTranslation(
+        businessSummaryTranslations,
+        symbol,
+      );
+      if (savedTranslation) {
+        businessSummaryJa = savedTranslation.text;
+        translationDate = savedTranslation.translationDate;
+      }
+      try {
+        const existingReport = await getJson(`reports/${symbol}.json`);
+        if (!savedTranslation && hasJapaneseText(existingReport.business_summary_ja)) {
+          businessSummaryJa = existingReport.business_summary_ja;
+          translationDate = existingReport.translation_date || null;
+        }
+      } catch {
+        // No existing report yet. The translation-only workflow will fill this later.
+      }
 
       const reportData = {
         symbol: metadata.Symbol || symbol,
@@ -615,7 +667,8 @@ async function main() {
           rawData.info?.shortName ||
           symbol,
         security_ja: metadata.Security_JA || null,
-        business_summary_ja: rawData.info?.longBusinessSummary || null,
+        business_summary_ja: businessSummaryJa,
+        translation_date: translationDate,
         sector,
         sub_industry: subInd,
         exchange: toTradingViewExchange(rawData.info?.exchange),
