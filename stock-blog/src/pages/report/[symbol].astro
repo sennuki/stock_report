@@ -107,40 +107,72 @@ if (!reportData && symbol) {
 }
 
 // 3) ローカル開発時のフォールバック: public/reports/{symbol}.json を読む。
-//    Cloudflare ランタイム（Workers/Pages）では fs / process.cwd が
-//    使えないため、import.meta.env.DEV のときのみ実行する。
-if (!reportData && import.meta.env.DEV) {
+//    Astro 6 + Cloudflare アダプターの開発環境 (workerd) では node:fs が制限されるため、
+//    DEV モードかつ fs で見つからない場合は自身に fetch を試みる。
+{
+  const p: Record<string, any> = { name: "local_fs" };
   try {
-    const possibleRoots = [
-      process.cwd(),
-      path.join(process.cwd(), 'stock-blog')
-    ];
+    let raw: string | null = null;
 
-    let jsonPath = "";
-    for (const root of possibleRoots) {
-      const testPath = path.resolve(root, "public", "reports", `${symbol}.json`);
-      if (fs.existsSync(testPath)) {
-        jsonPath = testPath;
-        break;
+    // 3-a) まずは node:fs を試す (環境によって動作する場合がある)
+    if (fs && path) {
+      const possibleRoots = [
+        process.cwd(),
+        path.join(process.cwd(), 'stock-blog'),
+        '/home/linux/gemini/stock-blog',
+      ];
+      let jsonPath = "";
+      for (const root of possibleRoots) {
+        try {
+          const testPath = path.resolve(root, "public", "reports", `${symbol}.json`);
+          if (fs.existsSync(testPath)) {
+            jsonPath = testPath;
+            break;
+          }
+        } catch (e) {}
+      }
+      if (jsonPath) {
+        p.found_path = jsonPath;
+        const stats = fs.statSync(jsonPath);
+        if (stats.size > 0) {
+          raw = fs.readFileSync(jsonPath, "utf-8");
+          lastUpdated = new Intl.DateTimeFormat("ja-JP", {
+            year: "numeric", month: "long", day: "numeric"
+          }).format(stats.mtime);
+        }
       }
     }
 
-    if (jsonPath) {
-      const stats = fs.statSync(jsonPath);
-      if (stats.size > 0) {
-        lastUpdated = new Intl.DateTimeFormat("ja-JP", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        }).format(stats.mtime);
-        let content = fs.readFileSync(jsonPath, "utf-8");
-        content = content.replace(/\bNaN\b/g, "null");
-        reportData = JSON.parse(content);
+    // 3-b) node:fs で取れなかった場合、DEV モードなら自分自身へ fetch を投げる
+    if (!raw && import.meta.env.DEV && symbol) {
+      p.dev_fetch_attempted = true;
+      try {
+        // Astro.url を利用してベースURLを特定
+        const devUrl = new URL(`/reports/${symbol}.json`, Astro.url);
+        p.dev_url = devUrl.toString();
+        const resp = await fetch(devUrl);
+        if (resp.ok) {
+          raw = await resp.text();
+          lastUpdated = "Local Dev Fetch";
+          p.dev_fetch_success = true;
+        }
+      } catch (e: any) {
+        p.dev_fetch_error = e.message;
       }
     }
-  } catch (e) {
-    console.error(`Local JSON read failed for ${symbol}:`, e);
+
+    if (raw && !reportData) {
+      const sanitized = raw
+        .replace(/\bNaN\b/g, "null")
+        .replace(/-?\bInfinity\b/g, "null");
+      reportData = JSON.parse(sanitized);
+      _debug.result = "local_fs";
+    }
+  } catch (e: any) {
+    p.error = String(e?.message || e);
+    if (import.meta.env.DEV) console.error(`Local JSON fallback failed for ${symbol}:`, e);
   }
+  _debug.paths.push(p);
 }
 
 const stockInfo = (stocks as any[]).find((s: any) => s.Symbol_YF === symbol);
@@ -420,10 +452,68 @@ if (reportData?.analyst_ratings) {
                 <p class="text-xs opacity-80 leading-relaxed">
                   指定期間の累積リターンを1年あたりの利回りに換算した値です。配当を含まない価格変化ベースの平均的な成長力を示します。
                 </p>
-              </div>
-            </div>
+                </div>
+                </div>
 
-            <details class="group bg-skin-fill/10 border border-skin-line rounded-lg overflow-hidden">
+             <div class="bg-skin-fill/10 p-5 rounded-lg border border-skin-line">
+               <h3 class="font-bold text-sm mb-3 flex items-center gap-2 text-skin-accent">
+                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                 </svg>
+                 比較対象（ベンチマーク）の解説
+               </h3>
+               <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
+                 {reportData.benchmark_info?.sector && (
+                   <div class="space-y-1">
+                     <p class="text-xs font-bold flex items-center gap-1.5">
+                       <span class="w-2.5 h-2.5 bg-[#006cac] rounded-sm"></span>
+                       Sector ({reportData.benchmark_info.sector.symbol})
+                     </p>
+                     <p class="text-[10px] font-bold opacity-80">{reportData.benchmark_info.sector.name}</p>
+                     <p class="text-[10px] opacity-70 leading-relaxed">
+                       S&P 500構成の大型株のみで構成されたセクターETF。大型優良株との比較用です。
+                     </p>
+                   </div>
+                 )}
+                 {reportData.benchmark_info?.broad && reportData.benchmark_info.broad.symbol !== reportData.benchmark_info.sector?.symbol && (
+                   <div class="space-y-1">
+                     <p class="text-xs font-bold flex items-center gap-1.5">
+                       <span class="w-2.5 h-2.5 bg-[#006cac] opacity-60 rounded-sm"></span>
+                       Broad ({reportData.benchmark_info.broad.symbol})
+                     </p>
+                     <p class="text-[10px] font-bold opacity-80">{reportData.benchmark_info.broad.name}</p>
+                     <p class="text-[10px] opacity-70 leading-relaxed">
+                       中小型株まで含む市場全体の同セクターETF。業界全体の平均的な動きを示します。
+                     </p>
+                   </div>
+                 )}
+                 {reportData.benchmark_info?.index && reportData.benchmark_info.index.symbol !== 'SPY' && (
+                   <div class="space-y-1">
+                     <p class="text-xs font-bold flex items-center gap-1.5">
+                       <span class="w-2.5 h-2.5 bg-[#22c55e] rounded-sm"></span>
+                       Index ({reportData.benchmark_info.index.symbol})
+                     </p>
+                     <p class="text-[10px] font-bold opacity-80">{reportData.benchmark_info.index.name}</p>
+                     <p class="text-[10px] opacity-70 leading-relaxed">
+                       銘柄が属する指数（中型株S&P 400等）。同じ時価総額規模の平均的な実績です。
+                     </p>
+                   </div>
+                 )}
+                 <div class="space-y-1">
+                   <p class="text-xs font-bold flex items-center gap-1.5">
+                     <span class="w-2.5 h-2.5 bg-[#22c55e] opacity-60 rounded-sm"></span>
+                     Market (SPY)
+                   </p>
+                   <p class="text-[10px] font-bold opacity-80">{reportData.benchmark_info?.market?.name || 'SPDR S&P 500 ETF Trust'}</p>
+                   <p class="text-[10px] opacity-70 leading-relaxed">
+                     S&P 500指数。米国株式市場全体の標準的なリスク・リターンの基準点となります。
+                   </p>
+                 </div>
+               </div>
+             </div>
+
+                <details class="group bg-skin-fill/10 border border-skin-line rounded-lg overflow-hidden">
+
               <summary class="flex items-center justify-between p-3 cursor-pointer hover:bg-skin-fill/20 transition-colors text-xs font-bold opacity-70">
                 <span>算出ロジックの詳細 (Mathematical Definition)</span>
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transform group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">

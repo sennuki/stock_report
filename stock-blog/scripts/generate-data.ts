@@ -33,9 +33,10 @@ async function main() {
 
   if (process.env.TEST_MODE === 'true') {
     stocks = [
-      { Symbol: 'MSFT', Symbol_YF: 'MSFT', Security: 'Microsoft Corp', 'GICS Sector': 'Information Technology', 'GICS Sub-Industry': 'Systems Software', Exchange: 'NASDAQ' },
-      { Symbol: 'AAPL', Symbol_YF: 'AAPL', Security: 'Apple Inc', 'GICS Sector': 'Information Technology', 'GICS Sub-Industry': 'Technology Hardware Storage & Peripherals', Exchange: 'NASDAQ' },
-      { Symbol: 'PHM', Symbol_YF: 'PHM', Security: 'PulteGroup Inc', 'GICS Sector': 'Consumer Discretionary', 'GICS Sub-Industry': 'Homebuilding', Exchange: 'NYSE' }
+      { Symbol: 'MSFT', Symbol_YF: 'MSFT', Security: 'Microsoft Corp', 'GICS Sector': 'Information Technology', 'GICS Sub-Industry': 'Systems Software', Exchange: 'NASDAQ', Index: 'S&P 500' },
+      { Symbol: 'AAPL', Symbol_YF: 'AAPL', Security: 'Apple Inc', 'GICS Sector': 'Information Technology', 'GICS Sub-Industry': 'Technology Hardware Storage & Peripherals', Exchange: 'NASDAQ', Index: 'S&P 500' },
+      { Symbol: 'RPM', Symbol_YF: 'RPM', Security: 'RPM International Inc', 'GICS Sector': 'Materials', 'GICS Sub-Industry': 'Specialty Chemicals', Exchange: 'NYSE', Index: 'S&P 400' },
+      { Symbol: 'ENSG', Symbol_YF: 'ENSG', Security: 'The Ensign Group Inc', 'GICS Sector': 'Health Care', 'GICS Sub-Industry': 'Health Care Facilities', Exchange: 'NASDAQ', Index: 'S&P 600' }
     ];
   } else if (fs.existsSync(STOCKS_JSON_PATH)) {
     // Read stocks from the JSON file created by Python main.py
@@ -99,7 +100,68 @@ async function main() {
         'Homebuilding': 'XHB'
       };
 
+      const broadSectorEtfMap: Record<string, string> = {
+        'Information Technology': 'VGT',
+        'Consumer Discretionary': 'VCR',
+        'Financials': 'VFH',
+        'Health Care': 'VHT',
+        'Communication Services': 'VOX',
+        'Industrials': 'VIS',
+        'Consumer Staples': 'VDC',
+        'Energy': 'VDE',
+        'Utilities': 'VPU',
+        'Real Estate': 'VNQ',
+        'Materials': 'VAW',
+        'Homebuilding': 'ITB'
+      };
+
+      const marketIndexMap: Record<string, string> = {
+        'S&P 500': 'SPY',
+        'S&P 400': 'MDY',
+        'S&P 600': 'IJR'
+      };
+
+      const etfFullNameMap: Record<string, string> = {
+        'XLK': 'Technology Select Sector SPDR Fund',
+        'XLY': 'Consumer Discretionary Select Sector SPDR Fund',
+        'XLF': 'Financial Select Sector SPDR Fund',
+        'XLV': 'Health Care Select Sector SPDR Fund',
+        'XLC': 'Communication Services Select Sector SPDR Fund',
+        'XLI': 'Industrial Select Sector SPDR Fund',
+        'XLP': 'Consumer Staples Select Sector SPDR Fund',
+        'XLE': 'Energy Select Sector SPDR Fund',
+        'XLU': 'Utilities Select Sector SPDR Fund',
+        'XLRE': 'Real Estate Select Sector SPDR Fund',
+        'XLB': 'Materials Select Sector SPDR Fund',
+        'XHB': 'SPDR S&P Homebuilders ETF',
+        'VGT': 'Vanguard Information Technology ETF',
+        'VCR': 'Vanguard Consumer Discretionary ETF',
+        'VFH': 'Vanguard Financials ETF',
+        'VHT': 'Vanguard Health Care ETF',
+        'VOX': 'Vanguard Communication Services ETF',
+        'VIS': 'Vanguard Industrials ETF',
+        'VDC': 'Vanguard Consumer Staples ETF',
+        'VDE': 'Vanguard Energy ETF',
+        'VPU': 'Vanguard Utilities ETF',
+        'VNQ': 'Vanguard Real Estate ETF',
+        'VAW': 'Vanguard Materials ETF',
+        'ITB': 'iShares U.S. Home Construction ETF',
+        'SPY': 'SPDR S&P 500 ETF Trust',
+        'MDY': 'SPDR S&P MidCap 400 ETF Trust',
+        'IJR': 'iShares Core S&P Small-Cap ETF'
+      };
+
       const targetEtf = sectorEtfMap[stock['GICS Sub-Industry']] || sectorEtfMap[stock['GICS Sector']] || 'SPY';
+      const broadEtf = broadSectorEtfMap[stock['GICS Sub-Industry']] || broadSectorEtfMap[stock['GICS Sector']] || 'SPY';
+      const marketEtf = marketIndexMap[stock.Index] || 'SPY';
+
+      // ベンチマーク情報の保存用
+      const benchmarkInfo = {
+        sector: { symbol: targetEtf, name: etfFullNameMap[targetEtf] || targetEtf },
+        broad: { symbol: broadEtf, name: etfFullNameMap[broadEtf] || broadEtf },
+        index: { symbol: marketEtf, name: etfFullNameMap[marketEtf] || marketEtf },
+        market: { symbol: 'SPY', name: etfFullNameMap['SPY'] }
+      };
 
       // 2. YFinance (TypeScript) から詳細データを取得 (個別失敗を許容)
       // Node.jsの接続が不安定なため、Python側で取得したデータを優先的に使用し、失敗した場合はPythonデータをフォールバックとする
@@ -163,26 +225,45 @@ async function main() {
       });
 
       console.log(`    - Fetching risk metrics...`);
-      let riskMetricsList = await Promise.all([
+      const benchmarks = Array.from(new Set([targetEtf, broadEtf, marketEtf, 'SPY']));
+      const benchmarkMetricsPromises = benchmarks.map(ticker => {
+        if (metricCache.has(ticker)) return Promise.resolve(metricCache.get(ticker));
+        return retry(() => calculateRiskMetrics(ticker)).then(res => {
+          const finalRes = res || pyYfData.risk_metrics?.[ticker] || null;
+          if (finalRes) metricCache.set(ticker, finalRes);
+          return finalRes;
+        });
+      });
+
+      const riskMetricsResults = await Promise.all([
         retry(() => calculateRiskMetrics(stock.Symbol_YF)).then(res => res || pyYfData.risk_metrics?.[stock.Symbol_YF] || null),
-        metricCache.has(targetEtf) ? Promise.resolve(metricCache.get(targetEtf)) : 
-          retry(() => calculateRiskMetrics(targetEtf)).then(res => { 
-            const finalRes = res || pyYfData.risk_metrics?.[targetEtf] || null;
-            if (finalRes) metricCache.set(targetEtf, finalRes); 
-            return finalRes; 
-          }),
-        metricCache.has('SPY') ? Promise.resolve(metricCache.get('SPY')) : 
-          retry(() => calculateRiskMetrics('SPY')).then(res => { 
-            const finalRes = res || pyYfData.risk_metrics?.['SPY'] || null;
-            if (finalRes) metricCache.set('SPY', finalRes); 
-            return finalRes; 
-          })
-      ]).catch(() => [pyYfData.risk_metrics?.[stock.Symbol_YF] || null, pyYfData.risk_metrics?.[targetEtf] || null, pyYfData.risk_metrics?.['SPY'] || null]);
+        ...benchmarkMetricsPromises
+      ]);
+
+      const stockMetrics = riskMetricsResults[0];
+      const metricsList = [stockMetrics];
+      const labels = [stock.Symbol];
+
+      const addBenchmark = (ticker: string, label: string) => {
+        const bIdx = benchmarks.indexOf(ticker);
+        if (bIdx !== -1 && riskMetricsResults[bIdx + 1]) {
+          metricsList.push(riskMetricsResults[bIdx + 1]);
+          labels.push(label);
+        }
+      };
+
+      addBenchmark(targetEtf, `Sector (${targetEtf})`);
+      if (broadEtf !== targetEtf) addBenchmark(broadEtf, `Broad (${broadEtf})`);
+      if (marketEtf !== 'SPY' && marketEtf !== targetEtf && marketEtf !== broadEtf) addBenchmark(marketEtf, `Index (${marketEtf})`);
+      if (!labels.some(l => l.includes('SPY'))) addBenchmark('SPY', 'Market (SPY)');
+
+      // リスク・リターンの統合 (全期間タブ対応)
+      const riskReturnData = formatRiskReturnGroups(metricsList, labels);
 
       console.log(`    - Fetching performance data...`);
       let perfData = await retry(() => generatePerformanceChartData(stock.Symbol_YF, targetEtf)).catch((e: any) => {
         console.warn(`    - Performance data fetch failed for ${stock.Symbol}, using Python fallback:`, e.message);
-        return null; // TODO: Implement Python-based performance data formatting if needed
+        return null; 
       });
 
       console.log(`    - Fetching chart data...`);
@@ -218,9 +299,6 @@ async function main() {
         }
         return closestQuote ? closestQuote.adjclose : null;
       };
-
-      // リスク・リターンの統合 (全期間タブ対応)
-      const riskReturnData = formatRiskReturnGroups(riskMetricsList, [stock.Symbol, `Sector ${targetEtf}`, 'S&P 500']);
 
       // 3. データの統合 (Astroレイアウトの期待値に合わせる)
       // IS, BS, CFを年次・四半期それぞれ生成して結合
@@ -292,6 +370,7 @@ async function main() {
         exchange: exchange,
         full_symbol: `${exchange}:${stock.Symbol.replace('-', '.')}`,
         is_financial: isFinancial,
+        benchmark_info: benchmarkInfo,
 
         // 証券会社フラグ
         is_available_monex: brokerages.monex.has(stock.Symbol),

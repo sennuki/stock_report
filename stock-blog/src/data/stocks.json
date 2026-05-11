@@ -6,7 +6,8 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Systems Software",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.013779399999999999
+    "Index": "S&P 500",
+    "Daily_Change": -0.014062386
   },
   {
     "Symbol": "AAPL",
@@ -15,15 +16,27 @@
     "GICS Sector": "Information Technology",
     "GICS Sub-Industry": "Technology Hardware Storage & Peripherals",
     "Exchange": "NASDAQ",
-    "Daily_Change": 0.0205168
+    "Index": "S&P 500",
+    "Daily_Change": 0.020074008
   },
   {
-    "Symbol": "PHM",
-    "Symbol_YF": "PHM",
-    "Security": "PulteGroup Inc",
-    "GICS Sector": "Consumer Discretionary",
-    "GICS Sub-Industry": "Homebuilding",
+    "Symbol": "RPM",
+    "Symbol_YF": "RPM",
+    "Security": "RPM International Inc",
+    "GICS Sector": "Materials",
+    "GICS Sub-Industry": "Specialty Chemicals",
     "Exchange": "NYSE",
-    "Daily_Change": 0.0062489600000000005
+    "Index": "S&P 400",
+    "Daily_Change": -0.0057205
+  },
+  {
+    "Symbol": "ENSG",
+    "Symbol_YF": "ENSG",
+    "Security": "The Ensign Group Inc",
+    "GICS Sector": "Health Care",
+    "GICS Sub-Industry": "Health Care Facilities",
+    "Exchange": "NASDAQ",
+    "Index": "S&P 600",
+    "Daily_Change": -0.016351154
   }
 ]
