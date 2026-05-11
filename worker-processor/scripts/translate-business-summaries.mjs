@@ -116,37 +116,59 @@ async function translateSummary(symbol, summary) {
   ].join("\n");
 
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(GEMINI_MODEL)}:generateContent?key=${GEMINI_API_KEY}`;
-  const res = await fetch(url, {
+  const payload = {
+    contents: [{ role: "user", parts: [{ text: prompt }] }],
+    generationConfig: { temperature: 0.1 },
+    systemInstruction: { parts: [{ text: "あなたはプロの翻訳者および証券アナリストです。英文の会社概要を正確で自然な日本語に翻訳します。" }] },
+  };
+
+  const opts = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      contents: [{ role: "user", parts: [{ text: prompt }] }],
-      generationConfig: {
-        temperature: 0.1,
-      },
-      systemInstruction: {
-        parts: [
-          {
-            text: "あなたはプロの翻訳者および証券アナリストです。英文の会社概要を正確で自然な日本語に翻訳します。",
-          },
-        ],
-      },
-    }),
-  });
+    body: JSON.stringify(payload),
+  };
 
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`Gemini API ${res.status}: ${text}`);
+  const maxAttempts = 3;
+  let lastErr = null;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      const res = await fetch(url, opts);
+      if (!res.ok) {
+        const body = await res.text();
+        const err = new Error(`Gemini API ${res.status}: ${body}`);
+        err.status = res.status;
+        err.body = body;
+        // Retry on server errors (5xx)
+        if (res.status >= 500 && attempt < maxAttempts) {
+          const waitMs = 1000 * Math.pow(2, attempt - 1);
+          console.log(`[${symbol}] Gemini API ${res.status}, retrying in ${waitMs}ms (attempt ${attempt}/${maxAttempts})`);
+          await sleep(waitMs);
+          continue;
+        }
+        throw err;
+      }
+
+      const data = await res.json();
+      const text = data.candidates?.[0]?.content?.parts
+        ?.map((part) => part.text || "")
+        .join("")
+        .trim();
+
+      if (!text) throw new Error("Gemini returned an empty translation.");
+      return cleanTranslation(text);
+    } catch (e) {
+      lastErr = e;
+      // If rate-limited, bubble up immediately so caller can stop if desired
+      if (String(e.message).includes("429")) throw e;
+      if (attempt < maxAttempts) {
+        const waitMs = 1000 * Math.pow(2, attempt - 1);
+        console.log(`[${symbol}] fetch attempt ${attempt} failed: ${String(e.message)}. Retrying in ${waitMs}ms`);
+        await sleep(waitMs);
+        continue;
+      }
+      throw lastErr;
+    }
   }
-
-  const data = await res.json();
-  const text = data.candidates?.[0]?.content?.parts
-    ?.map((part) => part.text || "")
-    .join("")
-    .trim();
-
-  if (!text) throw new Error("Gemini returned an empty translation.");
-  return cleanTranslation(text);
 }
 
 async function sleep(ms) {
@@ -216,8 +238,14 @@ async function main() {
       await sleep(1000);
     } catch (error) {
       failed += 1;
-      console.log(`[${symbol}] translation failed: ${error.message}`);
-      if (String(error.message).includes("429")) {
+      console.error(`[${symbol}] translation failed: ${String(error?.message || error)}`);
+      if (error && error.status) {
+        console.error(`[${symbol}] response status: ${error.status}`);
+      }
+      if (error && error.body) {
+        console.error(`[${symbol}] response body (snippet): ${String(error.body).slice(0, 400)}`);
+      }
+      if (String(error?.message || '').includes("429")) {
         console.log("Rate limited. Stopping this run so the next schedule can retry.");
         break;
       }
