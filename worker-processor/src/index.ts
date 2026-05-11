@@ -111,7 +111,8 @@ export async function processAllStocks(env: Env) {
   try {
     const listObj = await env.STOCK_DATA.get('raw/stocks_list.json');
     if (listObj) {
-      baseStocksList = JSON.parse(await listObj.text());
+      const raw = await listObj.text();
+      baseStocksList = JSON.parse(raw.replace(/\bNaN\b/g, "null").replace(/\b-?Infinity\b/g, "null"));
     }
   } catch (e) {
     console.log("No raw/stocks_list.json found.");

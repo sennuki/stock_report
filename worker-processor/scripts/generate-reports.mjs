@@ -50,7 +50,10 @@ async function listAll(prefix) {
 async function getJson(key) {
   const res = await s3.send(new GetObjectCommand({ Bucket: BUCKET, Key: key }));
   const body = await res.Body.transformToString();
-  return JSON.parse(body);
+  const safe = body
+    .replace(/\bNaN\b/g, "null")
+    .replace(/\b-?Infinity\b/g, "null");
+  return JSON.parse(safe);
 }
 
 async function putJson(key, data) {

@@ -30,7 +30,7 @@ if (!ACCOUNT_ID || !API_TOKEN) {
 }
 
 const stocksRaw = await readFile(STOCKS_JSON, 'utf-8');
-const stocks = JSON.parse(stocksRaw);
+const stocks = JSON.parse(stocksRaw.replace(/\bNaN\b/g, 'null').replace(/\b-?Infinity\b/g, 'null'));
 const symbols = stocks
   .map(s => s.Symbol_YF || s.Symbol)
   .filter(Boolean);
