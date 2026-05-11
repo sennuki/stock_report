@@ -29,7 +29,20 @@ async function main() {
 
   if (!fs.existsSync(REPORTS_DIR)) fs.mkdirSync(REPORTS_DIR, { recursive: true });
 
-  let stocks = [];
+  interface StockMetadata {
+    Symbol: string;
+    Symbol_YF: string;
+    Security: string;
+    Security_JA?: string;
+    'GICS Sector': string;
+    'GICS Sub-Industry': string;
+    Exchange: string;
+    Index?: string;
+    Daily_Change?: number;
+    Has_Movement_Reason?: boolean;
+  }
+
+  let stocks: StockMetadata[] = [];
 
   if (process.env.TEST_MODE === 'true') {
     stocks = [
@@ -153,7 +166,7 @@ async function main() {
 
       const targetEtf = sectorEtfMap[stock['GICS Sub-Industry']] || sectorEtfMap[stock['GICS Sector']] || 'SPY';
       const broadEtf = broadSectorEtfMap[stock['GICS Sub-Industry']] || broadSectorEtfMap[stock['GICS Sector']] || 'SPY';
-      const marketEtf = marketIndexMap[stock.Index] || 'SPY';
+      const marketEtf = (stock.Index && marketIndexMap[stock.Index]) || 'SPY';
 
       // ベンチマーク情報の保存用
       const benchmarkInfo = {
