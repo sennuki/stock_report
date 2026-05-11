@@ -2,8 +2,9 @@
 /**
  * Translate company business summaries independently from report generation.
  *
- * The script reads raw/{symbol}.json for the English source text and updates
- * reports/{symbol}.json in R2. Existing Japanese translations are skipped.
+ * The script reads raw/{symbol}.json for the English source text and writes
+ * translations/business_summaries.json in R2. Existing Japanese translations
+ * in that translation store are skipped.
  */
 
 import "dotenv/config";
@@ -175,22 +176,10 @@ async function main() {
     if (translated >= LIMIT) break;
 
     const symbol = rawKey.replace(/^raw\//, "").replace(/\.json$/, "");
-    const reportKey = `reports/${symbol}.json`;
 
     if (getSavedTranslation(translations, symbol)) {
       skippedJapanese += 1;
       continue;
-    }
-
-    let report = null;
-    try {
-      report = await getJson(reportKey);
-      if (hasJapaneseText(report.business_summary_ja)) {
-        skippedJapanese += 1;
-        continue;
-      }
-    } catch {
-      report = null;
     }
 
     let rawData = null;
@@ -218,15 +207,6 @@ async function main() {
         translation_date: translationDate,
       };
       await putJson(TRANSLATIONS_KEY, translations);
-      if (report) {
-        await putJson(reportKey, {
-          ...report,
-          symbol: report.symbol || symbol,
-          symbol_yf: report.symbol_yf || symbol,
-          business_summary_ja: translation,
-          translation_date: translationDate,
-        });
-      }
       translated += 1;
       translatedSymbols.push(symbol);
       await sleep(1000);

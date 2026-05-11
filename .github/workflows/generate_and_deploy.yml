@@ -113,7 +113,6 @@ jobs:
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
           R2_BUCKET_NAME: "stock-data-c1"
-          BUSINESS_SUMMARY_TRANSLATIONS_KEY: "translations/business_summaries.json"
 
       - name: Sync reports/stocks.json to build dir
         run: |
