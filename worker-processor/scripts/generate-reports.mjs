@@ -610,6 +610,8 @@ async function main() {
         const subInd =
           metadata["GICS Sub-Industry"] || rawData.info?.industry || "Unknown";
 
+        const analystRatings = extractAnalystRatings(rawData);
+
         const reportData = {
           symbol: metadata.Symbol || symbol,
           symbol_yf: symbol,
@@ -641,6 +643,7 @@ async function main() {
           is_available_moomoo: true,
           is_available_iwaicosmo: true,
 
+          movement_reason: movementReasons[symbol] || null,
           dcf_valuation: rawData.dcf_valuation || null,
           charts: {
             risk_return: riskReturnChart,
@@ -653,8 +656,18 @@ async function main() {
             segment: segmentChart,
             geo: geoChart,
           },
-          // ローカル版（シンプル）に合わせるため、複雑な指標は一旦 highlights に集約
           highlights,
+          analyst_ratings: analystRatings,
+          peers: {
+            sub_industry: (subIndustryMap[subInd] || []).filter(
+              (s) => s.Symbol_YF !== symbol,
+            ),
+            sector: (sectorMap[sector] || []).filter(
+              (s) =>
+                s.Symbol_YF !== symbol &&
+                !subIndustryMap[subInd]?.find((si) => si.Symbol_YF === s.Symbol_YF),
+            ),
+          },
           last_updated: new Date().toISOString(),
         };
 
