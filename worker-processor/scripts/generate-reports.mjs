@@ -610,8 +610,6 @@ async function main() {
         const subInd =
           metadata["GICS Sub-Industry"] || rawData.info?.industry || "Unknown";
 
-        const analystRatings = extractAnalystRatings(rawData);
-
         const reportData = {
           symbol: metadata.Symbol || symbol,
           symbol_yf: symbol,
@@ -624,7 +622,6 @@ async function main() {
           full_symbol: `${toTradingViewExchange(rawData.info?.exchange)}:${symbol.replace("-", ".")}`,
           is_financial: ["Financials", "Real Estate"].includes(sector),
           
-          // ローカル版のレイアウトに合わせるための benchmark_info
           benchmark_info: {
             sector: { symbol: sectorEtf, name: sectorEtf },
             broad: { symbol: sectorEtf, name: sectorEtf },
@@ -632,7 +629,6 @@ async function main() {
             market: { symbol: "SPY", name: "SPDR S&P 500 ETF Trust" }
           },
 
-          // 証券会社フラグ
           is_available_monex: true,
           is_available_rakuten: true,
           is_available_sbi: true,
@@ -643,7 +639,6 @@ async function main() {
           is_available_moomoo: true,
           is_available_iwaicosmo: true,
 
-          movement_reason: movementReasons[symbol] || null,
           dcf_valuation: rawData.dcf_valuation || null,
           charts: {
             risk_return: riskReturnChart,
@@ -656,18 +651,51 @@ async function main() {
             segment: segmentChart,
             geo: geoChart,
           },
-          highlights,
-          analyst_ratings: analystRatings,
-          peers: {
-            sub_industry: (subIndustryMap[subInd] || []).filter(
-              (s) => s.Symbol_YF !== symbol,
-            ),
-            sector: (sectorMap[sector] || []).filter(
-              (s) =>
-                s.Symbol_YF !== symbol &&
-                !subIndustryMap[subInd]?.find((si) => si.Symbol_YF === s.Symbol_YF),
-            ),
+          
+          highlights: {
+            revenue_growth: highlights.revenue_growth,
+            roe: highlights.roe,
+            operating_margins: highlights.operating_margins,
+            pe_forward: highlights.pe_forward,
+            pe_ttm: highlights.pe_ttm,
+            dividend_yield: highlights.dividend_yield,
+            debt_to_equity: highlights.debt_to_equity,
+            earnings_growth: highlights.earnings_growth,
+            profit_margins: highlights.profit_margins
           },
+
+          analyst_ratings: {
+            recommendationKey: analystRatings.recommendationKey || "hold",
+            strongBuy: analystRatings.strongBuy || 0,
+            buy: analystRatings.buy || 0,
+            hold: analystRatings.hold || 0,
+            sell: analystRatings.sell || 0,
+            strongSell: analystRatings.strongSell || 0,
+            targetMeanPrice: analystRatings.targetMeanPrice,
+            targetHighPrice: analystRatings.targetHighPrice,
+            targetLowPrice: analystRatings.targetLowPrice,
+            targetMedianPrice: analystRatings.targetMedianPrice,
+            numberOfAnalystOpinions: analystRatings.numberOfAnalystOpinions,
+            currentPrice: analystRatings.currentPrice
+          },
+
+          peers: {
+            sub_industry: (subIndustryMap[subInd] || [])
+              .filter((s) => s.Symbol_YF !== symbol)
+              .slice(0, 10)
+              .map(p => ({ Symbol: p.Symbol, Symbol_YF: p.Symbol_YF })),
+            sector: (sectorMap[sector] || [])
+              .filter((s) => s.Symbol_YF !== symbol && !subIndustryMap[subInd]?.find((si) => si.Symbol_YF === s.Symbol_YF))
+              .slice(0, 10)
+              .map(p => ({ Symbol: p.Symbol, Symbol_YF: p.Symbol_YF }))
+          },
+          
+          // 明示的に削除または未定義にする（ローカル版にはないため）
+          earnings_surprise: null,
+          next_earnings: null,
+          consensus: null,
+          rating_changes: [],
+          
           last_updated: new Date().toISOString(),
         };
 
