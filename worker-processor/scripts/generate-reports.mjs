@@ -542,9 +542,14 @@ async function main() {
   ];
 
   console.log("Generating reports/*.json...");
-  const symbols = Object.keys(rawDataMap);
+  let symbols = Object.keys(rawDataMap);
+  // テスト用に銘柄を制限（確認用）
+  const testSymbols = ["MSFT", "AAPL", "NVDA", "GOOGL", "AMZN"];
+  symbols = testSymbols.filter(s => rawDataMap[s]);
+  console.log(`Test mode: processing ${symbols.join(", ")}`);
+
   const updatedStocksList = [];
-  const updatedLock = []; // 並列 push の安全化のため append-only にする
+  const updatedLock = []; 
   const putResults = await pMap(
     symbols,
     async (symbol) => {
@@ -555,18 +560,11 @@ async function main() {
           baseStocksList.find(
             (s) => s.Symbol_YF === symbol || s.Symbol === symbol,
           ) || {};
-        const sectorEtf = getSectorETF(
-          metadata["GICS Sector"] || rawData.info?.sector,
-        );
+        const sector = metadata["GICS Sector"] || rawData.info?.sector || "Unknown";
+        const sectorEtf = getSectorETF(sector);
         const etfRawData = rawDataMap[sectorEtf];
 
         const highlights = extractHighlights(rawData);
-        const earningsSurprise = extractEarningsSurprise(rawData);
-        const nextEarnings = extractNextEarnings(rawData);
-        const consensus = extractConsensus(rawData);
-        const ratingChanges = extractRatingChanges(rawData);
-        const analystRatings = extractAnalystRatings(rawData);
-
         const riskReturnChart = generateRiskReturnChart(riskReturnMetrics, symbol);
         const isChart = generateFinancialChart(
           rawData.income_stmt || [],
@@ -609,27 +607,30 @@ async function main() {
         const segmentChart = generateSegmentChart(rawData.revenue_by_segment);
         const geoChart = generateSegmentChart(rawData.revenue_by_geography);
 
-        const sector =
-          metadata["GICS Sector"] || rawData.info?.sector || "Unknown";
         const subInd =
           metadata["GICS Sub-Industry"] || rawData.info?.industry || "Unknown";
 
         const reportData = {
           symbol: metadata.Symbol || symbol,
           symbol_yf: symbol,
-          security:
-            metadata.Security ||
-            rawData.info?.longName ||
-            rawData.info?.shortName ||
-            symbol,
+          security: metadata.Security || rawData.info?.longName || rawData.info?.shortName || symbol,
           security_ja: metadata.Security_JA || null,
           business_summary_ja: rawData.info?.longBusinessSummary || null,
           sector,
           sub_industry: subInd,
           exchange: toTradingViewExchange(rawData.info?.exchange),
           full_symbol: `${toTradingViewExchange(rawData.info?.exchange)}:${symbol.replace("-", ".")}`,
-          sector_etf: sectorEtf,
           is_financial: ["Financials", "Real Estate"].includes(sector),
+          
+          // ローカル版のレイアウトに合わせるための benchmark_info
+          benchmark_info: {
+            sector: { symbol: sectorEtf, name: sectorEtf },
+            broad: { symbol: sectorEtf, name: sectorEtf },
+            index: { symbol: "SPY", name: "SPDR S&P 500 ETF Trust" },
+            market: { symbol: "SPY", name: "SPDR S&P 500 ETF Trust" }
+          },
+
+          // 証券会社フラグ
           is_available_monex: true,
           is_available_rakuten: true,
           is_available_sbi: true,
@@ -639,27 +640,7 @@ async function main() {
           is_available_paypay: true,
           is_available_moomoo: true,
           is_available_iwaicosmo: true,
-          movement_reason: movementReasons[symbol] || null,
-          highlights,
-          earnings_surprise: earningsSurprise,
-          next_earnings: nextEarnings,
-          consensus,
-          consensus_raw: {
-            eps_trend: rawData.info?.epsTrend || null,
-            eps_revisions: rawData.info?.epsRevisions || null,
-          },
-          rating_changes: ratingChanges,
-          analyst_ratings: analystRatings,
-          peers: {
-            sub_industry: (subIndustryMap[subInd] || []).filter(
-              (s) => s.Symbol_YF !== symbol,
-            ),
-            sector: (sectorMap[sector] || []).filter(
-              (s) =>
-                s.Symbol_YF !== symbol &&
-                !subIndustryMap[subInd]?.find((si) => si.Symbol_YF === s.Symbol_YF),
-            ),
-          },
+
           dcf_valuation: rawData.dcf_valuation || null,
           charts: {
             risk_return: riskReturnChart,
@@ -672,6 +653,8 @@ async function main() {
             segment: segmentChart,
             geo: geoChart,
           },
+          // ローカル版（シンプル）に合わせるため、複雑な指標は一旦 highlights に集約
+          highlights,
           last_updated: new Date().toISOString(),
         };
 
