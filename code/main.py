@@ -30,6 +30,21 @@ if R2_ACCOUNT_ID and R2_ACCESS_KEY_ID and R2_SECRET_ACCESS_KEY:
         region_name="auto"
     )
 
+import math
+
+def sanitize_json(obj):
+    """
+    Recursively convert NaN, Infinity, -Infinity to None (null in JSON).
+    """
+    if isinstance(obj, dict):
+        return {k: sanitize_json(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [sanitize_json(v) for v in obj]
+    elif isinstance(obj, float):
+        if math.isnan(obj) or math.isinf(obj):
+            return None
+    return obj
+
 def export_stocks_json(df):
     """S&P 500/400/600 の銘柄リストを Astro 用の JSON データとして保存する"""
     base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -37,8 +52,9 @@ def export_stocks_json(df):
     try:
         os.makedirs(os.path.dirname(dest_path), exist_ok=True)
         data = df.to_dicts()
+        sanitized_data = sanitize_json(data)
         with open(dest_path, 'w', encoding='utf-8') as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
+            json.dump(sanitized_data, f, ensure_ascii=False, indent=2)
         print(f"銘柄リストJSONを保存しました: {dest_path}")
     except Exception as e:
         print(f"JSON保存エラー: {e}")
@@ -49,7 +65,8 @@ def upload_base_stocks_list_to_r2(df_stocks):
     """
     try:
         data = df_stocks.to_dicts()
-        json_data = json.dumps(data, ensure_ascii=False, indent=2)
+        sanitized_data = sanitize_json(data)
+        json_data = json.dumps(sanitized_data, ensure_ascii=False, indent=2)
 
         if s3_client:
             s3_client.put_object(

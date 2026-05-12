@@ -19,6 +19,21 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+import math
+
+def sanitize_json(obj):
+    """
+    Recursively convert NaN, Infinity, -Infinity to None (null in JSON).
+    """
+    if isinstance(obj, dict):
+        return {k: sanitize_json(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [sanitize_json(v) for v in obj]
+    elif isinstance(obj, float):
+        if math.isnan(obj) or math.isinf(obj):
+            return None
+    return obj
+
 # --- 当日取得済み銘柄の差分管理 ---
 # GitHub Actions キャッシュと組み合わせることで、当日中の再実行・リトライ時に
 # 取得済み銘柄をスキップし、yfinance への重複リクエストを防ぐ。
@@ -173,7 +188,9 @@ def fetch_raw_data_for_ticker(symbol):
             except Exception as e:
                 raw_payload["dcf_valuation"] = None
 
-        json_data = json.dumps(raw_payload, ensure_ascii=False, default=str)
+        # Ensure NaN/Infinity are converted to null for standard JSON compliance
+        sanitized_payload = sanitize_json(raw_payload)
+        json_data = json.dumps(sanitized_payload, ensure_ascii=False, default=str)
 
         if s3_client:
             s3_client.put_object(

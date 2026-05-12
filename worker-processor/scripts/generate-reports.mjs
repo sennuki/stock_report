@@ -479,10 +479,14 @@ async function main() {
   const dlResults = await pMap(
     rawKeys,
     async (key) => {
-      const data = await getJson(key);
-      const symbol = data.symbol || key.replace("raw/", "").replace(".json", "");
-      rawDataMap[symbol] = data;
-      return symbol;
+      try {
+        const data = await getJson(key);
+        const symbol = data.symbol || key.replace("raw/", "").replace(".json", "");
+        rawDataMap[symbol] = data;
+        return { ok: true, symbol };
+      } catch (e) {
+        return { ok: false, item: key, error: e };
+      }
     },
     CONCURRENCY,
   );
@@ -544,143 +548,147 @@ async function main() {
   const putResults = await pMap(
     symbols,
     async (symbol) => {
-      const rawData = rawDataMap[symbol];
-      const isETF = ETFS.includes(symbol);
-      const metadata =
-        baseStocksList.find(
-          (s) => s.Symbol_YF === symbol || s.Symbol === symbol,
-        ) || {};
-      const sectorEtf = getSectorETF(
-        metadata["GICS Sector"] || rawData.info?.sector,
-      );
-      const etfRawData = rawDataMap[sectorEtf];
+      try {
+        const rawData = rawDataMap[symbol];
+        const isETF = ETFS.includes(symbol);
+        const metadata =
+          baseStocksList.find(
+            (s) => s.Symbol_YF === symbol || s.Symbol === symbol,
+          ) || {};
+        const sectorEtf = getSectorETF(
+          metadata["GICS Sector"] || rawData.info?.sector,
+        );
+        const etfRawData = rawDataMap[sectorEtf];
 
-      const highlights = extractHighlights(rawData);
-      const earningsSurprise = extractEarningsSurprise(rawData);
-      const nextEarnings = extractNextEarnings(rawData);
-      const consensus = extractConsensus(rawData);
-      const ratingChanges = extractRatingChanges(rawData);
-      const analystRatings = extractAnalystRatings(rawData);
+        const highlights = extractHighlights(rawData);
+        const earningsSurprise = extractEarningsSurprise(rawData);
+        const nextEarnings = extractNextEarnings(rawData);
+        const consensus = extractConsensus(rawData);
+        const ratingChanges = extractRatingChanges(rawData);
+        const analystRatings = extractAnalystRatings(rawData);
 
-      const riskReturnChart = generateRiskReturnChart(riskReturnMetrics, symbol);
-      const isChart = generateFinancialChart(
-        rawData.income_stmt || [],
-        ["Total Revenue", "Gross Profit", "Operating Income", "Net Income"],
-        "bar",
-        "group",
-      );
-      const bsChart = generateFinancialChart(
-        rawData.balancesheet || [],
-        [
-          "Total Assets",
-          "Total Liabilities Net Minority Interest",
-          "Stockholders Equity",
-        ],
-        "bar",
-        "stack",
-      );
-      const cfChart = generateFinancialChart(
-        rawData.cashflow || [],
-        [
-          "Operating Cash Flow",
-          "Investing Cash Flow",
-          "Financing Cash Flow",
-          "Free Cash Flow",
-        ],
-        "bar",
-        "group",
-      );
-      const perfChart = generatePerformanceChart(
-        rawData.history,
-        etfRawData?.history,
-        symbol,
-        sectorEtf,
-      );
-      const tpChart = generateTpChart(
-        rawData.cashflow || [],
-        rawData.income_stmt || [],
-      );
-      const dpsChart = generateDpsEpsChart(rawData.dividends);
-      const segmentChart = generateSegmentChart(rawData.revenue_by_segment);
-      const geoChart = generateSegmentChart(rawData.revenue_by_geography);
-
-      const sector =
-        metadata["GICS Sector"] || rawData.info?.sector || "Unknown";
-      const subInd =
-        metadata["GICS Sub-Industry"] || rawData.info?.industry || "Unknown";
-
-      const reportData = {
-        symbol: metadata.Symbol || symbol,
-        symbol_yf: symbol,
-        security:
-          metadata.Security ||
-          rawData.info?.longName ||
-          rawData.info?.shortName ||
+        const riskReturnChart = generateRiskReturnChart(riskReturnMetrics, symbol);
+        const isChart = generateFinancialChart(
+          rawData.income_stmt || [],
+          ["Total Revenue", "Gross Profit", "Operating Income", "Net Income"],
+          "bar",
+          "group",
+        );
+        const bsChart = generateFinancialChart(
+          rawData.balancesheet || [],
+          [
+            "Total Assets",
+            "Total Liabilities Net Minority Interest",
+            "Stockholders Equity",
+          ],
+          "bar",
+          "stack",
+        );
+        const cfChart = generateFinancialChart(
+          rawData.cashflow || [],
+          [
+            "Operating Cash Flow",
+            "Investing Cash Flow",
+            "Financing Cash Flow",
+            "Free Cash Flow",
+          ],
+          "bar",
+          "group",
+        );
+        const perfChart = generatePerformanceChart(
+          rawData.history,
+          etfRawData?.history,
           symbol,
-        security_ja: metadata.Security_JA || null,
-        business_summary_ja: rawData.info?.longBusinessSummary || null,
-        sector,
-        sub_industry: subInd,
-        exchange: toTradingViewExchange(rawData.info?.exchange),
-        full_symbol: `${toTradingViewExchange(rawData.info?.exchange)}:${symbol.replace("-", ".")}`,
-        sector_etf: sectorEtf,
-        is_financial: ["Financials", "Real Estate"].includes(sector),
-        is_available_monex: true,
-        is_available_rakuten: true,
-        is_available_sbi: true,
-        is_available_mufg: true,
-        is_available_matsui: true,
-        is_available_dmm: true,
-        is_available_paypay: true,
-        is_available_moomoo: true,
-        is_available_iwaicosmo: true,
-        movement_reason: movementReasons[symbol] || null,
-        highlights,
-        earnings_surprise: earningsSurprise,
-        next_earnings: nextEarnings,
-        consensus,
-        consensus_raw: {
-          eps_trend: rawData.info?.epsTrend || null,
-          eps_revisions: rawData.info?.epsRevisions || null,
-        },
-        rating_changes: ratingChanges,
-        analyst_ratings: analystRatings,
-        peers: {
-          sub_industry: (subIndustryMap[subInd] || []).filter(
-            (s) => s.Symbol_YF !== symbol,
-          ),
-          sector: (sectorMap[sector] || []).filter(
-            (s) =>
-              s.Symbol_YF !== symbol &&
-              !subIndustryMap[subInd]?.find((si) => si.Symbol_YF === s.Symbol_YF),
-          ),
-        },
-        dcf_valuation: rawData.dcf_valuation || null,
-        charts: {
-          risk_return: riskReturnChart,
-          is: isChart,
-          bs: bsChart,
-          cf: cfChart,
-          performance: perfChart,
-          tp: tpChart,
-          dps: dpsChart,
-          segment: segmentChart,
-          geo: geoChart,
-        },
-        last_updated: new Date().toISOString(),
-      };
+          sectorEtf,
+        );
+        const tpChart = generateTpChart(
+          rawData.cashflow || [],
+          rawData.income_stmt || [],
+        );
+        const dpsChart = generateDpsEpsChart(rawData.dividends);
+        const segmentChart = generateSegmentChart(rawData.revenue_by_segment);
+        const geoChart = generateSegmentChart(rawData.revenue_by_geography);
 
-      await putJson(`reports/${symbol}.json`, reportData);
+        const sector =
+          metadata["GICS Sector"] || rawData.info?.sector || "Unknown";
+        const subInd =
+          metadata["GICS Sub-Industry"] || rawData.info?.industry || "Unknown";
 
-      if (!isETF || metadata.Symbol) {
-        updatedLock.push({
-          ...metadata,
-          Symbol_YF: symbol,
-          Daily_Change: calculateDailyChange(rawData.history),
-          Has_Movement_Reason: !!movementReasons[symbol],
-        });
+        const reportData = {
+          symbol: metadata.Symbol || symbol,
+          symbol_yf: symbol,
+          security:
+            metadata.Security ||
+            rawData.info?.longName ||
+            rawData.info?.shortName ||
+            symbol,
+          security_ja: metadata.Security_JA || null,
+          business_summary_ja: rawData.info?.longBusinessSummary || null,
+          sector,
+          sub_industry: subInd,
+          exchange: toTradingViewExchange(rawData.info?.exchange),
+          full_symbol: `${toTradingViewExchange(rawData.info?.exchange)}:${symbol.replace("-", ".")}`,
+          sector_etf: sectorEtf,
+          is_financial: ["Financials", "Real Estate"].includes(sector),
+          is_available_monex: true,
+          is_available_rakuten: true,
+          is_available_sbi: true,
+          is_available_mufg: true,
+          is_available_matsui: true,
+          is_available_dmm: true,
+          is_available_paypay: true,
+          is_available_moomoo: true,
+          is_available_iwaicosmo: true,
+          movement_reason: movementReasons[symbol] || null,
+          highlights,
+          earnings_surprise: earningsSurprise,
+          next_earnings: nextEarnings,
+          consensus,
+          consensus_raw: {
+            eps_trend: rawData.info?.epsTrend || null,
+            eps_revisions: rawData.info?.epsRevisions || null,
+          },
+          rating_changes: ratingChanges,
+          analyst_ratings: analystRatings,
+          peers: {
+            sub_industry: (subIndustryMap[subInd] || []).filter(
+              (s) => s.Symbol_YF !== symbol,
+            ),
+            sector: (sectorMap[sector] || []).filter(
+              (s) =>
+                s.Symbol_YF !== symbol &&
+                !subIndustryMap[subInd]?.find((si) => si.Symbol_YF === s.Symbol_YF),
+            ),
+          },
+          dcf_valuation: rawData.dcf_valuation || null,
+          charts: {
+            risk_return: riskReturnChart,
+            is: isChart,
+            bs: bsChart,
+            cf: cfChart,
+            performance: perfChart,
+            tp: tpChart,
+            dps: dpsChart,
+            segment: segmentChart,
+            geo: geoChart,
+          },
+          last_updated: new Date().toISOString(),
+        };
+
+        await putJson(`reports/${symbol}.json`, reportData);
+
+        if (!isETF || metadata.Symbol) {
+          updatedLock.push({
+            ...metadata,
+            Symbol_YF: symbol,
+            Daily_Change: calculateDailyChange(rawData.history),
+            Has_Movement_Reason: !!movementReasons[symbol],
+          });
+        }
+        return { ok: true, symbol };
+      } catch (e) {
+        return { ok: false, symbol, error: e };
       }
-      return symbol;
     },
     CONCURRENCY,
   );
