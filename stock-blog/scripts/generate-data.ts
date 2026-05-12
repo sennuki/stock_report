@@ -198,7 +198,14 @@ async function main() {
 
       console.log(`    - Fetching summary...`);
       let summary = await retry(() => yahooFinance.quoteSummary(stock.Symbol_YF, {
-        modules: ['financialData', 'defaultKeyStatistics', 'recommendationTrend', 'upgradeDowngradeHistory']
+        modules: [
+          'financialData', 
+          'defaultKeyStatistics', 
+          'recommendationTrend', 
+          'upgradeDowngradeHistory',
+          'earnings',
+          'calendar'
+        ]
       })).catch((e: any) => {
         console.warn(`    - Summary fetch failed for ${stock.Symbol}, using Python fallback:`, e.message);
         return {
@@ -293,6 +300,44 @@ async function main() {
       const recommendationTrend = (summary as any).recommendationTrend?.trend?.[0] || {};
       const upgradeDowngradeHistory = (summary as any).upgradeDowngradeHistory?.history || [];
       const quotes = (chartResult as any)?.quotes || [];
+      const earnings = (summary as any).earnings || {};
+      const calendar = (summary as any).calendar || {};
+
+      // 決算情報の抽出 (本番版に合わせる)
+      const earningsHistory = earnings.earningsChart?.quarterly || [];
+      const latestEarnings = earningsHistory.length > 0 ? earningsHistory[earningsHistory.length - 1] : null;
+      const earningsSurprise = latestEarnings ? {
+        date: latestEarnings.date,
+        actual: latestEarnings.actual,
+        estimate: latestEarnings.estimate,
+        surprise_pct: latestEarnings.estimate !== 0 ? ((latestEarnings.actual - latestEarnings.estimate) / Math.abs(latestEarnings.estimate)) * 100 : 0
+      } : null;
+
+      const nextEarnings = calendar.earnings?.earningsDate?.[0] ? {
+        date: new Date(calendar.earnings.earningsDate[0]).toISOString().split('T')[0],
+        estimate: calendar.earnings.earningsAverage || null
+      } : null;
+
+      const consensus = {
+        earnings: {
+          "0q": {
+            avg: financialData.earningsAverage || null,
+            low: financialData.earningsLow || null,
+            high: financialData.earningsHigh || null,
+            growth: financialData.earningsGrowth || null,
+            numberOfAnalysts: financialData.numberOfAnalystOpinions || 0
+          }
+        },
+        revenue: {
+          "0q": {
+            avg: financialData.revenueAverage || null,
+            low: financialData.revenueLow || null,
+            high: financialData.revenueHigh || null,
+            growth: financialData.revenueGrowth || null,
+            numberOfAnalysts: financialData.numberOfAnalystOpinions || 0
+          }
+        }
+      };
 
       // ヘルパー: 指定された日付またはその直近の株価を取得
       const getPriceAtDate = (targetDate: Date) => {
@@ -410,6 +455,10 @@ async function main() {
           segment: convertDBSegments(dbData.segments, 'セグメント別収益'),
           geo: convertDBSegments(dbData.geography, '地域別収益')
         },
+
+        earnings_surprise: earningsSurprise,
+        next_earnings: nextEarnings,
+        consensus: consensus,
 
         highlights: {
           revenue_growth: financialData.revenueGrowth,

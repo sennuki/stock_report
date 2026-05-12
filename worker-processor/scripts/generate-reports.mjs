@@ -542,14 +542,9 @@ async function main() {
   ];
 
   console.log("Generating reports/*.json...");
-  let symbols = Object.keys(rawDataMap);
-  // テスト用に銘柄を制限（確認用）
-  const testSymbols = ["MSFT", "AAPL", "NVDA", "GOOGL", "AMZN"];
-  symbols = testSymbols.filter(s => rawDataMap[s]);
-  console.log(`Test mode: processing ${symbols.join(", ")}`);
-
+  let symbols = ["MSFT", "AAPL", "NVDA", "GOOGL", "AMZN"].filter(s => rawDataMap[s]);
   const updatedStocksList = [];
-  const updatedLock = []; 
+  const updatedLock = []; // 並列 push の安全化のため append-only にする
   const putResults = await pMap(
     symbols,
     async (symbol) => {
@@ -560,11 +555,18 @@ async function main() {
           baseStocksList.find(
             (s) => s.Symbol_YF === symbol || s.Symbol === symbol,
           ) || {};
-        const sector = metadata["GICS Sector"] || rawData.info?.sector || "Unknown";
-        const sectorEtf = getSectorETF(sector);
+        const sectorEtf = getSectorETF(
+          metadata["GICS Sector"] || rawData.info?.sector,
+        );
         const etfRawData = rawDataMap[sectorEtf];
 
         const highlights = extractHighlights(rawData);
+        const earningsSurprise = extractEarningsSurprise(rawData);
+        const nextEarnings = extractNextEarnings(rawData);
+        const consensus = extractConsensus(rawData);
+        const ratingChanges = extractRatingChanges(rawData);
+        const analystRatings = extractAnalystRatings(rawData);
+
         const riskReturnChart = generateRiskReturnChart(riskReturnMetrics, symbol);
         const isChart = generateFinancialChart(
           rawData.income_stmt || [],
@@ -607,28 +609,27 @@ async function main() {
         const segmentChart = generateSegmentChart(rawData.revenue_by_segment);
         const geoChart = generateSegmentChart(rawData.revenue_by_geography);
 
+        const sector =
+          metadata["GICS Sector"] || rawData.info?.sector || "Unknown";
         const subInd =
           metadata["GICS Sub-Industry"] || rawData.info?.industry || "Unknown";
 
         const reportData = {
           symbol: metadata.Symbol || symbol,
           symbol_yf: symbol,
-          security: metadata.Security || rawData.info?.longName || rawData.info?.shortName || symbol,
+          security:
+            metadata.Security ||
+            rawData.info?.longName ||
+            rawData.info?.shortName ||
+            symbol,
           security_ja: metadata.Security_JA || null,
           business_summary_ja: rawData.info?.longBusinessSummary || null,
           sector,
           sub_industry: subInd,
           exchange: toTradingViewExchange(rawData.info?.exchange),
           full_symbol: `${toTradingViewExchange(rawData.info?.exchange)}:${symbol.replace("-", ".")}`,
+          sector_etf: sectorEtf,
           is_financial: ["Financials", "Real Estate"].includes(sector),
-          
-          benchmark_info: {
-            sector: { symbol: sectorEtf, name: sectorEtf },
-            broad: { symbol: sectorEtf, name: sectorEtf },
-            index: { symbol: "SPY", name: "SPDR S&P 500 ETF Trust" },
-            market: { symbol: "SPY", name: "SPDR S&P 500 ETF Trust" }
-          },
-
           is_available_monex: true,
           is_available_rakuten: true,
           is_available_sbi: true,
@@ -638,7 +639,27 @@ async function main() {
           is_available_paypay: true,
           is_available_moomoo: true,
           is_available_iwaicosmo: true,
-
+          movement_reason: movementReasons[symbol] || null,
+          highlights,
+          earnings_surprise: earningsSurprise,
+          next_earnings: nextEarnings,
+          consensus,
+          consensus_raw: {
+            eps_trend: rawData.info?.epsTrend || null,
+            eps_revisions: rawData.info?.epsRevisions || null,
+          },
+          rating_changes: ratingChanges,
+          analyst_ratings: analystRatings,
+          peers: {
+            sub_industry: (subIndustryMap[subInd] || []).filter(
+              (s) => s.Symbol_YF !== symbol,
+            ),
+            sector: (sectorMap[sector] || []).filter(
+              (s) =>
+                s.Symbol_YF !== symbol &&
+                !subIndustryMap[subInd]?.find((si) => si.Symbol_YF === s.Symbol_YF),
+            ),
+          },
           dcf_valuation: rawData.dcf_valuation || null,
           charts: {
             risk_return: riskReturnChart,
@@ -651,51 +672,6 @@ async function main() {
             segment: segmentChart,
             geo: geoChart,
           },
-          
-          highlights: {
-            revenue_growth: highlights.revenue_growth,
-            roe: highlights.roe,
-            operating_margins: highlights.operating_margins,
-            pe_forward: highlights.pe_forward,
-            pe_ttm: highlights.pe_ttm,
-            dividend_yield: highlights.dividend_yield,
-            debt_to_equity: highlights.debt_to_equity,
-            earnings_growth: highlights.earnings_growth,
-            profit_margins: highlights.profit_margins
-          },
-
-          analyst_ratings: {
-            recommendationKey: analystRatings.recommendationKey || "hold",
-            strongBuy: analystRatings.strongBuy || 0,
-            buy: analystRatings.buy || 0,
-            hold: analystRatings.hold || 0,
-            sell: analystRatings.sell || 0,
-            strongSell: analystRatings.strongSell || 0,
-            targetMeanPrice: analystRatings.targetMeanPrice,
-            targetHighPrice: analystRatings.targetHighPrice,
-            targetLowPrice: analystRatings.targetLowPrice,
-            targetMedianPrice: analystRatings.targetMedianPrice,
-            numberOfAnalystOpinions: analystRatings.numberOfAnalystOpinions,
-            currentPrice: analystRatings.currentPrice
-          },
-
-          peers: {
-            sub_industry: (subIndustryMap[subInd] || [])
-              .filter((s) => s.Symbol_YF !== symbol)
-              .slice(0, 10)
-              .map(p => ({ Symbol: p.Symbol, Symbol_YF: p.Symbol_YF })),
-            sector: (sectorMap[sector] || [])
-              .filter((s) => s.Symbol_YF !== symbol && !subIndustryMap[subInd]?.find((si) => si.Symbol_YF === s.Symbol_YF))
-              .slice(0, 10)
-              .map(p => ({ Symbol: p.Symbol, Symbol_YF: p.Symbol_YF }))
-          },
-          
-          // 明示的に削除または未定義にする（ローカル版にはないため）
-          earnings_surprise: null,
-          next_earnings: null,
-          consensus: null,
-          rating_changes: [],
-          
           last_updated: new Date().toISOString(),
         };
 
