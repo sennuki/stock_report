@@ -358,52 +358,18 @@ async function main() {
         return closestQuote ? closestQuote.adjclose : null;
       };
 
-      // 3. データの統合 (Astroレイアウトの期待値に合わせる)
-      // IS, BS, CFを年次・四半期それぞれ生成して結合
-      const is_a = convertDBFinancials(dbData.financials?.income_statement,
-        ["Total Revenue", "Gross Profit", "Operating Income", "Net Income", "Net Income Common Stockholders"], undefined, '通年', true);
-      const is_q = convertDBFinancials(dbData.financials?.income_statement_quarterly,
-        ["Total Revenue", "Gross Profit", "Operating Income", "Net Income", "Net Income Common Stockholders"], undefined, '四半期', false);
-      const is = { data: [...addMarginRatiosToIS(is_a).data, ...addMarginRatiosToIS(is_q).data] };
+      // 3. データの統合 (Native Chart.js 形式に移行)
+      
+      const is = generateFinancialChartNative(dbData.financials?.income_statement, 
+        ["Total Revenue", "Gross Profit", "Operating Income", "Net Income"]);
+      
+      const bs = generateFinancialChartNative(dbData.financials?.balance_sheet, 
+        ["Total Assets", "Total Liabilities Net Minority Interest", "Stockholders' Equity"]);
+      
+      const cf = generateFinancialChartNative(dbData.financials?.cash_flow, 
+        ["Operating Cash Flow", "Investing Cash Flow", "Financing Cash Flow", "Free Cash Flow"]);
 
-      const bsCols = [
-        "Total non-current assets", "Total Current Assets",
-        "Stockholders' Equity", "Total Non Current Liabilities", 
-        "Total Current Liabilities"
-      ];
-      const bsMap = {
-        "Total non-current assets": "0",
-        "Total Current Assets": "0",
-        "Stockholders' Equity": "1",
-        "Total Non Current Liabilities": "1",
-        "Total Current Liabilities": "1"
-      };
-      const bs_a = convertDBFinancials(dbData.financials?.balance_sheet, bsCols, bsMap, '通年', true);
-      const bs_q = convertDBFinancials(dbData.financials?.balance_sheet_quarterly, bsCols, bsMap, '四半期', false);
-      const bs = { data: [...bs_a.data, ...bs_q.data] };
-
-      const cfCols = ["Net Income", "Net Income Common Stockholders", "Net Income from Continuing Operations", "Operating Cash Flow", "Investing Cash Flow", "Financing Cash Flow", "Free Cash Flow", "Cash Dividends Paid", "Common Stock Dividend Paid", "Repurchase of Capital Stock"];
-      const cf_a_full = convertDBFinancials(dbData.financials?.cash_flow, cfCols, undefined, '通年', true);
-      const cf_q_full = convertDBFinancials(dbData.financials?.cash_flow_quarterly, cfCols, undefined, '四半期', false);
-
-      const cfFilter = (t: any) => t.name.includes("純利益") || t.name.includes("営業CF") || t.name.includes("投資CF") || t.name.includes("財務CF") || t.name.includes("フリーCF");
-      const cfSort = (a: any, b: any) => {
-        const order = ["純利益", "営業CF", "投資CF", "財務CF", "フリーCF"];
-        const nameA = a.name.split(' (')[0];
-        const nameB = b.name.split(' (')[0];
-        return order.indexOf(nameA) - order.indexOf(nameB);
-      };
-      const cf = { data: [
-        ...cf_a_full.data.filter(cfFilter).sort(cfSort),
-        ...cf_q_full.data.filter(cfFilter).sort(cfSort)
-      ]};
-
-      const tp_a = generatePayoutChart(is_a, cf_a_full, '通年', true);
-      const tp_q = generatePayoutChart(is_q, cf_q_full, '四半期', false);
-      const tp = { 
-        data: [...tp_a.data, ...tp_q.data],
-        layout: tp_a.layout
-      };
+      const tp = generateTpChartNative(dbData.financials?.cash_flow, dbData.financials?.income_statement);
 
       // 取引所マッピング (TradingView 互換)
       const exchangeMap: Record<string, string> = {
@@ -416,6 +382,25 @@ async function main() {
       };
       const exchange = exchangeMap[(quote as any).exchange] || (quote as any).exchange;
       const isFinancial = ["Financials", "Real Estate"].includes(stock['GICS Sector']);
+
+      // 4. パフォーマンス・リスクリターンデータの変換 (Plotly -> Chart.js)
+      const convertToChartJs = (plotlyObj: any) => {
+        if (!plotlyObj || !plotlyObj.data) return null;
+        const labels = plotlyObj.data[0]?.x || [];
+        return {
+          labels,
+          datasets: plotlyObj.data.map((d: any) => ({
+            label: d.name,
+            data: d.y,
+            borderColor: d.line?.color || d.marker?.color || '#000',
+            backgroundColor: d.marker?.color || d.line?.color || '#000',
+            type: d.mode?.includes('markers') ? 'scatter' : 'line',
+            fill: false,
+            pointRadius: d.mode?.includes('markers') ? 5 : 0,
+            hidden: d.visible === false
+          }))
+        };
+      };
 
       const reportData = {
         symbol: stock.Symbol,
@@ -441,24 +426,24 @@ async function main() {
         is_available_moomoo: brokerages.moomoo.has(stock.Symbol),
         is_available_iwaicosmo: brokerages.iwaicosmo.has(stock.Symbol),
 
+        earnings_surprise: earningsSurprise,
+        next_earnings: nextEarnings,
+        consensus: consensus,
+
         // DefeatBeta由来の詳細なDCF
         dcf_valuation: dbData.dcf,
 
         charts: {
-          risk_return: riskReturnData,
-          performance: perfData,
+          risk_return: convertToChartJs(riskReturnData),
+          performance: convertToChartJs(perfData),
           is: is,
           bs: bs,
           cf: cf,
           tp: tp,
           dps: generateDividendChart(dividends, chartResult, getPriceAtDate),
-          segment: convertDBSegments(dbData.segments, 'セグメント別収益'),
-          geo: convertDBSegments(dbData.geography, '地域別収益')
+          segment: generateSegmentChartNative(dbData.segments, 'セグメント別収益'),
+          geo: generateSegmentChartNative(dbData.geography, '地域別収益')
         },
-
-        earnings_surprise: earningsSurprise,
-        next_earnings: nextEarnings,
-        consensus: consensus,
 
         highlights: {
           revenue_growth: financialData.revenueGrowth,
@@ -530,8 +515,178 @@ async function main() {
   console.log('--- Integration Finished! ---');
 }
 
-// 補助関数: DefeatBeta (Split形式) から ChartJs 用のシリーズ形式に変換
+// === Native Chart Helpers (aligned with production) ===
+
+function getValFromSplit(splitData: any, field: string, date: string) {
+  if (!splitData || !splitData.columns || !splitData.data) return null;
+  const fieldRow = splitData.data.find((r: any) => r[0] === field);
+  if (!fieldRow) return null;
+  const dateIdx = splitData.columns.indexOf(date);
+  return dateIdx !== -1 ? fieldRow[dateIdx] : null;
+}
+
+function generateFinancialChartNative(splitData: any, fields: string[]) {
+  if (!splitData || !splitData.columns || !splitData.data) return null;
+
+  // TTMを除外して日付を抽出
+  const dates = splitData.columns
+    .filter((c: any, i: number) => i > 0 && c !== 'TTM')
+    .sort();
+
+  if (dates.length === 0) return null;
+
+  const colors = [
+    { bg: "rgba(54, 162, 235, 0.5)", border: "rgb(54, 162, 235)" },
+    { bg: "rgba(255, 99, 132, 0.5)", border: "rgb(255, 99, 132)" },
+    { bg: "rgba(75, 192, 192, 0.5)", border: "rgb(75, 192, 192)" },
+    { bg: "rgba(255, 159, 64, 0.5)", border: "rgb(255, 159, 64)" },
+  ];
+
+  const labelMap: Record<string, string> = {
+    "Total Revenue": "売上高",
+    "Gross Profit": "売上総利益",
+    "Operating Income": "営業利益",
+    "Net Income": "純利益",
+    "Net Income Common Stockholders": "純利益",
+    "Total Assets": "総資産",
+    "Total Current Assets": "流動資産",
+    "Total non-current assets": "固定資産",
+    "Total Liabilities Net Minority Interest": "総負債",
+    "Stockholders Equity": "純資産",
+    "Stockholders' Equity": "純資産",
+    "Total Non Current Liabilities": "固定負債",
+    "Total Current Liabilities": "流動負債",
+    "Operating Cash Flow": "営業CF",
+    "Investing Cash Flow": "投資CF",
+    "Financing Cash Flow": "財務CF",
+    "Free Cash Flow": "フリーCF"
+  };
+
+  return {
+    labels: dates.map((d: any) => d.split("T")[0]),
+    datasets: fields.map((field, i) => ({
+      label: labelMap[field] || field,
+      data: dates.map((d: any) => getValFromSplit(splitData, field, d)),
+      backgroundColor: colors[i % colors.length].bg,
+      borderColor: colors[i % colors.length].border,
+      borderWidth: 1,
+    })),
+  };
+}
+
+function generateTpChartNative(cfSplit: any, isSplit: any) {
+  if (!cfSplit || !isSplit) return null;
+  const dates = isSplit.columns
+    .filter((c: any, i: number) => i > 0 && c !== 'TTM')
+    .sort();
+  if (dates.length === 0) return null;
+
+  const niData = dates.map((d: any) => getValFromSplit(isSplit, "Net Income", d));
+  const divData = dates.map((d: any) =>
+    Math.abs(getValFromSplit(cfSplit, "Cash Dividends Paid", d) || getValFromSplit(cfSplit, "Common Stock Dividend Paid", d) || 0),
+  );
+  const repoData = dates.map((d: any) =>
+    Math.abs(getValFromSplit(cfSplit, "Repurchase of Capital Stock", d) || 0),
+  );
+
+  const divRatio = niData.map((ni, i) => (ni > 0 ? divData[i] / ni : 0));
+  const totalRatio = niData.map((ni, i) =>
+    ni > 0 ? (divData[i] + repoData[i]) / ni : 0,
+  );
+
+  return {
+    labels: dates.map((d: any) => d.split("T")[0]),
+    datasets: [
+      {
+        type: "bar",
+        label: "純利益",
+        data: niData,
+        backgroundColor: "rgba(44, 160, 44, 0.6)",
+        yAxisID: "y",
+      },
+      {
+        type: "bar",
+        label: "配当金",
+        data: divData,
+        backgroundColor: "rgba(174, 199, 232, 0.6)",
+        yAxisID: "y",
+      },
+      {
+        type: "bar",
+        label: "自社株買い",
+        data: repoData,
+        backgroundColor: "rgba(31, 119, 180, 0.6)",
+        yAxisID: "y",
+      },
+      {
+        type: "line",
+        label: "配当性向",
+        data: divRatio,
+        borderColor: "#ffbb78",
+        yAxisID: "y1",
+      },
+      {
+        type: "line",
+        label: "総還元性向",
+        data: totalRatio,
+        borderColor: "#ff7f0e",
+        yAxisID: "y1",
+      },
+    ],
+  };
+}
+
+function generateSegmentChartNative(splitData: any, title: string) {
+  if (!splitData || !splitData.columns || !splitData.data) return null;
+  const labels = splitData.columns.slice(1).sort();
+  const segments = splitData.data;
+
+  const colors = [
+    "rgba(31, 119, 180, 0.7)",
+    "rgba(255, 127, 14, 0.7)",
+    "rgba(44, 160, 44, 0.7)",
+    "rgba(214, 39, 40, 0.7)",
+    "rgba(148, 103, 189, 0.7)",
+    "rgba(140, 86, 75, 0.7)",
+    "rgba(227, 119, 194, 0.7)",
+    "rgba(127, 127, 127, 0.7)",
+    "rgba(188, 189, 34, 0.7)",
+    "rgba(23, 190, 207, 0.7)",
+  ];
+
+  return {
+    labels: labels.map((d: any) => d.split("T")[0]),
+    datasets: segments.map((seg: any, i: number) => ({
+      label: seg[0],
+      data: labels.map((l: any) => seg[splitData.columns.indexOf(l)]),
+      backgroundColor: colors[i % colors.length],
+    })),
+  };
+}
+
+// 補助関数: 指定されたラベル、データ、背景色、境界色を持つデータセットを作成
+function createChartJsDataset(label: string, data: any[], colorIdx: number, type: 'bar' | 'line' = 'bar', yAxisID: string = 'y') {
+  const colors = [
+    { bg: "rgba(54, 162, 235, 0.5)", border: "rgb(54, 162, 235)" },
+    { bg: "rgba(255, 99, 132, 0.5)", border: "rgb(255, 99, 132)" },
+    { bg: "rgba(75, 192, 192, 0.5)", border: "rgb(75, 192, 192)" },
+    { bg: "rgba(255, 159, 64, 0.5)", border: "rgb(255, 159, 64)" },
+  ];
+  const color = colors[colorIdx % colors.length];
+  return {
+    label,
+    data,
+    type,
+    backgroundColor: color.bg,
+    borderColor: color.border,
+    borderWidth: 1,
+    yAxisID
+  };
+}
+
+// 補助関数: DefeatBeta (Split形式) から ChartJs 用のシリーズ形式に変換 (旧互換用、徐々に移行)
 function convertDBFinancials(splitData: any, allowedKeys?: string[], offsetGroupMap?: Record<string, string>, suffix: string = '', visible: boolean = true) {
+
   if (!splitData || !splitData.columns || !splitData.data) return { data: [] };
   
   const columns = splitData.columns; // ["Breakdown", "TTM", "2025-06-30", ...]

@@ -28,6 +28,72 @@ const s3 = new S3Client({
   },
 });
 
+const sectorEtfMap = {
+  'Information Technology': 'XLK',
+  'Consumer Discretionary': 'XLY',
+  'Financials': 'XLF',
+  'Health Care': 'XLV',
+  'Communication Services': 'XLC',
+  'Industrials': 'XLI',
+  'Consumer Staples': 'XLP',
+  'Energy': 'XLE',
+  'Utilities': 'XLU',
+  'Real Estate': 'XLRE',
+  'Materials': 'XLB',
+  'Homebuilding': 'XHB'
+};
+
+const broadSectorEtfMap = {
+  'Information Technology': 'VGT',
+  'Consumer Discretionary': 'VCR',
+  'Financials': 'VFH',
+  'Health Care': 'VHT',
+  'Communication Services': 'VOX',
+  'Industrials': 'VIS',
+  'Consumer Staples': 'VDC',
+  'Energy': 'VDE',
+  'Utilities': 'VPU',
+  'Real Estate': 'VNQ',
+  'Materials': 'VAW',
+  'Homebuilding': 'ITB'
+};
+
+const marketIndexMap = {
+  'S&P 500': 'SPY',
+  'S&P 400': 'MDY',
+  'S&P 600': 'IJR'
+};
+
+const etfFullNameMap = {
+  'XLK': 'Technology Select Sector SPDR Fund',
+  'XLY': 'Consumer Discretionary Select Sector SPDR Fund',
+  'XLF': 'Financial Select Sector SPDR Fund',
+  'XLV': 'Health Care Select Sector SPDR Fund',
+  'XLC': 'Communication Services Select Sector SPDR Fund',
+  'XLI': 'Industrial Select Sector SPDR Fund',
+  'XLP': 'Consumer Staples Select Sector SPDR Fund',
+  'XLE': 'Energy Select Sector SPDR Fund',
+  'XLU': 'Utilities Select Sector SPDR Fund',
+  'XLRE': 'Real Estate Select Sector SPDR Fund',
+  'XLB': 'Materials Select Sector SPDR Fund',
+  'XHB': 'SPDR S&P Homebuilders ETF',
+  'VGT': 'Vanguard Information Technology ETF',
+  'VCR': 'Vanguard Consumer Discretionary ETF',
+  'VFH': 'Vanguard Financials ETF',
+  'VHT': 'Vanguard Health Care ETF',
+  'VOX': 'Vanguard Communication Services ETF',
+  'VIS': 'Vanguard Industrials ETF',
+  'VDC': 'Vanguard Consumer Staples ETF',
+  'VDE': 'Vanguard Energy ETF',
+  'VPU': 'Vanguard Utilities ETF',
+  'VNQ': 'Vanguard Real Estate ETF',
+  'VAW': 'Vanguard Materials ETF',
+  'ITB': 'iShares U.S. Home Construction ETF',
+  'SPY': 'SPDR S&P 500 ETF Trust',
+  'MDY': 'SPDR S&P MidCap 400 ETF Trust',
+  'IJR': 'iShares Core S&P Small-Cap ETF'
+};
+
 async function listAll(prefix) {
   let keys = [];
   let token = null;
@@ -97,21 +163,25 @@ function calculateDailyChange(history) {
   return (last - prev) / prev;
 }
 
-function getSectorETF(sector) {
-  const map = {
-    "Information Technology": "XLK",
-    "Communication Services": "XLC",
-    "Consumer Discretionary": "XLY",
-    "Consumer Staples": "XLP",
-    Energy: "XLE",
-    Financials: "XLF",
-    "Health Care": "XLV",
-    Industrials: "XLI",
-    Materials: "XLB",
-    "Real Estate": "XLRE",
-    Utilities: "XLU",
+function getSectorETF(sector, subIndustry) {
+  return sectorEtfMap[subIndustry] || sectorEtfMap[sector] || 'SPY';
+}
+
+function getBenchmarkInfo(metadata) {
+  const sector = metadata['GICS Sector'];
+  const subInd = metadata['GICS Sub-Industry'];
+  const index = metadata['Index'] || 'S&P 500';
+
+  const targetEtf = sectorEtfMap[subInd] || sectorEtfMap[sector] || 'SPY';
+  const broadEtf = broadSectorEtfMap[subInd] || broadSectorEtfMap[sector] || 'SPY';
+  const marketEtf = marketIndexMap[index] || 'SPY';
+
+  return {
+    sector: { symbol: targetEtf, name: etfFullNameMap[targetEtf] || targetEtf },
+    broad: { symbol: broadEtf, name: etfFullNameMap[broadEtf] || broadEtf },
+    index: { symbol: marketEtf, name: etfFullNameMap[marketEtf] || marketEtf },
+    market: { symbol: 'SPY', name: etfFullNameMap['SPY'] }
   };
-  return map[sector] || "SPY";
 }
 
 function toTradingViewExchange(ex) {
@@ -227,7 +297,7 @@ function extractAnalystRatings(rawData) {
   const info = rawData.info || {};
   const ratings = rawData.analyst_ratings || {};
   return {
-    recommendationKey: info.recommendationKey || "hold",
+    recommendationKey: (info.recommendationKey || "hold").toLowerCase(),
     targetMeanPrice: info.targetMeanPrice || null,
     targetHighPrice: info.targetHighPrice || null,
     targetLowPrice: info.targetLowPrice || null,
@@ -261,9 +331,15 @@ function generateFinancialChart(data, fields, type, barmode) {
     "Gross Profit": "売上総利益",
     "Operating Income": "営業利益",
     "Net Income": "純利益",
+    "Net Income Common Stockholders": "純利益",
     "Total Assets": "総資産",
+    "Total Current Assets": "流動資産",
+    "Total non-current assets": "固定資産",
     "Total Liabilities Net Minority Interest": "総負債",
     "Stockholders Equity": "純資産",
+    "Stockholders' Equity": "純資産",
+    "Total Non Current Liabilities": "固定負債",
+    "Total Current Liabilities": "流動負債",
     "Operating Cash Flow": "営業CF",
     "Investing Cash Flow": "投資CF",
     "Financing Cash Flow": "財務CF",
@@ -456,6 +532,50 @@ function generateSegmentChart(segmentData) {
   return { labels, datasets };
 }
 
+function formatSummary(text) {
+  if (!text) return text;
+  
+  // 正規化: 既存の改行を削除
+  const normalized = text.replace(/\n\n/g, "\n").replace(/\n/g, "");
+  
+  // 句点で分割
+  const sentences = normalized.split(/(?<=。)/);
+  
+  const formattedSentences = [];
+  let chunkSize = 0;
+  
+  for (let i = 0; i < sentences.length; i++) {
+    const s = sentences[i].trim();
+    if (!s) continue;
+    
+    formattedSentences.push(s);
+    chunkSize += s.length;
+    
+    if (i < sentences.length - 1) {
+      const nextSentence = sentences[i + 1].trim();
+      let shouldBreak = false;
+      
+      if (chunkSize > 150) {
+        shouldBreak = true;
+      }
+      
+      const startKeywords = ["また、", "さらに", "加えて", "同社は", "同社の", "主要な", "事業は"];
+      if (startKeywords.some(word => nextSentence.startsWith(word))) {
+        if (chunkSize > 40) {
+          shouldBreak = true;
+        }
+      }
+      
+      if (shouldBreak) {
+        formattedSentences.push("\n\n");
+        chunkSize = 0;
+      }
+    }
+  }
+  
+  return formattedSentences.join("").trim();
+}
+
 // === main ===
 
 async function main() {
@@ -490,6 +610,15 @@ async function main() {
     },
     CONCURRENCY,
   );
+
+  let translations = {};
+  try {
+    console.log("Downloading translations/business_summaries.json...");
+    translations = await getJson("translations/business_summaries.json");
+  } catch (e) {
+    console.log("  Translations not found or failed to load.");
+  }
+
   const dlFails = dlResults.filter((r) => !r.ok).length;
   if (dlFails) {
     console.log(`  ${dlFails} downloads failed`);
@@ -542,7 +671,7 @@ async function main() {
   ];
 
   console.log("Generating reports/*.json...");
-  let symbols = ["MSFT", "AAPL", "NVDA", "GOOGL", "AMZN"].filter(s => rawDataMap[s]);
+  let symbols = ["MSFT", "AAPL", "NVDA"].filter(s => rawDataMap[s]);
   const updatedStocksList = [];
   const updatedLock = []; // 並列 push の安全化のため append-only にする
   const putResults = await pMap(
@@ -557,6 +686,7 @@ async function main() {
           ) || {};
         const sectorEtf = getSectorETF(
           metadata["GICS Sector"] || rawData.info?.sector,
+          metadata["GICS Sub-Industry"] || rawData.info?.industry,
         );
         const etfRawData = rawDataMap[sectorEtf];
 
@@ -614,6 +744,11 @@ async function main() {
         const subInd =
           metadata["GICS Sub-Industry"] || rawData.info?.industry || "Unknown";
 
+        let summary_ja = translations[symbol]?.business_summary_ja || translations[symbol] || null;
+        if (summary_ja) {
+          summary_ja = formatSummary(summary_ja);
+        }
+
         const reportData = {
           symbol: metadata.Symbol || symbol,
           symbol_yf: symbol,
@@ -623,13 +758,16 @@ async function main() {
             rawData.info?.shortName ||
             symbol,
           security_ja: metadata.Security_JA || null,
-          business_summary_ja: rawData.info?.longBusinessSummary || null,
+          business_summary_ja: summary_ja,
           sector,
           sub_industry: subInd,
           exchange: toTradingViewExchange(rawData.info?.exchange),
           full_symbol: `${toTradingViewExchange(rawData.info?.exchange)}:${symbol.replace("-", ".")}`,
           sector_etf: sectorEtf,
           is_financial: ["Financials", "Real Estate"].includes(sector),
+          
+          benchmark_info: getBenchmarkInfo(metadata),
+
           is_available_monex: true,
           is_available_rakuten: true,
           is_available_sbi: true,

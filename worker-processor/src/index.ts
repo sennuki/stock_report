@@ -9,6 +9,72 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Headers': 'Content-Type',
 };
 
+const sectorEtfMap: Record<string, string> = {
+  'Information Technology': 'XLK',
+  'Consumer Discretionary': 'XLY',
+  'Financials': 'XLF',
+  'Health Care': 'XLV',
+  'Communication Services': 'XLC',
+  'Industrials': 'XLI',
+  'Consumer Staples': 'XLP',
+  'Energy': 'XLE',
+  'Utilities': 'XLU',
+  'Real Estate': 'XLRE',
+  'Materials': 'XLB',
+  'Homebuilding': 'XHB'
+};
+
+const broadSectorEtfMap: Record<string, string> = {
+  'Information Technology': 'VGT',
+  'Consumer Discretionary': 'VCR',
+  'Financials': 'VFH',
+  'Health Care': 'VHT',
+  'Communication Services': 'VOX',
+  'Industrials': 'VIS',
+  'Consumer Staples': 'VDC',
+  'Energy': 'VDE',
+  'Utilities': 'VPU',
+  'Real Estate': 'VNQ',
+  'Materials': 'VAW',
+  'Homebuilding': 'ITB'
+};
+
+const marketIndexMap: Record<string, string> = {
+  'S&P 500': 'SPY',
+  'S&P 400': 'MDY',
+  'S&P 600': 'IJR'
+};
+
+const etfFullNameMap: Record<string, string> = {
+  'XLK': 'Technology Select Sector SPDR Fund',
+  'XLY': 'Consumer Discretionary Select Sector SPDR Fund',
+  'XLF': 'Financial Select Sector SPDR Fund',
+  'XLV': 'Health Care Select Sector SPDR Fund',
+  'XLC': 'Communication Services Select Sector SPDR Fund',
+  'XLI': 'Industrial Select Sector SPDR Fund',
+  'XLP': 'Consumer Staples Select Sector SPDR Fund',
+  'XLE': 'Energy Select Sector SPDR Fund',
+  'XLU': 'Utilities Select Sector SPDR Fund',
+  'XLRE': 'Real Estate Select Sector SPDR Fund',
+  'XLB': 'Materials Select Sector SPDR Fund',
+  'XHB': 'SPDR S&P Homebuilders ETF',
+  'VGT': 'Vanguard Information Technology ETF',
+  'VCR': 'Vanguard Consumer Discretionary ETF',
+  'VFH': 'Vanguard Financials ETF',
+  'VHT': 'Vanguard Health Care ETF',
+  'VOX': 'Vanguard Communication Services ETF',
+  'VIS': 'Vanguard Industrials ETF',
+  'VDC': 'Vanguard Consumer Staples ETF',
+  'VDE': 'Vanguard Energy ETF',
+  'VPU': 'Vanguard Utilities ETF',
+  'VNQ': 'Vanguard Real Estate ETF',
+  'VAW': 'Vanguard Materials ETF',
+  'ITB': 'iShares U.S. Home Construction ETF',
+  'SPY': 'SPDR S&P 500 ETF Trust',
+  'MDY': 'SPDR S&P MidCap 400 ETF Trust',
+  'IJR': 'iShares Core S&P Small-Cap ETF'
+};
+
 export default {
   async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext) {
     ctx.waitUntil(processAllStocks(env));
@@ -25,8 +91,6 @@ export default {
       return new Response("Batch processing started in background.", { status: 202 });
     }
 
-    // R2 内の状態を覗くデバッグ用エンドポイント。
-    // GET /api/list?prefix=reports/&limit=5 のように使う。
     if (url.pathname === '/api/list' && request.method === 'GET') {
       const prefix = url.searchParams.get('prefix') ?? '';
       const limit = Math.min(Number(url.searchParams.get('limit') ?? '20'), 1000);
@@ -56,9 +120,6 @@ export default {
       }
     }
 
-    // Cloudflare Pages の preview デプロイから R2 バインディングなしでも
-    // レポート JSON にアクセスできるよう HTTP API を提供する。
-    // 例: GET /api/report/AAPL → reports/AAPL.json
     const reportMatch = url.pathname.match(/^\/api\/report\/([^/]+)$/);
     if (reportMatch && request.method === 'GET') {
       const symbol = decodeURIComponent(reportMatch[1]);
@@ -94,8 +155,6 @@ export default {
 export async function processAllStocks(env: Env) {
   console.log("--- Batch Processing Started ---");
 
-  // R2.list() はデフォルト 1 ページ最大 1000 件。S&P 500/400/600 で
-  // 約 1500 件あるため cursor で全件を取得しないと末尾が落ちる。
   const allObjects: { key: string }[] = [];
   let cursor: string | undefined = undefined;
   let pages = 0;
@@ -124,6 +183,16 @@ export async function processAllStocks(env: Env) {
 
   const objectKeys = allObjects.map(o => o.key).filter(k => k.endsWith('.json') && k !== 'raw/stocks_list.json');
   console.log(`Found ${objectKeys.length} raw data files.`);
+
+  let translations: Record<string, any> = {};
+  try {
+    const transObj = await env.STOCK_DATA.get('translations/business_summaries.json');
+    if (transObj) {
+      translations = JSON.parse(await transObj.text());
+    }
+  } catch (e) {
+    console.log("No translations/business_summaries.json found.");
+  }
 
   const BATCH_SIZE = 50;
   for (let i = 0; i < objectKeys.length; i += BATCH_SIZE) {
@@ -178,12 +247,17 @@ export async function processAllStocks(env: Env) {
 
   const updatedStocksList = [];
   
+  const testSymbols = ["MSFT", "AAPL", "NVDA"];
   for (const symbol of Object.keys(rawDataMap)) {
+    if (!testSymbols.includes(symbol)) continue;
     const rawData = rawDataMap[symbol];
     const isETF = ["SPY", "XLC", "XLY", "XLP", "XLE", "XLF", "XLV", "XLI", "XLK", "XLB", "XLRE", "XLU"].includes(symbol);
     const metadata = baseStocksList.find(s => s.Symbol_YF === symbol || s.Symbol === symbol) || {};
 
-    const sectorEtf = getSectorETF(metadata['GICS Sector'] || rawData.info?.sector);
+    const sectorEtf = getSectorETF(
+      metadata['GICS Sector'] || rawData.info?.sector,
+      metadata['GICS Sub-Industry'] || rawData.info?.industry
+    );
     const etfRawData = rawDataMap[sectorEtf];
     
     const highlights = extractHighlights(rawData);
@@ -193,7 +267,6 @@ export async function processAllStocks(env: Env) {
     const ratingChanges = extractRatingChanges(rawData);
     const analystRatings = extractAnalystRatings(rawData);
 
-    // Chart Generations (Updated for Array format)
     const riskReturnChart = generateRiskReturnChart(riskReturnMetrics, symbol);
     const isChart = generateFinancialChart(rawData.income_stmt || [], ["Total Revenue", "Gross Profit", "Operating Income", "Net Income"], "bar", "group");
     const bsChart = generateFinancialChart(rawData.balancesheet || [], ["Total Assets", "Total Liabilities Net Minority Interest", "Stockholders Equity"], "bar", "stack");
@@ -208,12 +281,19 @@ export async function processAllStocks(env: Env) {
     const sector = metadata['GICS Sector'] || rawData.info?.sector || "Unknown";
     const subInd = metadata['GICS Sub-Industry'] || rawData.info?.industry || "Unknown";
 
+    let summary_ja = translations[symbol]?.business_summary_ja || translations[symbol] || null;
+    if (summary_ja && typeof summary_ja === 'string') {
+      summary_ja = formatSummary(summary_ja);
+    } else {
+      summary_ja = null;
+    }
+
     const reportData = {
       symbol: metadata.Symbol || symbol,
       symbol_yf: symbol,
       security: metadata.Security || rawData.info?.longName || rawData.info?.shortName || symbol,
       security_ja: metadata.Security_JA || null,
-      business_summary_ja: rawData.info?.longBusinessSummary || null,
+      business_summary_ja: summary_ja,
       sector: sector,
       sub_industry: subInd,
       exchange: toTradingViewExchange(rawData.info?.exchange),
@@ -244,6 +324,7 @@ export async function processAllStocks(env: Env) {
         sub_industry: (subIndustryMap[subInd] || []).filter(s => s.Symbol_YF !== symbol),
         sector: (sectorMap[sector] || []).filter(s => s.Symbol_YF !== symbol && !subIndustryMap[subInd]?.find(si => si.Symbol_YF === s.Symbol_YF))
       },
+      benchmark_info: getBenchmarkInfo(metadata),
       dcf_valuation: rawData.dcf_valuation || null,
       charts: {
         risk_return: riskReturnChart,
@@ -290,6 +371,27 @@ function calculateDailyChange(history: any[]) {
   return (last - prev) / prev;
 }
 
+function getSectorETF(sector?: string, subIndustry?: string) {
+  return sectorEtfMap[subIndustry || ''] || sectorEtfMap[sector || ''] || 'SPY';
+}
+
+function getBenchmarkInfo(metadata: any) {
+  const sector = metadata['GICS Sector'];
+  const subInd = metadata['GICS Sub-Industry'];
+  const index = metadata['Index'] || 'S&P 500';
+
+  const targetEtf = sectorEtfMap[subInd] || sectorEtfMap[sector] || 'SPY';
+  const broadEtf = broadSectorEtfMap[subInd] || broadSectorEtfMap[sector] || 'SPY';
+  const marketEtf = marketIndexMap[index] || 'SPY';
+
+  return {
+    sector: { symbol: targetEtf, name: etfFullNameMap[targetEtf] || targetEtf },
+    broad: { symbol: broadEtf, name: etfFullNameMap[broadEtf] || broadEtf },
+    index: { symbol: marketEtf, name: etfFullNameMap[marketEtf] || marketEtf },
+    market: { symbol: 'SPY', name: etfFullNameMap['SPY'] }
+  };
+}
+
 function calculateRiskReturn(history: any[], symbol: string) {
   if (!history || history.length < 5) return null;
   const lastQuotes = history.slice(-252);
@@ -305,15 +407,6 @@ function calculateRiskReturn(history: any[], symbol: string) {
   const totalReturn = (lastQuotes[lastQuotes.length - 1].Close / lastQuotes[0].Close) - 1;
 
   return { symbol, hv, ret: totalReturn };
-}
-
-function getSectorETF(sector?: string) {
-  const map: Record<string, string> = {
-    "Communication Services": "XLC", "Consumer Discretionary": "XLY", "Consumer Staples": "XLP",
-    "Energy": "XLE", "Financials": "XLF", "Health Care": "XLV", "Industrials": "XLI",
-    "Information Technology": "XLK", "Materials": "XLB", "Real Estate": "XLRE", "Utilities": "XLU"
-  };
-  return sector && map[sector] ? map[sector] : "SPY";
 }
 
 function toTradingViewExchange(yfExchange?: string): string {
@@ -443,7 +536,7 @@ function extractAnalystRatings(rawData: any) {
     targetMedianPrice: info.targetMedianPrice,
     currentPrice: info.currentPrice,
     numberOfAnalystOpinions: info.numberOfAnalystOpinions,
-    recommendationKey: info.recommendationKey,
+    recommendationKey: (info.recommendationKey || "hold").toLowerCase(),
     ...ratings
   };
 }
@@ -472,7 +565,6 @@ function generateRiskReturnChart(allMetrics: any[], targetSymbol: string) {
   return { datasets };
 }
 
-// Helper to extract value from Array format [ {index: 'Item', '2023-01-01': 123, ...}, ... ]
 function getValFromArray(data: any[], itemLabel: string, date: string): number {
   const row = data.find(r => r.index === itemLabel);
   return row ? (Number(row[date]) || 0) : 0;
@@ -480,7 +572,6 @@ function getValFromArray(data: any[], itemLabel: string, date: string): number {
 
 function generateFinancialChart(data: any[], fields: string[], type: string, barmode: string) {
   if (data.length === 0) return null;
-  // Get dates from first row (excluding 'index')
   const dates = Object.keys(data[0]).filter(k => k !== 'index').sort();
   if (dates.length === 0) return null;
 
@@ -496,9 +587,15 @@ function generateFinancialChart(data: any[], fields: string[], type: string, bar
     "Gross Profit": "売上総利益",
     "Operating Income": "営業利益",
     "Net Income": "純利益",
+    "Net Income Common Stockholders": "純利益",
     "Total Assets": "総資産",
+    "Total Current Assets": "流動資産",
+    "Total non-current assets": "固定資産",
     "Total Liabilities Net Minority Interest": "総負債",
     "Stockholders Equity": "純資産",
+    "Stockholders' Equity": "純資産",
+    "Total Non Current Liabilities": "固定負債",
+    "Total Current Liabilities": "流動負債",
     "Operating Cash Flow": "営業CF",
     "Investing Cash Flow": "投資CF",
     "Financing Cash Flow": "財務CF",
@@ -630,19 +727,15 @@ function generateDpsEpsChart(dividends: any[]) {
 
 function generateSegmentChart(segmentData: any[]) {
   if (!segmentData || !Array.isArray(segmentData) || segmentData.length === 0) return null;
-  
   const segmentsArr = Object.keys(segmentData[0]).filter(k => !['Date', 'report_date', 'symbol', 'index'].includes(k));
   if (segmentsArr.length === 0) return null;
-
   const labels = segmentData.map(row => String(row.Date || row.report_date || row.index).split(' ')[0]);
-
   const colors = [
     'rgba(31, 119, 180, 0.7)', 'rgba(255, 127, 14, 0.7)', 'rgba(44, 160, 44, 0.7)',
     'rgba(214, 39, 40, 0.7)', 'rgba(148, 103, 189, 0.7)', 'rgba(140, 86, 75, 0.7)',
     'rgba(227, 119, 194, 0.7)', 'rgba(127, 127, 127, 0.7)', 'rgba(188, 189, 34, 0.7)',
     'rgba(23, 190, 207, 0.7)'
   ];
-
   const datasets = segmentsArr.map((seg, i) => {
     return {
       label: seg,
@@ -650,6 +743,33 @@ function generateSegmentChart(segmentData: any[]) {
       backgroundColor: colors[i % colors.length]
     };
   });
-
   return { labels, datasets };
+}
+
+function formatSummary(text: string): string {
+  if (!text) return text;
+  const normalized = text.replace(/\n\n/g, "\n").replace(/\n/g, "");
+  const sentences = normalized.split(/(?<=。)/);
+  const formattedSentences = [];
+  let chunkSize = 0;
+  for (let i = 0; i < sentences.length; i++) {
+    const s = sentences[i].trim();
+    if (!s) continue;
+    formattedSentences.push(s);
+    chunkSize += s.length;
+    if (i < sentences.length - 1) {
+      const nextSentence = sentences[i + 1].trim();
+      let shouldBreak = false;
+      if (chunkSize > 150) shouldBreak = true;
+      const startKeywords = ["また、", "さらに", "加えて", "同社は", "同社の", "主要な", "事業は"];
+      if (startKeywords.some(word => nextSentence.startsWith(word))) {
+        if (chunkSize > 40) shouldBreak = true;
+      }
+      if (shouldBreak) {
+        formattedSentences.push("\n\n");
+        chunkSize = 0;
+      }
+    }
+  }
+  return formattedSentences.join("").trim();
 }
