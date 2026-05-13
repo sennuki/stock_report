@@ -1,57 +1,57 @@
 [
   {
-    "Symbol": "OLLI",
-    "Security": "Ollie's Bargain Outlet",
-    "GICS Sector": "Consumer Discretionary",
-    "GICS Sub-Industry": "Broadline Retail",
-    "Symbol_YF": "OLLI",
+    "Symbol": "PFGC",
+    "Security": "Performance Food Group",
+    "GICS Sector": "Consumer Staples",
+    "GICS Sub-Industry": "Food Distributors",
+    "Symbol_YF": "PFGC",
+    "Index": "S&P 400",
+    "Exchange": "NYSE",
+    "Daily_Change": 0.010205166365472605,
+    "Security_JA": "パフォーマンス・フード・グループ"
+  },
+  {
+    "Symbol": "CGNX",
+    "Security": "Cognex",
+    "GICS Sector": "Information Technology",
+    "GICS Sub-Industry": "Electronic Equipment & Instruments",
+    "Symbol_YF": "CGNX",
     "Index": "S&P 400",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.007262643602271189,
-    "Security_JA": "オーリーズ・バーゲン・アウトレット・ホールディングス"
+    "Daily_Change": -0.023490930716622036,
+    "Security_JA": "コグネックス"
   },
   {
-    "Symbol": "HCC",
-    "Security": "Warrior Met Coal, Inc.",
-    "GICS Sector": "Materials",
-    "GICS Sub-Industry": "Steel",
-    "Symbol_YF": "HCC",
+    "Symbol": "NWN",
+    "Security": "NW Natural",
+    "GICS Sector": "Utilities",
+    "GICS Sub-Industry": "Gas Utilities",
+    "Symbol_YF": "NWN",
     "Index": "S&P 600",
     "Exchange": "NYSE",
-    "Daily_Change": 0.01261757283780677,
-    "Security_JA": "ウォリアー・メット・コール"
+    "Daily_Change": -0.005945303210463818,
+    "Security_JA": "ノースウェスト・ナチュラル・ガス"
   },
   {
-    "Symbol": "QRVO",
-    "Security": "Qorvo",
-    "GICS Sector": "Information Technology",
-    "GICS Sub-Industry": "Semiconductors",
-    "Symbol_YF": "QRVO",
+    "Symbol": "RXO",
+    "Security": "RXO, Inc.",
+    "GICS Sector": "Industrials",
+    "GICS Sub-Industry": "Cargo Ground Transportation",
+    "Symbol_YF": "RXO",
     "Index": "S&P 600",
-    "Exchange": "NASDAQ",
-    "Daily_Change": -0.03939621025586118,
-    "Security_JA": "クォルボ"
+    "Exchange": "NYSE",
+    "Daily_Change": -0.03140096618357481,
+    "Security_JA": "アールエックスオー"
   },
   {
-    "Symbol": "WSFS",
-    "Security": "WSFS Financial Corporation",
+    "Symbol": "NWBI",
+    "Security": "Northwest Bancshares, Inc.",
     "GICS Sector": "Financials",
     "GICS Sub-Industry": "Regional Banks",
-    "Symbol_YF": "WSFS",
+    "Symbol_YF": "NWBI",
     "Index": "S&P 600",
     "Exchange": "NASDAQ",
-    "Daily_Change": -0.007609921082299776,
-    "Security_JA": "ダブリューエスエフエス・フィナンシャル"
-  },
-  {
-    "Symbol": "PMT",
-    "Security": "PennyMac Mortgage Investment Trust",
-    "GICS Sector": "Real Estate",
-    "GICS Sub-Industry": "Mortgage REITs",
-    "Symbol_YF": "PMT",
-    "Index": "S&P 600",
-    "Exchange": "NYSE",
-    "Daily_Change": -0.029684601113172403,
-    "Security_JA": null
+    "Daily_Change": 0.0007299270072993842,
+    "Security_JA": "ノースウェスト・バンクシェアーズ"
   }
 ]

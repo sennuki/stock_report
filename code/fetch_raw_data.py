@@ -133,6 +133,15 @@ def fetch_raw_data_for_ticker(symbol):
         def _df(fn, field):
             return df_to_dict_safe(_safe_get(fn, symbol, field))
 
+        def _df_earnings():
+            # yfinance の earnings_dates はよく失敗するので、個別にエラーを抑制して取得
+            try:
+                val = ticker.earnings_dates
+                return df_to_dict_safe(val)
+            except Exception:
+                # エラーメッセージを出さずに None を返す
+                return None
+
         def _cal():
             cal = _safe_get(lambda: ticker.calendar, symbol, "calendar")
             return stringify_keys_and_clean(cal) if cal is not None else None
@@ -163,7 +172,7 @@ def fetch_raw_data_for_ticker(symbol):
             "quarterly_income_stmt": _df(lambda: ticker.quarterly_income_stmt, "quarterly_income_stmt"),
             "quarterly_balancesheet": _df(lambda: ticker.quarterly_balance_sheet, "quarterly_balancesheet"),
             "quarterly_cashflow": _df(lambda: ticker.quarterly_cashflow, "quarterly_cashflow"),
-            "earnings_dates": _df(lambda: ticker.earnings_dates, "earnings_dates"),
+            "earnings_dates": _df_earnings(),
             "calendar": _cal(),
             "analyst_ratings": _df(lambda: ticker.recommendations_summary, "analyst_ratings"),
             "upgrades_downgrades": _df(lambda: ticker.upgrades_downgrades, "upgrades_downgrades"),
