@@ -358,6 +358,158 @@ function generateFinancialChart(data, fields, type, barmode) {
   };
 }
 
+// 損益計算書: 売上高 / 売上総利益 / 営業利益 / 純利益 の 4 本並列棒 +
+// 売上総利益率 / 営業利益率 / 純利益率 を右側軸の折れ線で表示する。
+// master の Python fundamentals.get_is_chart_data に揃えた構造。
+function generateIsChart(incomeStmt) {
+  if (!incomeStmt || incomeStmt.length === 0) return null;
+  const dates = Object.keys(incomeStmt[0])
+    .filter((k) => k !== "index" && !k.includes("TTM"))
+    .sort();
+  if (dates.length === 0) return null;
+  const get = (label) =>
+    dates.map((d) => Number(getValFromArray(incomeStmt, label, d)) || 0);
+
+  const revenue = get("Total Revenue");
+  const validIdx = revenue
+    .map((v, i) => (v > 0 ? i : -1))
+    .filter((i) => i !== -1)
+    .slice(-6);
+  if (validIdx.length === 0) return null;
+  const pick = (arr) => validIdx.map((i) => arr[i]);
+  const labels = validIdx.map((i) => dates[i].split(" ")[0]);
+
+  const rev = pick(revenue);
+  const grossProfit = pick(get("Gross Profit"));
+  const operatingIncome = pick(get("Operating Income"));
+  const netIncome = pick(get("Net Income"));
+  const ratio = (num, den) =>
+    num.map((v, i) => (den[i] ? v / den[i] : null));
+
+  return {
+    labels,
+    datasets: [
+      { type: "bar", label: "売上高", data: rev,
+        backgroundColor: "rgba(174, 199, 232, 0.85)", yAxisID: "y" },
+      { type: "bar", label: "売上総利益", data: grossProfit,
+        backgroundColor: "rgba(31, 119, 180, 0.85)", yAxisID: "y" },
+      { type: "bar", label: "営業利益", data: operatingIncome,
+        backgroundColor: "rgba(255, 187, 120, 0.85)", yAxisID: "y" },
+      { type: "bar", label: "純利益", data: netIncome,
+        backgroundColor: "rgba(44, 160, 44, 0.85)", yAxisID: "y" },
+      { type: "line", label: "売上総利益率", data: ratio(grossProfit, rev),
+        borderColor: "#1f77b4", backgroundColor: "#1f77b4",
+        borderWidth: 2, fill: false, pointRadius: 4, yAxisID: "y1" },
+      { type: "line", label: "営業利益率", data: ratio(operatingIncome, rev),
+        borderColor: "#ffbb78", backgroundColor: "#ffbb78",
+        borderWidth: 2, fill: false, pointRadius: 4, yAxisID: "y1" },
+      { type: "line", label: "純利益率", data: ratio(netIncome, rev),
+        borderColor: "#2ca02c", backgroundColor: "#2ca02c",
+        borderWidth: 2, fill: false, pointRadius: 4, yAxisID: "y1" },
+    ],
+  };
+}
+
+// 貸借対照表: 資産側 (固定+流動) と負債・純資産側 (純資産+固定負債+流動負債)
+// を別 stack に積み上げて並列表示する。
+// master の Python fundamentals.get_bs_chart_data に揃えた構造。
+function generateBsChart(balanceSheet) {
+  if (!balanceSheet || balanceSheet.length === 0) return null;
+  const dates = Object.keys(balanceSheet[0])
+    .filter((k) => k !== "index")
+    .sort();
+  if (dates.length === 0) return null;
+  const get = (label) =>
+    dates.map((d) => Number(getValFromArray(balanceSheet, label, d)) || 0);
+  const sum = (arr) => arr.reduce((a, b) => a + b, 0);
+
+  const totalAssets = get("Total Assets");
+  const validIdx = totalAssets
+    .map((v, i) => (v > 0 ? i : -1))
+    .filter((i) => i !== -1)
+    .slice(-6);
+  if (validIdx.length === 0) return null;
+  const pick = (arr) => validIdx.map((i) => arr[i]);
+  const labels = validIdx.map((i) => dates[i].split(" ")[0]);
+
+  const currentAssets = pick(get("Current Assets"));
+  const nonCurrentAssets = pick(get("Total Non Current Assets"));
+  const currentLiab = pick(get("Current Liabilities"));
+  const nonCurrentLiab = pick(
+    get("Total Non Current Liabilities Net Minority Interest"),
+  );
+  let equity = pick(get("Total Equity Gross Minority Interest"));
+  if (sum(equity) === 0) equity = pick(get("Stockholders Equity"));
+  const totalAssetsValid = pick(totalAssets);
+  const totalLiabValid = pick(get("Total Liabilities Net Minority Interest"));
+
+  const hasBreakdown = sum(currentAssets) !== 0 && sum(currentLiab) !== 0;
+
+  const datasets = hasBreakdown
+    ? [
+        { label: "固定資産", data: nonCurrentAssets,
+          backgroundColor: "rgba(31, 119, 180, 0.85)", stack: "assets" },
+        { label: "流動資産", data: currentAssets,
+          backgroundColor: "rgba(174, 199, 232, 0.85)", stack: "assets" },
+        { label: "純資産", data: equity,
+          backgroundColor: "rgba(44, 160, 44, 0.85)", stack: "liabilities" },
+        { label: "固定負債", data: nonCurrentLiab,
+          backgroundColor: "rgba(255, 127, 14, 0.85)", stack: "liabilities" },
+        { label: "流動負債", data: currentLiab,
+          backgroundColor: "rgba(255, 187, 120, 0.85)", stack: "liabilities" },
+      ]
+    : [
+        { label: "総資産", data: totalAssetsValid,
+          backgroundColor: "rgba(31, 119, 180, 0.85)", stack: "assets" },
+        { label: "純資産", data: equity,
+          backgroundColor: "rgba(44, 160, 44, 0.85)", stack: "liabilities" },
+        { label: "総負債", data: totalLiabValid,
+          backgroundColor: "rgba(255, 127, 14, 0.85)", stack: "liabilities" },
+      ];
+  return { labels, datasets };
+}
+
+// キャッシュフロー: 純利益 + 営業/投資/財務/フリー CF の 5 本並列棒。
+// master の Python fundamentals.get_cf_chart_data に揃えた構造。
+function generateCfChart(cashflow, incomeStmt) {
+  if (!cashflow || cashflow.length === 0) return null;
+  const dates = Object.keys(cashflow[0])
+    .filter((k) => k !== "index" && !k.includes("TTM"))
+    .sort();
+  if (dates.length === 0) return null;
+  const getCf = (label) =>
+    dates.map((d) => Number(getValFromArray(cashflow, label, d)) || 0);
+  const getIs = (label) =>
+    dates.map((d) =>
+      Number(getValFromArray(incomeStmt || [], label, d)) || 0,
+    );
+
+  const opCf = getCf("Operating Cash Flow");
+  const validIdx = opCf
+    .map((v, i) => (v !== 0 ? i : -1))
+    .filter((i) => i !== -1)
+    .slice(-6);
+  if (validIdx.length === 0) return null;
+  const pick = (arr) => validIdx.map((i) => arr[i]);
+  const labels = validIdx.map((i) => dates[i].split(" ")[0]);
+
+  return {
+    labels,
+    datasets: [
+      { type: "bar", label: "純利益", data: pick(getIs("Net Income")),
+        backgroundColor: "rgba(44, 160, 44, 0.85)" },
+      { type: "bar", label: "営業CF", data: pick(opCf),
+        backgroundColor: "rgba(174, 199, 232, 0.85)" },
+      { type: "bar", label: "投資CF", data: pick(getCf("Investing Cash Flow")),
+        backgroundColor: "rgba(31, 119, 180, 0.85)" },
+      { type: "bar", label: "財務CF", data: pick(getCf("Financing Cash Flow")),
+        backgroundColor: "rgba(255, 187, 120, 0.85)" },
+      { type: "bar", label: "フリーCF", data: pick(getCf("Free Cash Flow")),
+        backgroundColor: "rgba(148, 103, 189, 0.85)" },
+    ],
+  };
+}
+
 function generatePerformanceChart(history, etfHistory, symbol, etfSymbol) {
   if (!history || history.length === 0) return null;
   const targetData = history.slice(-252);
@@ -418,64 +570,77 @@ function generateRiskReturnChart(allMetrics, targetSymbol) {
   return { datasets };
 }
 
+// 株主還元: 純利益 (1 列目) と 配当金+自社株買い (2 列目に積み上げ) の
+// 2 並列スタック + 配当性向 / 総還元性向の右軸折れ線。
+// master の Python fundamentals.get_tp_chart_data に揃えた構造。
 function generateTpChart(cfData, isData) {
-  if (cfData.length === 0 || isData.length === 0) return null;
-  const dates = Object.keys(isData[0])
-    .filter((k) => k !== "index")
+  if ((isData?.length ?? 0) === 0 && (cfData?.length ?? 0) === 0) return null;
+  const sourceDates = Object.keys(isData[0] || cfData[0] || {})
+    .filter((k) => k !== "index" && !k.includes("TTM"))
     .sort();
-  if (dates.length === 0) return null;
+  if (sourceDates.length === 0) return null;
 
-  const niData = dates.map((d) => getValFromArray(isData, "Net Income", d));
-  const divData = dates.map((d) =>
-    Math.abs(getValFromArray(cfData, "Cash Dividends Paid", d) || 0),
-  );
-  const repoData = dates.map((d) =>
-    Math.abs(getValFromArray(cfData, "Repurchase of Capital Stock", d) || 0),
-  );
+  const niKeys = [
+    "Net Income From Continuing Operations",
+    "Net Income",
+    "Net Income Common Stockholders",
+  ];
+  const divKeys = ["Cash Dividends Paid", "Common Stock Dividend Paid"];
+  const repoKeys = [
+    "Repurchase Of Capital Stock",
+    "Repurchase of Capital Stock",
+    "Repurchase Of Common Stock",
+    "Common Stock Repurchased",
+  ];
+  const getAnyVal = (arr, keys, date) => {
+    for (const k of keys) {
+      const v = getValFromArray(arr, k, date);
+      if (v !== 0) return v;
+    }
+    return 0;
+  };
 
-  const divRatio = niData.map((ni, i) => (ni > 0 ? divData[i] / ni : 0));
+  const allNi = sourceDates.map(
+    (d) => getAnyVal(isData, niKeys, d) || getAnyVal(cfData, niKeys, d),
+  );
+  const validIdx = allNi
+    .map((v, i) => (v > 0 ? i : -1))
+    .filter((i) => i !== -1)
+    .slice(-6);
+  if (validIdx.length === 0) return null;
+  const pick = (arr) => validIdx.map((i) => arr[i]);
+  const labels = validIdx.map((i) => sourceDates[i].split(" ")[0]);
+
+  const niData = pick(allNi);
+  const divData = pick(
+    sourceDates.map((d) => Math.abs(getAnyVal(cfData, divKeys, d))),
+  );
+  const repoData = pick(
+    sourceDates.map((d) => Math.abs(getAnyVal(cfData, repoKeys, d))),
+  );
+  const divRatio = niData.map((ni, i) => (ni > 0 ? divData[i] / ni : null));
   const totalRatio = niData.map((ni, i) =>
-    ni > 0 ? (divData[i] + repoData[i]) / ni : 0,
+    ni > 0 ? (divData[i] + repoData[i]) / ni : null,
   );
 
   return {
-    labels: dates.map((d) => d.split(" ")[0]),
+    labels,
     datasets: [
-      {
-        type: "bar",
-        label: "純利益",
-        data: niData,
-        backgroundColor: "rgba(44, 160, 44, 0.6)",
-        yAxisID: "y",
-      },
-      {
-        type: "bar",
-        label: "配当金",
-        data: divData,
-        backgroundColor: "rgba(174, 199, 232, 0.6)",
-        yAxisID: "y",
-      },
-      {
-        type: "bar",
-        label: "自社株買い",
-        data: repoData,
-        backgroundColor: "rgba(31, 119, 180, 0.6)",
-        yAxisID: "y",
-      },
-      {
-        type: "line",
-        label: "配当性向",
-        data: divRatio,
-        borderColor: "#ffbb78",
-        yAxisID: "y1",
-      },
-      {
-        type: "line",
-        label: "総還元性向",
-        data: totalRatio,
-        borderColor: "#ff7f0e",
-        yAxisID: "y1",
-      },
+      { type: "bar", label: "純利益", data: niData,
+        backgroundColor: "rgba(44, 160, 44, 0.85)",
+        stack: "income", yAxisID: "y" },
+      { type: "bar", label: "配当金", data: divData,
+        backgroundColor: "rgba(174, 199, 232, 0.85)",
+        stack: "payout", yAxisID: "y" },
+      { type: "bar", label: "自社株買い", data: repoData,
+        backgroundColor: "rgba(31, 119, 180, 0.85)",
+        stack: "payout", yAxisID: "y" },
+      { type: "line", label: "配当性向", data: divRatio,
+        borderColor: "#ffbb78", backgroundColor: "#ffbb78",
+        borderWidth: 2, fill: false, pointRadius: 4, yAxisID: "y1" },
+      { type: "line", label: "総還元性向", data: totalRatio,
+        borderColor: "#ff7f0e", backgroundColor: "#ff7f0e",
+        borderWidth: 2, fill: false, pointRadius: 4, yAxisID: "y1" },
     ],
   };
 }
@@ -670,8 +835,25 @@ async function main() {
     "XLU",
   ];
 
+  // 処理する銘柄を決定する。
+  //   - TEST_SYMBOLS 環境変数 (例: "MSFT,AAPL,NVDA") があればそのリストを優先
+  //   - "all" を指定するとフィルタを掛けず raw データにある全銘柄を処理する
+  //   - 未指定の場合はテスト用デフォルト ["MSFT", "AAPL", "NVDA"]
+  // テスト時は数銘柄に絞ることで Actions の所要時間を 30 秒程度に抑えられる。
   console.log("Generating reports/*.json...");
-  let symbols = ["MSFT", "AAPL", "NVDA"].filter(s => rawDataMap[s]);
+  const testSymbolsEnv = (process.env.TEST_SYMBOLS || "").trim();
+  let symbols;
+  if (testSymbolsEnv.toLowerCase() === "all") {
+    symbols = Object.keys(rawDataMap);
+  } else if (testSymbolsEnv) {
+    symbols = testSymbolsEnv
+      .split(",")
+      .map((s) => s.trim().toUpperCase())
+      .filter((s) => s && rawDataMap[s]);
+  } else {
+    symbols = ["MSFT", "AAPL", "NVDA"].filter((s) => rawDataMap[s]);
+  }
+  console.log(`Processing ${symbols.length} symbol(s): ${symbols.join(", ")}`);
   const updatedStocksList = [];
   const updatedLock = []; // 並列 push の安全化のため append-only にする
   const putResults = await pMap(
@@ -698,32 +880,13 @@ async function main() {
         const analystRatings = extractAnalystRatings(rawData);
 
         const riskReturnChart = generateRiskReturnChart(riskReturnMetrics, symbol);
-        const isChart = generateFinancialChart(
-          rawData.income_stmt || [],
-          ["Total Revenue", "Gross Profit", "Operating Income", "Net Income"],
-          "bar",
-          "group",
-        );
-        const bsChart = generateFinancialChart(
-          rawData.balancesheet || [],
-          [
-            "Total Assets",
-            "Total Liabilities Net Minority Interest",
-            "Stockholders Equity",
-          ],
-          "bar",
-          "stack",
-        );
-        const cfChart = generateFinancialChart(
+        // BS / IS / CF は master の Plotly レイアウトに合わせた専用関数を使う。
+        // generateFinancialChart は単純スタックしか作らないため使用しない。
+        const isChart = generateIsChart(rawData.income_stmt || []);
+        const bsChart = generateBsChart(rawData.balancesheet || []);
+        const cfChart = generateCfChart(
           rawData.cashflow || [],
-          [
-            "Operating Cash Flow",
-            "Investing Cash Flow",
-            "Financing Cash Flow",
-            "Free Cash Flow",
-          ],
-          "bar",
-          "group",
+          rawData.income_stmt || [],
         );
         const perfChart = generatePerformanceChart(
           rawData.history,

@@ -9,6 +9,11 @@ on:
       - '.github/workflows/translate_business_summaries.yml'
       - 'worker-processor/scripts/translate-business-summaries.mjs'
   workflow_dispatch:
+    inputs:
+      test_symbols:
+        description: 'Comma-separated symbols to process (or "all" for full run). Empty = default test set MSFT,AAPL,NVDA'
+        required: false
+        default: ''
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -110,12 +115,14 @@ jobs:
           # 受けないため、 1500銘柄 × GET+PUT を完走できる。
           # R2 アクセスは S3 互換 API (AWS SDK) 経由 -- Cloudflare REST API は
           # 1200 req/5min のグローバル制限があり 3000 リクエストでは破綻するため。
+          # TEST_SYMBOLS が空のときはデフォルトのテスト銘柄 (MSFT,AAPL,NVDA) を処理。
           node scripts/generate-reports.mjs
         env:
           R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
           R2_BUCKET_NAME: "stock-data-c1"
+          TEST_SYMBOLS: ${{ github.event.inputs.test_symbols }}
 
       - name: Sync reports/stocks.json to build dir
         run: |
