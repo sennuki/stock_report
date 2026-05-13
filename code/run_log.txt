@@ -622,3 +622,14 @@ violations {
 [2026-04-27 13:14:14] [INFO   ] [SYSTEM] --- Python Data Fetch Pipeline Started ---
 [2026-04-27 13:15:04] [SUCCESS] [SYSTEM] Fetched all raw data and uploaded to R2
 [2026-04-27 13:23:01] [INFO   ] [SYSTEM] --- Python Data Fetch Pipeline Finished ---
+[2026-05-13 21:44:32] [INFO   ] [SYSTEM] --- Python Data Fetch Pipeline Started ---
+[2026-05-13 21:48:08] [DEBUG  ] [ANET  ] Error merging DB metrics: unsupported operand type(s) for /: 'str' and 'decimal.Decimal'
+[2026-05-13 21:52:06] [DEBUG  ] [EXPI  ] Error merging DB metrics: unsupported operand type(s) for /: 'str' and 'decimal.Decimal'
+[2026-05-13 21:52:49] [DEBUG  ] [ONTO  ] Error merging DB metrics: unsupported operand type(s) for /: 'str' and 'decimal.Decimal'
+[2026-05-13 21:59:11] [DEBUG  ] [UTHR  ] Error merging DB metrics: unsupported operand type(s) for /: 'str' and 'decimal.Decimal'
+[2026-05-13 21:59:36] [DEBUG  ] [CALM  ] Error merging DB metrics: unsupported operand type(s) for /: 'str' and 'decimal.Decimal'
+[2026-05-13 22:00:53] [DEBUG  ] [FHB   ] Error merging DB metrics: unsupported operand type(s) for /: 'str' and 'decimal.Decimal'
+[2026-05-13 22:01:16] [DEBUG  ] [SLAB  ] Error merging DB metrics: unsupported operand type(s) for /: 'str' and 'decimal.Decimal'
+[2026-05-13 22:02:18] [SUCCESS] [SYSTEM] Fetched 5 stocks from Wikipedia: {'S&P 400': 1, 'S&P 600': 4}
+[2026-05-13 22:03:33] [SUCCESS] [SYSTEM] Fetched all raw data and uploaded to R2
+[2026-05-13 22:03:33] [INFO   ] [SYSTEM] --- Python Data Fetch Pipeline Finished ---

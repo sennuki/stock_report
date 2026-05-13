@@ -84,12 +84,23 @@ def upload_base_stocks_list_to_r2(df_stocks):
 if __name__ == "__main__":
     utils.log_event("INFO", "SYSTEM", "--- Python Data Fetch Pipeline Started ---")
 
+    # TEST_MODE が true の場合は少数銘柄に限定
+    if os.getenv("TEST_MODE") == "true":
+        utils.log_event("INFO", "SYSTEM", "Test mode active: processing MSFT, AAPL, NVDA only.")
+        test_symbols = ["MSFT", "AAPL", "NVDA", "SPY"]
+        fetch_raw_data.main(symbols_override=test_symbols)
+        utils.log_event("SUCCESS", "SYSTEM", "Test mode fetch finished.")
+        exit(0)
+
     # 1. ベース銘柄リストの取得（S&P 500 / 400 / 600 を統合）
     #    先に取得しておき、stocks.json と raw データ取得の両方に使い回す
     df_stocks = None
     symbols = None
     try:
         df_stocks = market_data.fetch_sp_indices_companies()
+        # テスト用に銘柄数を制限 (最初の5件)
+        if df_stocks is not None and not df_stocks.is_empty():
+            df_stocks = df_stocks.head(5)
         if df_stocks is not None and not df_stocks.is_empty():
             from collections import Counter
             cnt = Counter(df_stocks['Index'].to_list())
