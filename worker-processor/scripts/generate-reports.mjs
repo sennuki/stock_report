@@ -15,11 +15,9 @@ import {
   PutObjectCommand,
 } from "@aws-sdk/client-s3";
 import pMap from "p-map";
-import yahooFinance from "yahoo-finance2";
+import YahooFinance from "yahoo-finance2";
 
-// yahoo-finance2 prints a survey notice on first import; suppress it.
-yahooFinance.suppressNotices(["yahooSurvey"]);
-
+const yahooFinance = new YahooFinance();
 const BUCKET = process.env.R2_BUCKET_NAME || "defeat-beta-stock-data";
 const CONCURRENCY = 20;
 
