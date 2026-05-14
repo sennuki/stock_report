@@ -348,7 +348,8 @@ function extractRatingChanges(rawData) {
   const ud = rawData.upgrades_downgrades;
   if (!ud || !Array.isArray(ud)) return [];
   return ud.slice(0, 10).map((x) => ({
-    GradeDate: String(x.index || x.Date).split(" ")[0],
+    // GradeDate is the DataFrame index column name after reset_index()
+    GradeDate: String(x.GradeDate || x.index || x.Date || "").split("T")[0].split(" ")[0],
     Firm: x.Firm || x.firm,
     ToGrade: x["To Grade"] || x.toGrade,
     FromGrade: x["From Grade"] || x.fromGrade,
@@ -358,7 +359,15 @@ function extractRatingChanges(rawData) {
 
 function extractAnalystRatings(rawData) {
   const info = rawData.info || {};
-  const ratings = rawData.analyst_ratings || {};
+  // analyst_ratings from fetch_raw_data.py is an array of period records
+  // [{index:"0", period:"0m", strongBuy:7, buy:24, hold:15, sell:1, strongSell:1}, ...]
+  const ratingsRaw = rawData.analyst_ratings;
+  let currentRating = {};
+  if (Array.isArray(ratingsRaw)) {
+    currentRating = ratingsRaw.find((r) => r.period === "0m") || ratingsRaw[0] || {};
+  } else if (ratingsRaw && typeof ratingsRaw === "object") {
+    currentRating = ratingsRaw;
+  }
   return {
     recommendationKey: (info.recommendationKey || "hold").toLowerCase(),
     targetMeanPrice: info.targetMeanPrice || null,
@@ -367,7 +376,11 @@ function extractAnalystRatings(rawData) {
     targetMedianPrice: info.targetMedianPrice || null,
     numberOfAnalystOpinions: info.numberOfAnalystOpinions || 0,
     currentPrice: info.currentPrice || info.regularMarketPrice || null,
-    ...ratings
+    strongBuy: currentRating.strongBuy || 0,
+    buy: currentRating.buy || 0,
+    hold: currentRating.hold || 0,
+    sell: currentRating.sell || 0,
+    strongSell: currentRating.strongSell || 0,
   };
 }
 
