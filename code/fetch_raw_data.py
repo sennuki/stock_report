@@ -176,6 +176,8 @@ def fetch_raw_data_for_ticker(symbol):
             "calendar": _cal(),
             "analyst_ratings": _df(lambda: ticker.recommendations_summary, "analyst_ratings"),
             "upgrades_downgrades": _df(lambda: ticker.upgrades_downgrades, "upgrades_downgrades"),
+            "earnings_estimate": _df(lambda: ticker.earnings_estimate, "earnings_estimate"),
+            "revenue_estimate": _df(lambda: ticker.revenue_estimate, "revenue_estimate"),
             "dividends": _divs(),
             "revenue_by_segment": _rev_seg(),
             "revenue_by_geography": _rev_geo(),

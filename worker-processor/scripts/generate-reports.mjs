@@ -322,26 +322,59 @@ function extractNextEarnings(rawData) {
 
 function extractConsensus(rawData) {
   const info = rawData.info || {};
-  return {
-    earnings: {
-      "0q": {
-        avg: info.earningsAverage || null,
-        low: info.earningsLow || null,
-        high: info.earningsHigh || null,
-        growth: info.earningsGrowth || null,
-        numberOfAnalysts: info.numberOfAnalystOpinions || 0
-      }
-    },
-    revenue: {
-      "0q": {
-        avg: info.revenueAverage || null,
-        low: info.revenueLow || null,
-        high: info.revenueHigh || null,
-        growth: info.revenueGrowth || null,
-        numberOfAnalysts: info.numberOfAnalystOpinions || 0
-      }
-    }
+  const consensus = {
+    earnings: {},
+    revenue: {}
   };
+
+  // From info dict (typically "0q": current quarter)
+  if (info.earningsAverage != null || info.revenueAverage != null) {
+    consensus.earnings["0q"] = {
+      avg: info.earningsAverage || null,
+      low: info.earningsLow || null,
+      high: info.earningsHigh || null,
+      growth: info.earningsGrowth || null,
+      numberOfAnalysts: info.numberOfAnalystOpinions || 0
+    };
+    consensus.revenue["0q"] = {
+      avg: info.revenueAverage || null,
+      low: info.revenueLow || null,
+      high: info.revenueHigh || null,
+      growth: info.revenueGrowth || null,
+      numberOfAnalysts: info.numberOfAnalystOpinions || 0
+    };
+  }
+
+  // From earnings_estimate / revenue_estimate DataFrames (periods: "0q", "+1q", "0y", "+1y")
+  // These are returned from yfinance as arrays of records from df_to_dict_safe.
+  // Each record is like: {period: "+1y", growth: 0.15, avg: 50.5, ...}
+  const eEst = Array.isArray(rawData.earnings_estimate) ? rawData.earnings_estimate : [];
+  const rEst = Array.isArray(rawData.revenue_estimate) ? rawData.revenue_estimate : [];
+
+  for (const period of ["+1y", "0y", "+1q"]) {
+    const eRow = eEst.find(r => r.period === period);
+    if (eRow) {
+      consensus.earnings[period] = {
+        avg: eRow.avg || null,
+        low: eRow.low || null,
+        high: eRow.high || null,
+        growth: eRow.growth || null,
+        numberOfAnalysts: eRow.numberOfAnalysts || 0
+      };
+    }
+    const rRow = rEst.find(r => r.period === period);
+    if (rRow) {
+      consensus.revenue[period] = {
+        avg: rRow.avg || null,
+        low: rRow.low || null,
+        high: rRow.high || null,
+        growth: rRow.growth || null,
+        numberOfAnalysts: rRow.numberOfAnalysts || 0
+      };
+    }
+  }
+
+  return consensus;
 }
 
 function extractRatingChanges(rawData) {
