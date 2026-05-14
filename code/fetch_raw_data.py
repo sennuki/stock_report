@@ -40,6 +40,10 @@ def sanitize_json(obj):
 _STATUS_PATH = os.path.join(os.path.dirname(__file__), "data", "fetch_status.json")
 _status_lock = threading.Lock()
 
+# Bump when raw_payload schema changes so cached fetch_status entries from older
+# schemas are invalidated and the symbol is re-fetched.
+RAW_DATA_SCHEMA_VERSION = "v2-earnings-estimate"
+
 def _load_status() -> dict:
     os.makedirs(os.path.dirname(_STATUS_PATH), exist_ok=True)
     if os.path.exists(_STATUS_PATH):
@@ -59,7 +63,10 @@ def _save_status(status: dict):
 def _is_fetched_today(status: dict, symbol: str) -> bool:
     today = datetime.date.today().isoformat()
     entry = status.get(symbol)
-    return bool(entry and entry.get("date") == today and entry.get("success"))
+    if not entry or not entry.get("success") or entry.get("date") != today:
+        return False
+    # Invalidate when schema version differs (new fields added to raw_payload).
+    return entry.get("schema") == RAW_DATA_SCHEMA_VERSION
 
 # R2 接続設定
 R2_ACCOUNT_ID = os.getenv("R2_ACCOUNT_ID")
@@ -272,7 +279,11 @@ def main(symbols_override=None):
     def _fetch_and_record(s):
         success = fetch_raw_data_for_ticker(s)
         with _status_lock:
-            fetch_status[s] = {"date": today, "success": bool(success)}
+            fetch_status[s] = {
+                "date": today,
+                "success": bool(success),
+                "schema": RAW_DATA_SCHEMA_VERSION,
+            }
             _save_status(fetch_status)
         return success
 
