@@ -347,14 +347,40 @@ function extractConsensus(rawData) {
 function extractRatingChanges(rawData) {
   const ud = rawData.upgrades_downgrades;
   if (!ud || !Array.isArray(ud)) return [];
-  return ud.slice(0, 10).map((x) => ({
-    // GradeDate is the DataFrame index column name after reset_index()
-    GradeDate: String(x.GradeDate || x.index || x.Date || "").split("T")[0].split(" ")[0],
-    Firm: x.Firm || x.firm,
-    ToGrade: x["To Grade"] || x.toGrade,
-    FromGrade: x["From Grade"] || x.fromGrade,
-    Action: x.Action || x.action,
-  }));
+
+  // Build a date → close map from history so we can attach PriceAtRating.
+  // history rows from df_to_dict_safe look like {Date:"YYYY-MM-DD HH:MM:SS+00:00", Close:N, ...}
+  const history = Array.isArray(rawData.history) ? rawData.history : [];
+  const priceByDate = new Map();
+  for (const h of history) {
+    const d = String(h.Date || h.index || "").split("T")[0].split(" ")[0];
+    const c = typeof h.Close === "number" ? h.Close : null;
+    if (d && c != null) priceByDate.set(d, c);
+  }
+  const sortedDates = [...priceByDate.keys()].sort();
+  const priceAt = (date) => {
+    if (priceByDate.has(date)) return priceByDate.get(date);
+    // Walk back to the nearest trading day (weekends/holidays).
+    let last = null;
+    for (const d of sortedDates) {
+      if (d <= date) last = priceByDate.get(d);
+      else break;
+    }
+    return last;
+  };
+
+  return ud.slice(0, 10).map((x) => {
+    const gradeDate = String(x.GradeDate || x.index || x.Date || "").split("T")[0].split(" ")[0];
+    return {
+      GradeDate: gradeDate,
+      Firm: x.Firm || x.firm,
+      // yfinance returns ToGrade/FromGrade (no spaces). Older variants used "To Grade".
+      ToGrade: x.ToGrade || x["To Grade"] || x.toGrade || "",
+      FromGrade: x.FromGrade || x["From Grade"] || x.fromGrade || "",
+      Action: x.Action || x.action || "",
+      PriceAtRating: priceAt(gradeDate),
+    };
+  });
 }
 
 function extractAnalystRatings(rawData) {
