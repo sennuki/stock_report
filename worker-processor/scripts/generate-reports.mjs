@@ -388,20 +388,13 @@ function extractConsensus(rawData) {
   // Fallback: yfinance's info dict has forwardEps for forward 12-month EPS.
   // If +1y is still missing but forwardEps exists, use it as a coarse proxy.
   if (consensus.earnings["+1y"] == null && typeof info.forwardEps === "number") {
-    const estimate = {
+    consensus.earnings["+1y"] = {
       avg: info.forwardEps,
       low: null,
       high: null,
       growth: growthByPeriod.get("+1y") ?? info.earningsGrowth ?? null,
       numberOfAnalysts: info.numberOfAnalystOpinions ?? 0,
     };
-    // If analyst low/high unavailable but we have forwardEps, estimate bounds
-    // as avg ± 5% to provide at least a rough prediction range.
-    if (estimate.avg != null) {
-      estimate.low = estimate.low ?? (estimate.avg * 0.95);
-      estimate.high = estimate.high ?? (estimate.avg * 1.05);
-    }
-    consensus.earnings["+1y"] = estimate;
   }
 
   // Fallback for revenue +1y: yfinance info has no forward revenue field, but
@@ -411,7 +404,7 @@ function extractConsensus(rawData) {
   if (consensus.revenue["+1y"] == null && typeof info.totalRevenue === "number") {
     const g = growthByPeriod.get("+1y") ?? info.revenueGrowth ?? null;
     if (typeof g === "number") {
-      const estimate = {
+      consensus.revenue["+1y"] = {
         avg: info.totalRevenue * (1 + g),
         low: null,
         high: null,
@@ -419,12 +412,6 @@ function extractConsensus(rawData) {
         numberOfAnalysts: info.numberOfAnalystOpinions ?? 0,
         _estimated: true,
       };
-      // Estimate bounds as avg ± 8% when not available from analysts.
-      if (estimate.avg != null) {
-        estimate.low = estimate.low ?? (estimate.avg * 0.92);
-        estimate.high = estimate.high ?? (estimate.avg * 1.08);
-      }
-      consensus.revenue["+1y"] = estimate;
     }
   }
 
