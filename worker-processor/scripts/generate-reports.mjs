@@ -358,23 +358,48 @@ function extractConsensus(rawData) {
     return p === target.toLowerCase();
   };
 
+  // master's get_row_val tries multiple case variants (original, lower, capitalize).
+  const pickField = (row, base) => {
+    const variants = [base, base.toLowerCase(), base.charAt(0).toUpperCase() + base.slice(1).toLowerCase()];
+    for (const v of variants) {
+      if (row[v] !== undefined && row[v] !== null) return row[v];
+    }
+    return null;
+  };
+
   const buildEntry = (row) => ({
-    avg: row.avg ?? row.Avg ?? null,
-    low: row.low ?? row.Low ?? null,
-    high: row.high ?? row.High ?? null,
-    growth: row.growth ?? row.Growth ?? null,
-    numberOfAnalysts:
-      row.numberOfAnalysts ??
-      row.numberofanalysts ??
-      row.numberOfAnalystOpinions ??
-      0,
+    avg: pickField(row, "avg"),
+    low: pickField(row, "low"),
+    high: pickField(row, "high"),
+    growth: pickField(row, "growth"),
+    numberOfAnalysts: pickField(row, "numberOfAnalysts") ?? 0,
   });
 
-  for (const period of ["+1y", "0y", "+1q"]) {
+  // master replicates the same loop for all 4 periods including 0q. We override
+  // 0q only when info-derived values are missing (avg == null), matching master's
+  // `if p not in consensus["earnings"] or consensus["earnings"][p].get("avg") is None`.
+  for (const period of ["0q", "+1q", "0y", "+1y"]) {
     const eRow = eEst.find((r) => periodMatch(r, period));
-    if (eRow) consensus.earnings[period] = buildEntry(eRow);
+    if (eRow) {
+      const existing = consensus.earnings[period];
+      if (!existing || existing.avg == null) {
+        consensus.earnings[period] = buildEntry(eRow);
+      } else {
+        // info had avg but may have missed low/high; fill those from DataFrame.
+        if (existing.low == null) existing.low = pickField(eRow, "low");
+        if (existing.high == null) existing.high = pickField(eRow, "high");
+      }
+    }
     const rRow = rEst.find((r) => periodMatch(r, period));
-    if (rRow) consensus.revenue[period] = buildEntry(rRow);
+    if (rRow) {
+      const existing = consensus.revenue[period];
+      if (!existing || existing.avg == null) {
+        consensus.revenue[period] = buildEntry(rRow);
+      } else {
+        if (existing.low == null) existing.low = pickField(rRow, "low");
+        if (existing.high == null) existing.high = pickField(rRow, "high");
+      }
+    }
   }
 
   // growth_estimates DataFrame fallback (yfinance separate endpoint).
@@ -446,23 +471,6 @@ function extractConsensus(rawData) {
       };
     }
   }
-
-  // Diagnostic: surface raw row counts so the report can be inspected when
-  // values are unexpectedly missing.
-  consensus._debug = {
-    earnings_estimate_count: eEst.length,
-    revenue_estimate_count: rEst.length,
-    growth_estimates_count: gEst.length,
-    earnings_estimate_periods: eEst.map((r) => getPeriod(r)),
-    revenue_estimate_periods: rEst.map((r) => getPeriod(r)),
-    growth_estimates_periods: gEst.map((r) => getPeriod(r)),
-    info_has_forwardEps: typeof info.forwardEps === "number",
-    info_has_earningsAverage: info.earningsAverage != null,
-    info_has_revenueAverage: info.revenueAverage != null,
-    info_has_totalRevenue: typeof info.totalRevenue === "number",
-    info_has_revenueGrowth: typeof info.revenueGrowth === "number",
-    info_has_earningsGrowth: typeof info.earningsGrowth === "number",
-  };
 
   return consensus;
 }
