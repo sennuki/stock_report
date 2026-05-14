@@ -42,7 +42,7 @@ _status_lock = threading.Lock()
 
 # Bump when raw_payload schema changes so cached fetch_status entries from older
 # schemas are invalidated and the symbol is re-fetched.
-RAW_DATA_SCHEMA_VERSION = "v2-earnings-estimate"
+RAW_DATA_SCHEMA_VERSION = "v3-earnings-estimate-retry"
 
 def _load_status() -> dict:
     os.makedirs(os.path.dirname(_STATUS_PATH), exist_ok=True)

@@ -327,52 +327,77 @@ function extractConsensus(rawData) {
     revenue: {}
   };
 
-  // From info dict (typically "0q": current quarter)
-  if (info.earningsAverage != null || info.revenueAverage != null) {
-    consensus.earnings["0q"] = {
-      avg: info.earningsAverage || null,
-      low: info.earningsLow || null,
-      high: info.earningsHigh || null,
-      growth: info.earningsGrowth || null,
-      numberOfAnalysts: info.numberOfAnalystOpinions || 0
-    };
-    consensus.revenue["0q"] = {
-      avg: info.revenueAverage || null,
-      low: info.revenueLow || null,
-      high: info.revenueHigh || null,
-      growth: info.revenueGrowth || null,
-      numberOfAnalysts: info.numberOfAnalystOpinions || 0
-    };
-  }
+  // 0q from info dict (current quarter consensus, present even when estimate
+  // DataFrames are empty).
+  consensus.earnings["0q"] = {
+    avg: info.earningsAverage ?? null,
+    low: info.earningsLow ?? null,
+    high: info.earningsHigh ?? null,
+    growth: info.earningsGrowth ?? null,
+    numberOfAnalysts: info.numberOfAnalystOpinions ?? 0
+  };
+  consensus.revenue["0q"] = {
+    avg: info.revenueAverage ?? null,
+    low: info.revenueLow ?? null,
+    high: info.revenueHigh ?? null,
+    growth: info.revenueGrowth ?? null,
+    numberOfAnalysts: info.numberOfAnalystOpinions ?? 0
+  };
 
-  // From earnings_estimate / revenue_estimate DataFrames (periods: "0q", "+1q", "0y", "+1y")
-  // These are returned from yfinance as arrays of records from df_to_dict_safe.
-  // Each record is like: {period: "+1y", growth: 0.15, avg: 50.5, ...}
+  // yfinance's earnings_estimate / revenue_estimate DataFrames carry the
+  // forecast periods. The DataFrame index is named 'period' so after
+  // reset_index() each record has a 'period' field. Some yfinance versions
+  // may emit 'Period' or carry the period as the integer index column instead.
   const eEst = Array.isArray(rawData.earnings_estimate) ? rawData.earnings_estimate : [];
   const rEst = Array.isArray(rawData.revenue_estimate) ? rawData.revenue_estimate : [];
+  const getPeriod = (row) => String(row.period ?? row.Period ?? row.index ?? "").trim();
+  const periodMatch = (row, target) => {
+    const p = getPeriod(row).toLowerCase();
+    return p === target.toLowerCase();
+  };
+
+  const buildEntry = (row) => ({
+    avg: row.avg ?? row.Avg ?? null,
+    low: row.low ?? row.Low ?? null,
+    high: row.high ?? row.High ?? null,
+    growth: row.growth ?? row.Growth ?? null,
+    numberOfAnalysts:
+      row.numberOfAnalysts ??
+      row.numberofanalysts ??
+      row.numberOfAnalystOpinions ??
+      0,
+  });
 
   for (const period of ["+1y", "0y", "+1q"]) {
-    const eRow = eEst.find(r => r.period === period);
-    if (eRow) {
-      consensus.earnings[period] = {
-        avg: eRow.avg || null,
-        low: eRow.low || null,
-        high: eRow.high || null,
-        growth: eRow.growth || null,
-        numberOfAnalysts: eRow.numberOfAnalysts || 0
-      };
-    }
-    const rRow = rEst.find(r => r.period === period);
-    if (rRow) {
-      consensus.revenue[period] = {
-        avg: rRow.avg || null,
-        low: rRow.low || null,
-        high: rRow.high || null,
-        growth: rRow.growth || null,
-        numberOfAnalysts: rRow.numberOfAnalysts || 0
-      };
-    }
+    const eRow = eEst.find((r) => periodMatch(r, period));
+    if (eRow) consensus.earnings[period] = buildEntry(eRow);
+    const rRow = rEst.find((r) => periodMatch(r, period));
+    if (rRow) consensus.revenue[period] = buildEntry(rRow);
   }
+
+  // Fallback: yfinance's info dict has forwardEps for forward 12-month EPS.
+  // If +1y is still missing but forwardEps exists, use it as a coarse proxy.
+  if (consensus.earnings["+1y"] == null && typeof info.forwardEps === "number") {
+    consensus.earnings["+1y"] = {
+      avg: info.forwardEps,
+      low: null,
+      high: null,
+      growth: info.earningsGrowth ?? null,
+      numberOfAnalysts: info.numberOfAnalystOpinions ?? 0,
+    };
+  }
+
+  // Diagnostic: surface raw row counts so the report can be inspected when
+  // values are unexpectedly missing.
+  consensus._debug = {
+    earnings_estimate_count: eEst.length,
+    revenue_estimate_count: rEst.length,
+    earnings_estimate_periods: eEst.map((r) => getPeriod(r)),
+    revenue_estimate_periods: rEst.map((r) => getPeriod(r)),
+    info_has_forwardEps: typeof info.forwardEps === "number",
+    info_has_earningsAverage: info.earningsAverage != null,
+    info_has_revenueAverage: info.revenueAverage != null,
+  };
 
   return consensus;
 }
