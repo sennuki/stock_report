@@ -135,25 +135,88 @@ async function putJson(key, data) {
 
 // === helpers ===
 
+// master の risk_return.py / performance_comparison.py に合わせた期間定義。
+// days は履歴の末尾から何営業日分 (1Y=252) を使うかの目安 (YTD は年初から)。
+const RR_PERIOD_CONFIGS = [
+  { key: "1M", label: "1ヶ月", days: 21 },
+  { key: "3M", label: "3ヶ月", days: 63 },
+  { key: "6M", label: "6ヶ月", days: 126 },
+  { key: "YTD", label: "年初来", days: "YTD" },
+  { key: "1Y", label: "1年", days: 252 },
+  { key: "3Y", label: "3年", days: 756 },
+  { key: "5Y", label: "5年", days: 1260 },
+  { key: "10Y", label: "10年", days: 2520 },
+];
+
 function calculateRiskReturn(history, symbol) {
-  if (!history || !Array.isArray(history) || history.length < 252) return null;
-  // returns: (Price(T) - Price(T-252)) / Price(T-252)
-  const last = history[history.length - 1].Close;
-  const first = history[history.length - 252].Close;
-  const ret = (last - first) / first;
+  if (!history || !Array.isArray(history) || history.length < 5) return null;
+  const safe = history.filter((h) => h && h.Close > 0);
+  if (safe.length < 5) return null;
 
-  // volatility (std of log returns)
-  const logReturns = [];
-  for (let i = history.length - 251; i < history.length; i++) {
-    logReturns.push(Math.log(history[i].Close / history[i - 1].Close));
+  // 全期間の log return を 1 度だけ計算しておき、 各期間で slice する。
+  const logReturns = [0];
+  for (let i = 1; i < safe.length; i++) {
+    logReturns.push(Math.log(safe[i].Close / safe[i - 1].Close));
   }
-  const mean = logReturns.reduce((a, b) => a + b, 0) / logReturns.length;
-  const variance =
-    logReturns.reduce((a, b) => a + Math.pow(b - mean, 2), 0) /
-    (logReturns.length - 1);
-  const hv = Math.sqrt(variance * 252);
 
-  return { symbol, ret, hv };
+  const result = { symbol };
+  const lastDate = new Date(
+    safe[safe.length - 1].Date || safe[safe.length - 1].index,
+  );
+
+  for (const p of RR_PERIOD_CONFIGS) {
+    let startIdx;
+    let isValid = true;
+    if (p.days === "YTD") {
+      const ytdStart = new Date(Date.UTC(lastDate.getUTCFullYear(), 0, 1));
+      startIdx = safe.findIndex(
+        (h) => new Date(h.Date || h.index) >= ytdStart,
+      );
+      if (startIdx === -1) startIdx = Math.max(0, safe.length - 21);
+    } else {
+      // 要求期間の 80% 以上のデータが必要 (上場直後の銘柄を長期から除外)
+      if (safe.length < p.days * 0.8) {
+        isValid = false;
+        startIdx = -1;
+      } else {
+        startIdx = Math.max(0, safe.length - p.days);
+      }
+    }
+    if (!isValid || safe.length - startIdx < 5) {
+      result[`HV_${p.key}`] = null;
+      result[`Ret_${p.key}`] = null;
+      continue;
+    }
+
+    // 年率リスク (log return の標準偏差 × √252)
+    const subRet = logReturns.slice(startIdx + 1);
+    const mean = subRet.reduce((a, b) => a + b, 0) / subRet.length;
+    const variance =
+      subRet.reduce((a, b) => a + (b - mean) ** 2, 0) / (subRet.length - 1);
+    const hv = Math.sqrt(variance * 252);
+
+    // 年率換算リターン
+    const startClose = safe[startIdx].Close;
+    const lastClose = safe[safe.length - 1].Close;
+    const totalRet = lastClose / startClose - 1;
+    const startDate = new Date(
+      safe[startIdx].Date || safe[startIdx].index,
+    );
+    const daysDiff = (lastDate - startDate) / (1000 * 60 * 60 * 24);
+    let annRet;
+    if (daysDiff > 5) {
+      annRet = Math.pow(1 + totalRet, 365 / daysDiff) - 1;
+    } else {
+      annRet = totalRet;
+    }
+    result[`HV_${p.key}`] = Number.isFinite(hv) ? hv : null;
+    result[`Ret_${p.key}`] = Number.isFinite(annRet) ? annRet : null;
+  }
+
+  // 1Y を従来通り ret / hv トップレベルにも入れて後方互換にしておく
+  result.hv = result.HV_1Y ?? null;
+  result.ret = result.Ret_1Y ?? null;
+  return result;
 }
 
 function calculateDailyChange(history) {
@@ -510,64 +573,169 @@ function generateCfChart(cashflow, incomeStmt) {
   };
 }
 
-function generatePerformanceChart(history, etfHistory, symbol, etfSymbol) {
+// パフォーマンス比較: 対象銘柄 / セクター ETF / S&P 500 (SPY) の累積リターンを
+// 8 期間で表示。 各期間で 2 〜 3 trace、 ラベル末尾の "(1年)" などで ChartJs.astro
+// が期間切替タブを描画する。 初期表示は 1年。
+// 各期間で日付範囲が異なるため Plotly 形式 ({data: [{name,x,y,...}], layout})
+// で出力し、 ChartJs.astro の transformPlotlyToChartJs に処理させる。
+// master の performance_comparison.generate_performance_chart_fig に揃えた構造。
+function generatePerformanceChart(history, etfHistory, spyHistory, symbol, etfSymbol) {
   if (!history || history.length === 0) return null;
-  const targetData = history.slice(-252);
-  const etfData = etfHistory ? etfHistory.slice(-252) : [];
-  const spyData = history.find((h) => h.symbol === "SPY") ? [] : []; // simplified
+  const lastDate = new Date(
+    history[history.length - 1].Date || history[history.length - 1].index,
+  );
 
-  // In Action, we don't easily have other histories.
-  // We'll just provide the target's relative performance.
-  const dates = targetData.map((d) => String(d.Date || d.index).split(" ")[0]);
-  const base = targetData[0].Close;
-  const targetPerf = targetData.map((d) => (d.Close - base) / base);
+  const normalise = (h) =>
+    (h || [])
+      .filter((r) => r && r.Close > 0)
+      .map((r) => ({ date: new Date(r.Date || r.index), close: r.Close }));
+  const targetSeries = normalise(history);
+  const etfSeries = normalise(etfHistory);
+  const spySeries = normalise(spyHistory);
 
-  const datasets = [
-    {
-      label: symbol,
-      data: targetPerf,
-      borderColor: "rgb(255, 99, 132)",
-      borderWidth: 2,
-      fill: false,
-      pointRadius: 0,
-    },
-  ];
+  const meta = {
+    [symbol]: { name: symbol, color: "#ff6b01", series: targetSeries },
+    [etfSymbol]: { name: etfSymbol, color: "#006cac", series: etfSeries },
+    SPY: { name: "S&P 500", color: "#22c55e", series: spySeries },
+  };
+  const symbolOrder =
+    etfSymbol === "SPY" ? [symbol, "SPY"] : [symbol, etfSymbol, "SPY"];
 
-  if (etfData.length === targetData.length) {
-    const eBase = etfData[0].Close;
-    datasets.push({
-      label: etfSymbol,
-      data: etfData.map((d) => (d.Close - eBase) / eBase),
-      borderColor: "rgb(54, 162, 235)",
-      borderWidth: 2,
-      fill: false,
-      pointRadius: 0,
-    });
+  const data = [];
+  for (const p of RR_PERIOD_CONFIGS) {
+    const isDefault = p.key === "1Y";
+    let cutoff;
+    if (p.days === "YTD") {
+      cutoff = new Date(Date.UTC(lastDate.getUTCFullYear(), 0, 1));
+    } else {
+      const daysAgo = typeof p.days === "number" ? p.days * (365 / 252) : 365;
+      cutoff = new Date(lastDate.getTime() - daysAgo * 86400 * 1000);
+    }
+
+    const sliced = {};
+    for (const sym of symbolOrder) {
+      const series = meta[sym]?.series;
+      if (!series || !series.length) continue;
+      const idx = series.findIndex((r) => r.date >= cutoff);
+      if (idx === -1) continue;
+      sliced[sym] = series.slice(idx);
+    }
+    const startTimes = Object.values(sliced).map((s) => s[0].date.getTime());
+    if (startTimes.length === 0) continue;
+    // 全銘柄を最遅の開始日にそろえる (グラフが共通の基準点から始まるように)
+    const commonStart = Math.max(...startTimes);
+    for (const sym of symbolOrder) {
+      if (!sliced[sym]) continue;
+      sliced[sym] = sliced[sym].filter((r) => r.date.getTime() >= commonStart);
+    }
+    const target = sliced[symbol];
+    if (!target || target.length < 2) continue;
+
+    for (const sym of symbolOrder) {
+      const s = sliced[sym];
+      if (!s || s.length === 0) continue;
+      const base = s[0].close;
+      const m = meta[sym];
+      data.push({
+        name: `${m.name} (${p.label})`,
+        type: "scatter",
+        mode: "lines",
+        x: s.map((r) => r.date.toISOString().slice(0, 10)),
+        y: s.map((r) => r.close / base - 1),
+        line: { color: m.color, width: 2 },
+        visible: isDefault,
+      });
+    }
   }
 
-  return { labels: dates, datasets };
+  if (data.length === 0) return null;
+  return {
+    data,
+    layout: {
+      xaxis: { title: "日付" },
+      yaxis: { title: "累積リターン", tickformat: ".0%" },
+    },
+  };
 }
 
-function generateRiskReturnChart(allMetrics, targetSymbol) {
-  const others = allMetrics.filter((m) => m.symbol !== targetSymbol);
-  const target = allMetrics.find((m) => m.symbol === targetSymbol);
-  const datasets = [
-    {
-      label: "その他のS&P 500銘柄",
-      data: others.map((m) => ({ x: m.hv, y: m.ret, symbol: m.symbol })),
-      backgroundColor: "rgba(200, 200, 200, 0.5)",
-      pointRadius: 4,
-    },
-  ];
-  if (target) {
+// リスク・リターン散布図: 8 期間 × 4 トレース (target / sectorETF / S&P 500
+// / その他 S&P 銘柄) = 32 dataset。 ラベル末尾の "(1年)" などの期間サフィックス
+// は ChartJs.astro の hasGroups 機能でタブ切替に変換される。 初期表示は 1年。
+// master の risk_return.generate_scatter_fig に揃えた構造。
+function generateRiskReturnChart(allMetrics, targetSymbol, sectorEtf) {
+  if (!allMetrics || allMetrics.length === 0) return null;
+  const datasets = [];
+
+  for (const p of RR_PERIOD_CONFIGS) {
+    const hvKey = `HV_${p.key}`;
+    const retKey = `Ret_${p.key}`;
+    const isDefault = p.key === "1Y";
+
+    const hasValue = (m) =>
+      m[hvKey] != null &&
+      m[retKey] != null &&
+      Number.isFinite(m[hvKey]) &&
+      Number.isFinite(m[retKey]);
+
+    const target = allMetrics.find(
+      (m) => m.symbol === targetSymbol && hasValue(m),
+    );
+    const sector = allMetrics.find(
+      (m) => m.symbol === sectorEtf && hasValue(m),
+    );
+    const market = allMetrics.find(
+      (m) => m.symbol === "SPY" && hasValue(m),
+    );
+    const others = allMetrics.filter(
+      (m) =>
+        m.symbol !== targetSymbol &&
+        m.symbol !== sectorEtf &&
+        m.symbol !== "SPY" &&
+        hasValue(m),
+    );
+
+    // 描画順: その他 (背景) -> 市場 -> セクター -> ターゲット (前面)
     datasets.push({
-      label: target.symbol,
-      data: [{ x: target.hv, y: target.ret, symbol: target.symbol }],
+      label: `S&P銘柄 (${p.label})`,
+      data: others.map((m) => ({ x: m[hvKey], y: m[retKey], symbol: m.symbol })),
+      backgroundColor: "rgba(114, 119, 123, 0.4)",
+      pointRadius: 4,
+      visible: isDefault,
+    });
+    datasets.push({
+      label: `S&P 500 (${p.label})`,
+      data: market
+        ? [{ x: market[hvKey], y: market[retKey], symbol: "S&P 500" }]
+        : [],
+      backgroundColor: "rgba(0, 0, 0, 0.85)",
+      pointRadius: 7,
+      visible: isDefault,
+    });
+    if (sectorEtf && sectorEtf !== "SPY") {
+      datasets.push({
+        label: `${sectorEtf} (${p.label})`,
+        data: sector
+          ? [{ x: sector[hvKey], y: sector[retKey], symbol: sectorEtf }]
+          : [],
+        backgroundColor: "rgba(0, 108, 172, 0.9)",
+        pointRadius: 7,
+        visible: isDefault,
+      });
+    }
+    datasets.push({
+      label: `${targetSymbol} (${p.label})`,
+      data: target
+        ? [{ x: target[hvKey], y: target[retKey], symbol: targetSymbol }]
+        : [],
       backgroundColor: "rgba(255, 0, 0, 0.9)",
-      pointRadius: 8,
+      pointRadius: 9,
+      visible: isDefault,
     });
   }
-  return { datasets };
+  // ChartJs.astro の "labels && datasets" 判定で Chart.js native 経路を通すため
+  // 空配列の labels を付ける (scatter なので軸ラベルとしては未使用)。
+  // canvas.id === 'chart-risk-return' で isScatterChart として正しく判定される。
+  return { labels: [], datasets };
 }
 
 // 株主還元: 純利益 (1 列目) と 配当金+自社株買い (2 列目に積み上げ) の
@@ -645,26 +813,66 @@ function generateTpChart(cfData, isData) {
   };
 }
 
-function generateDpsEpsChart(dividends) {
+// 1株あたり配当金: 年間配当 (bar) + 配当利回り (line, 右軸 y1)。
+// 利回りは history から各年の年初取引日終値を取り、 その年の配当合計を割って算出。
+// 直近 10 年に制限。
+// master の fundamentals.get_dps_eps_chart_data の "年間推移" 表示に揃えた構造。
+// (権利落日別タブは別 PR で対応する)
+function generateDpsEpsChart(dividends, history) {
   if (!dividends || !Array.isArray(dividends) || dividends.length === 0)
     return null;
+
   const annual = {};
   dividends.forEach((d) => {
-    const y = new Date(d.Date || d.index).getFullYear();
+    const date = new Date(d.Date || d.index);
+    if (Number.isNaN(date.getTime())) return;
+    const y = date.getFullYear();
     annual[y] = (annual[y] || 0) + (d.Dividends || d.Value || 0);
   });
-  const labels = Object.keys(annual).sort();
-  return {
-    labels,
-    datasets: [
-      {
-        type: "bar",
-        label: "年間配当金",
-        data: labels.map((y) => annual[y]),
-        backgroundColor: "rgba(31, 119, 180, 0.8)",
-      },
-    ],
-  };
+  const allYears = Object.keys(annual)
+    .map(Number)
+    .sort((a, b) => a - b);
+  if (allYears.length === 0) return null;
+  const years = allYears.slice(-10);
+  const labels = years.map(String);
+  const divs = years.map((y) => annual[y]);
+
+  // history から各年の最初の取引日終値を求めて利回りを算出
+  const yieldData = years.map((y) => {
+    if (!history || history.length === 0) return null;
+    const firstOfYear = history.find((h) => {
+      const dt = new Date(h.Date || h.index);
+      return dt.getFullYear() === y;
+    });
+    if (!firstOfYear || !(firstOfYear.Close > 0)) return null;
+    return annual[y] / firstOfYear.Close;
+  });
+  const hasYield = yieldData.some((v) => v != null && Number.isFinite(v));
+
+  const datasets = [
+    {
+      type: "bar",
+      label: "年間配当金",
+      data: divs,
+      backgroundColor: "rgba(31, 119, 180, 0.85)",
+      yAxisID: "y",
+    },
+  ];
+  if (hasYield) {
+    datasets.push({
+      type: "line",
+      label: "配当利回り",
+      data: yieldData,
+      borderColor: "#ff7f0e",
+      backgroundColor: "#ff7f0e",
+      borderWidth: 2,
+      borderDash: [4, 4],
+      fill: false,
+      pointRadius: 4,
+      yAxisID: "y1",
+    });
+  }
+  return { labels, datasets };
 }
 
 function generateSegmentChart(segmentData) {
@@ -879,7 +1087,11 @@ async function main() {
         const ratingChanges = extractRatingChanges(rawData);
         const analystRatings = extractAnalystRatings(rawData);
 
-        const riskReturnChart = generateRiskReturnChart(riskReturnMetrics, symbol);
+        const riskReturnChart = generateRiskReturnChart(
+          riskReturnMetrics,
+          symbol,
+          sectorEtf,
+        );
         // BS / IS / CF は master の Plotly レイアウトに合わせた専用関数を使う。
         // generateFinancialChart は単純スタックしか作らないため使用しない。
         const isChart = generateIsChart(rawData.income_stmt || []);
@@ -891,6 +1103,7 @@ async function main() {
         const perfChart = generatePerformanceChart(
           rawData.history,
           etfRawData?.history,
+          rawDataMap["SPY"]?.history,
           symbol,
           sectorEtf,
         );
@@ -898,7 +1111,7 @@ async function main() {
           rawData.cashflow || [],
           rawData.income_stmt || [],
         );
-        const dpsChart = generateDpsEpsChart(rawData.dividends);
+        const dpsChart = generateDpsEpsChart(rawData.dividends, rawData.history);
         const segmentChart = generateSegmentChart(rawData.revenue_by_segment);
         const geoChart = generateSegmentChart(rawData.revenue_by_geography);
 
