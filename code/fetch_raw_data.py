@@ -2,6 +2,7 @@
 import os
 import json
 import time
+import random
 import datetime
 import threading
 import pandas as pd
@@ -42,7 +43,7 @@ _status_lock = threading.Lock()
 
 # Bump when raw_payload schema changes so cached fetch_status entries from older
 # schemas are invalidated and the symbol is re-fetched.
-RAW_DATA_SCHEMA_VERSION = "v4-estimate-retry-growth"
+RAW_DATA_SCHEMA_VERSION = "v5-estimate-throttle-retry"
 
 def _load_status() -> dict:
     os.makedirs(os.path.dirname(_STATUS_PATH), exist_ok=True)
@@ -140,14 +141,31 @@ def fetch_raw_data_for_ticker(symbol):
         def _df(fn, field):
             return df_to_dict_safe(_safe_get(fn, symbol, field))
 
-        def _df_with_retry(fn, field, attempts=3, delay=1.5):
-            """yfinance のアナリスト予想系エンドポイントは断続的に空を返すので、
-            空 DataFrame の場合は短いバックオフで再試行する。"""
+        def _df_with_retry(fn, field, attempts=5, delay=2.0):
+            """yfinance のアナリスト予想系エンドポイントは断続的に空を返したり
+            レート制限を受けたりするので、空 DataFrame / 429 の場合は指数バック
+            オフで再試行する。master の utils.safe_get と同等の堅牢性を持たせる。"""
             last = None
             for i in range(attempts):
+                # master 同様に各リクエスト前に微小スロットリングを入れて
+                # Yahoo 側のスパイク検知を回避する。
+                time.sleep(random.uniform(0.1, 0.3))
                 try:
                     last = fn()
                 except Exception as e:
+                    err_str = str(e)
+                    is_rate_limit = (
+                        "Too Many Requests" in err_str
+                        or "429" in err_str
+                        or "Rate limited" in err_str
+                        or "YFRateLimitError" in type(e).__name__
+                    )
+                    if is_rate_limit:
+                        wait = (i + 1) * 15 + random.uniform(0, 10)
+                        print(f"[{symbol}] {field} rate-limited attempt {i+1}: waiting {wait:.1f}s")
+                        time.sleep(wait)
+                        last = None
+                        continue
                     print(f"[{symbol}] {field} attempt {i+1} failed: {e}")
                     last = None
                 if last is not None and hasattr(last, 'empty') and not last.empty:
