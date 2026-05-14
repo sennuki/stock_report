@@ -42,7 +42,7 @@ _status_lock = threading.Lock()
 
 # Bump when raw_payload schema changes so cached fetch_status entries from older
 # schemas are invalidated and the symbol is re-fetched.
-RAW_DATA_SCHEMA_VERSION = "v3-earnings-estimate-retry"
+RAW_DATA_SCHEMA_VERSION = "v4-estimate-retry-growth"
 
 def _load_status() -> dict:
     os.makedirs(os.path.dirname(_STATUS_PATH), exist_ok=True)
@@ -140,6 +140,30 @@ def fetch_raw_data_for_ticker(symbol):
         def _df(fn, field):
             return df_to_dict_safe(_safe_get(fn, symbol, field))
 
+        def _df_with_retry(fn, field, attempts=3, delay=1.5):
+            """yfinance のアナリスト予想系エンドポイントは断続的に空を返すので、
+            空 DataFrame の場合は短いバックオフで再試行する。"""
+            last = None
+            for i in range(attempts):
+                try:
+                    last = fn()
+                except Exception as e:
+                    print(f"[{symbol}] {field} attempt {i+1} failed: {e}")
+                    last = None
+                if last is not None and hasattr(last, 'empty') and not last.empty:
+                    return df_to_dict_safe(last)
+                if i < attempts - 1:
+                    time.sleep(delay * (i + 1))
+            return df_to_dict_safe(last) if last is not None else None
+
+        def _growth_estimates():
+            # 一部の銘柄では earnings_estimate が空でも growth_estimates が成長率を返す。
+            fn = getattr(ticker, 'growth_estimates', None)
+            if fn is None:
+                return None
+            val = _safe_get(lambda: fn, symbol, "growth_estimates")
+            return df_to_dict_safe(val)
+
         def _df_earnings():
             # yfinance の earnings_dates はよく失敗するので、個別にエラーを抑制して取得
             try:
@@ -183,8 +207,9 @@ def fetch_raw_data_for_ticker(symbol):
             "calendar": _cal(),
             "analyst_ratings": _df(lambda: ticker.recommendations_summary, "analyst_ratings"),
             "upgrades_downgrades": _df(lambda: ticker.upgrades_downgrades, "upgrades_downgrades"),
-            "earnings_estimate": _df(lambda: ticker.earnings_estimate, "earnings_estimate"),
-            "revenue_estimate": _df(lambda: ticker.revenue_estimate, "revenue_estimate"),
+            "earnings_estimate": _df_with_retry(lambda: ticker.earnings_estimate, "earnings_estimate"),
+            "revenue_estimate": _df_with_retry(lambda: ticker.revenue_estimate, "revenue_estimate"),
+            "growth_estimates": _growth_estimates(),
             "dividends": _divs(),
             "revenue_by_segment": _rev_seg(),
             "revenue_by_geography": _rev_geo(),

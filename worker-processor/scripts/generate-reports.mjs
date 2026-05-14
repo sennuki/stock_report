@@ -375,6 +375,16 @@ function extractConsensus(rawData) {
     if (rRow) consensus.revenue[period] = buildEntry(rRow);
   }
 
+  // growth_estimates DataFrame fallback (yfinance separate endpoint).
+  // Rows look like {period:"0q"|"+1y"|..., stockTrend:number, indexTrend:number}.
+  const gEst = Array.isArray(rawData.growth_estimates) ? rawData.growth_estimates : [];
+  const growthByPeriod = new Map();
+  for (const r of gEst) {
+    const p = getPeriod(r).toLowerCase();
+    const v = r.stockTrend ?? r.StockTrend ?? r.stocktrend ?? null;
+    if (p && typeof v === "number") growthByPeriod.set(p, v);
+  }
+
   // Fallback: yfinance's info dict has forwardEps for forward 12-month EPS.
   // If +1y is still missing but forwardEps exists, use it as a coarse proxy.
   if (consensus.earnings["+1y"] == null && typeof info.forwardEps === "number") {
@@ -382,9 +392,57 @@ function extractConsensus(rawData) {
       avg: info.forwardEps,
       low: null,
       high: null,
-      growth: info.earningsGrowth ?? null,
+      growth: growthByPeriod.get("+1y") ?? info.earningsGrowth ?? null,
       numberOfAnalysts: info.numberOfAnalystOpinions ?? 0,
     };
+  }
+
+  // Fallback for revenue +1y: yfinance info has no forward revenue field, but
+  // we can approximate it as totalRevenue (TTM) × (1 + growth). Prefer the
+  // growth_estimates +1y row if available, otherwise fall back to revenueGrowth
+  // (which yfinance typically reports as the most recent quarterly YoY).
+  if (consensus.revenue["+1y"] == null && typeof info.totalRevenue === "number") {
+    const g = growthByPeriod.get("+1y") ?? info.revenueGrowth ?? null;
+    if (typeof g === "number") {
+      consensus.revenue["+1y"] = {
+        avg: info.totalRevenue * (1 + g),
+        low: null,
+        high: null,
+        growth: g,
+        numberOfAnalysts: info.numberOfAnalystOpinions ?? 0,
+        _estimated: true,
+      };
+    }
+  }
+
+  // Fallback for revenue 0q: when info.revenueAverage is missing but quarterly
+  // income statement carries Total Revenue, derive an approximate quarterly
+  // forecast as last_quarter_revenue × (1 + revenueGrowth).
+  if (
+    (consensus.revenue["0q"] == null || consensus.revenue["0q"].avg == null) &&
+    typeof info.revenueGrowth === "number"
+  ) {
+    const q = rawData.quarterly_income_stmt;
+    const lastQRevenue = (() => {
+      if (!Array.isArray(q) || q.length === 0) return null;
+      const row = q.find((r) => /total\s*revenue/i.test(String(r.index || "")));
+      if (!row) return null;
+      const dateKeys = Object.keys(row).filter((k) => /^\d{4}-\d{2}-\d{2}/.test(k));
+      if (!dateKeys.length) return null;
+      dateKeys.sort();
+      const latest = row[dateKeys[dateKeys.length - 1]];
+      return typeof latest === "number" ? latest : null;
+    })();
+    if (lastQRevenue != null) {
+      consensus.revenue["0q"] = {
+        avg: lastQRevenue * (1 + info.revenueGrowth),
+        low: null,
+        high: null,
+        growth: info.revenueGrowth,
+        numberOfAnalysts: info.numberOfAnalystOpinions ?? 0,
+        _estimated: true,
+      };
+    }
   }
 
   // Diagnostic: surface raw row counts so the report can be inspected when
@@ -392,11 +450,16 @@ function extractConsensus(rawData) {
   consensus._debug = {
     earnings_estimate_count: eEst.length,
     revenue_estimate_count: rEst.length,
+    growth_estimates_count: gEst.length,
     earnings_estimate_periods: eEst.map((r) => getPeriod(r)),
     revenue_estimate_periods: rEst.map((r) => getPeriod(r)),
+    growth_estimates_periods: gEst.map((r) => getPeriod(r)),
     info_has_forwardEps: typeof info.forwardEps === "number",
     info_has_earningsAverage: info.earningsAverage != null,
     info_has_revenueAverage: info.revenueAverage != null,
+    info_has_totalRevenue: typeof info.totalRevenue === "number",
+    info_has_revenueGrowth: typeof info.revenueGrowth === "number",
+    info_has_earningsGrowth: typeof info.earningsGrowth === "number",
   };
 
   return consensus;
