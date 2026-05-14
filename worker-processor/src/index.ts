@@ -148,6 +148,46 @@ export default {
       }
     }
 
+    // Debug endpoint: inspect raw/{symbol}.json structure.
+    // Use ?fields=earnings_estimate,revenue_estimate,upgrades_downgrades to limit response size.
+    const rawMatch = url.pathname.match(/^\/api\/raw\/([^/]+)$/);
+    if (rawMatch && request.method === 'GET') {
+      const symbol = decodeURIComponent(rawMatch[1]);
+      const fields = (url.searchParams.get('fields') || '').split(',').map(s => s.trim()).filter(Boolean);
+      try {
+        const obj = await env.STOCK_DATA.get(`raw/${symbol}.json`);
+        if (!obj) {
+          return new Response(JSON.stringify({ error: 'not_found', key: `raw/${symbol}.json` }), {
+            status: 404,
+            headers: { 'Content-Type': 'application/json', ...CORS_HEADERS },
+          });
+        }
+        const body = await obj.text();
+        const data = JSON.parse(body.replace(/\bNaN\b/g, 'null').replace(/\b-?Infinity\b/g, 'null'));
+        const uploaded = String((obj as any).uploaded || '');
+        const result: any = { symbol, uploaded, available_keys: Object.keys(data) };
+        if (fields.length === 0) {
+          // Default: show small summary of analyst-related fields only.
+          result.earnings_estimate = data.earnings_estimate;
+          result.revenue_estimate = data.revenue_estimate;
+          result.analyst_ratings = data.analyst_ratings;
+          result.upgrades_downgrades_count = Array.isArray(data.upgrades_downgrades) ? data.upgrades_downgrades.length : null;
+          result.upgrades_downgrades_first = Array.isArray(data.upgrades_downgrades) ? data.upgrades_downgrades[0] : null;
+        } else {
+          for (const f of fields) result[f] = (data as any)[f];
+        }
+        return new Response(JSON.stringify(result, null, 2), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json', ...CORS_HEADERS },
+        });
+      } catch (e: any) {
+        return new Response(JSON.stringify({ error: 'internal', message: String(e?.message || e) }), {
+          status: 500,
+          headers: { 'Content-Type': 'application/json', ...CORS_HEADERS },
+        });
+      }
+    }
+
     return new Response("Use /batch to trigger processing, or /api/report/{symbol} to fetch a report.", { status: 400 });
   }
 };
