@@ -729,7 +729,10 @@ if (reportData?.analyst_ratings) {
             <details class="mb-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700 rounded text-xs">
               <summary class="cursor-pointer font-medium text-yellow-800 dark:text-yellow-200">🔍 コンセンサス データ診断情報 (一時)</summary>
               <pre class="mt-2 p-2 bg-white dark:bg-gray-900 rounded overflow-x-auto">{JSON.stringify(reportData.consensus._debug, null, 2)}</pre>
-              <pre class="mt-2 p-2 bg-white dark:bg-gray-900 rounded overflow-x-auto">consensus.earnings keys: {JSON.stringify(Object.keys(reportData.consensus.earnings || {}))}{"\n"}consensus.revenue keys: {JSON.stringify(Object.keys(reportData.consensus.revenue || {}))}</pre>
+              <pre class="mt-2 p-2 bg-white dark:bg-gray-900 rounded overflow-x-auto">
+                {`consensus.earnings keys: ${JSON.stringify(Object.keys(reportData.consensus.earnings || {}))}
+consensus.revenue keys: ${JSON.stringify(Object.keys(reportData.consensus.revenue || {}))}`}
+              </pre>
             </details>
           )}
 
