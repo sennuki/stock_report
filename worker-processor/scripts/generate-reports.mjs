@@ -15,6 +15,10 @@ import {
   PutObjectCommand,
 } from "@aws-sdk/client-s3";
 import pMap from "p-map";
+import yahooFinance from "yahoo-finance2";
+
+// yahoo-finance2 prints a survey notice on first import; suppress it.
+yahooFinance.suppressNotices(["yahooSurvey"]);
 
 const BUCKET = process.env.R2_BUCKET_NAME || "defeat-beta-stock-data";
 const CONCURRENCY = 20;
@@ -500,8 +504,65 @@ function extractRatingChanges(rawData) {
       FromGrade: x.FromGrade || x["From Grade"] || x.fromGrade || "",
       Action: x.Action || x.action || "",
       PriceAtRating: priceAt(gradeDate),
+      currentPriceTarget: 0,
+      priorPriceTarget: 0,
+      priceTargetAction: "",
     };
   });
+}
+
+/**
+ * Fetch upgrade/downgrade history from Yahoo Finance (via yahoo-finance2)
+ * since yfinance's upgradeDowngradeHistory module returns currentPriceTarget /
+ * priorPriceTarget / priceTargetAction columns that aren't exposed in the
+ * Python yfinance package.
+ *
+ * Returns an array of { Firm, ToGrade, FromGrade, Action, GradeDate, currentPriceTarget,
+ * priorPriceTarget, priceTargetAction } records, or null on failure.
+ */
+async function fetchUpgradeDowngradeHistory(symbol) {
+  try {
+    const summary = await yahooFinance.quoteSummary(symbol, {
+      modules: ["upgradeDowngradeHistory"],
+    });
+    const history = summary?.upgradeDowngradeHistory?.history;
+    if (!Array.isArray(history)) return null;
+    return history.map((h) => {
+      const d = h.epochGradeDate instanceof Date ? h.epochGradeDate : new Date(h.epochGradeDate);
+      return {
+        GradeDate: isNaN(d.getTime()) ? null : d.toISOString().split("T")[0],
+        Firm: h.firm || "",
+        ToGrade: h.toGrade || "",
+        FromGrade: h.fromGrade || "",
+        Action: h.action || "",
+        currentPriceTarget: typeof h.currentPriceTarget === "number" ? h.currentPriceTarget : 0,
+        priorPriceTarget: typeof h.priorPriceTarget === "number" ? h.priorPriceTarget : 0,
+        priceTargetAction: h.priceTargetAction || "",
+      };
+    });
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
+ * Merge target-price fields from yahoo-finance2's history into the rating_changes
+ * list produced by extractRatingChanges. Match by (GradeDate, Firm) since both
+ * sources should agree on those.
+ */
+function mergeTargetPrices(ratingChanges, yfHistory) {
+  if (!Array.isArray(yfHistory) || yfHistory.length === 0) return ratingChanges;
+  const key = (r) => `${r.GradeDate}|${(r.Firm || "").toLowerCase()}`;
+  const byKey = new Map(yfHistory.map((h) => [key(h), h]));
+  for (const rc of ratingChanges) {
+    const match = byKey.get(key(rc));
+    if (match) {
+      rc.currentPriceTarget = match.currentPriceTarget || 0;
+      rc.priorPriceTarget = match.priorPriceTarget || 0;
+      rc.priceTargetAction = match.priceTargetAction || "";
+    }
+  }
+  return ratingChanges;
 }
 
 function extractAnalystRatings(rawData) {
@@ -1245,6 +1306,13 @@ async function main() {
         const nextEarnings = extractNextEarnings(rawData);
         const consensus = extractConsensus(rawData);
         const ratingChanges = extractRatingChanges(rawData);
+        // Enrich ratings with currentPriceTarget/priorPriceTarget/priceTargetAction
+        // via yahoo-finance2 (the Python yfinance package doesn't expose these
+        // fields even though Yahoo's API returns them).
+        if (ratingChanges.length > 0) {
+          const yfHistory = await fetchUpgradeDowngradeHistory(symbol);
+          if (yfHistory) mergeTargetPrices(ratingChanges, yfHistory);
+        }
         const analystRatings = extractAnalystRatings(rawData);
 
         const riskReturnChart = generateRiskReturnChart(
