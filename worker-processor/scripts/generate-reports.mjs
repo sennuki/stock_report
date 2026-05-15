@@ -975,14 +975,22 @@ function _rrPoint(symbol, x, y, xBounds, yBounds) {
   return point;
 }
 
-// リスク・リターン散布図: 8 期間 × 5 トレース (target / sectorETF / broadSectorEtf
-// / S&P 500 / その他 S&P 銘柄) = 40 dataset。 ラベル末尾の "(1年)" などの期間サフィックス
-// は ChartJs.astro の hasGroups 機能でタブ切替に変換される。 初期表示は 1年。
-// master の risk_return.generate_scatter_fig に揃えた構造。
-function generateRiskReturnChart(allMetrics, targetSymbol, sectorEtf, broadSectorEtf, sp500Set) {
+// リスク・リターン散布図: 8 期間 × 最大 6 トレース (target / sectorETF /
+// broadSectorEtf / S&P 500 / 自インデックス (S&P 400/600) / その他 S&P 銘柄)。
+// ラベル末尾の "(1年)" などの期間サフィックスは ChartJs.astro の hasGroups
+// 機能でタブ切替に変換される。 初期表示は 1年。
+// marketIndexEtf は対象銘柄が属する指数の ETF (S&P 400→MDY / S&P 600→IJR)。
+// S&P 500 銘柄では "SPY" となり、SPY は常に描画されるため追加プロットしない。
+function generateRiskReturnChart(allMetrics, targetSymbol, sectorEtf, broadSectorEtf, marketIndexEtf, sp500Set) {
   if (!allMetrics || allMetrics.length === 0) return null;
   const datasets = [];
   const limitToSp500 = sp500Set && sp500Set.size > 0;
+  // 対象銘柄が S&P 400/600 のとき、その指数 ETF を SPY に加えて描画する。
+  const indexEtfLabels = { MDY: "S&P 400", IJR: "S&P 600" };
+  const ownIndexEtf =
+    marketIndexEtf && marketIndexEtf !== "SPY" && indexEtfLabels[marketIndexEtf]
+      ? marketIndexEtf
+      : null;
 
   for (const p of RR_PERIOD_CONFIGS) {
     const hvKey = `HV_${p.key}`;
@@ -1007,12 +1015,16 @@ function generateRiskReturnChart(allMetrics, targetSymbol, sectorEtf, broadSecto
     const market = allMetrics.find(
       (m) => m.symbol === "SPY" && hasValue(m),
     );
+    const ownIndex = ownIndexEtf
+      ? allMetrics.find((m) => m.symbol === ownIndexEtf && hasValue(m))
+      : null;
     const others = allMetrics.filter(
       (m) =>
         m.symbol !== targetSymbol &&
         m.symbol !== sectorEtf &&
         m.symbol !== broadSectorEtf &&
         m.symbol !== "SPY" &&
+        m.symbol !== ownIndexEtf &&
         (!limitToSp500 || sp500Set.has(m.symbol)) &&
         hasValue(m),
     );
@@ -1023,6 +1035,7 @@ function generateRiskReturnChart(allMetrics, targetSymbol, sectorEtf, broadSecto
     if (sector) displayed.push(sector);
     if (broadSector) displayed.push(broadSector);
     if (market) displayed.push(market);
+    if (ownIndex) displayed.push(ownIndex);
     const xBounds = _clampBounds(displayed.map((m) => m[hvKey]));
     const yBounds = _clampBounds(displayed.map((m) => m[retKey]));
 
@@ -1075,6 +1088,20 @@ function generateRiskReturnChart(allMetrics, targetSymbol, sectorEtf, broadSecto
       pointBorderWidth: 1.5,
       visible: isDefault,
     });
+    if (ownIndexEtf) {
+      const indexLabel = indexEtfLabels[ownIndexEtf];
+      datasets.push({
+        label: `${indexLabel} (${p.label})`,
+        data: ownIndex
+          ? [_rrPoint(indexLabel, ownIndex[hvKey], ownIndex[retKey], xBounds, yBounds)]
+          : [],
+        backgroundColor: "rgba(168, 85, 247, 0.95)",
+        pointRadius: 8,
+        pointBorderColor: "#ffffff",
+        pointBorderWidth: 1.5,
+        visible: isDefault,
+      });
+    }
     datasets.push({
       label: `${targetSymbol} (${p.label})`,
       data: target
@@ -1516,6 +1543,8 @@ async function main() {
   const movementReasons = {};
   const ETFS = [
     "SPY",
+    "MDY",
+    "IJR",
     "XLC",
     "XLY",
     "XLP",
@@ -1582,6 +1611,8 @@ async function main() {
           broadSectorEtfMap[rawData.info?.industry] ||
           broadSectorEtfMap[rawData.info?.sector] ||
           'SPY';
+        // 対象銘柄が属する指数の ETF (S&P 400→MDY / S&P 600→IJR / 既定 SPY)。
+        const marketIndexEtf = marketIndexMap[metadata["Index"]] || 'SPY';
         const etfRawData = rawDataMap[sectorEtf];
 
         const highlights = extractHighlights(rawData);
@@ -1603,6 +1634,7 @@ async function main() {
           symbol,
           sectorEtf,
           broadSectorEtf,
+          marketIndexEtf,
           sp500Symbols,
         );
         // BS / IS / CF は master の Plotly レイアウトに合わせた専用関数を使う。

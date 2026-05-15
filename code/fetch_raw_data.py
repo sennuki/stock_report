@@ -86,7 +86,14 @@ if R2_ACCOUNT_ID and R2_ACCESS_KEY_ID and R2_SECRET_ACCESS_KEY:
     )
 
 # 比較用ETFリスト
-SECTOR_ETFS = ["SPY", "XLC", "XLY", "XLP", "XLE", "XLF", "XLV", "XLI", "XLK", "XLB", "XLRE", "XLU"]
+# - 市場インデックス: SPY (S&P 500) / MDY (S&P 400) / IJR (S&P 600)
+# - SPDR セクター ETF: XL*
+# - Vanguard セクター ETF (中小含む): V** / ITB
+SECTOR_ETFS = [
+    "SPY", "MDY", "IJR",
+    "XLC", "XLY", "XLP", "XLE", "XLF", "XLV", "XLI", "XLK", "XLB", "XLRE", "XLU",
+    "VOX", "VCR", "VDC", "VDE", "VFH", "VHT", "VIS", "VGT", "VAW", "VNQ", "VPU", "ITB",
+]
 
 def clean_value(v):
     """NaN や Inf を None (null) に変換し、Timestampなどを文字列に変換する"""
