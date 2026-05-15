@@ -931,6 +931,50 @@ function generatePerformanceChart(history, etfHistory, spyHistory, symbol, etfSy
   };
 }
 
+function _percentile(sorted, q) {
+  if (sorted.length === 0) return null;
+  const idx = (sorted.length - 1) * q;
+  const lo = Math.floor(idx);
+  const hi = Math.ceil(idx);
+  if (lo === hi) return sorted[lo];
+  return sorted[lo] + (sorted[hi] - sorted[lo]) * (idx - lo);
+}
+
+// IQR ベースで散布図プロットの表示位置をキャップする境界を求める。
+// Q1-3*IQR / Q3+3*IQR を境界とし、SNDK のような急騰銘柄の極端値で
+// 軸が引き伸ばされて他銘柄が潰れるのを防ぐ。境界外の点は境界に固定し、
+// 実数値は origX / origY に保持する (ツールチップは原値を表示)。
+function _clampBounds(values) {
+  const s = values.filter(Number.isFinite).sort((a, b) => a - b);
+  if (s.length < 4) return null;
+  const q1 = _percentile(s, 0.25);
+  const q3 = _percentile(s, 0.75);
+  const iqr = q3 - q1;
+  if (!(iqr > 0)) return null;
+  return { lo: q1 - 3 * iqr, hi: q3 + 3 * iqr };
+}
+
+// 散布図の 1 点を生成。境界外なら表示位置 (x/y) を境界に丸め、
+// 元の値を origX / origY に退避する。
+function _rrPoint(symbol, x, y, xBounds, yBounds) {
+  const point = { x, y, symbol };
+  if (xBounds && Number.isFinite(x)) {
+    const cx = Math.min(Math.max(x, xBounds.lo), xBounds.hi);
+    if (cx !== x) {
+      point.x = cx;
+      point.origX = x;
+    }
+  }
+  if (yBounds && Number.isFinite(y)) {
+    const cy = Math.min(Math.max(y, yBounds.lo), yBounds.hi);
+    if (cy !== y) {
+      point.y = cy;
+      point.origY = y;
+    }
+  }
+  return point;
+}
+
 // リスク・リターン散布図: 8 期間 × 4 トレース (target / sectorETF / S&P 500
 // / その他 S&P 銘柄) = 32 dataset。 ラベル末尾の "(1年)" などの期間サフィックス
 // は ChartJs.astro の hasGroups 機能でタブ切替に変換される。 初期表示は 1年。
@@ -969,31 +1013,31 @@ function generateRiskReturnChart(allMetrics, targetSymbol, sectorEtf, sp500Set) 
         hasValue(m),
     );
 
-    // 描画順 (配列の後ほど前面): その他 S&P 銘柄 (背景) -> 市場 -> セクター ETF
-    // -> ターゲット (最前面)。優先表示は ターゲット > セクター ETF > その他。
+    // この期間で実際に描画する全銘柄からプロット位置のキャップ境界を算出。
+    const displayed = [...others];
+    if (target) displayed.push(target);
+    if (sector) displayed.push(sector);
+    if (market) displayed.push(market);
+    const xBounds = _clampBounds(displayed.map((m) => m[hvKey]));
+    const yBounds = _clampBounds(displayed.map((m) => m[retKey]));
+
+    // 描画順 (配列の後ほど前面): その他 S&P 銘柄 (背景) -> セクター ETF
+    // -> S&P 500 ETF -> ターゲット (最前面)。
+    // 優先表示は ターゲット > S&P 500 ETF > セクター ETF > その他 S&P 銘柄。
     datasets.push({
       label: `S&P銘柄 (${p.label})`,
-      data: others.map((m) => ({ x: m[hvKey], y: m[retKey], symbol: m.symbol })),
+      data: others.map((m) =>
+        _rrPoint(m.symbol, m[hvKey], m[retKey], xBounds, yBounds),
+      ),
       backgroundColor: "rgba(114, 119, 123, 0.4)",
       pointRadius: 2.5,
-      visible: isDefault,
-    });
-    datasets.push({
-      label: `S&P 500 (${p.label})`,
-      data: market
-        ? [{ x: market[hvKey], y: market[retKey], symbol: "S&P 500" }]
-        : [],
-      backgroundColor: "rgba(34, 197, 94, 0.95)",
-      pointRadius: 8,
-      pointBorderColor: "#ffffff",
-      pointBorderWidth: 1.5,
       visible: isDefault,
     });
     if (sectorEtf && sectorEtf !== "SPY") {
       datasets.push({
         label: `${sectorEtf} (${p.label})`,
         data: sector
-          ? [{ x: sector[hvKey], y: sector[retKey], symbol: sectorEtf }]
+          ? [_rrPoint(sectorEtf, sector[hvKey], sector[retKey], xBounds, yBounds)]
           : [],
         backgroundColor: "rgba(0, 108, 172, 0.9)",
         pointRadius: 8,
@@ -1003,9 +1047,20 @@ function generateRiskReturnChart(allMetrics, targetSymbol, sectorEtf, sp500Set) 
       });
     }
     datasets.push({
+      label: `S&P 500 (${p.label})`,
+      data: market
+        ? [_rrPoint("S&P 500", market[hvKey], market[retKey], xBounds, yBounds)]
+        : [],
+      backgroundColor: "rgba(34, 197, 94, 0.95)",
+      pointRadius: 8,
+      pointBorderColor: "#ffffff",
+      pointBorderWidth: 1.5,
+      visible: isDefault,
+    });
+    datasets.push({
       label: `${targetSymbol} (${p.label})`,
       data: target
-        ? [{ x: target[hvKey], y: target[retKey], symbol: targetSymbol }]
+        ? [_rrPoint(targetSymbol, target[hvKey], target[retKey], xBounds, yBounds)]
         : [],
       backgroundColor: "rgba(255, 0, 0, 0.9)",
       pointRadius: 10,
