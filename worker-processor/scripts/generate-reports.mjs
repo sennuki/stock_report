@@ -1095,50 +1095,85 @@ function generateTpChart(cfData, isData, quarterlyCfData, quarterlyIsData) {
 // 直近 10 年に制限。
 // master の fundamentals.get_dps_eps_chart_data の "年間推移" 表示に揃えた構造。
 // (権利落日別タブは別 PR で対応する)
-function generateDpsEpsChart(dividends, history) {
+function _dpsDatasets(dividends, history, suffix, hidden) {
   if (!dividends || !Array.isArray(dividends) || dividends.length === 0)
     return null;
 
-  const annual = {};
+  let aggregated = {};
+  let dateList = [];
+
   dividends.forEach((d) => {
     const date = new Date(d.Date || d.index);
     if (Number.isNaN(date.getTime())) return;
-    const y = date.getFullYear();
-    annual[y] = (annual[y] || 0) + (d.Dividends || d.Value || 0);
-  });
-  const allYears = Object.keys(annual)
-    .map(Number)
-    .sort((a, b) => a - b);
-  if (allYears.length === 0) return null;
-  const years = allYears.slice(-10);
-  const labels = years.map(String);
-  const divs = years.map((y) => annual[y]);
+    dateList.push(date);
 
-  // history から各年の最初の取引日終値を求めて利回りを算出
-  const yieldData = years.map((y) => {
-    if (!history || history.length === 0) return null;
-    const firstOfYear = history.find((h) => {
-      const dt = new Date(h.Date || h.index);
-      return dt.getFullYear() === y;
-    });
-    if (!firstOfYear || !(firstOfYear.Close > 0)) return null;
-    return annual[y] / firstOfYear.Close;
+    if (suffix === " (四半期)") {
+      const y = date.getFullYear();
+      const q = Math.floor(date.getMonth() / 3) + 1;
+      const key = `${y}-Q${q}`;
+      aggregated[key] = (aggregated[key] || 0) + (d.Dividends || d.Value || 0);
+    } else {
+      const y = date.getFullYear();
+      aggregated[y] = (aggregated[y] || 0) + (d.Dividends || d.Value || 0);
+    }
   });
+
+  const keys = Object.keys(aggregated).sort();
+  if (keys.length === 0) return null;
+
+  const sliceCount = suffix === " (四半期)" ? 16 : 10;
+  const selectedKeys = keys.slice(-sliceCount);
+  const labels = selectedKeys.map(k => {
+    if (suffix === " (四半期)") {
+      return k.replace('-', ' ');
+    }
+    return k;
+  });
+  const divs = selectedKeys.map((k) => aggregated[k]);
+
+  const yieldData = selectedKeys.map((k) => {
+    if (!history || history.length === 0) return null;
+    const divAmount = aggregated[k];
+
+    if (suffix === " (四半期)") {
+      const [yearStr, quarter] = k.split('-');
+      const year = Number(yearStr);
+      const startMonth = (Number(quarter[1]) - 1) * 3;
+      const targetDate = new Date(year, startMonth, 1);
+      const firstOfPeriod = history.find((h) => {
+        const dt = new Date(h.Date || h.index);
+        return dt >= targetDate && dt < new Date(year, startMonth + 3, 1);
+      });
+      if (!firstOfPeriod || !(firstOfPeriod.Close > 0)) return null;
+      return divAmount / firstOfPeriod.Close;
+    } else {
+      const year = Number(k);
+      const firstOfYear = history.find((h) => {
+        const dt = new Date(h.Date || h.index);
+        return dt.getFullYear() === year;
+      });
+      if (!firstOfYear || !(firstOfYear.Close > 0)) return null;
+      return divAmount / firstOfYear.Close;
+    }
+  });
+
   const hasYield = yieldData.some((v) => v != null && Number.isFinite(v));
 
   const datasets = [
     {
       type: "bar",
-      label: "年間配当金",
+      label: `配当金${suffix}`,
       data: divs,
       backgroundColor: "rgba(31, 119, 180, 0.85)",
       yAxisID: "y",
+      hidden,
     },
   ];
+
   if (hasYield) {
     datasets.push({
       type: "line",
-      label: "配当利回り",
+      label: `配当利回り${suffix}`,
       data: yieldData,
       borderColor: "#ff7f0e",
       backgroundColor: "#ff7f0e",
@@ -1147,9 +1182,17 @@ function generateDpsEpsChart(dividends, history) {
       fill: false,
       pointRadius: 4,
       yAxisID: "y1",
+      hidden,
     });
   }
+
   return { labels, datasets };
+}
+
+function generateDpsEpsChart(dividends, history) {
+  const annual = _tagGroupLabels(_dpsDatasets(dividends, history, " (通年)", false));
+  const quarterly = _tagGroupLabels(_dpsDatasets(dividends, history, " (四半期)", true));
+  return _mergeGroups(annual, quarterly);
 }
 
 function generateSegmentChart(segmentData) {
