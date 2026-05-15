@@ -680,22 +680,22 @@ function _isDatasets(stmt, suffix, hidden) {
 
   const datasets = [
     { type: "bar", label: `売上高${suffix}`, data: rev,
-      backgroundColor: "rgba(174, 199, 232, 0.85)", yAxisID: "y", hidden },
+      backgroundColor: "rgba(174, 199, 232, 0.85)", yAxisID: "y", order: 2, hidden },
     { type: "bar", label: `売上総利益${suffix}`, data: grossProfit,
-      backgroundColor: "rgba(31, 119, 180, 0.85)", yAxisID: "y", hidden },
+      backgroundColor: "rgba(31, 119, 180, 0.85)", yAxisID: "y", order: 2, hidden },
     { type: "bar", label: `営業利益${suffix}`, data: operatingIncome,
-      backgroundColor: "rgba(255, 187, 120, 0.85)", yAxisID: "y", hidden },
+      backgroundColor: "rgba(255, 187, 120, 0.85)", yAxisID: "y", order: 2, hidden },
     { type: "bar", label: `純利益${suffix}`, data: netIncome,
-      backgroundColor: "rgba(44, 160, 44, 0.85)", yAxisID: "y", hidden },
+      backgroundColor: "rgba(44, 160, 44, 0.85)", yAxisID: "y", order: 2, hidden },
     { type: "line", label: `売上総利益率${suffix}`, data: ratio(grossProfit, rev),
       borderColor: "#1f77b4", backgroundColor: "#1f77b4",
-      borderWidth: 2, fill: false, pointRadius: 4, yAxisID: "y1", hidden },
+      borderWidth: 2, fill: false, pointRadius: 4, yAxisID: "y1", order: 1, hidden },
     { type: "line", label: `営業利益率${suffix}`, data: ratio(operatingIncome, rev),
       borderColor: "#ffbb78", backgroundColor: "#ffbb78",
-      borderWidth: 2, fill: false, pointRadius: 4, yAxisID: "y1", hidden },
+      borderWidth: 2, fill: false, pointRadius: 4, yAxisID: "y1", order: 1, hidden },
     { type: "line", label: `純利益率${suffix}`, data: ratio(netIncome, rev),
       borderColor: "#2ca02c", backgroundColor: "#2ca02c",
-      borderWidth: 2, fill: false, pointRadius: 4, yAxisID: "y1", hidden },
+      borderWidth: 2, fill: false, pointRadius: 4, yAxisID: "y1", order: 1, hidden },
   ];
   return { labels, datasets };
 }
@@ -767,24 +767,24 @@ function _bsDatasets(balanceSheet, suffix, hidden) {
 
   const datasets = hasBreakdown
     ? [
-        { label: `固定資産${suffix}`, data: nonCurrentAssets,
-          backgroundColor: "rgba(31, 119, 180, 0.85)", stack: `assets${suffix}`, hidden },
-        { label: `流動資産${suffix}`, data: currentAssets,
-          backgroundColor: "rgba(174, 199, 232, 0.85)", stack: `assets${suffix}`, hidden },
-        { label: `純資産${suffix}`, data: equity,
-          backgroundColor: "rgba(44, 160, 44, 0.85)", stack: `liabilities${suffix}`, hidden },
-        { label: `固定負債${suffix}`, data: nonCurrentLiab,
-          backgroundColor: "rgba(255, 127, 14, 0.85)", stack: `liabilities${suffix}`, hidden },
         { label: `流動負債${suffix}`, data: currentLiab,
           backgroundColor: "rgba(255, 187, 120, 0.85)", stack: `liabilities${suffix}`, hidden },
-      ]
-    : [
-        { label: `総資産${suffix}`, data: totalAssetsValid,
-          backgroundColor: "rgba(31, 119, 180, 0.85)", stack: `assets${suffix}`, hidden },
+        { label: `固定負債${suffix}`, data: nonCurrentLiab,
+          backgroundColor: "rgba(255, 127, 14, 0.85)", stack: `liabilities${suffix}`, hidden },
         { label: `純資産${suffix}`, data: equity,
           backgroundColor: "rgba(44, 160, 44, 0.85)", stack: `liabilities${suffix}`, hidden },
+        { label: `流動資産${suffix}`, data: currentAssets,
+          backgroundColor: "rgba(174, 199, 232, 0.85)", stack: `assets${suffix}`, hidden },
+        { label: `固定資産${suffix}`, data: nonCurrentAssets,
+          backgroundColor: "rgba(31, 119, 180, 0.85)", stack: `assets${suffix}`, hidden },
+      ]
+    : [
         { label: `総負債${suffix}`, data: totalLiabValid,
           backgroundColor: "rgba(255, 127, 14, 0.85)", stack: `liabilities${suffix}`, hidden },
+        { label: `純資産${suffix}`, data: equity,
+          backgroundColor: "rgba(44, 160, 44, 0.85)", stack: `liabilities${suffix}`, hidden },
+        { label: `総資産${suffix}`, data: totalAssetsValid,
+          backgroundColor: "rgba(31, 119, 180, 0.85)", stack: `assets${suffix}`, hidden },
       ];
   return { labels, datasets };
 }
@@ -1067,19 +1067,19 @@ function _tpDatasets(cfData, isData, suffix, hidden) {
     datasets: [
       { type: "bar", label: `純利益${suffix}`, data: niData,
         backgroundColor: "rgba(44, 160, 44, 0.85)",
-        stack: `income${suffix}`, yAxisID: "y", hidden },
+        stack: `income${suffix}`, yAxisID: "y", order: 2, hidden },
       { type: "bar", label: `配当金${suffix}`, data: divData,
         backgroundColor: "rgba(174, 199, 232, 0.85)",
-        stack: `payout${suffix}`, yAxisID: "y", hidden },
+        stack: `payout${suffix}`, yAxisID: "y", order: 2, hidden },
       { type: "bar", label: `自社株買い${suffix}`, data: repoData,
         backgroundColor: "rgba(31, 119, 180, 0.85)",
-        stack: `payout${suffix}`, yAxisID: "y", hidden },
+        stack: `payout${suffix}`, yAxisID: "y", order: 2, hidden },
       { type: "line", label: `配当性向${suffix}`, data: divRatio,
         borderColor: "#ffbb78", backgroundColor: "#ffbb78",
-        borderWidth: 2, fill: false, pointRadius: 4, yAxisID: "y1", hidden },
+        borderWidth: 2, fill: false, pointRadius: 4, yAxisID: "y1", order: 1, hidden },
       { type: "line", label: `総還元性向${suffix}`, data: totalRatio,
         borderColor: "#ff7f0e", backgroundColor: "#ff7f0e",
-        borderWidth: 2, fill: false, pointRadius: 4, yAxisID: "y1", hidden },
+        borderWidth: 2, fill: false, pointRadius: 4, yAxisID: "y1", order: 1, hidden },
     ],
   };
 }
