@@ -765,26 +765,29 @@ function _bsDatasets(balanceSheet, suffix, hidden) {
 
   const hasBreakdown = sum(currentAssets) !== 0 && sum(currentLiab) !== 0;
 
+  // 配列順: 先に登場した stack が左、各 stack 内では先の要素が下に積まれる。
+  // 左 (資産): 固定資産(下) → 流動資産(上)
+  // 右 (負債・純資産): 純資産(下) → 固定負債 → 流動負債(上)
   const datasets = hasBreakdown
     ? [
-        { label: `流動負債${suffix}`, data: currentLiab,
-          backgroundColor: "rgba(255, 187, 120, 0.85)", stack: `liabilities${suffix}`, hidden },
-        { label: `固定負債${suffix}`, data: nonCurrentLiab,
-          backgroundColor: "rgba(255, 127, 14, 0.85)", stack: `liabilities${suffix}`, hidden },
-        { label: `純資産${suffix}`, data: equity,
-          backgroundColor: "rgba(44, 160, 44, 0.85)", stack: `liabilities${suffix}`, hidden },
-        { label: `流動資産${suffix}`, data: currentAssets,
-          backgroundColor: "rgba(174, 199, 232, 0.85)", stack: `assets${suffix}`, hidden },
         { label: `固定資産${suffix}`, data: nonCurrentAssets,
           backgroundColor: "rgba(31, 119, 180, 0.85)", stack: `assets${suffix}`, hidden },
-      ]
-    : [
-        { label: `総負債${suffix}`, data: totalLiabValid,
-          backgroundColor: "rgba(255, 127, 14, 0.85)", stack: `liabilities${suffix}`, hidden },
+        { label: `流動資産${suffix}`, data: currentAssets,
+          backgroundColor: "rgba(174, 199, 232, 0.85)", stack: `assets${suffix}`, hidden },
         { label: `純資産${suffix}`, data: equity,
           backgroundColor: "rgba(44, 160, 44, 0.85)", stack: `liabilities${suffix}`, hidden },
+        { label: `固定負債${suffix}`, data: nonCurrentLiab,
+          backgroundColor: "rgba(255, 127, 14, 0.85)", stack: `liabilities${suffix}`, hidden },
+        { label: `流動負債${suffix}`, data: currentLiab,
+          backgroundColor: "rgba(255, 187, 120, 0.85)", stack: `liabilities${suffix}`, hidden },
+      ]
+    : [
         { label: `総資産${suffix}`, data: totalAssetsValid,
           backgroundColor: "rgba(31, 119, 180, 0.85)", stack: `assets${suffix}`, hidden },
+        { label: `純資産${suffix}`, data: equity,
+          backgroundColor: "rgba(44, 160, 44, 0.85)", stack: `liabilities${suffix}`, hidden },
+        { label: `総負債${suffix}`, data: totalLiabValid,
+          backgroundColor: "rgba(255, 127, 14, 0.85)", stack: `liabilities${suffix}`, hidden },
       ];
   return { labels, datasets };
 }
