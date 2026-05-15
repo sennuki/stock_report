@@ -1095,66 +1095,33 @@ function generateTpChart(cfData, isData, quarterlyCfData, quarterlyIsData) {
 // 直近 10 年に制限。
 // master の fundamentals.get_dps_eps_chart_data の "年間推移" 表示に揃えた構造。
 // (権利落日別タブは別 PR で対応する)
-function _dpsDatasets(dividends, history, suffix, hidden) {
+// 年間推移タブ: 年単位で配当を集計し、年初株価との比で利回りを算出。
+function _dpsAnnualDatasets(dividends, history, suffix, hidden) {
   if (!dividends || !Array.isArray(dividends) || dividends.length === 0)
     return null;
 
-  let aggregated = {};
-  let dateList = [];
-
+  const annual = {};
   dividends.forEach((d) => {
     const date = new Date(d.Date || d.index);
     if (Number.isNaN(date.getTime())) return;
-    dateList.push(date);
-
-    if (suffix === " (四半期)") {
-      const y = date.getFullYear();
-      const q = Math.floor(date.getMonth() / 3) + 1;
-      const key = `${y}-Q${q}`;
-      aggregated[key] = (aggregated[key] || 0) + (d.Dividends || d.Value || 0);
-    } else {
-      const y = date.getFullYear();
-      aggregated[y] = (aggregated[y] || 0) + (d.Dividends || d.Value || 0);
-    }
+    const y = date.getFullYear();
+    annual[y] = (annual[y] || 0) + (d.Dividends || d.Value || 0);
   });
 
-  const keys = Object.keys(aggregated).sort();
-  if (keys.length === 0) return null;
+  const allYears = Object.keys(annual).map(Number).sort((a, b) => a - b);
+  if (allYears.length === 0) return null;
+  const years = allYears.slice(-10);
+  const labels = years.map(String);
+  const divs = years.map((y) => annual[y]);
 
-  const sliceCount = suffix === " (四半期)" ? 16 : 10;
-  const selectedKeys = keys.slice(-sliceCount);
-  const labels = selectedKeys.map(k => {
-    if (suffix === " (四半期)") {
-      return k.replace('-', ' ');
-    }
-    return k;
-  });
-  const divs = selectedKeys.map((k) => aggregated[k]);
-
-  const yieldData = selectedKeys.map((k) => {
+  const yieldData = years.map((y) => {
     if (!history || history.length === 0) return null;
-    const divAmount = aggregated[k];
-
-    if (suffix === " (四半期)") {
-      const [yearStr, quarter] = k.split('-');
-      const year = Number(yearStr);
-      const startMonth = (Number(quarter[1]) - 1) * 3;
-      const targetDate = new Date(year, startMonth, 1);
-      const firstOfPeriod = history.find((h) => {
-        const dt = new Date(h.Date || h.index);
-        return dt >= targetDate && dt < new Date(year, startMonth + 3, 1);
-      });
-      if (!firstOfPeriod || !(firstOfPeriod.Close > 0)) return null;
-      return divAmount / firstOfPeriod.Close;
-    } else {
-      const year = Number(k);
-      const firstOfYear = history.find((h) => {
-        const dt = new Date(h.Date || h.index);
-        return dt.getFullYear() === year;
-      });
-      if (!firstOfYear || !(firstOfYear.Close > 0)) return null;
-      return divAmount / firstOfYear.Close;
-    }
+    const firstOfYear = history.find((h) => {
+      const dt = new Date(h.Date || h.index);
+      return dt.getFullYear() === y;
+    });
+    if (!firstOfYear || !(firstOfYear.Close > 0)) return null;
+    return annual[y] / firstOfYear.Close;
   });
 
   const hasYield = yieldData.some((v) => v != null && Number.isFinite(v));
@@ -1166,6 +1133,7 @@ function _dpsDatasets(dividends, history, suffix, hidden) {
       data: divs,
       backgroundColor: "rgba(31, 119, 180, 0.85)",
       yAxisID: "y",
+      order: 2,
       hidden,
     },
   ];
@@ -1182,6 +1150,105 @@ function _dpsDatasets(dividends, history, suffix, hidden) {
       fill: false,
       pointRadius: 4,
       yAxisID: "y1",
+      order: 1,
+      hidden,
+    });
+  }
+
+  return { labels, datasets };
+}
+
+// 権利落日別タブ: 配当ごとの支払日を X 軸にし、各配当の年間換算利回り
+// (= 配当金 × その時点での年間支払回数 ÷ 支払日終値) を折れ線で表示。
+function _dpsPerPaymentDatasets(dividends, history, suffix, hidden) {
+  if (!dividends || !Array.isArray(dividends) || dividends.length === 0)
+    return null;
+
+  const validDivs = dividends
+    .map((d) => ({
+      date: new Date(d.Date || d.index),
+      amount: d.Dividends || d.Value || 0,
+    }))
+    .filter((d) => !Number.isNaN(d.date.getTime()) && d.amount > 0)
+    .sort((a, b) => a.date - b.date);
+
+  if (validDivs.length === 0) return null;
+
+  // 直近 24 支払を表示 (四半期配当なら 6 年分)
+  const selected = validDivs.slice(-24);
+
+  // 各配当の年間支払回数 = その配当日から遡って 365 日以内に発生した
+  // 配当の件数 (自身を含む)。新規配当銘柄や頻度変化にも追随する。
+  const ONE_YEAR_MS = 365 * 24 * 60 * 60 * 1000;
+  const annualizationFactors = selected.map((d) => {
+    const cutoff = d.date.getTime() - ONE_YEAR_MS;
+    return validDivs.filter(
+      (o) => o.date.getTime() > cutoff && o.date.getTime() <= d.date.getTime(),
+    ).length;
+  });
+
+  const labels = selected.map((d) => {
+    const y = d.date.getFullYear();
+    const m = String(d.date.getMonth() + 1).padStart(2, "0");
+    const day = String(d.date.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+  });
+
+  const divs = selected.map((d) => d.amount);
+
+  // 支払日の終値 (なければ前後 7 日以内の最も近い取引日)
+  const priceOnDate = (targetDate) => {
+    if (!history || history.length === 0) return null;
+    const targetTime = targetDate.getTime();
+    const WINDOW = 7 * 24 * 60 * 60 * 1000;
+    let best = null;
+    let bestDiff = Infinity;
+    for (const h of history) {
+      const ht = new Date(h.Date || h.index).getTime();
+      if (Number.isNaN(ht)) continue;
+      const diff = Math.abs(ht - targetTime);
+      if (diff <= WINDOW && diff < bestDiff && h.Close > 0) {
+        best = h;
+        bestDiff = diff;
+      }
+    }
+    return best ? best.Close : null;
+  };
+
+  const yieldData = selected.map((d, i) => {
+    const price = priceOnDate(d.date);
+    if (!price) return null;
+    const factor = annualizationFactors[i] || 1;
+    return (d.amount * factor) / price;
+  });
+
+  const hasYield = yieldData.some((v) => v != null && Number.isFinite(v));
+
+  const datasets = [
+    {
+      type: "bar",
+      label: `配当金${suffix}`,
+      data: divs,
+      backgroundColor: "rgba(31, 119, 180, 0.85)",
+      yAxisID: "y",
+      order: 2,
+      hidden,
+    },
+  ];
+
+  if (hasYield) {
+    datasets.push({
+      type: "line",
+      label: `年間換算配当利回り${suffix}`,
+      data: yieldData,
+      borderColor: "#ff7f0e",
+      backgroundColor: "#ff7f0e",
+      borderWidth: 2,
+      borderDash: [4, 4],
+      fill: false,
+      pointRadius: 4,
+      yAxisID: "y1",
+      order: 1,
       hidden,
     });
   }
@@ -1190,9 +1257,13 @@ function _dpsDatasets(dividends, history, suffix, hidden) {
 }
 
 function generateDpsEpsChart(dividends, history) {
-  const annual = _tagGroupLabels(_dpsDatasets(dividends, history, " (通年)", false));
-  const quarterly = _tagGroupLabels(_dpsDatasets(dividends, history, " (四半期)", true));
-  return _mergeGroups(annual, quarterly);
+  const annual = _tagGroupLabels(
+    _dpsAnnualDatasets(dividends, history, " (年間推移)", false),
+  );
+  const perPayment = _tagGroupLabels(
+    _dpsPerPaymentDatasets(dividends, history, " (権利落日別)", true),
+  );
+  return _mergeGroups(annual, perPayment);
 }
 
 function generateSegmentChart(segmentData) {
