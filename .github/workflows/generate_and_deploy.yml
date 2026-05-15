@@ -17,6 +17,11 @@ on:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  # テスト実行で処理する銘柄。各 GICS セクターの代表銘柄を 1 つずつ指定。
+  # セクター ETF / SPY は fetch_raw_data 側で自動付与される。
+  # master では空 (= 従来どおりの挙動)、それ以外 (c1 等) はテスト集合。
+  # workflow_dispatch の test_symbols 入力があればそれを最優先。
+  TEST_SYMBOLS: ${{ github.event.inputs.test_symbols || (github.ref_name != 'master' && 'MSFT,JNJ,JPM,AMZN,GOOGL,CAT,PG,XOM,NEE,PLD,LIN') || '' }}
 
 jobs:
   run-pipeline-and-deploy:
@@ -64,7 +69,8 @@ jobs:
           cd code
           python main.py
         env:
-          TEST_MODE: 'false' # 全504銘柄を処理
+          # master は全504銘柄、それ以外 (c1 等) はテストモードで数銘柄に限定。
+          TEST_MODE: ${{ github.ref_name == 'master' && 'false' || 'true' }}
           PYTHON_MAX_WORKERS: 2
           R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
@@ -122,7 +128,7 @@ jobs:
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
           R2_BUCKET_NAME: "stock-data-c1"
-          TEST_SYMBOLS: ${{ github.event.inputs.test_symbols }}
+          # TEST_SYMBOLS はワークフローレベルの env から継承する。
 
       - name: Sync reports/stocks.json to build dir
         run: |

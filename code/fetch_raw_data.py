@@ -285,15 +285,15 @@ def main(symbols_override=None):
     if args:
         print(f"Fetching specific symbols: {args}")
         symbols = args
-    elif "--test-msft-only" in sys.argv or os.getenv("TEST_MODE") == "true":
-        print("Test mode active: Fetching MSFT and SPY only.")
-        symbols = ["MSFT", "SPY"]
     elif symbols_override:
         print(f"Using provided symbol list ({len(symbols_override)} symbols)")
         symbols = list(symbols_override)
         for etf in SECTOR_ETFS:
             if etf not in symbols:
                 symbols.append(etf)
+    elif "--test-msft-only" in sys.argv or os.getenv("TEST_MODE") == "true":
+        print("Test mode active: Fetching MSFT and SPY only.")
+        symbols = ["MSFT", "SPY"]
     else:
         print("Fetching S&P 500 / 400 / 600 lists...")
         df_stocks = market_data.fetch_sp_indices_companies()
