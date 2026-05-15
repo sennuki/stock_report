@@ -967,12 +967,13 @@ function generateRiskReturnChart(allMetrics, targetSymbol, sectorEtf) {
         hasValue(m),
     );
 
-    // 描画順: その他 (背景) -> 市場 -> セクター -> ターゲット (前面)
+    // 描画順 (配列の後ほど前面): その他 S&P 銘柄 (背景) -> 市場 -> セクター ETF
+    // -> ターゲット (最前面)。優先表示は ターゲット > セクター ETF > その他。
     datasets.push({
       label: `S&P銘柄 (${p.label})`,
       data: others.map((m) => ({ x: m[hvKey], y: m[retKey], symbol: m.symbol })),
       backgroundColor: "rgba(114, 119, 123, 0.4)",
-      pointRadius: 4,
+      pointRadius: 2.5,
       visible: isDefault,
     });
     datasets.push({
@@ -991,7 +992,9 @@ function generateRiskReturnChart(allMetrics, targetSymbol, sectorEtf) {
           ? [{ x: sector[hvKey], y: sector[retKey], symbol: sectorEtf }]
           : [],
         backgroundColor: "rgba(0, 108, 172, 0.9)",
-        pointRadius: 7,
+        pointRadius: 8,
+        pointBorderColor: "#ffffff",
+        pointBorderWidth: 1.5,
         visible: isDefault,
       });
     }
@@ -1001,7 +1004,9 @@ function generateRiskReturnChart(allMetrics, targetSymbol, sectorEtf) {
         ? [{ x: target[hvKey], y: target[retKey], symbol: targetSymbol }]
         : [],
       backgroundColor: "rgba(255, 0, 0, 0.9)",
-      pointRadius: 9,
+      pointRadius: 10,
+      pointBorderColor: "#ffffff",
+      pointBorderWidth: 1.5,
       visible: isDefault,
     });
   }
