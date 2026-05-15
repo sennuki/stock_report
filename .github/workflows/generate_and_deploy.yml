@@ -21,7 +21,8 @@ env:
   # セクター ETF / SPY は fetch_raw_data 側で自動付与される。
   # master では空 (= 従来どおりの挙動)、それ以外 (c1 等) はテスト集合。
   # workflow_dispatch の test_symbols 入力があればそれを最優先。
-  TEST_SYMBOLS: ${{ github.event.inputs.test_symbols || (github.ref_name != 'master' && 'MSFT,JNJ,JPM,AMZN,GOOGL,CAT,PG,XOM,NEE,PLD,LIN') || '' }}
+  # 全銘柄テスト中は "all" に設定して全504銘柄を処理。
+  TEST_SYMBOLS: ${{ github.event.inputs.test_symbols || (github.ref_name != 'master' && 'all') || '' }}
 
 jobs:
   run-pipeline-and-deploy:
