@@ -1021,8 +1021,9 @@ function generateRiskReturnChart(allMetrics, targetSymbol, sectorEtf, sp500Set) 
     const xBounds = _clampBounds(displayed.map((m) => m[hvKey]));
     const yBounds = _clampBounds(displayed.map((m) => m[retKey]));
 
-    // 描画順 (配列の後ほど前面): その他 S&P 銘柄 (背景) -> 市場 -> セクター ETF
-    // -> ターゲット (最前面)。優先表示は ターゲット > セクター ETF > その他。
+    // 描画順 (配列の後ほど前面): その他 S&P 銘柄 (背景) -> セクター ETF
+    // -> S&P 500 ETF -> ターゲット (最前面)。
+    // 優先表示は ターゲット > S&P 500 ETF > セクター ETF > その他 S&P 銘柄。
     datasets.push({
       label: `S&P銘柄 (${p.label})`,
       data: others.map((m) =>
@@ -1030,17 +1031,6 @@ function generateRiskReturnChart(allMetrics, targetSymbol, sectorEtf, sp500Set) 
       ),
       backgroundColor: "rgba(114, 119, 123, 0.4)",
       pointRadius: 2.5,
-      visible: isDefault,
-    });
-    datasets.push({
-      label: `S&P 500 (${p.label})`,
-      data: market
-        ? [_rrPoint("S&P 500", market[hvKey], market[retKey], xBounds, yBounds)]
-        : [],
-      backgroundColor: "rgba(34, 197, 94, 0.95)",
-      pointRadius: 8,
-      pointBorderColor: "#ffffff",
-      pointBorderWidth: 1.5,
       visible: isDefault,
     });
     if (sectorEtf && sectorEtf !== "SPY") {
@@ -1056,6 +1046,17 @@ function generateRiskReturnChart(allMetrics, targetSymbol, sectorEtf, sp500Set) 
         visible: isDefault,
       });
     }
+    datasets.push({
+      label: `S&P 500 (${p.label})`,
+      data: market
+        ? [_rrPoint("S&P 500", market[hvKey], market[retKey], xBounds, yBounds)]
+        : [],
+      backgroundColor: "rgba(34, 197, 94, 0.95)",
+      pointRadius: 8,
+      pointBorderColor: "#ffffff",
+      pointBorderWidth: 1.5,
+      visible: isDefault,
+    });
     datasets.push({
       label: `${targetSymbol} (${p.label})`,
       data: target
