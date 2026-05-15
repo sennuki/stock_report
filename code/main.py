@@ -98,9 +98,6 @@ if __name__ == "__main__":
     symbols = None
     try:
         df_stocks = market_data.fetch_sp_indices_companies()
-        # テスト用に銘柄数を制限 (最初の5件)
-        if df_stocks is not None and not df_stocks.is_empty():
-            df_stocks = df_stocks.head(5)
         if df_stocks is not None and not df_stocks.is_empty():
             from collections import Counter
             cnt = Counter(df_stocks['Index'].to_list())

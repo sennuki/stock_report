@@ -983,8 +983,10 @@ function generateRiskReturnChart(allMetrics, targetSymbol, sectorEtf, sp500Set) 
       data: market
         ? [{ x: market[hvKey], y: market[retKey], symbol: "S&P 500" }]
         : [],
-      backgroundColor: "rgba(0, 0, 0, 0.85)",
-      pointRadius: 7,
+      backgroundColor: "rgba(34, 197, 94, 0.95)",
+      pointRadius: 8,
+      pointBorderColor: "#ffffff",
+      pointBorderWidth: 1.5,
       visible: isDefault,
     });
     if (sectorEtf && sectorEtf !== "SPY") {
@@ -1369,10 +1371,13 @@ async function main() {
   }
 
   // risk-return チャートの "その他銘柄" を S&P 500 構成銘柄に限定するための集合。
-  // stocks_list.json は S&P 500 (約 500 銘柄) のメタデータ。
-  // rawDataMap には取引可能な全銘柄 (約 1500) が含まれるため、これで絞り込む。
+  // stocks_list.json は S&P 500/400/600 のメタデータを含むため、Index 列で
+  // S&P 500 のみ (約 500 銘柄) に絞り込む。
   const sp500Symbols = new Set(
-    baseStocksList.map((s) => s.Symbol_YF || s.Symbol).filter(Boolean),
+    baseStocksList
+      .filter((s) => s.Index === "S&P 500")
+      .map((s) => s.Symbol_YF || s.Symbol)
+      .filter(Boolean),
   );
 
   console.log(`Downloading ${rawKeys.length} raw objects...`);
