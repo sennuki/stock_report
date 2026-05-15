@@ -935,9 +935,10 @@ function generatePerformanceChart(history, etfHistory, spyHistory, symbol, etfSy
 // / その他 S&P 銘柄) = 32 dataset。 ラベル末尾の "(1年)" などの期間サフィックス
 // は ChartJs.astro の hasGroups 機能でタブ切替に変換される。 初期表示は 1年。
 // master の risk_return.generate_scatter_fig に揃えた構造。
-function generateRiskReturnChart(allMetrics, targetSymbol, sectorEtf) {
+function generateRiskReturnChart(allMetrics, targetSymbol, sectorEtf, sp500Set) {
   if (!allMetrics || allMetrics.length === 0) return null;
   const datasets = [];
+  const limitToSp500 = sp500Set && sp500Set.size > 0;
 
   for (const p of RR_PERIOD_CONFIGS) {
     const hvKey = `HV_${p.key}`;
@@ -964,6 +965,7 @@ function generateRiskReturnChart(allMetrics, targetSymbol, sectorEtf) {
         m.symbol !== targetSymbol &&
         m.symbol !== sectorEtf &&
         m.symbol !== "SPY" &&
+        (!limitToSp500 || sp500Set.has(m.symbol)) &&
         hasValue(m),
     );
 
@@ -1366,6 +1368,13 @@ async function main() {
     console.log("  raw/stocks_list.json not found, using empty metadata");
   }
 
+  // risk-return チャートの "その他銘柄" を S&P 500 構成銘柄に限定するための集合。
+  // stocks_list.json は S&P 500 (約 500 銘柄) のメタデータ。
+  // rawDataMap には取引可能な全銘柄 (約 1500) が含まれるため、これで絞り込む。
+  const sp500Symbols = new Set(
+    baseStocksList.map((s) => s.Symbol_YF || s.Symbol).filter(Boolean),
+  );
+
   console.log(`Downloading ${rawKeys.length} raw objects...`);
   const rawDataMap = {};
   const dlResults = await pMap(
@@ -1497,6 +1506,7 @@ async function main() {
           riskReturnMetrics,
           symbol,
           sectorEtf,
+          sp500Symbols,
         );
         // BS / IS / CF は master の Plotly レイアウトに合わせた専用関数を使う。
         // generateFinancialChart は単純スタックしか作らないため使用しない。
