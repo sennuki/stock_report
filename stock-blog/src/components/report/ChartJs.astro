@@ -127,7 +127,9 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
           ds.pointRadius = isPerformanceChart ? 0 : 4;
         }
         if (ds.type === 'scatter') {
-          ds.pointRadius = (ds.label && ds.label.includes('S&P500銘柄')) ? 2.5 : 7;
+          if (ds.pointRadius === undefined) {
+            ds.pointRadius = (ds.label && ds.label.includes('S&P銘柄')) ? 2.5 : 7;
+          }
           ds.pointHoverRadius = 12;
         }
         if (hasStacking && ds.type === 'bar') {
