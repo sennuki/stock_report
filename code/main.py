@@ -84,10 +84,16 @@ def upload_base_stocks_list_to_r2(df_stocks):
 if __name__ == "__main__":
     utils.log_event("INFO", "SYSTEM", "--- Python Data Fetch Pipeline Started ---")
 
-    # TEST_MODE が true の場合は少数銘柄に限定
+    # TEST_MODE が true の場合は少数銘柄に限定。
+    # TEST_SYMBOLS 環境変数があればそのリストを使う (セクター ETF は
+    # fetch_raw_data 側で自動付与される)。
     if os.getenv("TEST_MODE") == "true":
-        utils.log_event("INFO", "SYSTEM", "Test mode active: processing MSFT, AAPL, NVDA only.")
-        test_symbols = ["MSFT", "AAPL", "NVDA", "SPY"]
+        test_symbols_env = os.getenv("TEST_SYMBOLS", "").strip()
+        if test_symbols_env:
+            test_symbols = [s.strip().upper() for s in test_symbols_env.split(",") if s.strip()]
+        else:
+            test_symbols = ["MSFT", "AAPL", "NVDA", "SPY"]
+        utils.log_event("INFO", "SYSTEM", f"Test mode active: processing {test_symbols}.")
         fetch_raw_data.main(symbols_override=test_symbols)
         utils.log_event("SUCCESS", "SYSTEM", "Test mode fetch finished.")
         exit(0)
