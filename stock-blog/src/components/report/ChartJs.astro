@@ -415,7 +415,7 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
       if (!isScatterChart && groupTraces.length > 0 && plotlyData.data) {
         let bestTraceIdx = -1;
         let maxLen = -1;
-        
+
         groupTraces.forEach((ds: any) => {
           const pDs = plotlyData.data[ds.originalIndex];
           if (pDs && pDs.x && pDs.x.length > maxLen) {
@@ -434,6 +434,27 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
                 const xIdx = (pDs.x || []).findIndex((xv: any) => String(xv) === String(label));
                 return xIdx !== -1 ? pDs.y[xIdx] : null;
               });
+            }
+          });
+        }
+      } else if (!isScatterChart && groupTraces.length > 0 && !plotlyData.data) {
+        // Chart.js ネイティブ形式 (c1 の財務チャート) の場合。
+        // 各データセットに埋め込まれた _xLabels / _originalData から、
+        // アクティブグループ内で最も長いものを基準に chart.data.labels を切替える。
+        let bestLabels: any[] | null = null;
+        groupTraces.forEach((ds: any) => {
+          if (ds._xLabels && (!bestLabels || ds._xLabels.length > bestLabels.length)) {
+            bestLabels = ds._xLabels;
+          }
+        });
+        if (bestLabels) {
+          chart.data.labels = bestLabels;
+          chart.data.datasets.forEach((chartDs: any) => {
+            if (chartDs._xLabels && chartDs._originalData) {
+              const lookup = new Map(chartDs._xLabels.map((l: any, i: number) => [String(l), chartDs._originalData[i]]));
+              chartDs.data = (chart.data.labels as any[]).map((label: any) =>
+                lookup.has(String(label)) ? lookup.get(String(label)) : null,
+              );
             }
           });
         }

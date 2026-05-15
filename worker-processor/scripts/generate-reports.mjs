@@ -651,20 +651,22 @@ function generateFinancialChart(data, fields, type, barmode) {
 // 損益計算書: 売上高 / 売上総利益 / 営業利益 / 純利益 の 4 本並列棒 +
 // 売上総利益率 / 営業利益率 / 純利益率 を右側軸の折れ線で表示する。
 // master の Python fundamentals.get_is_chart_data に揃えた構造。
-function generateIsChart(incomeStmt) {
-  if (!incomeStmt || incomeStmt.length === 0) return null;
-  const dates = Object.keys(incomeStmt[0])
+function _isDatasets(stmt, suffix, hidden) {
+  if (!stmt || stmt.length === 0) return null;
+  const dates = Object.keys(stmt[0])
     .filter((k) => k !== "index" && !k.includes("TTM"))
     .sort();
   if (dates.length === 0) return null;
   const get = (label) =>
-    dates.map((d) => Number(getValFromArray(incomeStmt, label, d)) || 0);
+    dates.map((d) => Number(getValFromArray(stmt, label, d)) || 0);
 
   const revenue = get("Total Revenue");
+  // 通年は最後の 6 期、四半期は最後の 8 期を使う (master の挙動に合わせる)
+  const sliceCount = suffix === " (四半期)" ? 8 : 6;
   const validIdx = revenue
     .map((v, i) => (v > 0 ? i : -1))
     .filter((i) => i !== -1)
-    .slice(-6);
+    .slice(-sliceCount);
   if (validIdx.length === 0) return null;
   const pick = (arr) => validIdx.map((i) => arr[i]);
   const labels = validIdx.map((i) => dates[i].split(" ")[0]);
@@ -676,34 +678,61 @@ function generateIsChart(incomeStmt) {
   const ratio = (num, den) =>
     num.map((v, i) => (den[i] ? v / den[i] : null));
 
+  const datasets = [
+    { type: "bar", label: `売上高${suffix}`, data: rev,
+      backgroundColor: "rgba(174, 199, 232, 0.85)", yAxisID: "y", hidden },
+    { type: "bar", label: `売上総利益${suffix}`, data: grossProfit,
+      backgroundColor: "rgba(31, 119, 180, 0.85)", yAxisID: "y", hidden },
+    { type: "bar", label: `営業利益${suffix}`, data: operatingIncome,
+      backgroundColor: "rgba(255, 187, 120, 0.85)", yAxisID: "y", hidden },
+    { type: "bar", label: `純利益${suffix}`, data: netIncome,
+      backgroundColor: "rgba(44, 160, 44, 0.85)", yAxisID: "y", hidden },
+    { type: "line", label: `売上総利益率${suffix}`, data: ratio(grossProfit, rev),
+      borderColor: "#1f77b4", backgroundColor: "#1f77b4",
+      borderWidth: 2, fill: false, pointRadius: 4, yAxisID: "y1", hidden },
+    { type: "line", label: `営業利益率${suffix}`, data: ratio(operatingIncome, rev),
+      borderColor: "#ffbb78", backgroundColor: "#ffbb78",
+      borderWidth: 2, fill: false, pointRadius: 4, yAxisID: "y1", hidden },
+    { type: "line", label: `純利益率${suffix}`, data: ratio(netIncome, rev),
+      borderColor: "#2ca02c", backgroundColor: "#2ca02c",
+      borderWidth: 2, fill: false, pointRadius: 4, yAxisID: "y1", hidden },
+  ];
+  return { labels, datasets };
+}
+
+// 各データセットに自分の x軸ラベル と 元データ を埋め込んで、
+// setupControls がグループ切替時に正しいラベル列に揃えられるようにする。
+function _tagGroupLabels(group) {
+  if (!group) return null;
+  group.datasets.forEach((ds) => {
+    ds._xLabels = group.labels;
+    ds._originalData = [...ds.data];
+  });
+  return group;
+}
+
+function _mergeGroups(annual, quarterly) {
+  if (!annual && !quarterly) return null;
+  const base = annual || quarterly;
   return {
-    labels,
+    labels: base.labels,
     datasets: [
-      { type: "bar", label: "売上高", data: rev,
-        backgroundColor: "rgba(174, 199, 232, 0.85)", yAxisID: "y" },
-      { type: "bar", label: "売上総利益", data: grossProfit,
-        backgroundColor: "rgba(31, 119, 180, 0.85)", yAxisID: "y" },
-      { type: "bar", label: "営業利益", data: operatingIncome,
-        backgroundColor: "rgba(255, 187, 120, 0.85)", yAxisID: "y" },
-      { type: "bar", label: "純利益", data: netIncome,
-        backgroundColor: "rgba(44, 160, 44, 0.85)", yAxisID: "y" },
-      { type: "line", label: "売上総利益率", data: ratio(grossProfit, rev),
-        borderColor: "#1f77b4", backgroundColor: "#1f77b4",
-        borderWidth: 2, fill: false, pointRadius: 4, yAxisID: "y1" },
-      { type: "line", label: "営業利益率", data: ratio(operatingIncome, rev),
-        borderColor: "#ffbb78", backgroundColor: "#ffbb78",
-        borderWidth: 2, fill: false, pointRadius: 4, yAxisID: "y1" },
-      { type: "line", label: "純利益率", data: ratio(netIncome, rev),
-        borderColor: "#2ca02c", backgroundColor: "#2ca02c",
-        borderWidth: 2, fill: false, pointRadius: 4, yAxisID: "y1" },
+      ...(annual?.datasets || []),
+      ...(quarterly?.datasets || []),
     ],
   };
+}
+
+function generateIsChart(incomeStmt, quarterlyIncomeStmt) {
+  const annual = _tagGroupLabels(_isDatasets(incomeStmt, " (通年)", false));
+  const quarterly = _tagGroupLabels(_isDatasets(quarterlyIncomeStmt, " (四半期)", true));
+  return _mergeGroups(annual, quarterly);
 }
 
 // 貸借対照表: 資産側 (固定+流動) と負債・純資産側 (純資産+固定負債+流動負債)
 // を別 stack に積み上げて並列表示する。
 // master の Python fundamentals.get_bs_chart_data に揃えた構造。
-function generateBsChart(balanceSheet) {
+function _bsDatasets(balanceSheet, suffix, hidden) {
   if (!balanceSheet || balanceSheet.length === 0) return null;
   const dates = Object.keys(balanceSheet[0])
     .filter((k) => k !== "index")
@@ -714,10 +743,11 @@ function generateBsChart(balanceSheet) {
   const sum = (arr) => arr.reduce((a, b) => a + b, 0);
 
   const totalAssets = get("Total Assets");
+  const sliceCount = suffix === " (四半期)" ? 8 : 6;
   const validIdx = totalAssets
     .map((v, i) => (v > 0 ? i : -1))
     .filter((i) => i !== -1)
-    .slice(-6);
+    .slice(-sliceCount);
   if (validIdx.length === 0) return null;
   const pick = (arr) => validIdx.map((i) => arr[i]);
   const labels = validIdx.map((i) => dates[i].split(" ")[0]);
@@ -737,31 +767,37 @@ function generateBsChart(balanceSheet) {
 
   const datasets = hasBreakdown
     ? [
-        { label: "固定資産", data: nonCurrentAssets,
-          backgroundColor: "rgba(31, 119, 180, 0.85)", stack: "assets" },
-        { label: "流動資産", data: currentAssets,
-          backgroundColor: "rgba(174, 199, 232, 0.85)", stack: "assets" },
-        { label: "純資産", data: equity,
-          backgroundColor: "rgba(44, 160, 44, 0.85)", stack: "liabilities" },
-        { label: "固定負債", data: nonCurrentLiab,
-          backgroundColor: "rgba(255, 127, 14, 0.85)", stack: "liabilities" },
-        { label: "流動負債", data: currentLiab,
-          backgroundColor: "rgba(255, 187, 120, 0.85)", stack: "liabilities" },
+        { label: `固定資産${suffix}`, data: nonCurrentAssets,
+          backgroundColor: "rgba(31, 119, 180, 0.85)", stack: `assets${suffix}`, hidden },
+        { label: `流動資産${suffix}`, data: currentAssets,
+          backgroundColor: "rgba(174, 199, 232, 0.85)", stack: `assets${suffix}`, hidden },
+        { label: `純資産${suffix}`, data: equity,
+          backgroundColor: "rgba(44, 160, 44, 0.85)", stack: `liabilities${suffix}`, hidden },
+        { label: `固定負債${suffix}`, data: nonCurrentLiab,
+          backgroundColor: "rgba(255, 127, 14, 0.85)", stack: `liabilities${suffix}`, hidden },
+        { label: `流動負債${suffix}`, data: currentLiab,
+          backgroundColor: "rgba(255, 187, 120, 0.85)", stack: `liabilities${suffix}`, hidden },
       ]
     : [
-        { label: "総資産", data: totalAssetsValid,
-          backgroundColor: "rgba(31, 119, 180, 0.85)", stack: "assets" },
-        { label: "純資産", data: equity,
-          backgroundColor: "rgba(44, 160, 44, 0.85)", stack: "liabilities" },
-        { label: "総負債", data: totalLiabValid,
-          backgroundColor: "rgba(255, 127, 14, 0.85)", stack: "liabilities" },
+        { label: `総資産${suffix}`, data: totalAssetsValid,
+          backgroundColor: "rgba(31, 119, 180, 0.85)", stack: `assets${suffix}`, hidden },
+        { label: `純資産${suffix}`, data: equity,
+          backgroundColor: "rgba(44, 160, 44, 0.85)", stack: `liabilities${suffix}`, hidden },
+        { label: `総負債${suffix}`, data: totalLiabValid,
+          backgroundColor: "rgba(255, 127, 14, 0.85)", stack: `liabilities${suffix}`, hidden },
       ];
   return { labels, datasets };
 }
 
+function generateBsChart(balanceSheet, quarterlyBalanceSheet) {
+  const annual = _tagGroupLabels(_bsDatasets(balanceSheet, " (通年)", false));
+  const quarterly = _tagGroupLabels(_bsDatasets(quarterlyBalanceSheet, " (四半期)", true));
+  return _mergeGroups(annual, quarterly);
+}
+
 // キャッシュフロー: 純利益 + 営業/投資/財務/フリー CF の 5 本並列棒。
 // master の Python fundamentals.get_cf_chart_data に揃えた構造。
-function generateCfChart(cashflow, incomeStmt) {
+function _cfDatasets(cashflow, incomeStmt, suffix, hidden) {
   if (!cashflow || cashflow.length === 0) return null;
   const dates = Object.keys(cashflow[0])
     .filter((k) => k !== "index" && !k.includes("TTM"))
@@ -775,10 +811,11 @@ function generateCfChart(cashflow, incomeStmt) {
     );
 
   const opCf = getCf("Operating Cash Flow");
+  const sliceCount = suffix === " (四半期)" ? 8 : 6;
   const validIdx = opCf
     .map((v, i) => (v !== 0 ? i : -1))
     .filter((i) => i !== -1)
-    .slice(-6);
+    .slice(-sliceCount);
   if (validIdx.length === 0) return null;
   const pick = (arr) => validIdx.map((i) => arr[i]);
   const labels = validIdx.map((i) => dates[i].split(" ")[0]);
@@ -786,18 +823,24 @@ function generateCfChart(cashflow, incomeStmt) {
   return {
     labels,
     datasets: [
-      { type: "bar", label: "純利益", data: pick(getIs("Net Income")),
-        backgroundColor: "rgba(44, 160, 44, 0.85)" },
-      { type: "bar", label: "営業CF", data: pick(opCf),
-        backgroundColor: "rgba(174, 199, 232, 0.85)" },
-      { type: "bar", label: "投資CF", data: pick(getCf("Investing Cash Flow")),
-        backgroundColor: "rgba(31, 119, 180, 0.85)" },
-      { type: "bar", label: "財務CF", data: pick(getCf("Financing Cash Flow")),
-        backgroundColor: "rgba(255, 187, 120, 0.85)" },
-      { type: "bar", label: "フリーCF", data: pick(getCf("Free Cash Flow")),
-        backgroundColor: "rgba(148, 103, 189, 0.85)" },
+      { type: "bar", label: `純利益${suffix}`, data: pick(getIs("Net Income")),
+        backgroundColor: "rgba(44, 160, 44, 0.85)", hidden },
+      { type: "bar", label: `営業CF${suffix}`, data: pick(opCf),
+        backgroundColor: "rgba(174, 199, 232, 0.85)", hidden },
+      { type: "bar", label: `投資CF${suffix}`, data: pick(getCf("Investing Cash Flow")),
+        backgroundColor: "rgba(31, 119, 180, 0.85)", hidden },
+      { type: "bar", label: `財務CF${suffix}`, data: pick(getCf("Financing Cash Flow")),
+        backgroundColor: "rgba(255, 187, 120, 0.85)", hidden },
+      { type: "bar", label: `フリーCF${suffix}`, data: pick(getCf("Free Cash Flow")),
+        backgroundColor: "rgba(148, 103, 189, 0.85)", hidden },
     ],
   };
+}
+
+function generateCfChart(cashflow, incomeStmt, quarterlyCashflow, quarterlyIncomeStmt) {
+  const annual = _tagGroupLabels(_cfDatasets(cashflow, incomeStmt, " (通年)", false));
+  const quarterly = _tagGroupLabels(_cfDatasets(quarterlyCashflow, quarterlyIncomeStmt, " (四半期)", true));
+  return _mergeGroups(annual, quarterly);
 }
 
 // パフォーマンス比較: 対象銘柄 / セクター ETF / S&P 500 (SPY) の累積リターンを
@@ -968,7 +1011,7 @@ function generateRiskReturnChart(allMetrics, targetSymbol, sectorEtf) {
 // 株主還元: 純利益 (1 列目) と 配当金+自社株買い (2 列目に積み上げ) の
 // 2 並列スタック + 配当性向 / 総還元性向の右軸折れ線。
 // master の Python fundamentals.get_tp_chart_data に揃えた構造。
-function generateTpChart(cfData, isData) {
+function _tpDatasets(cfData, isData, suffix, hidden) {
   if ((isData?.length ?? 0) === 0 && (cfData?.length ?? 0) === 0) return null;
   const sourceDates = Object.keys(isData[0] || cfData[0] || {})
     .filter((k) => k !== "index" && !k.includes("TTM"))
@@ -998,10 +1041,11 @@ function generateTpChart(cfData, isData) {
   const allNi = sourceDates.map(
     (d) => getAnyVal(isData, niKeys, d) || getAnyVal(cfData, niKeys, d),
   );
+  const sliceCount = suffix === " (四半期)" ? 8 : 6;
   const validIdx = allNi
     .map((v, i) => (v > 0 ? i : -1))
     .filter((i) => i !== -1)
-    .slice(-6);
+    .slice(-sliceCount);
   if (validIdx.length === 0) return null;
   const pick = (arr) => validIdx.map((i) => arr[i]);
   const labels = validIdx.map((i) => sourceDates[i].split(" ")[0]);
@@ -1021,23 +1065,29 @@ function generateTpChart(cfData, isData) {
   return {
     labels,
     datasets: [
-      { type: "bar", label: "純利益", data: niData,
+      { type: "bar", label: `純利益${suffix}`, data: niData,
         backgroundColor: "rgba(44, 160, 44, 0.85)",
-        stack: "income", yAxisID: "y" },
-      { type: "bar", label: "配当金", data: divData,
+        stack: `income${suffix}`, yAxisID: "y", hidden },
+      { type: "bar", label: `配当金${suffix}`, data: divData,
         backgroundColor: "rgba(174, 199, 232, 0.85)",
-        stack: "payout", yAxisID: "y" },
-      { type: "bar", label: "自社株買い", data: repoData,
+        stack: `payout${suffix}`, yAxisID: "y", hidden },
+      { type: "bar", label: `自社株買い${suffix}`, data: repoData,
         backgroundColor: "rgba(31, 119, 180, 0.85)",
-        stack: "payout", yAxisID: "y" },
-      { type: "line", label: "配当性向", data: divRatio,
+        stack: `payout${suffix}`, yAxisID: "y", hidden },
+      { type: "line", label: `配当性向${suffix}`, data: divRatio,
         borderColor: "#ffbb78", backgroundColor: "#ffbb78",
-        borderWidth: 2, fill: false, pointRadius: 4, yAxisID: "y1" },
-      { type: "line", label: "総還元性向", data: totalRatio,
+        borderWidth: 2, fill: false, pointRadius: 4, yAxisID: "y1", hidden },
+      { type: "line", label: `総還元性向${suffix}`, data: totalRatio,
         borderColor: "#ff7f0e", backgroundColor: "#ff7f0e",
-        borderWidth: 2, fill: false, pointRadius: 4, yAxisID: "y1" },
+        borderWidth: 2, fill: false, pointRadius: 4, yAxisID: "y1", hidden },
     ],
   };
+}
+
+function generateTpChart(cfData, isData, quarterlyCfData, quarterlyIsData) {
+  const annual = _tagGroupLabels(_tpDatasets(cfData, isData, " (通年)", false));
+  const quarterly = _tagGroupLabels(_tpDatasets(quarterlyCfData, quarterlyIsData, " (四半期)", true));
+  return _mergeGroups(annual, quarterly);
 }
 
 // 1株あたり配当金: 年間配当 (bar) + 配当利回り (line, 右軸 y1)。
@@ -1328,11 +1378,19 @@ async function main() {
         );
         // BS / IS / CF は master の Plotly レイアウトに合わせた専用関数を使う。
         // generateFinancialChart は単純スタックしか作らないため使用しない。
-        const isChart = generateIsChart(rawData.income_stmt || []);
-        const bsChart = generateBsChart(rawData.balancesheet || []);
+        const isChart = generateIsChart(
+          rawData.income_stmt || [],
+          rawData.quarterly_income_stmt || [],
+        );
+        const bsChart = generateBsChart(
+          rawData.balancesheet || [],
+          rawData.quarterly_balancesheet || [],
+        );
         const cfChart = generateCfChart(
           rawData.cashflow || [],
           rawData.income_stmt || [],
+          rawData.quarterly_cashflow || [],
+          rawData.quarterly_income_stmt || [],
         );
         const perfChart = generatePerformanceChart(
           rawData.history,
@@ -1344,6 +1402,8 @@ async function main() {
         const tpChart = generateTpChart(
           rawData.cashflow || [],
           rawData.income_stmt || [],
+          rawData.quarterly_cashflow || [],
+          rawData.quarterly_income_stmt || [],
         );
         const dpsChart = generateDpsEpsChart(rawData.dividends, rawData.history);
         const segmentChart = generateSegmentChart(rawData.revenue_by_segment);
