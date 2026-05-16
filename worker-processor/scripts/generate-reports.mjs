@@ -1553,6 +1553,124 @@ function formatSummary(text) {
   return formattedSentences.join("").trim();
 }
 
+// === ranking ===
+
+// 各銘柄を「全体」「セクター内」で順位付けする指標定義。
+// group: "analysis" は分析寄り (常時表示)、"facts" は雑学/規模感寄り (展開表示)。
+// dir: 値が大きい方が「上位」(rank 1) になるよう正規化するための符号。
+//   "desc" は値が大きい方が上位 (時価総額・ROE・売上など多数派)
+//   "asc" は値が小さい方が上位 (PER のような割安系)
+// get: rawData (raw_payload) と info を受け取り、値 (number) または null を返す。
+const RANK_METRICS = [
+  // --- 分析寄り ---
+  { key: "market_cap",          label: "時価総額",                group: "analysis", dir: "desc", unit: "currency", get: (r) => r.info?.marketCap ?? null },
+  { key: "roe",                 label: "ROE",                     group: "analysis", dir: "desc", unit: "percent",  get: (r) => r.info?.returnOnEquity ?? null },
+  { key: "operating_margin",    label: "営業利益率",              group: "analysis", dir: "desc", unit: "percent",  get: (r) => r.info?.operatingMargins ?? null },
+  { key: "forward_pe",          label: "PER 予想",                group: "analysis", dir: "asc",  unit: "ratio",    get: (r) => (typeof r.info?.forwardPE === "number" && r.info.forwardPE > 0) ? r.info.forwardPE : null },
+  { key: "revenue_cagr_3y",     label: "売上 3Y CAGR",            group: "analysis", dir: "desc", unit: "percent",  get: (r) => r.dcf_valuation?.cagr_details?.revenue ?? null },
+  { key: "eps_9y_cagr",         label: "EPS 9Y CAGR",             group: "analysis", dir: "desc", unit: "percent",  get: (r) => r.dcf_valuation?.cagr_details?.eps_9y_cagr ?? null },
+  { key: "dividend_yield",      label: "配当利回り",              group: "analysis", dir: "desc", unit: "percent",  get: (r) => {
+    // yfinance の dividendYield はバージョンによって percent 単位 (0.36 = 0.36%) で
+    // 返ってくる。他の percent 指標 (ROE, margins) は小数 (0.34 = 34%) で返るので
+    // 単位を揃えるため 100 で割って小数化する。
+    const y = r.info?.dividendYield;
+    return typeof y === "number" ? y / 100 : null;
+  }},
+  // --- ファクト寄り (規模感・雑学) ---
+  { key: "stock_price",         label: "株価 (1株あたり)",        group: "facts",    dir: "desc", unit: "price",    get: (r) => r.info?.regularMarketPrice ?? null },
+  { key: "revenue_ttm",         label: "TTM 売上",                group: "facts",    dir: "desc", unit: "currency", get: (r) => r.info?.totalRevenue ?? null },
+  { key: "employees",           label: "従業員数",                group: "facts",    dir: "desc", unit: "count",    get: (r) => r.info?.fullTimeEmployees ?? null },
+  { key: "total_cash",          label: "現金保有額",              group: "facts",    dir: "desc", unit: "currency", get: (r) => r.info?.totalCash ?? null },
+  { key: "revenue_per_employee", label: "売上 / 従業員",          group: "facts",    dir: "desc", unit: "currency", get: (r) => {
+    const rev = r.info?.totalRevenue, emp = r.info?.fullTimeEmployees;
+    return (typeof rev === "number" && typeof emp === "number" && emp > 0) ? rev / emp : null;
+  }},
+  { key: "mcap_per_employee",   label: "時価総額 / 従業員",       group: "facts",    dir: "desc", unit: "currency", get: (r) => {
+    const m = r.info?.marketCap, emp = r.info?.fullTimeEmployees;
+    return (typeof m === "number" && typeof emp === "number" && emp > 0) ? m / emp : null;
+  }},
+  { key: "range_position_52w",  label: "52週レンジ内位置",        group: "facts",    dir: "desc", unit: "percent",  get: (r) => {
+    const cur = r.info?.regularMarketPrice, hi = r.info?.fiftyTwoWeekHigh, lo = r.info?.fiftyTwoWeekLow;
+    if (typeof cur !== "number" || typeof hi !== "number" || typeof lo !== "number" || hi <= lo) return null;
+    return (cur - lo) / (hi - lo); // 0=安値、1=高値
+  }},
+  { key: "dividend_rate",       label: "1株あたり配当 (年)",      group: "facts",    dir: "desc", unit: "price",    get: (r) => r.info?.dividendRate ?? null },
+  { key: "beta",                label: "ベータ",                  group: "facts",    dir: "desc", unit: "ratio",    get: (r) => r.dcf_valuation?.wacc_details?.beta ?? r.info?.beta ?? null },
+];
+
+// 配列をソートして rank を付与する。同値は同順位 (1, 2, 2, 4 形式) ではなく
+// 並び順そのまま (1, 2, 3, 4) でいい — 順位の細かい揺れより全体感が大事なので。
+// 戻り値: { [symbol]: { rank, total, percentile } }  percentile は 0..1 の値、 0 が最上位。
+function rankSymbols(entries, dir) {
+  // entries: [{ symbol, value }]  (value は非 null 前提)
+  const sorted = [...entries].sort((a, b) =>
+    dir === "asc" ? a.value - b.value : b.value - a.value,
+  );
+  const total = sorted.length;
+  const result = {};
+  sorted.forEach((e, i) => {
+    result[e.symbol] = {
+      rank: i + 1,
+      total,
+      percentile: total > 1 ? i / (total - 1) : 0,
+    };
+  });
+  return result;
+}
+
+// すべての銘柄を横断して全指標のランキングを計算する。
+// rawDataMap には ETF (SPY/XLK/...) も含まれるので S&P 1500 個別株のみを母集団にする。
+// sectorBySymbol: 各銘柄の (正規化済) GICS Sector。Unknown はセクター順位の母集団から除外。
+function computeRanks(rawDataMap, sectorBySymbol, isEtf) {
+  const universe = Object.keys(rawDataMap).filter((s) => !isEtf(s));
+
+  const out = {};
+  for (const sym of universe) out[sym] = {};
+
+  for (const metric of RANK_METRICS) {
+    // (a) 全体順位
+    const overallEntries = [];
+    for (const sym of universe) {
+      const v = metric.get(rawDataMap[sym]);
+      if (typeof v === "number" && Number.isFinite(v)) {
+        overallEntries.push({ symbol: sym, value: v });
+      }
+    }
+    const overallRanks = rankSymbols(overallEntries, metric.dir);
+
+    // (b) セクター順位 (セクターごとに sort)
+    const bySector = {};
+    for (const e of overallEntries) {
+      const sec = sectorBySymbol[e.symbol];
+      if (!sec || sec === "Unknown") continue;
+      (bySector[sec] = bySector[sec] || []).push(e);
+    }
+    const sectorRanks = {};
+    for (const [sec, entries] of Object.entries(bySector)) {
+      const ranked = rankSymbols(entries, metric.dir);
+      for (const sym of Object.keys(ranked)) {
+        sectorRanks[sym] = { ...ranked[sym], sector: sec };
+      }
+    }
+
+    for (const sym of universe) {
+      const value = metric.get(rawDataMap[sym]);
+      out[sym][metric.key] = {
+        value: typeof value === "number" && Number.isFinite(value) ? value : null,
+        overall: overallRanks[sym] || null,
+        sector: sectorRanks[sym]
+          ? {
+              rank: sectorRanks[sym].rank,
+              total: sectorRanks[sym].total,
+              percentile: sectorRanks[sym].percentile,
+            }
+          : null,
+      };
+    }
+  }
+  return out;
+}
+
 // === main ===
 
 async function main() {
@@ -1622,6 +1740,7 @@ async function main() {
   const riskReturnMetrics = [];
   const sectorMap = {};
   const subIndustryMap = {};
+  const sectorBySymbol = {}; // computeRanks 用
   for (const symbol of Object.keys(rawDataMap)) {
     const rawData = rawDataMap[symbol];
     const rr = calculateRiskReturn(rawData.history, symbol);
@@ -1634,6 +1753,7 @@ async function main() {
       metadata["GICS Sector"] || normalizeSector(rawData.info?.sector) || "Unknown";
     const subInd =
       metadata["GICS Sub-Industry"] || rawData.info?.industry || "Unknown";
+    sectorBySymbol[symbol] = sector;
     const dailyChange = calculateDailyChange(rawData.history);
     const peerInfo = {
       Symbol: metadata.Symbol || symbol,
@@ -1679,6 +1799,11 @@ async function main() {
     "VPU",
     "ITB",
   ];
+
+  // 全銘柄を横断したランキングを 1 回だけ計算 (大したコストにはならない)。
+  console.log("Computing ranks (overall + sector)...");
+  const isEtf = (s) => ETFS.includes(s);
+  const ranksBySymbol = computeRanks(rawDataMap, sectorBySymbol, isEtf);
 
   // 処理する銘柄を決定する。
   //   - TEST_SYMBOLS 環境変数 (例: "MSFT,AAPL,NVDA") があればそのリストを優先
@@ -1813,6 +1938,12 @@ async function main() {
           is_financial: ["Financials", "Real Estate"].includes(sector),
           
           benchmark_info: getBenchmarkInfo(metadata, rawData.info),
+
+          // 全体 / セクター内ランキング (computeRanks の前計算結果)
+          ranks: {
+            sector: sectorBySymbol[symbol] || null,
+            metrics: ranksBySymbol[symbol] || {},
+          },
 
           is_available_monex: true,
           is_available_rakuten: true,

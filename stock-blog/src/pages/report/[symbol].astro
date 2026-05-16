@@ -300,6 +300,58 @@ if (reportData?.analyst_ratings) {
     opinions: r.numberOfAnalystOpinions
   };
 }
+
+// ランキング表示用ヘルパー (テンプレート内に TypeScript 型を書くと JSX 解析と
+// 衝突するため frontmatter にまとめる)。
+type RankUnit = "currency" | "percent" | "price" | "count" | "ratio";
+const RANK_ANALYSIS_KEYS: Array<[string, string, RankUnit]> = [
+  ["market_cap",        "時価総額",        "currency"],
+  ["roe",               "ROE",            "percent"],
+  ["operating_margin",  "営業利益率",      "percent"],
+  ["forward_pe",        "PER (予想)",      "ratio"],
+  ["revenue_cagr_3y",   "売上 3Y CAGR",    "percent"],
+  ["eps_9y_cagr",       "EPS 9Y CAGR",    "percent"],
+  ["dividend_yield",    "配当利回り",      "percent"],
+];
+const RANK_FACT_KEYS: Array<[string, string, RankUnit]> = [
+  ["stock_price",          "株価",                "price"],
+  ["revenue_ttm",          "TTM 売上",            "currency"],
+  ["employees",            "従業員数",            "count"],
+  ["total_cash",           "現金保有額",          "currency"],
+  ["revenue_per_employee", "売上 / 従業員",       "currency"],
+  ["mcap_per_employee",    "時価総額 / 従業員",   "currency"],
+  ["range_position_52w",   "52週レンジ内位置",    "percent"],
+  ["dividend_rate",        "1株あたり配当 (年)",  "price"],
+  ["beta",                 "ベータ",              "ratio"],
+];
+function fmtRankValue(v: number | null | undefined, unit: RankUnit): string {
+  if (v == null || !Number.isFinite(v)) return "---";
+  if (unit === "currency") {
+    const abs = Math.abs(v);
+    if (abs >= 1e12) return `$${(v / 1e12).toFixed(2)}T`;
+    if (abs >= 1e9)  return `$${(v / 1e9).toFixed(2)}B`;
+    if (abs >= 1e6)  return `$${(v / 1e6).toFixed(2)}M`;
+    if (abs >= 1e3)  return `$${(v / 1e3).toFixed(1)}K`;
+    return `$${v.toFixed(0)}`;
+  }
+  if (unit === "percent") return `${(v * 100).toFixed(2)}%`;
+  if (unit === "price") return `$${v.toFixed(2)}`;
+  if (unit === "count") return v.toLocaleString();
+  return v.toFixed(2);
+}
+type RankCell = { rank: number; total: number; percentile: number } | null;
+function fmtRank(r: RankCell): { text: string; tier: string } | null {
+  if (!r) return null;
+  const topPct = Math.max(1, Math.ceil((r.rank / r.total) * 100));
+  const tier = topPct <= 5 ? "top5" : topPct <= 10 ? "top10" : topPct <= 25 ? "top25" : "mid";
+  return { text: `${r.rank}位 / ${r.total} (上位 ${topPct}%)`, tier };
+}
+function rankTierClass(tier: string): string {
+  if (tier === "top5")  return "text-amber-600 dark:text-amber-400 font-bold";
+  if (tier === "top10") return "text-green-700 dark:text-green-400 font-bold";
+  if (tier === "top25") return "text-skin-base font-medium";
+  return "opacity-70";
+}
 ---
 
 <Layout title={title} description={description} extraStructuredData={extraStructuredData}>
@@ -373,6 +425,7 @@ if (reportData?.analyst_ratings) {
                 <li><a href="#risk-return" class="text-skin-accent hover:underline">{symbol}のリスク・リターン分析</a></li>
                 <li><a href="#peers" class="text-skin-accent hover:underline">{symbol}の同業種・競合</a></li>
                 <li><a href="#sector-peers" class="text-skin-accent hover:underline">{symbol}の同セクター他社</a></li>
+                <li><a href="#ranks" class="text-skin-accent hover:underline">{symbol}のランキング</a></li>
                 <li><a href="#performance" class="text-skin-accent hover:underline">{symbol}のパフォーマンス比較</a></li>
                 <li><a href="#earnings-highlights" class="text-skin-accent hover:underline">{symbol}の直近決算・財務ハイライト</a></li>
                 <li><a href="#next-earnings" class="text-skin-accent hover:underline">{symbol}の来期業績予想</a></li>
@@ -552,6 +605,105 @@ if (reportData?.analyst_ratings) {
         <section id="sector-peers">
           <PeerLinks title={`${symbol}の同セクター他社 (${reportData.sector}${reportData.index ? ` / ${reportData.index}` : ''})`} peers={reportData.peers.sector} collapsible={true} icon="corporate_fare" />
         </section>
+
+        {reportData.ranks?.metrics && Object.keys(reportData.ranks.metrics).length > 0 && (
+          <Fragment>
+            <hr class="my-12 border-skin-line" />
+            <section id="ranks">
+              <h2 class="text-2xl font-bold mb-4 border-b pb-2 flex items-center gap-2">
+                <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">leaderboard</span>
+                {symbol}のランキング
+              </h2>
+              <p class="text-sm opacity-70 mb-6">
+                S&P 1500 構成銘柄を母集団とした全体順位と、 同セクター ({reportData.ranks.sector || "Unknown"}) 内順位。
+                「上位 X%」は順位 / 母集団全体に対する相対位置 (色: <span class="text-amber-600 dark:text-amber-400 font-bold">5%以内</span> / <span class="text-green-700 dark:text-green-400 font-bold">10%以内</span> / 25%以内 / それ以下)。
+              </p>
+
+              <div class="space-y-6">
+                <div class="space-y-3">
+                  <h3 class="text-lg font-bold flex items-center gap-2">
+                    <span class="material-symbols-outlined text-blue-500" aria-hidden="true">analytics</span>
+                    分析指標
+                  </h3>
+                  <div class="overflow-hidden rounded-lg border border-skin-line">
+                    <table class="min-w-full text-sm">
+                      <thead class="bg-skin-fill/10 text-xs uppercase opacity-70">
+                        <tr>
+                          <th class="px-4 py-2 text-left">指標</th>
+                          <th class="px-4 py-2 text-right">値</th>
+                          <th class="px-4 py-2 text-right">全体順位</th>
+                          <th class="px-4 py-2 text-right">セクター順位</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {RANK_ANALYSIS_KEYS.map(([key, label, unit]) => {
+                          const m = reportData.ranks.metrics[key];
+                          if (!m) return null;
+                          const overall = fmtRank(m.overall);
+                          const sector = fmtRank(m.sector);
+                          return (
+                            <tr class="border-b border-skin-line/40 last:border-b-0">
+                              <td class="px-4 py-2 opacity-70">{label}</td>
+                              <td class="px-4 py-2 text-right font-medium">{fmtRankValue(m.value, unit)}</td>
+                              <td class={`px-4 py-2 text-right ${overall ? rankTierClass(overall.tier) : 'opacity-40'}`}>
+                                {overall ? overall.text : '対象外'}
+                              </td>
+                              <td class={`px-4 py-2 text-right ${sector ? rankTierClass(sector.tier) : 'opacity-40'}`}>
+                                {sector ? sector.text : '対象外'}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <details class="group rounded-lg border border-skin-line overflow-hidden">
+                  <summary class="cursor-pointer p-4 bg-skin-fill/10 hover:bg-skin-fill/20 transition-colors flex items-center justify-between">
+                    <span class="font-bold flex items-center gap-2">
+                      <span class="material-symbols-outlined text-purple-500" aria-hidden="true">emoji_objects</span>
+                      ファクト / 雑学
+                    </span>
+                    <span class="material-symbols-outlined transform group-open:rotate-180 transition-transform" aria-hidden="true">expand_more</span>
+                  </summary>
+                  <div class="border-t border-skin-line">
+                    <table class="min-w-full text-sm">
+                      <thead class="bg-skin-fill/5 text-xs uppercase opacity-70">
+                        <tr>
+                          <th class="px-4 py-2 text-left">指標</th>
+                          <th class="px-4 py-2 text-right">値</th>
+                          <th class="px-4 py-2 text-right">全体順位</th>
+                          <th class="px-4 py-2 text-right">セクター順位</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {RANK_FACT_KEYS.map(([key, label, unit]) => {
+                          const m = reportData.ranks.metrics[key];
+                          if (!m) return null;
+                          const overall = fmtRank(m.overall);
+                          const sector = fmtRank(m.sector);
+                          return (
+                            <tr class="border-b border-skin-line/40 last:border-b-0">
+                              <td class="px-4 py-2 opacity-70">{label}</td>
+                              <td class="px-4 py-2 text-right font-medium">{fmtRankValue(m.value, unit)}</td>
+                              <td class={`px-4 py-2 text-right ${overall ? rankTierClass(overall.tier) : 'opacity-40'}`}>
+                                {overall ? overall.text : '対象外'}
+                              </td>
+                              <td class={`px-4 py-2 text-right ${sector ? rankTierClass(sector.tier) : 'opacity-40'}`}>
+                                {sector ? sector.text : '対象外'}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </details>
+              </div>
+            </section>
+          </Fragment>
+        )}
 
         <hr class="my-12 border-skin-line" />
 

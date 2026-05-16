@@ -87,16 +87,21 @@ if __name__ == "__main__":
     # TEST_MODE が true の場合は少数銘柄に限定。
     # TEST_SYMBOLS 環境変数があればそのリストを使う (セクター ETF は
     # fetch_raw_data 側で自動付与される)。
+    # 例外: TEST_SYMBOLS="all" の場合は本番と同じ全 S&P 500/400/600 を取得
+    #   (c1 ブランチで E2E 検証を回したいときに使う)。
     if os.getenv("TEST_MODE") == "true":
         test_symbols_env = os.getenv("TEST_SYMBOLS", "").strip()
-        if test_symbols_env:
-            test_symbols = [s.strip().upper() for s in test_symbols_env.split(",") if s.strip()]
-        else:
-            test_symbols = ["MSFT", "AAPL", "NVDA", "SPY"]
-        utils.log_event("INFO", "SYSTEM", f"Test mode active: processing {test_symbols}.")
-        fetch_raw_data.main(symbols_override=test_symbols)
-        utils.log_event("SUCCESS", "SYSTEM", "Test mode fetch finished.")
-        exit(0)
+        if test_symbols_env.lower() != "all":
+            if test_symbols_env:
+                test_symbols = [s.strip().upper() for s in test_symbols_env.split(",") if s.strip()]
+            else:
+                test_symbols = ["MSFT", "AAPL", "NVDA", "SPY"]
+            utils.log_event("INFO", "SYSTEM", f"Test mode active: processing {test_symbols}.")
+            fetch_raw_data.main(symbols_override=test_symbols)
+            utils.log_event("SUCCESS", "SYSTEM", "Test mode fetch finished.")
+            exit(0)
+        # TEST_SYMBOLS=all のときは下の「本番フル取得」経路に流す。
+        utils.log_event("INFO", "SYSTEM", "TEST_MODE=true with TEST_SYMBOLS=all: running full S&P 500/400/600 fetch.")
 
     # 1. ベース銘柄リストの取得（S&P 500 / 400 / 600 を統合）
     #    先に取得しておき、stocks.json と raw データ取得の両方に使い回す
