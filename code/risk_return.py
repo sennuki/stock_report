@@ -151,15 +151,19 @@ def calculate_market_metrics_parallel(symbols):
             if res: results.append(res)
     return pl.DataFrame(results) if results else pl.DataFrame({'Symbol': []})
 
-def generate_scatter_html(df_metrics, target_symbol, sector_etf_symbol):
-    fig = generate_scatter_fig(df_metrics, target_symbol, sector_etf_symbol)
+def generate_scatter_html(df_metrics, target_symbol, sector_etf_symbol, target_index=None):
+    fig = generate_scatter_fig(df_metrics, target_symbol, sector_etf_symbol, target_index)
     return fig.to_html(full_html=False, include_plotlyjs=False, config={'displayModeBar': False, 'scrollZoom': False, 'responsive': True})
 
-def generate_scatter_fig(df_metrics, target_symbol, sector_etf_symbol):
+def generate_scatter_fig(df_metrics, target_symbol, sector_etf_symbol, target_index=None):
     """リスク・リターン散布図生成 (多期間切り替え)"""
     fig = go.Figure()
     trace_counts = []
     period_ranges = []
+
+    # 「その他」マーカーの系列名は対象銘柄が属する指数に合わせる
+    # 例: "S&P 500" -> "S&P500銘柄", "S&P 400" -> "S&P400銘柄", "S&P 600" -> "S&P600銘柄"
+    others_name = (target_index or 'S&P 500').replace(' ', '') + '銘柄'
     
     for p in PERIOD_CONFIGS:
         key = p['key']
@@ -301,10 +305,10 @@ def generate_scatter_fig(df_metrics, target_symbol, sector_etf_symbol):
         else:
             fig.add_trace(go.Scatter(x=[None], y=[None], name=f'S&P 500 ({p["label"]})', visible=visible))
 
-        # 4. その他 (S&P 500 銘柄)
+        # 4. その他 (対象銘柄が属する指数の銘柄)
         df_others = df_p.filter(~pl.col('Symbol').is_in([target_symbol, '^GSPC', sector_etf_symbol]))
         x, y, cdata, txt = get_data(df_others)
-        fig.add_trace(go.Scatter(x=x, y=y, customdata=cdata, text=txt, mode='markers', name=f'S&P500銘柄 ({p["label"]})', 
+        fig.add_trace(go.Scatter(x=x, y=y, customdata=cdata, text=txt, mode='markers', name=f'{others_name} ({p["label"]})',
                                 hovertemplate=hovertemplate_str,
                                 marker=dict(size=6, color='#72777B', opacity=0.4), visible=visible))
         

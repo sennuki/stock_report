@@ -95,7 +95,7 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
       // Direct Chart.js format
       const isPerformanceChart = canvas.id === 'chart-performance' || chartData.datasets.some((ds: any) => ds.label && (ds.label.includes('リターン') || ds.label.includes('パフォーマンス')));
       const isScatterChart = chartData.datasets.some((ds: any) => ds.type === 'scatter') || canvas.id === 'chart-risk-return';
-      const hasStacking = ['chart-bs', 'chart-tp', 'chart-segment', 'chart-geo'].includes(canvas.id);
+      const hasStacking = ['chart-bs', 'chart-tp', 'chart-segment', 'chart-geo', 'chart-dps'].includes(canvas.id);
       
       // Apply defaults and specific ordering
       if (canvas.id === 'chart-is' || canvas.id === 'chart-cf' || canvas.id === 'chart-bs' || canvas.id === 'chart-tp') {
@@ -127,13 +127,16 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
           ds.pointRadius = isPerformanceChart ? 0 : 4;
         }
         if (ds.type === 'scatter') {
-          if (ds.pointRadius === undefined) {
-            ds.pointRadius = (ds.label && ds.label.includes('S&P銘柄')) ? 2.5 : 7;
-          }
+          // マーカーサイズを統一。「その他のS&P500銘柄」だけ少し小さく。
+          ds.pointRadius = (ds.label && ds.label.includes('銘柄')) ? 4 : 7;
           ds.pointHoverRadius = 12;
         }
         if (hasStacking && ds.type === 'bar') {
-          ds.stack = ds.stack || (ds.label && ds.label.includes('資産') ? 'assets' : 'liabilities');
+          if (canvas.id === 'chart-dps') {
+            ds.stack = ds.stack || (ds.label && ds.label.includes('権利落日') ? 'div_q' : 'div_annual');
+          } else {
+            ds.stack = ds.stack || (ds.label && ds.label.includes('資産') ? 'assets' : 'liabilities');
+          }
         }
         // Ensure yAxisID compatibility
         if (ds.yAxisID === 'y2') ds.yAxisID = 'y1';
@@ -644,9 +647,9 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
         borderWidth: type === 'line' ? 2 : (type === 'scatter' ? 1 : 0),
         pointRadius: type === 'line' 
           ? (isPerformanceChart ? ( (d.y || []).map((_: any, i: number, arr: any[]) => i === arr.length - 1 ? 4 : 0) ) : 4)
-          : (type === 'scatter' ? (name.includes('S&P500銘柄') ? 2.5 : 7) : 0),
+          : (type === 'scatter' ? (name.includes('銘柄') ? 4 : 7) : 0),
         pointHoverRadius: 12,
-        pointBorderWidth: (type === 'scatter' && !name.includes('S&P500銘柄')) ? 2 : 0,
+        pointBorderWidth: (type === 'scatter' && !name.includes('銘柄')) ? 2 : 0,
         pointBorderColor: '#fff',
         pointStyle: 'circle',
         tension: 0.4,
@@ -673,12 +676,14 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
       else if (name.includes('純資産')) s._originalOrder = 1;
       else if (name.includes('固定負債')) s._originalOrder = 2;
       else if (name.includes('流動負債')) s._originalOrder = 3;
-      else if (name.includes('配当金')) s._originalOrder = 1;
+      else if (name.includes('推定配当')) s._originalOrder = 2;
+      else if (name.includes('配当金') || name.includes('実績配当') || name.includes('年間配当')) s._originalOrder = 1;
       else if (name.includes('自社株買い')) s._originalOrder = 2;
       else s._originalOrder = 9;
 
       const offsetGroup = d.offsetgroup !== undefined ? `group-${d.offsetgroup}` : null;
-      if (name.includes('資産')) s.stack = offsetGroup || 'assets';
+      if (canvasId === 'chart-dps' && type === 'bar') s.stack = offsetGroup || (name.includes('権利落日') ? 'div_q' : 'div_annual');
+      else if (name.includes('資産')) s.stack = offsetGroup || 'assets';
       else if (name.includes('負債') || name.includes('純資産')) s.stack = offsetGroup || 'liabilities';
       else if (name.includes('配当金') || name.includes('自社株買い')) s.stack = offsetGroup || 'payout';
       else if (name.includes('純利益') && !isRatio) s.stack = offsetGroup || (data.some((os: any) => os.name && os.name.includes('営業CF')) ? 'net_income_cf' : 'net_income_is');

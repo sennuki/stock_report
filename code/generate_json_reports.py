@@ -616,7 +616,7 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, force_transla
             right_on="Symbol_YF", 
             how="left"
         )
-        fig_rr = risk_return.generate_scatter_fig(df_metrics_with_name, chart_target_symbol, sector_etf_ticker)
+        fig_rr = risk_return.generate_scatter_fig(df_metrics_with_name, chart_target_symbol, sector_etf_ticker, target_index=row.get('Index'))
         report_data["charts"]["risk_return"] = fig_to_dict(fig_rr)
     except Exception as e:
         print(f"Error generating risk-return for {ticker_display}: {e}")

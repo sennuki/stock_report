@@ -1313,19 +1313,58 @@ function _dpsAnnualDatasets(dividends, history, suffix, hidden) {
   if (!dividends || !Array.isArray(dividends) || dividends.length === 0)
     return null;
 
+  // 年ごとの配当合計・支払回数を集計
   const annual = {};
+  const countByYear = {};
+  const dated = [];
   dividends.forEach((d) => {
     const date = new Date(d.Date || d.index);
     if (Number.isNaN(date.getTime())) return;
+    const amt = d.Dividends || d.Value || 0;
     const y = date.getFullYear();
-    annual[y] = (annual[y] || 0) + (d.Dividends || d.Value || 0);
+    annual[y] = (annual[y] || 0) + amt;
+    countByYear[y] = (countByYear[y] || 0) + 1;
+    dated.push({ time: date.getTime(), amount: amt });
   });
 
   const allYears = Object.keys(annual).map(Number).sort((a, b) => a - b);
   if (allYears.length === 0) return null;
   const years = allYears.slice(-10);
   const labels = years.map(String);
-  const divs = years.map((y) => annual[y]);
+
+  // 進行中の年度は「直近1回の配当 × 昨年の支払回数」で年間配当を推定し、
+  // 実績分 (actual) の上に推定上乗せ分 (estimate) を積み上げて表示する。
+  // (master の fundamentals.get_dps_eps_chart_data の推定ロジックに準拠)
+  const currentYear = new Date().getFullYear();
+  const actualByYear = { ...annual }; // バー (実績) に使う値
+  const estimatedPart = {};           // バー (推定上乗せ) に使う値
+  const totalByYear = { ...annual };  // 利回り計算に使う年間総額 (推定込み)
+
+  if (annual[currentYear] != null) {
+    let freq = countByYear[currentYear - 1] || 0;
+    if (freq <= 0) {
+      // 昨年データが無い場合は直近 365 日の支払回数で代用
+      const yearAgo = Date.now() - 365 * 24 * 3600 * 1000;
+      freq = dated.filter((d) => d.time >= yearAgo).length;
+    }
+    if (freq <= 0) freq = 4;   // 四半期配当をデフォルトと仮定
+    if (freq > 12) freq = 12;  // 異常値ガード
+
+    dated.sort((a, b) => a.time - b.time);
+    const latestDiv = dated.length ? dated[dated.length - 1].amount : 0;
+    const estTotal = latestDiv * freq;
+    const actualPaid = annual[currentYear];
+    // 推定総額が実績支払額を上回るときだけ「推定上乗せ」を出す
+    if (estTotal > actualPaid) {
+      actualByYear[currentYear] = actualPaid;
+      estimatedPart[currentYear] = estTotal - actualPaid;
+      totalByYear[currentYear] = estTotal;
+    }
+  }
+
+  const hasEstimate = years.some((y) => estimatedPart[y] > 0);
+  const actualData = years.map((y) => actualByYear[y]);
+  const estimateData = years.map((y) => estimatedPart[y] || null);
 
   const yieldData = years.map((y) => {
     if (!history || history.length === 0) return null;
@@ -1334,7 +1373,7 @@ function _dpsAnnualDatasets(dividends, history, suffix, hidden) {
       return dt.getFullYear() === y;
     });
     if (!firstOfYear || !(firstOfYear.Close > 0)) return null;
-    return annual[y] / firstOfYear.Close;
+    return totalByYear[y] / firstOfYear.Close;
   });
 
   const hasYield = yieldData.some((v) => v != null && Number.isFinite(v));
@@ -1342,14 +1381,26 @@ function _dpsAnnualDatasets(dividends, history, suffix, hidden) {
   const datasets = [
     {
       type: "bar",
-      label: `配当金${suffix}`,
-      data: divs,
+      label: `${hasEstimate ? "実績配当" : "配当金"}${suffix}`,
+      data: actualData,
       backgroundColor: "rgba(31, 119, 180, 0.85)",
       yAxisID: "y",
       order: 2,
       hidden,
     },
   ];
+
+  if (hasEstimate) {
+    datasets.push({
+      type: "bar",
+      label: `推定配当${suffix}`,
+      data: estimateData,
+      backgroundColor: "#aec7e8",
+      yAxisID: "y",
+      order: 2,
+      hidden,
+    });
+  }
 
   if (hasYield) {
     datasets.push({
@@ -1359,7 +1410,6 @@ function _dpsAnnualDatasets(dividends, history, suffix, hidden) {
       borderColor: "#ff7f0e",
       backgroundColor: "#ff7f0e",
       borderWidth: 2,
-      borderDash: [4, 4],
       fill: false,
       pointRadius: 4,
       yAxisID: "y1",
@@ -1457,7 +1507,6 @@ function _dpsPerPaymentDatasets(dividends, history, suffix, hidden) {
       borderColor: "#ff7f0e",
       backgroundColor: "#ff7f0e",
       borderWidth: 2,
-      borderDash: [4, 4],
       fill: false,
       pointRadius: 4,
       yAxisID: "y1",
@@ -1565,8 +1614,12 @@ const RANK_METRICS = [
   // --- 分析寄り ---
   { key: "market_cap",          label: "時価総額",                group: "analysis", dir: "desc", unit: "currency", get: (r) => r.info?.marketCap ?? null },
   { key: "roe",                 label: "ROE",                     group: "analysis", dir: "desc", unit: "percent",  get: (r) => r.info?.returnOnEquity ?? null },
+  { key: "roa",                 label: "ROA",                     group: "analysis", dir: "desc", unit: "percent",  get: (r) => r.info?.returnOnAssets ?? null },
   { key: "operating_margin",    label: "営業利益率",              group: "analysis", dir: "desc", unit: "percent",  get: (r) => r.info?.operatingMargins ?? null },
+  { key: "gross_margin",        label: "粗利率",                  group: "analysis", dir: "desc", unit: "percent",  get: (r) => r.info?.grossMargins ?? null },
   { key: "forward_pe",          label: "PER 予想",                group: "analysis", dir: "asc",  unit: "ratio",    get: (r) => (typeof r.info?.forwardPE === "number" && r.info.forwardPE > 0) ? r.info.forwardPE : null },
+  { key: "pbr",                 label: "PBR",                     group: "analysis", dir: "asc",  unit: "ratio",    get: (r) => (typeof r.info?.priceToBook === "number" && r.info.priceToBook > 0) ? r.info.priceToBook : null },
+  { key: "psr",                 label: "PSR",                     group: "analysis", dir: "asc",  unit: "ratio",    get: (r) => (typeof r.info?.priceToSalesTrailing12Months === "number" && r.info.priceToSalesTrailing12Months > 0) ? r.info.priceToSalesTrailing12Months : null },
   { key: "revenue_cagr_3y",     label: "売上 3Y CAGR",            group: "analysis", dir: "desc", unit: "percent",  get: (r) => r.dcf_valuation?.cagr_details?.revenue ?? null },
   { key: "eps_9y_cagr",         label: "EPS 9Y CAGR",             group: "analysis", dir: "desc", unit: "percent",  get: (r) => r.dcf_valuation?.cagr_details?.eps_9y_cagr ?? null },
   { key: "dividend_yield",      label: "配当利回り",              group: "analysis", dir: "desc", unit: "percent",  get: (r) => {

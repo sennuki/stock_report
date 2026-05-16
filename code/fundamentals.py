@@ -708,7 +708,7 @@ def get_dps_eps_chart_data(data_dict, is_data_dict):
 
         # 実績分の配当 (棒グラフ - 土台)
         fig.add_trace(go.Bar(
-            name='年間配当 (年間推移)', x=df_ann_plot['Date'], y=df_ann_plot['ActualValue'],
+            name='実績配当 (年間推移)', x=df_ann_plot['Date'], y=df_ann_plot['ActualValue'],
             marker_color='#1f77b4', # 濃い青
             text=labels_base,
             textposition='auto',
@@ -724,14 +724,14 @@ def get_dps_eps_chart_data(data_dict, is_data_dict):
             labels_est = [f"${r['Value']:.2f}" if r['IsEstimate'] else "" for r in df_ann_plot.to_dicts()]
             
             fig.add_trace(go.Bar(
-                name='年間配当 (年間推移)', x=df_ann_plot['Date'], y=df_ann_plot['EstimatedPart'],
-                marker_color='#aec7e8', # 薄い青
+                name='推定配当 (年間推移)', x=df_ann_plot['Date'], y=df_ann_plot['EstimatedPart'],
+                marker_color='#aec7e8', # 薄い青（水色）
                 text=labels_est,
                 textposition='auto',
-                hovertemplate='年度: %{x}<br>配当額: $%{text}<extra></extra>',
+                hovertemplate='年度: %{x}<br>推定配当額: $%{text}<extra></extra>',
                 visible=True,
                 legendgroup='annual_div',
-                showlegend=False
+                showlegend=True
             ))
         
         # 利回りトレース (年初株価ベース - 折れ線)
@@ -739,7 +739,7 @@ def get_dps_eps_chart_data(data_dict, is_data_dict):
             fig.add_trace(go.Scatter(
                 name='配当利回り (年間推移)', x=df_ann_plot['Date'], y=df_ann_plot['Yield'],
                 mode='lines+markers',
-                line=dict(color='#ff7f0e', width=3, dash='dot'),
+                line=dict(color='#ff7f0e', width=3),
                 marker=dict(size=8),
                 yaxis='y2',
                 hovertemplate='年度: %{x}<br>配当利回り: %{y:.2%}<extra></extra>',
@@ -766,7 +766,7 @@ def get_dps_eps_chart_data(data_dict, is_data_dict):
             fig.add_trace(go.Scatter(
                 name='配当利回り (権利落日別)', x=df_q_plot['Date'], y=df_q_plot['Yield_Q'],
                 mode='lines+markers',
-                line=dict(color='#d62728', width=2, dash='dot'),
+                line=dict(color='#d62728', width=2),
                 yaxis='y2',
                 hovertemplate='権利落日: %{x}<br>予想利回り: %{y:.2%}<extra></extra>',
                 visible=False
