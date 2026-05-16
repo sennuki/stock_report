@@ -22,7 +22,7 @@ from defeatbeta_api.data.ticker import Ticker as DBTicker
 from yfinance.exceptions import YFRateLimitError
 
 # .envファイルを読み込む
-load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env"))
+load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env"), override=True)
 
 LOG_FILE = "run_log.txt"
 
@@ -163,9 +163,22 @@ def format_summary(text):
             
     return "".join(formatted_sentences).strip()
 
-def calculate_dcf(symbol, ticker=None):
+def calculate_dcf(symbol, ticker=None, yf_info=None, yf_growth_estimates=None):
     """
-    defeatbeta-apiのロジックに基づいて詳細なDCF理論株価を計算する。
+    詳細なDCF理論株価を計算する。
+
+    将来成長率 (1-5年) は単一指標のハードクリップではなく、複数の成長シグナル
+    (EPS 9Y CAGR, Rev/FCF/EBITDA 3Y CAGR, アナリスト LT 予想, Sustainable
+    Growth = ROE × (1 - 配当性向)) を R_f〜30% で winsorize した上で median を取る。
+
+    Args:
+      symbol: ティッカー。
+      ticker: defeatbeta-api の Ticker (任意)。
+      yf_info: yfinance.Ticker.info 相当の dict (任意)。
+        analyst LT (earningsGrowth) と Sustainable Growth (returnOnEquity,
+        payoutRatio) の取得に使う。
+      yf_growth_estimates: yfinance.Ticker.growth_estimates 相当の rows list/dict
+        (任意)。+5y 期間の stockTrend をアナリスト LT として優先的に使う。
     """
     if ticker is None:
         db_ticker = DBTicker(symbol)
@@ -265,16 +278,67 @@ def calculate_dcf(symbol, ticker=None):
             "eps_9y_cagr":  eps_9y_cagr,
         }
 
-        # 将来成長率 (1-5年): EPS 9Y CAGR を 5%〜20% にクリップ (defeatbeta Excel 方式)
-        if eps_9y_cagr is not None:
-            growth_1_5y = min(max(eps_9y_cagr, 0.05), 0.20)
+        # アナリスト LT 予想 (forward-looking)
+        # 優先順位: growth_estimates の +5y stockTrend > info.earningsGrowth
+        # 前者は 5 年 EPS 成長予想 (LT)、後者は直近 YoY なので近似に過ぎないが
+        # 両方欠ける可能性に備えてフォールバックとして使う。
+        analyst_lt = None
+        if yf_growth_estimates is not None:
+            rows = yf_growth_estimates if isinstance(yf_growth_estimates, list) \
+                else yf_growth_estimates.get("data") if isinstance(yf_growth_estimates, dict) else None
+            if isinstance(rows, list):
+                for r in rows:
+                    period = str(r.get("period") or r.get("Period") or r.get("index") or "").lower().strip()
+                    if period == "+5y":
+                        v = r.get("stockTrend") or r.get("StockTrend") or r.get("stocktrend")
+                        if isinstance(v, (int, float)) and not pd.isna(v):
+                            analyst_lt = float(v)
+                        break
+        if analyst_lt is None and yf_info is not None:
+            v = yf_info.get("earningsGrowth")
+            if isinstance(v, (int, float)) and not pd.isna(v):
+                analyst_lt = float(v)
+
+        # Sustainable Growth (内部成長率) = ROE × (1 - 配当性向)
+        # ファンダ理論的な成長持続可能性指標。balance sheet ベースで forward-looking。
+        sustainable = None
+        if yf_info is not None:
+            roe = yf_info.get("returnOnEquity")
+            payout = yf_info.get("payoutRatio")
+            if (isinstance(roe, (int, float)) and not pd.isna(roe)
+                and isinstance(payout, (int, float)) and not pd.isna(payout)
+                and 0 <= payout <= 1):
+                sustainable = float(roe) * (1.0 - float(payout))
+
+        # 6 シグナルを集約
+        signals_raw = {
+            "eps_9y":      eps_9y_cagr,
+            "revenue_3y":  rev_cagr,
+            "fcf_3y":      fcf_cagr,
+            "ebitda_3y":   ebitda_cagr,
+            "analyst_5y":  analyst_lt,
+            "sustainable": sustainable,
+        }
+
+        # 将来成長率 (1-5年): 各シグナルを (R_f, 30%) で winsorize し median を取る。
+        # ハードクリップ (5-20%) と異なり 1 つの外れ値で結果が引っ張られないため、
+        # EPS 9Y CAGR が一時的に異常値でも他 5 つで補正できる。
+        # フロアを R_f に揃えることで 5→6 年目の成長率ジャンプが消えグライドパスが
+        # 滑らかになる (永続成長率 = R_f のため)。
+        WINSORIZE_CAP = 0.30
+        signals_clipped = {
+            k: (min(max(v, risk_free_rate), WINSORIZE_CAP) if v is not None else None)
+            for k, v in signals_raw.items()
+        }
+        valid_clipped = [v for v in signals_clipped.values() if v is not None]
+        if valid_clipped:
+            sorted_v = sorted(valid_clipped)
+            n = len(sorted_v)
+            growth_1_5y = sorted_v[n // 2] if n % 2 == 1 \
+                else (sorted_v[n // 2 - 1] + sorted_v[n // 2]) / 2.0
         else:
-            # フォールバック: Rev/FCF/EBITDA/NI 加重平均
-            weights = {"revenue": 0.4, "fcf": 0.3, "ebitda": 0.2, "net_income": 0.1}
-            values  = {"revenue": rev_cagr, "fcf": fcf_cagr, "ebitda": ebitda_cagr, "net_income": ni_cagr}
-            total_w = sum(w for k, w in weights.items() if values[k] is not None)
-            raw = sum(values[k] * weights[k] for k in weights if values[k] is not None) / total_w if total_w > 0 else 0.05
-            growth_1_5y = min(max(raw, 0.05), 0.20)
+            # 何も取れなければ最保守 = リスクフリーレートで成長する想定
+            growth_1_5y = risk_free_rate
 
         # 永続成長率 = 5年平均リスクフリーレート
         terminal_growth = risk_free_rate
@@ -404,6 +468,10 @@ def calculate_dcf(symbol, ticker=None):
             "growth_1_5y": float(growth_1_5y),
             "growth_6_10y": float(growth_6_10y),
             "terminal_growth": float(terminal_growth),
+            "growth_signals_raw": {k: (float(v) if v is not None else None) for k, v in signals_raw.items()},
+            "growth_signals_clipped": {k: (float(v) if v is not None else None) for k, v in signals_clipped.items()},
+            "growth_winsorize_bounds": {"floor": float(risk_free_rate), "cap": float(WINSORIZE_CAP)},
+            "growth_aggregation": "median_of_winsorized",
             "base_fcf": float(base_fcf),
             "reverse_growth": float(reverse_growth) if reverse_growth is not None else None
         }

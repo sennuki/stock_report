@@ -8,12 +8,9 @@
  */
 
 import "dotenv/config";
-import {
-  S3Client,
-  ListObjectsV2Command,
-  GetObjectCommand,
-  PutObjectCommand,
-} from "@aws-sdk/client-s3";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import pMap from "p-map";
 import YahooFinance from "yahoo-finance2";
 
@@ -21,14 +18,67 @@ const yahooFinance = new YahooFinance();
 const BUCKET = process.env.R2_BUCKET_NAME || "defeat-beta-stock-data";
 const CONCURRENCY = 20;
 
-const s3 = new S3Client({
-  region: "auto",
-  endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
-  credentials: {
-    accessKeyId: process.env.R2_ACCESS_KEY_ID,
-    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
-  },
-});
+// LOCAL_MODE: R2 を使わず、ローカル FS から生データを読み reports/*.json を
+// public/reports/ に書き出す。code/main.py を実行して code/raw_data/ に生データ
+// を揃えた後、 worker-processor/ から `node scripts/generate-reports.mjs` で
+// 本番と同じ出力スキーマの reports/*.json をローカルに生成できる。
+// R2_ACCOUNT_ID 等が未設定なら自動的に LOCAL_MODE になる。
+const LOCAL_MODE =
+  process.env.LOCAL_MODE === "true" ||
+  !process.env.R2_ACCOUNT_ID ||
+  !process.env.R2_ACCESS_KEY_ID ||
+  !process.env.R2_SECRET_ACCESS_KEY;
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const REPO_ROOT = path.resolve(__dirname, "..", "..");
+const LOCAL_RAW_DIR = path.join(REPO_ROOT, "code", "raw_data");
+const LOCAL_STOCKS_JSON = path.join(REPO_ROOT, "stock-blog", "src", "data", "stocks.json");
+const LOCAL_REPORTS_DIR = path.join(REPO_ROOT, "stock-blog", "public", "reports");
+const LOCAL_TRANSLATIONS_PATH = path.join(
+  REPO_ROOT,
+  "worker-processor",
+  "translations",
+  "business_summaries.json",
+);
+
+// S3 クライアントは R2 アクセスが必要な時のみ動的に初期化する (LOCAL_MODE 時は不要)。
+let s3Lazy = null;
+async function getS3() {
+  if (!s3Lazy) {
+    const mod = await import("@aws-sdk/client-s3");
+    s3Lazy = {
+      client: new mod.S3Client({
+        region: "auto",
+        endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+        credentials: {
+          accessKeyId: process.env.R2_ACCESS_KEY_ID,
+          secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
+        },
+      }),
+      ListObjectsV2Command: mod.ListObjectsV2Command,
+      GetObjectCommand: mod.GetObjectCommand,
+      PutObjectCommand: mod.PutObjectCommand,
+    };
+  }
+  return s3Lazy;
+}
+
+// LOCAL_MODE 時の R2 key → ローカルパス変換。
+// raw/{sym}.json は code/raw_data/{sym}_raw.json に対応 (Python 側の命名規約)。
+function localPathForKey(key) {
+  if (key === "raw/stocks_list.json") return LOCAL_STOCKS_JSON;
+  if (key === "translations/business_summaries.json") return LOCAL_TRANSLATIONS_PATH;
+  if (key === "reports/stocks.json") return LOCAL_STOCKS_JSON;
+  if (key.startsWith("raw/")) {
+    const sym = key.slice("raw/".length).replace(/\.json$/, "");
+    return path.join(LOCAL_RAW_DIR, `${sym}_raw.json`);
+  }
+  if (key.startsWith("reports/")) {
+    const sym = key.slice("reports/".length).replace(/\.json$/, "");
+    return path.join(LOCAL_REPORTS_DIR, `${sym}.json`);
+  }
+  throw new Error(`Unmapped R2 key for LOCAL_MODE: ${key}`);
+}
 
 const sectorEtfMap = {
   'Information Technology': 'XLK',
@@ -59,6 +109,28 @@ const broadSectorEtfMap = {
   'Materials': 'VAW',
   'Homebuilding': 'ITB'
 };
+
+// yfinance の sector / industry 名は GICS と微妙に異なる (例: yfinance は
+// "Technology" / "Financial Services" / "Consumer Cyclical" を返すが GICS は
+// "Information Technology" / "Financials" / "Consumer Discretionary")。
+// stocks_list.json が無く rawData.info.sector にフォールバックするケースで
+// sectorEtfMap に当たらず SPY に落ちてしまうのを防ぐため、ここで GICS 名に
+// 正規化する。
+const yfToGicsSector = {
+  'Technology': 'Information Technology',
+  'Financial Services': 'Financials',
+  'Financial': 'Financials',
+  'Consumer Cyclical': 'Consumer Discretionary',
+  'Consumer Defensive': 'Consumer Staples',
+  'Healthcare': 'Health Care',
+  'Basic Materials': 'Materials',
+  // 以下はそのまま使えるので恒等写像 (記録のため明示):
+  // 'Industrials', 'Energy', 'Utilities', 'Real Estate', 'Communication Services'
+};
+function normalizeSector(s) {
+  if (!s) return s;
+  return yfToGicsSector[s] || s;
+}
 
 const marketIndexMap = {
   'S&P 500': 'SPY',
@@ -97,10 +169,23 @@ const etfFullNameMap = {
 };
 
 async function listAll(prefix) {
+  if (LOCAL_MODE) {
+    // 現状 prefix=="raw/" のみ呼ばれる。code/raw_data/*_raw.json を列挙して
+    // R2 key 形式 (raw/{sym}.json) に正規化する。
+    if (prefix !== "raw/") {
+      throw new Error(`LOCAL_MODE listAll: unsupported prefix ${prefix}`);
+    }
+    if (!fs.existsSync(LOCAL_RAW_DIR)) return [];
+    const files = await fs.promises.readdir(LOCAL_RAW_DIR);
+    return files
+      .filter((f) => f.endsWith("_raw.json"))
+      .map((f) => `raw/${f.replace(/_raw\.json$/, ".json")}`);
+  }
+  const { client, ListObjectsV2Command } = await getS3();
   let keys = [];
   let token = null;
   do {
-    const res = await s3.send(
+    const res = await client.send(
       new ListObjectsV2Command({
         Bucket: BUCKET,
         Prefix: prefix,
@@ -116,8 +201,15 @@ async function listAll(prefix) {
 }
 
 async function getJson(key) {
-  const res = await s3.send(new GetObjectCommand({ Bucket: BUCKET, Key: key }));
-  const body = await res.Body.transformToString();
+  let body;
+  if (LOCAL_MODE) {
+    const p = localPathForKey(key);
+    body = await fs.promises.readFile(p, "utf-8");
+  } else {
+    const { client, GetObjectCommand } = await getS3();
+    const res = await client.send(new GetObjectCommand({ Bucket: BUCKET, Key: key }));
+    body = await res.Body.transformToString();
+  }
   const safe = body
     .replace(/\bNaN\b/g, "null")
     .replace(/\b-?Infinity\b/g, "null");
@@ -125,7 +217,14 @@ async function getJson(key) {
 }
 
 async function putJson(key, data) {
-  await s3.send(
+  if (LOCAL_MODE) {
+    const p = localPathForKey(key);
+    await fs.promises.mkdir(path.dirname(p), { recursive: true });
+    await fs.promises.writeFile(p, JSON.stringify(data, null, 2));
+    return;
+  }
+  const { client, PutObjectCommand } = await getS3();
+  await client.send(
     new PutObjectCommand({
       Bucket: BUCKET,
       Key: key,
@@ -232,9 +331,11 @@ function getSectorETF(sector, subIndustry) {
   return sectorEtfMap[subIndustry] || sectorEtfMap[sector] || 'SPY';
 }
 
-function getBenchmarkInfo(metadata) {
-  const sector = metadata['GICS Sector'];
-  const subInd = metadata['GICS Sub-Industry'];
+function getBenchmarkInfo(metadata, rawInfo) {
+  // metadata (stocks_list.json) を優先しつつ、未取得時は yfinance info に
+  // フォールバック (sector は yf 名 → GICS 名に正規化)。
+  const sector = metadata['GICS Sector'] || normalizeSector(rawInfo?.sector);
+  const subInd = metadata['GICS Sub-Industry'] || rawInfo?.industry;
   const index = metadata['Index'] || 'S&P 500';
 
   const targetEtf = sectorEtfMap[subInd] || sectorEtfMap[sector] || 'SPY';
@@ -1456,7 +1557,11 @@ function formatSummary(text) {
 
 async function main() {
   const t0 = Date.now();
-  console.log(`bucket=${BUCKET} concurrency=${CONCURRENCY}`);
+  if (LOCAL_MODE) {
+    console.log(`mode=LOCAL raw=${LOCAL_RAW_DIR} reports=${LOCAL_REPORTS_DIR}`);
+  } else {
+    console.log(`mode=R2 bucket=${BUCKET} concurrency=${CONCURRENCY}`);
+  }
   console.log("Listing raw/ keys...");
   const rawKeys = (await listAll("raw/")).filter(
     (k) => k.endsWith(".json") && k !== "raw/stocks_list.json",
@@ -1525,13 +1630,17 @@ async function main() {
       baseStocksList.find(
         (s) => s.Symbol_YF === symbol || s.Symbol === symbol,
       ) || {};
-    const sector = metadata["GICS Sector"] || rawData.info?.sector || "Unknown";
+    const sector =
+      metadata["GICS Sector"] || normalizeSector(rawData.info?.sector) || "Unknown";
     const subInd =
       metadata["GICS Sub-Industry"] || rawData.info?.industry || "Unknown";
     const dailyChange = calculateDailyChange(rawData.history);
     const peerInfo = {
       Symbol: metadata.Symbol || symbol,
       Symbol_YF: symbol,
+      // 同セクター他社のフィルタ用に各銘柄の所属指数を持たせる。
+      // metadata が無い銘柄 (ETF など) は null。
+      Index: metadata["Index"] || null,
       Daily_Change: dailyChange,
     };
     if (!sectorMap[sector]) sectorMap[sector] = [];
@@ -1586,6 +1695,11 @@ async function main() {
       .split(",")
       .map((s) => s.trim().toUpperCase())
       .filter((s) => s && rawDataMap[s]);
+  } else if (LOCAL_MODE) {
+    // LOCAL_MODE のデフォルトは raw_data に存在する全銘柄を処理。
+    // ローカルでは fetch 済みの少数銘柄しか raw に無いことが多いので、
+    // 「揃ってる分は全部レポート出す」が直感的。
+    symbols = Object.keys(rawDataMap);
   } else {
     symbols = ["MSFT", "AAPL", "NVDA"].filter((s) => rawDataMap[s]);
   }
@@ -1603,13 +1717,13 @@ async function main() {
             (s) => s.Symbol_YF === symbol || s.Symbol === symbol,
           ) || {};
         const sectorEtf = getSectorETF(
-          metadata["GICS Sector"] || rawData.info?.sector,
+          metadata["GICS Sector"] || normalizeSector(rawData.info?.sector),
           metadata["GICS Sub-Industry"] || rawData.info?.industry,
         );
         const broadSectorEtf = broadSectorEtfMap[metadata["GICS Sub-Industry"]] ||
           broadSectorEtfMap[metadata["GICS Sector"]] ||
           broadSectorEtfMap[rawData.info?.industry] ||
-          broadSectorEtfMap[rawData.info?.sector] ||
+          broadSectorEtfMap[normalizeSector(rawData.info?.sector)] ||
           'SPY';
         // 対象銘柄が属する指数の ETF (S&P 400→MDY / S&P 600→IJR / 既定 SPY)。
         const marketIndexEtf = marketIndexMap[metadata["Index"]] || 'SPY';
@@ -1671,7 +1785,7 @@ async function main() {
         const geoChart = generateSegmentChart(rawData.revenue_by_geography);
 
         const sector =
-          metadata["GICS Sector"] || rawData.info?.sector || "Unknown";
+          metadata["GICS Sector"] || normalizeSector(rawData.info?.sector) || "Unknown";
         const subInd =
           metadata["GICS Sub-Industry"] || rawData.info?.industry || "Unknown";
 
@@ -1692,12 +1806,13 @@ async function main() {
           business_summary_ja: summary_ja,
           sector,
           sub_industry: subInd,
+          index: metadata["Index"] || null,
           exchange: toTradingViewExchange(rawData.info?.exchange),
           full_symbol: `${toTradingViewExchange(rawData.info?.exchange)}:${symbol.replace("-", ".")}`,
           sector_etf: sectorEtf,
           is_financial: ["Financials", "Real Estate"].includes(sector),
           
-          benchmark_info: getBenchmarkInfo(metadata),
+          benchmark_info: getBenchmarkInfo(metadata, rawData.info),
 
           is_available_monex: true,
           is_available_rakuten: true,
@@ -1719,16 +1834,26 @@ async function main() {
           },
           rating_changes: ratingChanges,
           analyst_ratings: analystRatings,
-          peers: {
-            sub_industry: (subIndustryMap[subInd] || []).filter(
-              (s) => s.Symbol_YF !== symbol,
-            ),
-            sector: (sectorMap[sector] || []).filter(
-              (s) =>
-                s.Symbol_YF !== symbol &&
-                !subIndustryMap[subInd]?.find((si) => si.Symbol_YF === s.Symbol_YF),
-            ),
-          },
+          peers: (() => {
+            // 同業種・競合 (sub_industry): S&P 1500 全銘柄から抽出 (指数フィルタなし)
+            // 同セクター他社 (sector): 対象銘柄と同じ指数 (S&P 500/400/600) に限定。
+            //   対象の指数が未取得の場合はフィルタを掛けない (全て表示)。
+            const targetIndex = metadata["Index"] || null;
+            const sectorPool = sectorMap[sector] || [];
+            const sectorFiltered = targetIndex
+              ? sectorPool.filter((s) => s.Index === targetIndex)
+              : sectorPool;
+            return {
+              sub_industry: (subIndustryMap[subInd] || []).filter(
+                (s) => s.Symbol_YF !== symbol,
+              ),
+              sector: sectorFiltered.filter(
+                (s) =>
+                  s.Symbol_YF !== symbol &&
+                  !subIndustryMap[subInd]?.find((si) => si.Symbol_YF === s.Symbol_YF),
+              ),
+            };
+          })(),
           dcf_valuation: rawData.dcf_valuation || null,
           charts: {
             risk_return: riskReturnChart,
@@ -1749,6 +1874,9 @@ async function main() {
         if (!isETF || metadata.Symbol) {
           updatedLock.push({
             ...metadata,
+            // metadata が無い (= base stocks list に未登録) 個別銘柄でも
+            // A-Z 一覧や検索が動くよう、最低限 Symbol を Symbol_YF から補完。
+            Symbol: metadata.Symbol || symbol,
             Symbol_YF: symbol,
             Daily_Change: calculateDailyChange(rawData.history),
             Has_Movement_Reason: !!movementReasons[symbol],
@@ -1771,9 +1899,28 @@ async function main() {
 
   updatedStocksList.push(...updatedLock);
   if (updatedStocksList.length > 0) {
-    await putJson("reports/stocks.json", updatedStocksList);
+    let finalList = updatedStocksList;
+    // LOCAL_MODE では reports/stocks.json と src/data/stocks.json が同じファイル
+    // を指す。一部の銘柄しか処理しない (TEST_SYMBOLS) ローカル運用で全エントリが
+    // 失われないよう、既存のリストにマージする。
+    if (LOCAL_MODE) {
+      let existing = [];
+      try {
+        existing = await getJson("reports/stocks.json");
+      } catch {
+        existing = [];
+      }
+      const updatedKey = new Set(
+        updatedStocksList.map((s) => s.Symbol_YF || s.Symbol),
+      );
+      const merged = existing.filter(
+        (s) => !updatedKey.has(s.Symbol_YF || s.Symbol),
+      );
+      finalList = [...merged, ...updatedStocksList];
+    }
+    await putJson("reports/stocks.json", finalList);
     console.log(
-      `Saved reports/stocks.json with ${updatedStocksList.length} items.`,
+      `Saved reports/stocks.json with ${finalList.length} items.`,
     );
   }
 

@@ -244,7 +244,12 @@ def fetch_raw_data_for_ticker(symbol):
         if symbol not in SECTOR_ETFS:
             try:
                 db_ticker = DBTicker(symbol)
-                raw_payload["dcf_valuation"] = utils.calculate_dcf(symbol, ticker=db_ticker)
+                raw_payload["dcf_valuation"] = utils.calculate_dcf(
+                    symbol,
+                    ticker=db_ticker,
+                    yf_info=raw_payload.get("info"),
+                    yf_growth_estimates=raw_payload.get("growth_estimates"),
+                )
                 try:
                     raw_payload["db_metrics"] = {
                         "wacc": df_to_dict_safe(db_ticker.wacc()),
