@@ -11,7 +11,7 @@ title: "お問い合わせ"
 >
 > 暫定的なお問い合わせ先： **[info@amerikabu.com](mailto:info@amerikabu.com)**
 >
-> （運営者：アメリカ株ブログ 管理人）
+> （運営者：アメリカ株インサイト 管理人）
 
 ## 受付内容
 
