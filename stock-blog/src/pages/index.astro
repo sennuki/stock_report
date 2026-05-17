@@ -31,6 +31,22 @@ try {
   console.error("Failed to load stocks from R2", e);
 }
 
+// テスト用ダミー銘柄を除外（R2 の raw データに紛れ込んだ TEST_* など）
+const TEST_SYMBOLS = new Set(["TEST_LOCAL", "TEST1", "TEST2"]);
+// GICS Sector が欠落して「未分類」に落ちる実在銘柄のセクター補正
+const SECTOR_OVERRIDES: Record<string, { sector: string; subIndustry: string }> = {
+  CTRA: { sector: "Energy", subIndustry: "Oil & Gas Exploration & Production" },
+};
+stocks = stocks
+  .filter(s => !TEST_SYMBOLS.has(s.Symbol_YF))
+  .map(s => {
+    const override = SECTOR_OVERRIDES[s.Symbol_YF];
+    if (override && !s["GICS Sector"]) {
+      return { ...s, "GICS Sector": override.sector, "GICS Sub-Industry": override.subIndustry };
+    }
+    return s;
+  });
+
 // Check if earnings was within the last 7 days
 const isRecentEarnings = (stock?: Stock) => {
   return stock?.Is_Recent_Actual === true;
