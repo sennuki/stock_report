@@ -8,13 +8,14 @@
   - 経過時間が TRANSCRIPT_MAX_MINUTES を超えたら打ち切る
 
 制約への配慮:
-  - gemma-4-26b-a4b-it は 1 日 1500 回まで。1 本あたり概算 8〜20 回消費し、
-    generate_json_reports.py と quota を共有するため TRANSCRIPT_LIMIT は控えめに。
+  - gemini-3.1-flash-lite は 1 日 500 リクエストまで。1 本あたり概算 14 回
+    消費するため、安全に処理できるのは 1 日あたり約 25〜30 本。
+    TRANSCRIPT_LIMIT と cron 頻度の積をこの範囲に収めること。
   - GitHub Actions は 1 ジョブ 6 時間まで。TRANSCRIPT_MAX_MINUTES で安全に打ち切る。
   - R2 は 10GB まで。md 1 本は約 90KB と小さく、最新四半期のみのため増加は緩やか。
 
 環境変数:
-  TRANSCRIPT_LIMIT        1 回の実行で生成する最大本数（既定 15）
+  TRANSCRIPT_LIMIT        1 回の実行で生成する最大本数（既定 25）
   TRANSCRIPT_MAX_MINUTES  この分数を超えたら新規生成を打ち切る（既定 300）
   TRANSCRIPT_SCAN_LIMIT   走査する銘柄数の上限。0 で全件（既定 0）
 """
@@ -75,7 +76,7 @@ def latest_period(symbol):
 
 
 def main():
-    limit = int(os.getenv("TRANSCRIPT_LIMIT", "15"))
+    limit = int(os.getenv("TRANSCRIPT_LIMIT", "25"))
     max_minutes = float(os.getenv("TRANSCRIPT_MAX_MINUTES", "300"))
     scan_limit = int(os.getenv("TRANSCRIPT_SCAN_LIMIT", "0"))
     started = time.time()

@@ -7,8 +7,12 @@ import re
 from utils import get_gemini_client
 from defeatbeta_api.data.ticker import Ticker
 
-# GEMINI.md mandate: Use gemma-4-26b-a4b-it for translations and summaries
-MODEL_NAME = "models/gemma-4-26b-a4b-it"
+# 翻訳・要約・センチメント分析に使うモデル。
+# GEMINI.md は既定を gemma-4-26b-a4b-it とするが、トランスクリプト生成は
+# 速度優先でユーザー判断により gemini-3.1-flash-lite を使用する。
+# 注意: gemini-3.1-flash-lite は 1 日 500 リクエストまで。1 本あたり概算 14 回
+#       消費するため、1 日の生成本数は run_transcript_batch.py 側で制限する。
+MODEL_NAME = "models/gemini-3.1-flash-lite"
 
 # 生成したレポートは stock-blog サイトから参照される。md 本体・索引とも
 # 「正」は R2 に置き、銘柄ページ／トランスクリプトページが SSR で実行時に読む。
