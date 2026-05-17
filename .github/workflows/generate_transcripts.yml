@@ -1,0 +1,80 @@
+name: Generate Earnings Transcripts
+
+# 各銘柄の最新四半期の決算説明会トランスクリプトを和訳・要約し、R2 に蓄積する。
+#
+# 【このファイルは手動実行（先行版）】
+#   定期実行 (schedule/cron) は機能一式が master にマージされてから有効化する。
+#   現状の master には run_transcript_batch.py 等が無いため、cron で実行すると
+#   失敗する。それまでは workflow_dispatch のみとし、実行時は ref に機能ブランチ
+#   (c1) を選ぶこと（c1 をチェックアウトして c1 のコードで走る）。
+#
+# 制約への対応:
+#   - gemma-4-26b-a4b-it は 1 日 1500 回。1 本あたり概算 8〜20 回消費し、
+#     generate_and_deploy.yml (generate_json_reports.py) と quota を共有するため
+#     TRANSCRIPT_LIMIT は控えめにする。
+#   - GitHub Actions は 1 ジョブ 6 時間まで。job の timeout-minutes と
+#     TRANSCRIPT_MAX_MINUTES の二段で安全に打ち切る。
+#   - R2 は 10GB まで。md 1 本は約 90KB と小さく、最新四半期のみのため増加は緩やか。
+# 索引・md とも R2 のみに保存し、Git へはコミットしない（ページが SSR で読む）。
+
+on:
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: '1 回の実行で生成する最大本数'
+        required: false
+        default: '15'
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+concurrency:
+  group: generate-transcripts-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  generate-transcripts:
+    runs-on: ubuntu-latest
+    # GitHub Actions の 6 時間上限に対する安全余裕。
+    timeout-minutes: 330
+    environment: ${{ github.ref_name == 'master' && 'production' || 'c1' }}
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update || true
+          sudo apt-get install -y libcurl4
+
+      - name: Install Python dependencies
+        run: |
+          cd code
+          uv pip install --system -r requirements.txt
+
+      - name: Generate transcripts (latest quarter per symbol)
+        run: |
+          cd code
+          python run_transcript_batch.py
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          # 1 回の実行で生成する最大本数（quota・実行時間の調整つまみ）。
+          TRANSCRIPT_LIMIT: ${{ github.event.inputs.limit || '15' }}
+          # この分数を超えたら新規生成を打ち切る（6h ジョブ上限対策）。
+          TRANSCRIPT_MAX_MINUTES: '300'
+          R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_BUCKET_NAME: "stock-data-c1"
