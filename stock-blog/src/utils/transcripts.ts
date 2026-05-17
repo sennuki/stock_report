@@ -13,7 +13,11 @@ transcriptMarked.use({ tokenizer: { url: () => undefined } });
 
 /** トランスクリプト本文の Markdown を HTML へ変換する。 */
 export function renderTranscriptMarkdown(md: string): string {
-  return transcriptMarked.parse(md, { async: false }) as string;
+  // CJK 本文では `**強調**` が、`**` の前後が日本語文字・括弧（「」等）の
+  // ために CommonMark の delimiter run 規則を満たさず強調にならないことが
+  // ある。marked に渡す前に **...** を <strong> へ変換しておく。
+  const withStrong = md.replace(/\*\*([^\n]+?)\*\*/g, "<strong>$1</strong>");
+  return transcriptMarked.parse(withStrong, { async: false }) as string;
 }
 
 export interface TranscriptEntry {
