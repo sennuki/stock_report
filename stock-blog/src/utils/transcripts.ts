@@ -20,6 +20,42 @@ export function renderTranscriptMarkdown(md: string): string {
   return transcriptMarked.parse(withStrong, { async: false }) as string;
 }
 
+/**
+ * 逐次翻訳パートを発言（話者ターン）ごとに分割する。各ターンは行頭の
+ * `**話者名**` 行で始まり、次の `**話者名**` 行の手前までを 1 発言とみなす。
+ */
+function splitSpeakerTurns(text: string): string[] {
+  return text
+    .split(/\n(?=\*\*[^\n]+\*\*[ \t]*\n)/)
+    .map(turn => turn.trim())
+    .filter(Boolean);
+}
+
+/**
+ * トランスクリプト本文を HTML 化する。「## 逐次翻訳」見出し以降は発言ごとに
+ * <div class="transcript-turn"> で囲み、灰色ボックスとして表示できるようにする。
+ * 見出しが無い場合は全体をそのままレンダリングする。
+ */
+export function renderTranscriptBody(md: string): string {
+  const heading = md.match(/^##[ \t]+逐次翻訳.*$/m);
+  if (!heading || heading.index === undefined) {
+    return renderTranscriptMarkdown(md);
+  }
+  const summaryPart = md.slice(0, heading.index);
+  const translationPart = md.slice(heading.index + heading[0].length);
+  const turns = splitSpeakerTurns(translationPart)
+    .map(
+      turn =>
+        `<div class="transcript-turn">${renderTranscriptMarkdown(turn)}</div>`
+    )
+    .join("\n");
+  return (
+    renderTranscriptMarkdown(summaryPart) +
+    renderTranscriptMarkdown(heading[0]) +
+    turns
+  );
+}
+
 export interface TranscriptEntry {
   fy: number;
   fq: number;

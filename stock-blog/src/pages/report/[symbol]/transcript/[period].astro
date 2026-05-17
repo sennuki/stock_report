@@ -4,10 +4,7 @@ import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import Breadcrumbs from "@/components/Breadcrumbs.astro";
 import stocks from "@/data/stocks.json";
-import {
-  loadTranscriptIndex,
-  renderTranscriptMarkdown,
-} from "@/utils/transcripts";
+import { loadTranscriptIndex, renderTranscriptBody } from "@/utils/transcripts";
 import fs from "node:fs";
 import path from "node:path";
 import { env } from "cloudflare:workers";
@@ -101,7 +98,7 @@ const sentiment = indexEntry?.sentiment ?? null;
 let bodyHtml = "";
 if (markdownRaw) {
   const stripped = markdownRaw.replace(/^#\s.*\n+/, "");
-  bodyHtml = renderTranscriptMarkdown(stripped);
+  bodyHtml = renderTranscriptBody(stripped);
 }
 
 const base = import.meta.env.BASE_URL.endsWith("/")
@@ -196,3 +193,14 @@ const description = markdownRaw
   </main>
   <Footer />
 </Layout>
+
+<style is:global>
+  /* 逐次翻訳: 発言（話者ターン）ごとの灰色ボックス */
+  .app-prose .transcript-turn {
+    margin: 0.7rem 0;
+    padding: 0.3rem 1.1rem;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    background: rgba(128, 128, 128, 0.08);
+  }
+</style>
