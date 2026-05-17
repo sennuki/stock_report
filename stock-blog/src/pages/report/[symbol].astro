@@ -5,6 +5,7 @@ import Footer from "@/components/Footer.astro";
 import Breadcrumbs from "@/components/Breadcrumbs.astro";
 import { SITE } from "@/config";
 import stocks from "@/data/stocks.json";
+import { loadTranscriptIndex, transcriptsForSymbol } from "@/utils/transcripts";
 import fs from "node:fs";
 import path from "node:path";
 import { env } from "cloudflare:workers";
@@ -12,6 +13,7 @@ import ChartJs from "@/components/report/ChartJs.astro";
 import TradingViewWidget from "@/components/report/TradingViewWidget.astro";
 import PeerLinks from "@/components/report/PeerLinks.astro";
 import ShareCard from "@/components/report/ShareCard.astro";
+import TranscriptLinks from "@/components/report/TranscriptLinks.astro";
 
 export const prerender = false;
 
@@ -177,6 +179,11 @@ if (!reportData && symbol) {
 
 const stockInfo = (stocks as any[]).find((s: any) => s.Symbol_YF === symbol);
 const displaySecurity = stockInfo?.Security_JA || stockInfo?.Security || '';
+
+// 決算説明会トランスクリプト: 索引に登録があればこの銘柄ページからリンクする。
+// 索引は generate_transcript_report.py が R2 を更新し、SSR 時に読み込む。
+const transcriptIndex = await loadTranscriptIndex(env, Astro.url);
+const transcripts = transcriptsForSymbol(transcriptIndex, symbol as string);
 const englishName = stockInfo?.Security || '';
 const sector = stockInfo?.["GICS Sector"] || '';
 const title = `${symbol} (${displaySecurity}) 銘柄分析：株価・PER・配当利回り・ファンダメンタル分析`;
@@ -446,6 +453,9 @@ function rankTierClass(tier: string): string {
                 <li><a href="#ranks" class="text-skin-accent hover:underline">{symbol}のランキング</a></li>
                 <li><a href="#performance" class="text-skin-accent hover:underline">{symbol}のパフォーマンス比較</a></li>
                 <li><a href="#earnings-highlights" class="text-skin-accent hover:underline">{symbol}の直近決算・財務ハイライト</a></li>
+                {transcripts.length > 0 && (
+                  <li><a href="#earnings-transcript" class="text-skin-accent hover:underline">{symbol}の決算説明会（全文和訳）</a></li>
+                )}
                 <li><a href="#next-earnings" class="text-skin-accent hover:underline">{symbol}の来期業績予想</a></li>
                 <li><a href="#revenue-by-segment" class="text-skin-accent hover:underline">{symbol}のセグメント収益</a></li>
                 <li><a href="#revenue-by-geography" class="text-skin-accent hover:underline">{symbol}の地域別収益</a></li>
@@ -856,6 +866,8 @@ function rankTierClass(tier: string): string {
             <p class="text-gray-500 italic">ハイライトデータは現在利用できません。データ生成を再実行してください。</p>
           )}
         </section>
+
+        <TranscriptLinks symbol={symbol} base={base} transcripts={transcripts} />
 
         <section id="next-earnings" class="mt-12">
           <h2 class="text-2xl font-bold mb-6 border-b pb-2 flex items-center gap-2">
@@ -1968,7 +1980,7 @@ function rankTierClass(tier: string): string {
           </p>
         </section>
 
-        <!-- トップに戻るボタン -->
+        {/* トップに戻るボタン */}
         <div class="mt-12 mb-20 text-center">
           <a href="#" class="px-6 py-2 bg-skin-card border border-skin-line rounded-full text-sm font-bold hover:text-skin-accent hover:border-skin-accent transition-all inline-flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">

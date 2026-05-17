@@ -1,0 +1,156 @@
+---
+// 決算説明会の感情分析パネル（トランスクリプトページ用）。
+import {
+  scoreTextClass,
+  scoreBarClass,
+  scoreToPct,
+  formatScore,
+  type Sentiment,
+} from "@/utils/sentiment";
+
+interface Props {
+  sentiment: Sentiment;
+}
+const { sentiment } = Astro.props;
+
+const overall = sentiment.overall;
+const management = sentiment.management;
+const analyst = sentiment.analyst;
+const topics = sentiment.topics ?? [];
+const hedging = sentiment.hedging;
+---
+
+<section
+  class="border-skin-line bg-skin-fill/30 mb-8 rounded-lg border p-5 sm:p-6"
+>
+  <h2 class="mb-1 flex items-center gap-2 text-xl font-bold">
+    <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">
+      sentiment_satisfied
+    </span>
+    AIセンチメント分析
+  </h2>
+  <p class="mb-5 text-xs text-gray-500">
+    決算説明会のトーンを AI が分析したものです。スコアは -100（弱気）〜
+    +100（強気）。
+  </p>
+
+  {
+    overall && (
+      <div class="mb-5">
+        <div class="flex items-baseline gap-3">
+          <span class={`text-4xl font-bold ${scoreTextClass(overall.score)}`}>
+            {formatScore(overall.score)}
+          </span>
+          <span class={`text-lg font-bold ${scoreTextClass(overall.score)}`}>
+            {overall.label}
+          </span>
+          <span class="text-xs text-gray-500">全体トーン</span>
+        </div>
+        <div class="bg-skin-line/50 mt-2 h-2 w-full overflow-hidden rounded-full">
+          <div
+            class={`h-full rounded-full ${scoreBarClass(overall.score)}`}
+            style={`width:${scoreToPct(overall.score)}%`}
+          />
+        </div>
+        {overall.summary && (
+          <p class="text-skin-base mt-3 text-sm">{overall.summary}</p>
+        )}
+      </div>
+    )
+  }
+
+  {
+    (management || analyst) && (
+      <div class="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        {management && (
+          <div class="border-skin-line bg-skin-card rounded-lg border p-4">
+            <p class="mb-1 text-xs font-bold text-gray-500">経営陣のトーン</p>
+            <p class={`text-2xl font-bold ${scoreTextClass(management.score)}`}>
+              {formatScore(management.score)}
+              <span class="ml-2 text-sm">{management.label}</span>
+            </p>
+          </div>
+        )}
+        {analyst && (
+          <div class="border-skin-line bg-skin-card rounded-lg border p-4">
+            <p class="mb-1 text-xs font-bold text-gray-500">アナリストの論調</p>
+            <p class={`text-2xl font-bold ${scoreTextClass(analyst.score)}`}>
+              {formatScore(analyst.score)}
+              <span class="ml-2 text-sm">{analyst.label}</span>
+            </p>
+            {analyst.concern_level && (
+              <p class="mt-1 text-xs text-gray-500">
+                市場の懸念度: {analyst.concern_level}
+              </p>
+            )}
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  {
+    topics.length > 0 && (
+      <div class="mb-5">
+        <p class="mb-2 text-sm font-bold">トピック別センチメント</p>
+        <ul class="space-y-3">
+          {topics.map(t => (
+            <li>
+              <div class="flex items-center justify-between gap-2 text-sm">
+                <span class="font-bold">{t.topic}</span>
+                <span class={`font-bold ${scoreTextClass(t.score)}`}>
+                  {formatScore(t.score)} {t.label}
+                </span>
+              </div>
+              <div class="bg-skin-line/50 mt-1 h-1.5 w-full overflow-hidden rounded-full">
+                <div
+                  class={`h-full rounded-full ${scoreBarClass(t.score)}`}
+                  style={`width:${scoreToPct(t.score)}%`}
+                />
+              </div>
+              {t.note && <p class="mt-1 text-xs text-gray-500">{t.note}</p>}
+            </li>
+          ))}
+        </ul>
+      </div>
+    )
+  }
+
+  {
+    hedging && (
+      <div class="border-skin-line border-t pt-4">
+        <p class="mb-2 text-sm font-bold">定量指標（語彙ベース）</p>
+        <div class="grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
+          <div>
+            <p class="text-skin-base text-lg font-bold">
+              {hedging.hedge_density}
+            </p>
+            <p class="text-xs text-gray-500">ヘッジ語密度 /1000語</p>
+          </div>
+          <div>
+            <p class="text-skin-base text-lg font-bold">
+              {Math.round(hedging.qa_ratio * 100)}%
+            </p>
+            <p class="text-xs text-gray-500">Q&A の割合</p>
+          </div>
+          <div>
+            <p class="text-skin-base text-lg font-bold">
+              {hedging.analyst_count}
+            </p>
+            <p class="text-xs text-gray-500">登壇アナリスト数</p>
+          </div>
+          <div>
+            <p class="text-skin-base text-lg font-bold">
+              {hedging.word_count.toLocaleString()}
+            </p>
+            <p class="text-xs text-gray-500">総語数（原文）</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  <p class="mt-4 text-xs text-gray-400">
+    ※ 本分析は AI による自動推定であり、投資助言ではありません。
+  </p>
+</section>
