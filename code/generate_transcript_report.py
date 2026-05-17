@@ -7,12 +7,11 @@ import re
 from utils import get_gemini_client
 from defeatbeta_api.data.ticker import Ticker
 
-# 翻訳・要約・センチメント分析に使うモデル。
-# GEMINI.md は既定を gemma-4-26b-a4b-it とするが、トランスクリプト生成は
-# 速度優先でユーザー判断により gemini-3.1-flash-lite を使用する。
-# 注意: gemini-3.1-flash-lite は 1 日 500 リクエストまで。1 本あたり概算 14 回
-#       消費するため、1 日の生成本数は run_transcript_batch.py 側で制限する。
-MODEL_NAME = "models/gemini-3.1-flash-lite"
+# 翻訳・要約・センチメント分析に使うモデル（GEMINI.md 既定）。
+# gemma は応答が遅い代わりに quota が広い（1 日 1500 リクエスト）。
+# generate_json_reports.py の翻訳を flash-lite へ移したため、この 1500 回は
+# トランスクリプト生成が専有できる。1 本あたり概算 14 回消費。
+MODEL_NAME = "models/gemma-4-26b-a4b-it"
 
 # 生成したレポートは stock-blog サイトから参照される。md 本体・索引とも
 # 「正」は R2 に置き、銘柄ページ／トランスクリプトページが SSR で実行時に読む。

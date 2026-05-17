@@ -2,17 +2,19 @@ name: Generate Earnings Transcripts
 
 # 各銘柄の最新四半期の決算説明会トランスクリプトを和訳・要約し、R2 に蓄積する。
 # 制約への対応:
-#   - gemini-3.1-flash-lite は 1 日 500 リクエスト。1 本あたり概算 14 回消費する
-#     ため、安全圏は 1 日あたり約 25〜30 本（≒ 350〜420 回）。1 回/日 × 25 本で運用。
+#   - gemma-4-26b-a4b-it は 1 日 1500 リクエスト。1 本あたり概算 14 回消費。
+#     translate_summary を flash-lite へ移したため gemma はトランスクリプトが専有。
+#   - gemma は応答が遅く 1 本あたり約 13.5 分。1 実行は TRANSCRIPT_MAX_MINUTES=300
+#     により約 22 本で頭打ち。1 日 3 回 ≒ 66 本/日（≒ 920 回）で 1500 内に収まる。
 #   - GitHub Actions は 1 ジョブ 6 時間まで。job の timeout-minutes と
-#     TRANSCRIPT_MAX_MINUTES の二段で安全に打ち切る（flash-lite は高速なため余裕）。
+#     TRANSCRIPT_MAX_MINUTES の二段で安全に打ち切る。
 #   - R2 は 10GB まで。md 1 本は約 90KB と小さく、最新四半期のみのため増加は緩やか。
 # 索引・md とも R2 のみに保存し、Git へはコミットしない（ページが SSR で読む）。
 
 on:
   schedule:
-    # 1 日 1 回。500 リクエスト/日の上限に収めるため頻度を絞る。
-    - cron: '0 5 * * *'
+    # 1 日 3 回（8 時間おき）。各実行 約5h で非重複。21:00 のデータパイプラインを避ける。
+    - cron: '0 2,10,18 * * *'
   workflow_dispatch:
     inputs:
       limit:
@@ -65,8 +67,8 @@ jobs:
           python run_transcript_batch.py
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          # 1 回の実行で生成する最大本数（quota・実行時間の調整つまみ）。
-          # gemini-3.1-flash-lite の 500 回/日を超えないよう 25 を既定とする。
+          # 1 回の実行で生成する最大本数。実際は TRANSCRIPT_MAX_MINUTES により
+          # 約 22 本で頭打ちになる（gemma は 1 本あたり約 13.5 分）。
           TRANSCRIPT_LIMIT: ${{ github.event.inputs.limit || '25' }}
           # この分数を超えたら新規生成を打ち切る（6h ジョブ上限対策）。
           TRANSCRIPT_MAX_MINUTES: '300'

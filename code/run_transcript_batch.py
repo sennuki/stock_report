@@ -8,14 +8,17 @@
   - 経過時間が TRANSCRIPT_MAX_MINUTES を超えたら打ち切る
 
 制約への配慮:
-  - gemini-3.1-flash-lite は 1 日 500 リクエストまで。1 本あたり概算 14 回
-    消費するため、安全に処理できるのは 1 日あたり約 25〜30 本。
-    TRANSCRIPT_LIMIT と cron 頻度の積をこの範囲に収めること。
+  - gemma-4-26b-a4b-it は 1 日 1500 リクエスト。1 本あたり概算 14 回消費。
+    translate_summary を flash-lite へ移したためトランスクリプトが専有でき、
+    日次クォータには余裕がある。
+  - gemma は応答が遅く（1 本あたり約 13.5 分）、1 実行の本数は時間が律速。
+    TRANSCRIPT_MAX_MINUTES=300 だと 1 実行あたり約 22 本で打ち切られる。
   - GitHub Actions は 1 ジョブ 6 時間まで。TRANSCRIPT_MAX_MINUTES で安全に打ち切る。
   - R2 は 10GB まで。md 1 本は約 90KB と小さく、最新四半期のみのため増加は緩やか。
 
 環境変数:
-  TRANSCRIPT_LIMIT        1 回の実行で生成する最大本数（既定 25）
+  TRANSCRIPT_LIMIT        1 回の実行で生成する最大本数（既定 25。実際は
+                          TRANSCRIPT_MAX_MINUTES により約 22 本で頭打ち）
   TRANSCRIPT_MAX_MINUTES  この分数を超えたら新規生成を打ち切る（既定 300）
   TRANSCRIPT_SCAN_LIMIT   走査する銘柄数の上限。0 で全件（既定 0）
 """

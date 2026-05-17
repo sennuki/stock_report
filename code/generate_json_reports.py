@@ -33,7 +33,11 @@ pio.json.config.default_engine = 'json'
 # Initialize Gemini Client
 from utils import get_gemini_client
 gemini_client = get_gemini_client()
-GEMINI_MODEL_NAME = "models/gemma-4-26b-a4b-it"
+# 会社概要の翻訳に使うモデル。gemma の quota を決算説明会トランスクリプト生成
+# (generate_transcript_report.py) に空けるため flash-lite を使用する。
+# translate_summary はローテーション再翻訳が 1 日最大 2 銘柄と軽量なため、
+# flash-lite の 500 リクエスト/日にはほとんど影響しない。
+GEMINI_MODEL_NAME = "models/gemini-3.1-flash-lite"
 
 translation_cache = {}
 rotation_translation_counter = 0
