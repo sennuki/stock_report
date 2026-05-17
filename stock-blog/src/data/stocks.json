@@ -49,7 +49,7 @@
     "Security_JA": "アッヴィ",
     "Has_Movement_Reason": false,
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": null
+    "Actual_Earnings_Date": "2026-04-29"
   },
   {
     "Symbol": "ACN",
@@ -166,7 +166,7 @@
     "Security_JA": "アカマイ・テクノロジーズ",
     "Has_Movement_Reason": false,
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-05-07"
+    "Actual_Earnings_Date": null
   },
   {
     "Symbol": "ALB",
@@ -335,7 +335,7 @@
     "Security_JA": "アメリカン・エレクトリック・パワー",
     "Has_Movement_Reason": false,
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-05-05"
+    "Actual_Earnings_Date": null
   },
   {
     "Symbol": "AXP",
@@ -413,7 +413,7 @@
     "Security_JA": "アメテック",
     "Has_Movement_Reason": false,
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": null
+    "Actual_Earnings_Date": "2026-04-30"
   },
   {
     "Symbol": "AMGN",
@@ -452,7 +452,7 @@
     "Security_JA": "アナログ・デバイシズ",
     "Has_Movement_Reason": false,
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": null
+    "Actual_Earnings_Date": "2026-02-18"
   },
   {
     "Symbol": "AON",
@@ -504,7 +504,7 @@
     "Security_JA": "アップル",
     "Has_Movement_Reason": false,
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-04-30"
+    "Actual_Earnings_Date": null
   },
   {
     "Symbol": "AMAT",
@@ -556,7 +556,7 @@
     "Security_JA": "アーチ・キャピタル・グループ",
     "Has_Movement_Reason": false,
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-04-28"
+    "Actual_Earnings_Date": null
   },
   {
     "Symbol": "ADM",
@@ -660,7 +660,7 @@
     "Security_JA": "オートデスク",
     "Has_Movement_Reason": false,
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-02-26"
+    "Actual_Earnings_Date": null
   },
   {
     "Symbol": "ADP",
