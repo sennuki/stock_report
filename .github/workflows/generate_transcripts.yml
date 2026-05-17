@@ -9,11 +9,10 @@ name: Generate Earnings Transcripts
 #   (c1) を選ぶこと（c1 をチェックアウトして c1 のコードで走る）。
 #
 # 制約への対応:
-#   - gemma-4-26b-a4b-it は 1 日 1500 回。1 本あたり概算 8〜20 回消費し、
-#     generate_and_deploy.yml (generate_json_reports.py) と quota を共有するため
-#     TRANSCRIPT_LIMIT は控えめにする。
+#   - gemini-3.1-flash-lite は 1 日 500 リクエスト。1 本あたり概算 14 回消費する
+#     ため、安全圏は 1 日あたり約 25〜30 本（≒ 350〜420 回）。1 回/日 × 25 本で運用。
 #   - GitHub Actions は 1 ジョブ 6 時間まで。job の timeout-minutes と
-#     TRANSCRIPT_MAX_MINUTES の二段で安全に打ち切る。
+#     TRANSCRIPT_MAX_MINUTES の二段で安全に打ち切る（flash-lite は高速なため余裕）。
 #   - R2 は 10GB まで。md 1 本は約 90KB と小さく、最新四半期のみのため増加は緩やか。
 # 索引・md とも R2 のみに保存し、Git へはコミットしない（ページが SSR で読む）。
 
@@ -23,7 +22,7 @@ on:
       limit:
         description: '1 回の実行で生成する最大本数'
         required: false
-        default: '15'
+        default: '25'
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -71,7 +70,8 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           # 1 回の実行で生成する最大本数（quota・実行時間の調整つまみ）。
-          TRANSCRIPT_LIMIT: ${{ github.event.inputs.limit || '15' }}
+          # gemini-3.1-flash-lite の 500 回/日を超えないよう 25 を既定とする。
+          TRANSCRIPT_LIMIT: ${{ github.event.inputs.limit || '25' }}
           # この分数を超えたら新規生成を打ち切る（6h ジョブ上限対策）。
           TRANSCRIPT_MAX_MINUTES: '300'
           R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
