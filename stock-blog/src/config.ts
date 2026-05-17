@@ -4,7 +4,7 @@ export const SITE = {
   profile: "https://amerikabu.com/",
   desc: "S&P 500・400・600（米国の大型・中型・小型株）の構成銘柄について、株価・PER・ROE・配当利回り・財務データを日本語で整理した、米国株のファンダメンタル分析サイトです。",
   title: "アメリカ株インサイト",
-  ogImage: "astropaper-og.jpg",
+  ogImage: "og-image.jpg",
   lightAndDarkMode: true,
   postPerIndex: 4,
   postPerPage: 4,
