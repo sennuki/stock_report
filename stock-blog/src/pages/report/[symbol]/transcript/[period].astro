@@ -4,11 +4,13 @@ import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import Breadcrumbs from "@/components/Breadcrumbs.astro";
 import stocks from "@/data/stocks.json";
-import { loadTranscriptIndex } from "@/utils/transcripts";
+import {
+  loadTranscriptIndex,
+  renderTranscriptMarkdown,
+} from "@/utils/transcripts";
 import fs from "node:fs";
 import path from "node:path";
 import { env } from "cloudflare:workers";
-import { marked } from "marked";
 import SentimentPanel from "@/components/report/SentimentPanel.astro";
 
 export const prerender = false;
@@ -99,7 +101,7 @@ const sentiment = indexEntry?.sentiment ?? null;
 let bodyHtml = "";
 if (markdownRaw) {
   const stripped = markdownRaw.replace(/^#\s.*\n+/, "");
-  bodyHtml = await marked.parse(stripped);
+  bodyHtml = renderTranscriptMarkdown(stripped);
 }
 
 const base = import.meta.env.BASE_URL.endsWith("/")

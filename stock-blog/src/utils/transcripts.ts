@@ -2,6 +2,19 @@
 // 索引・md 本体とも「正」は R2 にあり、generate_transcript_report.py が更新する。
 // 銘柄ページ / トランスクリプトページは SSR (prerender=false) で実行時に読む。
 import type { Sentiment } from "@/utils/sentiment";
+import { Marked } from "marked";
+
+// 決算トランスクリプト本文用の Markdown レンダラ。素の URL
+// （www.example.com など）の自動リンクを無効化する。日本語本文には半角空白が
+// 無いため、GFM の自動リンクが URL の後ろの本文まで貪欲に取り込んでリンク範囲
+// が壊れる。明示リンク [text](url) や <url> は従来どおり有効。
+const transcriptMarked = new Marked();
+transcriptMarked.use({ tokenizer: { url: () => undefined } });
+
+/** トランスクリプト本文の Markdown を HTML へ変換する。 */
+export function renderTranscriptMarkdown(md: string): string {
+  return transcriptMarked.parse(md, { async: false }) as string;
+}
 
 export interface TranscriptEntry {
   fy: number;
