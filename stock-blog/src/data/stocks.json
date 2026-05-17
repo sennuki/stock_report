@@ -49,7 +49,7 @@
     "Security_JA": "アッヴィ",
     "Has_Movement_Reason": false,
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-04-29"
+    "Actual_Earnings_Date": null
   },
   {
     "Symbol": "ACN",
@@ -114,7 +114,7 @@
     "Security_JA": "アフラック",
     "Has_Movement_Reason": false,
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": null
+    "Actual_Earnings_Date": "2026-04-29"
   },
   {
     "Symbol": "A",
@@ -335,7 +335,7 @@
     "Security_JA": "アメリカン・エレクトリック・パワー",
     "Has_Movement_Reason": false,
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": null
+    "Actual_Earnings_Date": "2026-05-05"
   },
   {
     "Symbol": "AXP",
@@ -413,7 +413,7 @@
     "Security_JA": "アメテック",
     "Has_Movement_Reason": false,
     "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": "2026-04-30"
+    "Actual_Earnings_Date": null
   },
   {
     "Symbol": "AMGN",
@@ -516,8 +516,8 @@
     "Daily_Change": -0.008943163246776823,
     "Security_JA": "アプライド・マテリアルズ",
     "Has_Movement_Reason": false,
-    "Is_Recent_Actual": false,
-    "Actual_Earnings_Date": null
+    "Is_Recent_Actual": true,
+    "Actual_Earnings_Date": "2026-05-14"
   },
   {
     "Symbol": "APP",
