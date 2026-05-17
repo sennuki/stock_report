@@ -306,6 +306,61 @@ def analyze_call_sentiment(symbol, fiscal_year, fiscal_quarter,
     return parse_sentiment_json(raw)
 
 
+# --- 逐次翻訳 -------------------------------------------------------------
+# 翻訳結果は Markdown としてサイトに表示される。話者を `[名前]:` 形式のまま
+# にすると Markdown のリンク参照定義 `[label]: dest` と衝突して壊れたリンクに
+# なるため、翻訳後に話者を太字 `**名前**` へ変換する。話者名はチャンク翻訳
+# ごとに訳が揺れないよう、事前に一度だけ表記を確定させる。
+
+# 行頭の話者ラベル `[名前]:` を捉える正規表現（: は全角・半角どちらも許容）。
+_SPEAKER_LINE_RE = re.compile(r"^[ \t]*\[(.+?)\][ \t]*[:：][ \t]*", re.MULTILINE)
+
+
+def translate_speaker_names(names, call_with_retry):
+    """話者名（原語）-> 表示名 の対応を一度だけ作る。チャンク翻訳での表記揺れ
+    （例: ヒルトン・シュロスバーグ / Hilton Schlosberg）を防ぐ。
+    失敗・取りこぼしは原語名をそのまま使う。"""
+    names = [n for n in names if n]
+    if not names:
+        return {}
+    listing = "\n".join(f"{i + 1}. {n}" for i, n in enumerate(names))
+    prompt = (
+        "以下は決算電話会議の話者名の一覧です。各名前を、日本語の決算資料で"
+        "一般的な表記に変換してください（人名はカタカナ、Operator は"
+        "「オペレーター」）。\n"
+        "出力は「番号. 変換後の表記」の形式のみとし、入力と同じ順序・同じ"
+        "件数で返してください。\n\n" + listing
+    )
+    mapping = {}
+    try:
+        resp = call_with_retry(
+            prompt,
+            "あなたは金融分野の翻訳者です。指示された形式のみで回答してください。",
+        ) or ""
+        for line in resp.splitlines():
+            m = re.match(r"\s*(\d+)\s*[.．]\s*(.+)", line)
+            if m:
+                idx = int(m.group(1)) - 1
+                if 0 <= idx < len(names):
+                    mapping[names[idx]] = m.group(2).strip()
+    except Exception as e:
+        print(f"話者名の表記変換に失敗（原語名のまま使用）: {e}")
+    for n in names:  # 取りこぼしは原語名で補完
+        mapping.setdefault(n, n)
+    return mapping
+
+
+def speakers_to_markdown(text, speaker_display):
+    """翻訳結果中の行頭話者ラベル `[名前]: ` を、Markdown 安全な太字段落
+    `**表示名**` に変換する。表示名は speaker_display で正規化し、未知の
+    名前はそのまま使う（いずれにせよ角括弧を除去してリンク衝突を防ぐ）。"""
+    def repl(m):
+        raw = m.group(1).strip()
+        display = speaker_display.get(raw, raw)
+        return f"**{display}**\n\n"
+    return _SPEAKER_LINE_RE.sub(repl, text)
+
+
 def generate_transcript_report(symbol, fiscal_year, fiscal_quarter):
     print(f"--- Generating Detailed Transcript Report for {symbol} FY{fiscal_year} Q{fiscal_quarter} ---")
     
@@ -343,38 +398,50 @@ def generate_transcript_report(symbol, fiscal_year, fiscal_quarter):
                     raise e
                 time.sleep(wait_time)
 
-    # 3. High-Fidelity Translation (Chunked)
+    # 3. 話者名の表記をここで一意に確定する（チャンク翻訳ごとの揺れを防ぐ）。
+    print("Resolving speaker names...")
+    unique_speakers = list(dict.fromkeys(
+        str(r.get("speaker", "")).strip() for _, r in df.iterrows()
+    ))
+    speaker_display = translate_speaker_names(unique_speakers, call_with_retry)
+
+    # 4. 逐次翻訳（チャンク単位）。話者ラベルは原語のまま残させて本文だけ翻訳し、
+    #    後段で speakers_to_markdown が Markdown 安全な太字 **名前** に変換する。
     print("Starting high-fidelity translation...")
     translated_full_text = ""
-    chunk_size = 8 # 少し小さめにして負荷を調整
-    
+    chunk_size = 8  # 1 リクエストで翻訳する段落数
+
     for i in range(0, len(df), chunk_size):
-        chunk_df = df.iloc[i:i+chunk_size]
+        chunk_df = df.iloc[i:i + chunk_size]
         chunk_text_en = ""
         for _, row in chunk_df.iterrows():
             chunk_text_en += f"[{row['speaker']}]: {row['content']}\n\n"
-        
-        prompt_trans = f"""
-以下の英文（決算電話会議のトランスクリプトの一部）を、一字一句忠実に、かつ自然な日本語に翻訳してください。
-意訳しすぎず、発言の内容を正確に反映させてください。
 
----
-{chunk_text_en}
-"""
-        print(f"Translating paragraphs {i} to {min(i+chunk_size, len(df))}...")
+        prompt_trans = (
+            "以下は決算電話会議のトランスクリプトの一部です。各発言は "
+            "`[話者名]: 本文` の形式です。本文を一字一句忠実に、かつ自然な"
+            "日本語に翻訳してください。意訳しすぎないでください。\n"
+            "話者名（角括弧 [] の部分）は翻訳せず英語の原文のまま残し、"
+            "各発言を `[話者名]: ` で始まる形式のまま出力してください。\n\n"
+            "---\n" + chunk_text_en
+        )
+        print(f"Translating paragraphs {i} to {min(i + chunk_size, len(df))}...")
         try:
             translation = call_with_retry(
                 prompt_trans,
-                "あなたはプロの翻訳家です。金融・ビジネス用語を正確に使い、原文に忠実な翻訳を提供してください。"
+                "あなたはプロの翻訳家です。金融・ビジネス用語を正確に使い、"
+                "原文に忠実な翻訳を提供してください。",
             )
-            if translation is None:
-                translation = f"[Translation Error: empty response for chunk starting at {i}]"
+            if not translation:
+                translation = f"（チャンク {i} の翻訳に失敗しました）"
             translated_full_text += translation + "\n\n"
-            # 連続リクエストによる負荷を避ける
-            time.sleep(1)
+            time.sleep(1)  # 連続リクエストによる負荷を避ける
         except Exception as e:
             print(f"Error translating chunk after retries: {e}")
-            translated_full_text += f"[Translation Error for chunk starting at {i}]\n\n"
+            translated_full_text += f"（チャンク {i} の翻訳に失敗しました）\n\n"
+
+    # 話者ラベル `[名前]:` を Markdown 安全な太字 **名前** に変換する。
+    translated_full_text = speakers_to_markdown(translated_full_text, speaker_display)
 
     # 4. Generate Summary based on the full English text
     print("Generating overall summary...")
