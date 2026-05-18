@@ -19,6 +19,12 @@ blinker==1.9.0
     # via
     #   code (code/pyproject.toml)
     #   flask
+boto3==1.43.7
+    # via code (code/pyproject.toml)
+botocore==1.43.7
+    # via
+    #   boto3
+    #   s3transfer
 certifi==2026.2.25
     # via
     #   code (code/pyproject.toml)
@@ -45,7 +51,7 @@ contourpy==1.3.3
     # via matplotlib
 cryptography==46.0.6
     # via google-auth
-curl-cffi==0.13.0
+curl-cffi==0.15.0
     # via
     #   code (code/pyproject.toml)
     #   yfinance
@@ -53,7 +59,7 @@ cycler==0.12.1
     # via matplotlib
 decorator==5.2.1
     # via ipython
-defeatbeta-api==0.0.50
+defeatbeta-api==0.0.53
     # via code (code/pyproject.toml)
 distro==1.9.0
     # via
@@ -117,6 +123,10 @@ jinja2==3.1.6
     #   flask
 jiter==0.13.0
     # via openai
+jmespath==1.1.0
+    # via
+    #   boto3
+    #   botocore
 joblib==1.5.3
     # via nltk
 kiwisolver==1.5.0
@@ -157,7 +167,7 @@ narwhals==2.15.0
     #   plotly
 nltk==3.9.4
     # via defeatbeta-api
-numpy==2.4.2
+numpy==2.4.4
     # via
     #   code (code/pyproject.toml)
     #   contourpy
@@ -207,9 +217,9 @@ platformdirs==4.5.1
     #   yfinance
 plotly==6.5.2
     # via code (code/pyproject.toml)
-polars==1.37.1
+polars==1.40.1
     # via code (code/pyproject.toml)
-polars-runtime-32==1.37.1
+polars-runtime-32==1.40.1
     # via
     #   code (code/pyproject.toml)
     #   polars
@@ -225,7 +235,7 @@ ptyprocess==0.7.0
     # via pexpect
 pure-eval==0.2.3
     # via stack-data
-pyarrow==23.0.0
+pyarrow==24.0.0
     # via code (code/pyproject.toml)
 pyasn1==0.6.3
     # via pyasn1-modules
@@ -254,6 +264,7 @@ pyparsing==3.3.2
 python-dateutil==2.9.0.post0
     # via
     #   code (code/pyproject.toml)
+    #   botocore
     #   matplotlib
     #   pandas
 python-dotenv==1.2.2
@@ -277,7 +288,11 @@ requests==2.33.1
     #   grip
     #   yfinance
 rich==14.3.3
-    # via defeatbeta-api
+    # via
+    #   curl-cffi
+    #   defeatbeta-api
+s3transfer==0.17.0
+    # via boto3
 setuptools==80.10.1
     # via code (code/pyproject.toml)
 six==1.17.0
@@ -324,6 +339,7 @@ tzdata==2025.3
 urllib3==2.6.3
     # via
     #   code (code/pyproject.toml)
+    #   botocore
     #   defeatbeta-api
     #   requests
 wcwidth==0.6.0
@@ -338,5 +354,5 @@ werkzeug==3.1.6
     #   code (code/pyproject.toml)
     #   flask
     #   grip
-yfinance==1.1.0
+yfinance==1.3.0
     # via code (code/pyproject.toml)
