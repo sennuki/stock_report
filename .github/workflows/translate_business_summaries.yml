@@ -46,9 +46,16 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_TRANSLATION_MODEL: "gemini-flash-lite-latest"
-          # 1 回の実行で翻訳する最大本数。レート制限に当たった場合は
+          # Pass 1 (未翻訳) の 1 実行あたり最大本数。レート制限に当たれば
           # スクリプトが 429 で安全に打ち切り、次回スケジュールで継続する。
           TRANSLATION_LIMIT: ${{ github.event.inputs.limit || '50' }}
+          # Pass 2 (再チェック): translation_date が REFRESH_AFTER_DAYS より
+          # 古い翻訳を古い順に再チェックする。365 日で全銘柄が約 1 年で 1 周。
+          # ソース英文が未変更なら翻訳日のみ更新し、API は呼ばない。
+          REFRESH_AFTER_DAYS: '365'
+          REFRESH_LIMIT: ${{ github.event.inputs.limit || '50' }}
+          # Gemini 無料枠 (15 RPM) 内に収めるリクエスト平準化レート。
+          GEMINI_RPM: '13'
           TRANSLATION_SUMMARY_OUTPUT: "translation-summary.json"
           R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
@@ -64,7 +71,7 @@ jobs:
             echo "### Business Summary Translation"
             echo ""
             if [ -f translation-summary.json ]; then
-              node -e "const fs=require('fs'); const s=JSON.parse(fs.readFileSync('translation-summary.json','utf8')); console.log('- Translated: ' + s.translated); console.log('- Symbols: ' + (s.translated_symbols.length ? s.translated_symbols.join(', ') : '(none)')); console.log('- Skipped existing Japanese: ' + s.skipped_japanese); console.log('- Skipped no source: ' + s.skipped_no_source); console.log('- Failed: ' + s.failed);"
+              node -e "const fs=require('fs'); const s=JSON.parse(fs.readFileSync('translation-summary.json','utf8')); console.log('- New translations: ' + s.translated); console.log('- New symbols: ' + (s.translated_symbols.length ? s.translated_symbols.join(', ') : '(none)')); console.log('- Refreshed (source changed): ' + s.refreshed); console.log('- Refreshed symbols: ' + (s.refreshed_symbols.length ? s.refreshed_symbols.join(', ') : '(none)')); console.log('- Touched (unchanged, date bumped): ' + s.touched); console.log('- Skipped no source: ' + s.skipped_no_source); console.log('- Failed: ' + s.failed);"
             else
               echo "- Summary file was not created."
             fi

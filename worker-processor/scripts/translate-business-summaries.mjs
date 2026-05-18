@@ -2,9 +2,19 @@
 /**
  * Translate company business summaries independently from report generation.
  *
- * The script reads raw/{symbol}.json for the English source text and writes
- * translations/business_summaries.json in R2. Existing Japanese translations
- * in that translation store are skipped.
+ * 動作:
+ *   - raw/{symbol}.json の英文 (info.longBusinessSummary) を翻訳し
+ *     translations/business_summaries.json (R2) に保存する。
+ *   - Pass 1: 未翻訳の銘柄を翻訳する (TRANSLATION_LIMIT 件まで)。
+ *   - Pass 2: 翻訳済みでも translation_date が REFRESH_AFTER_DAYS より
+ *     古いものを「再チェック対象」とし、古い順に REFRESH_LIMIT 件まで処理。
+ *     英文ソースのハッシュ (source_hash) が前回と異なる場合のみ再翻訳し、
+ *     同じ場合は translation_date だけ更新する (Gemini API を呼ばない)。
+ *     REFRESH_AFTER_DAYS=365 なら全銘柄が約 1 年で 1 周する。
+ *   - Gemini 無料枠の 15 RPM 制限に合わせ GEMINI_RPM でリクエストを平準化。
+ *
+ * 翻訳ストアの 1 エントリ:
+ *   { symbol, business_summary_ja, translation_date, source_hash }
  */
 
 import "dotenv/config";
@@ -15,9 +25,17 @@ import {
   PutObjectCommand,
 } from "@aws-sdk/client-s3";
 import { writeFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
 
 const BUCKET = process.env.R2_BUCKET_NAME || "stock-data-c1";
-const LIMIT = Number.parseInt(process.env.TRANSLATION_LIMIT || "6", 10);
+const LIMIT = Number.parseInt(process.env.TRANSLATION_LIMIT || "50", 10);
+const REFRESH_LIMIT = Number.parseInt(process.env.REFRESH_LIMIT || "50", 10);
+const REFRESH_AFTER_DAYS = Number.parseInt(
+  process.env.REFRESH_AFTER_DAYS || "365",
+  10,
+);
+// Gemini 無料枠は 15 RPM。安全マージンを取って既定 13 RPM。
+const GEMINI_RPM = Math.max(1, Number.parseInt(process.env.GEMINI_RPM || "13", 10));
 const TRANSLATIONS_KEY =
   process.env.BUSINESS_SUMMARY_TRANSLATIONS_KEY ||
   "translations/business_summaries.json";
@@ -80,14 +98,14 @@ async function putJson(key, data) {
 }
 
 function hasJapaneseText(value) {
-  return typeof value === "string" && /[\u3040-\u30ff\u3400-\u9fff]/.test(value);
+  return typeof value === "string" && /[぀-ヿ㐀-鿿]/.test(value);
 }
 
 function getSavedTranslation(translations, symbol) {
   const value = translations?.[symbol];
   if (typeof value === "string") {
     return hasJapaneseText(value)
-      ? { business_summary_ja: value, translation_date: null }
+      ? { business_summary_ja: value, translation_date: null, source_hash: null }
       : null;
   }
   if (value && hasJapaneseText(value.business_summary_ja)) {
@@ -96,11 +114,37 @@ function getSavedTranslation(translations, symbol) {
   return null;
 }
 
+function sourceHash(text) {
+  return createHash("sha256").update(String(text ?? ""), "utf8").digest("hex");
+}
+
+function dateMs(value) {
+  if (!value) return 0;
+  const t = new Date(value).getTime();
+  return Number.isNaN(t) ? 0 : t;
+}
+
+// translation_date が REFRESH_AFTER_DAYS より古い (または日付不明) なら true。
+function isStale(entry) {
+  const ms = dateMs(entry?.translation_date);
+  if (ms === 0) return true;
+  return Date.now() - ms >= REFRESH_AFTER_DAYS * 86400000;
+}
+
 function cleanTranslation(value) {
   return String(value || "")
     .replace(/^```(?:json|text)?/i, "")
     .replace(/```$/i, "")
     .trim();
+}
+
+// Gemini リクエストを GEMINI_RPM 以内に平準化する。
+let lastGeminiRequestAt = 0;
+async function paceGemini() {
+  const minIntervalMs = Math.ceil(60000 / GEMINI_RPM);
+  const wait = lastGeminiRequestAt + minIntervalMs - Date.now();
+  if (wait > 0) await sleep(wait);
+  lastGeminiRequestAt = Date.now();
 }
 
 async function translateSummary(symbol, summary) {
@@ -132,6 +176,7 @@ async function translateSummary(symbol, summary) {
   let lastErr = null;
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
+      await paceGemini();
       const res = await fetch(url, opts);
       if (!res.ok) {
         const body = await res.text();
@@ -175,8 +220,15 @@ async function sleep(ms) {
   await new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+function isRateLimited(error) {
+  return String(error?.message || "").includes("429");
+}
+
 async function main() {
-  console.log(`bucket=${BUCKET} limit=${LIMIT} model=${GEMINI_MODEL}`);
+  console.log(
+    `bucket=${BUCKET} limit=${LIMIT} refreshLimit=${REFRESH_LIMIT} ` +
+      `refreshAfterDays=${REFRESH_AFTER_DAYS} rpm=${GEMINI_RPM} model=${GEMINI_MODEL}`,
+  );
 
   let translations = {};
   try {
@@ -188,72 +240,156 @@ async function main() {
     console.log(`${TRANSLATIONS_KEY} not found. It will be created.`);
   }
 
-  const rawKeys = (await listAll("raw/"))
+  const symbols = (await listAll("raw/"))
     .filter((key) => key.endsWith(".json") && key !== "raw/stocks_list.json")
+    .map((key) => key.replace(/^raw\//, "").replace(/\.json$/, ""))
     .sort();
 
+  async function loadSource(symbol) {
+    const raw = await getJson(`raw/${symbol}.json`);
+    return raw.info?.longBusinessSummary || null;
+  }
+
   let translated = 0;
+  let refreshed = 0;
+  let touched = 0;
   const translatedSymbols = [];
-  let skippedJapanese = 0;
+  const refreshedSymbols = [];
   let skippedNoSource = 0;
   let failed = 0;
+  let stop = false;
 
-  for (const rawKey of rawKeys) {
+  // ---- Pass 1: 未翻訳の銘柄を翻訳 ----
+  for (const symbol of symbols) {
     if (translated >= LIMIT) break;
+    if (getSavedTranslation(translations, symbol)) continue; // 翻訳済みは Pass 2 で扱う
 
-    const symbol = rawKey.replace(/^raw\//, "").replace(/\.json$/, "");
-
-    if (getSavedTranslation(translations, symbol)) {
-      skippedJapanese += 1;
-      continue;
-    }
-
-    let rawData = null;
+    let source = null;
     try {
-      rawData = await getJson(rawKey);
+      source = await loadSource(symbol);
     } catch (error) {
       failed += 1;
       console.log(`[${symbol}] raw download failed: ${error.message}`);
       continue;
     }
-
-    const source = rawData.info?.longBusinessSummary;
     if (!source) {
       skippedNoSource += 1;
       continue;
     }
 
     try {
-      console.log(`[${symbol}] translating (${translated + 1}/${LIMIT})`);
+      console.log(`[${symbol}] translating new (${translated + 1}/${LIMIT})`);
       const translation = await translateSummary(symbol, source);
-      const translationDate = new Date().toISOString();
       translations[symbol] = {
         symbol,
         business_summary_ja: translation,
-        translation_date: translationDate,
+        translation_date: new Date().toISOString(),
+        source_hash: sourceHash(source),
       };
       await putJson(TRANSLATIONS_KEY, translations);
       translated += 1;
       translatedSymbols.push(symbol);
-      await sleep(1000);
     } catch (error) {
       failed += 1;
       console.error(`[${symbol}] translation failed: ${String(error?.message || error)}`);
-      if (error && error.status) {
-        console.error(`[${symbol}] response status: ${error.status}`);
-      }
+      if (error && error.status) console.error(`[${symbol}] response status: ${error.status}`);
       if (error && error.body) {
         console.error(`[${symbol}] response body (snippet): ${String(error.body).slice(0, 400)}`);
       }
-      if (String(error?.message || '').includes("429")) {
+      if (isRateLimited(error)) {
         console.log("Rate limited. Stopping this run so the next schedule can retry.");
+        stop = true;
         break;
       }
     }
   }
 
+  // ---- Pass 2: 古い翻訳を再チェック (約 1 年で 1 周) ----
+  if (!stop) {
+    const stale = symbols
+      .map((symbol) => ({ symbol, entry: getSavedTranslation(translations, symbol) }))
+      .filter((x) => x.entry && isStale(x.entry))
+      .sort((a, b) => dateMs(a.entry.translation_date) - dateMs(b.entry.translation_date));
+
+    if (stale.length > 0) {
+      console.log(`refresh: ${stale.length} entries older than ${REFRESH_AFTER_DAYS}d`);
+    }
+
+    for (const { symbol, entry } of stale) {
+      if (refreshed + touched >= REFRESH_LIMIT) break;
+
+      let source = null;
+      try {
+        source = await loadSource(symbol);
+      } catch (error) {
+        failed += 1;
+        console.log(`[${symbol}] raw download failed: ${error.message}`);
+        continue;
+      }
+
+      // ソースが消えた場合は翻訳を残しつつ日付だけ更新し、再チェック対象から外す。
+      if (!source) {
+        translations[symbol] = {
+          symbol,
+          business_summary_ja: entry.business_summary_ja,
+          translation_date: new Date().toISOString(),
+          source_hash: translations[symbol]?.source_hash ?? null,
+        };
+        await putJson(TRANSLATIONS_KEY, translations);
+        touched += 1;
+        continue;
+      }
+
+      const currentHash = sourceHash(source);
+      const stored = translations[symbol];
+      const storedHash =
+        stored && typeof stored === "object" ? stored.source_hash : undefined;
+
+      // ソース未変更: 再翻訳せず翻訳日だけ更新 (次の周回まで対象外になる)。
+      if (storedHash && storedHash === currentHash) {
+        translations[symbol] = {
+          symbol,
+          business_summary_ja: entry.business_summary_ja,
+          translation_date: new Date().toISOString(),
+          source_hash: currentHash,
+        };
+        await putJson(TRANSLATIONS_KEY, translations);
+        touched += 1;
+        continue;
+      }
+
+      // ソース変更あり (または source_hash 未保存): 再翻訳する。
+      try {
+        console.log(`[${symbol}] re-translating (source changed) (${refreshed + 1})`);
+        const translation = await translateSummary(symbol, source);
+        translations[symbol] = {
+          symbol,
+          business_summary_ja: translation,
+          translation_date: new Date().toISOString(),
+          source_hash: currentHash,
+        };
+        await putJson(TRANSLATIONS_KEY, translations);
+        refreshed += 1;
+        refreshedSymbols.push(symbol);
+      } catch (error) {
+        failed += 1;
+        console.error(`[${symbol}] re-translation failed: ${String(error?.message || error)}`);
+        if (error && error.status) console.error(`[${symbol}] response status: ${error.status}`);
+        if (error && error.body) {
+          console.error(`[${symbol}] response body (snippet): ${String(error.body).slice(0, 400)}`);
+        }
+        if (isRateLimited(error)) {
+          console.log("Rate limited. Stopping this run so the next schedule can retry.");
+          stop = true;
+          break;
+        }
+      }
+    }
+  }
+
   console.log(
-    `done translated=${translated} skipped_japanese=${skippedJapanese} skipped_no_source=${skippedNoSource} failed=${failed}`,
+    `done translated=${translated} refreshed=${refreshed} touched=${touched} ` +
+      `skipped_no_source=${skippedNoSource} failed=${failed}`,
   );
 
   if (SUMMARY_OUTPUT_PATH) {
@@ -263,7 +399,9 @@ async function main() {
         {
           translated,
           translated_symbols: translatedSymbols,
-          skipped_japanese: skippedJapanese,
+          refreshed,
+          refreshed_symbols: refreshedSymbols,
+          touched,
           skipped_no_source: skippedNoSource,
           failed,
         },
