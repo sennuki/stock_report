@@ -172,16 +172,16 @@ jobs:
           pnpm run build
 
           # Worker としてデプロイ。
-          # wrangler.jsonc の name は c1 用 (stock-blog-c1) なので、
-          # master では --name で本番 Worker (stock-blog = amerikabu.com) を
-          # 明示的に上書きする。それ以外のブランチは c1 用 Worker のまま。
+          # master は wrangler.jsonc の env.production を使い、本番 Worker
+          # (stock-blog) にデプロイ + amerikabu.com を紐付ける。
+          # それ以外のブランチはトップレベル設定 (stock-blog-c1, routes なし)。
           if [ "${{ github.ref_name }}" = "master" ]; then
-            WORKER_NAME="stock-blog"
+            echo "Deploying site Worker: stock-blog (env=production)"
+            DEPLOY_OUTPUT=$(npx wrangler deploy --env production)
           else
-            WORKER_NAME="stock-blog-c1"
+            echo "Deploying site Worker: stock-blog-c1"
+            DEPLOY_OUTPUT=$(npx wrangler deploy)
           fi
-          echo "Deploying site Worker as: $WORKER_NAME"
-          DEPLOY_OUTPUT=$(npx wrangler deploy --name "$WORKER_NAME")
           echo "$DEPLOY_OUTPUT"
 
           # デプロイされたWorkerのURLを抽出

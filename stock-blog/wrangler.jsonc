@@ -10,5 +10,26 @@
 			"binding": "STOCK_DATA",
 			"bucket_name": "stock-data-c1"
 		}
-	]
+	],
+	// master では `wrangler deploy --env production` でこの環境を使う。
+	// 本番 Worker (stock-blog) に amerikabu.com を紐付ける。
+	// それ以外のブランチはトップレベル設定 (stock-blog-c1) で routes なし。
+	"env": {
+		"production": {
+			"name": "stock-blog",
+			"routes": [
+				{ "pattern": "amerikabu.com", "custom_domain": true },
+				{ "pattern": "www.amerikabu.com", "custom_domain": true }
+			],
+			"observability": {
+				"enabled": true
+			},
+			"r2_buckets": [
+				{
+					"binding": "STOCK_DATA",
+					"bucket_name": "stock-data-c1"
+				}
+			]
+		}
+	}
 }
