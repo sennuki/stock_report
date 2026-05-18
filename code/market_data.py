@@ -602,6 +602,14 @@ SP_INDEX_URLS = {
     "S&P 600": "https://en.wikipedia.org/wiki/List_of_S&P_600_companies",
 }
 
+# Wikipedia の S&P 構成銘柄表はティッカー変更の反映が遅れることがあるため、
+# 既知の変更を取得直後に上書きする。{ 旧ティッカー: 新ティッカー }
+# 注意: ドット/ハイフンを含まないティッカーのみ対応 (Symbol と Symbol_YF を
+#       同一視して置換する)。
+TICKER_OVERRIDES = {
+    "FISV": "FI",  # Fiserv: 2025 年に FISV (NASDAQ) から FI (NYSE) へ変更
+}
+
 
 def fetch_sp_indices_companies(indices=None):
     """S&P 500 / 400 / 600 の銘柄リストを Wikipedia から取得して結合し、
@@ -627,6 +635,17 @@ def fetch_sp_indices_companies(indices=None):
 
     # 縦結合 + 重複除去（先勝ち：S&P 500 に含まれていれば 400/600 側は捨てる）
     combined = pl.concat(frames, how='vertical_relaxed').unique(subset=['Symbol_YF'], keep='first')
+
+    # 既知のティッカー変更を上書き（Wikipedia の反映遅延対策）。
+    # Exchange は後段の _enrich_with_market_info が Yahoo から再取得するため不要。
+    if TICKER_OVERRIDES:
+        combined = combined.with_columns([
+            pl.col('Symbol_YF').map_elements(
+                lambda s: TICKER_OVERRIDES.get(s, s), return_dtype=pl.Utf8),
+            pl.col('Symbol').map_elements(
+                lambda s: TICKER_OVERRIDES.get(s, s), return_dtype=pl.Utf8),
+        ])
+        combined = combined.unique(subset=['Symbol_YF'], keep='first')
 
     return _enrich_with_market_info(combined)
 
