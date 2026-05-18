@@ -19,6 +19,16 @@ export default defineConfig({
   output: "server",
   adapter: cloudflare({}),
 
+  // セッション機能はサイト内で未使用 (Astro.session を呼び出していない)。
+  // 設定を省略すると @astrojs/cloudflare が KV バックエンドのセッションを
+  // 自動で有効化し、デプロイ時に "SESSION" 用 KV ネームスペースの作成を
+  // 要求する (API トークンに Workers KV Storage:Edit 権限が必要になる)。
+  // 非 KV の memory ドライバを明示することで KV プロビジョニング自体を
+  // 回避する。セッションは未使用のため非永続でも実害はない。
+  session: {
+    driver: "memory",
+  },
+
   integrations: [
     sitemap({
       filter: page => SITE.showArchives || !page.endsWith("/archives"),
