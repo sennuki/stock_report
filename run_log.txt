@@ -1,1 +1,0 @@
-[2026-05-01 21:56:14] [ERROR  ] [SYSTEM] GEMINI_API_KEY not found in environment variables.
