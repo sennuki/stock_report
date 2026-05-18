@@ -8,7 +8,7 @@ on:
       limit:
         description: 'Maximum translations for this run'
         required: false
-        default: '3'
+        default: '50'
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -46,7 +46,9 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_TRANSLATION_MODEL: "gemini-flash-lite-latest"
-          TRANSLATION_LIMIT: ${{ github.event.inputs.limit || '3' }}
+          # 1 回の実行で翻訳する最大本数。レート制限に当たった場合は
+          # スクリプトが 429 で安全に打ち切り、次回スケジュールで継続する。
+          TRANSLATION_LIMIT: ${{ github.event.inputs.limit || '50' }}
           TRANSLATION_SUMMARY_OUTPUT: "translation-summary.json"
           R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
