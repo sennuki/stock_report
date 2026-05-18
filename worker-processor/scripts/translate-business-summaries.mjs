@@ -5,12 +5,14 @@
  * 動作:
  *   - raw/{symbol}.json の英文 (info.longBusinessSummary) を翻訳し
  *     translations/business_summaries.json (R2) に保存する。
- *   - Pass 1: 未翻訳の銘柄を翻訳する (TRANSLATION_LIMIT 件まで)。
+ *   - Pass 1: 未翻訳の銘柄を翻訳する。
  *   - Pass 2: 翻訳済みでも translation_date が REFRESH_AFTER_DAYS より
  *     古いものを「再チェック対象」とし、古い順に REFRESH_LIMIT 件まで処理。
  *     英文ソースのハッシュ (source_hash) が前回と異なる場合のみ再翻訳し、
  *     同じ場合は translation_date だけ更新する (Gemini API を呼ばない)。
  *     REFRESH_AFTER_DAYS=365 なら全銘柄が約 1 年で 1 周する。
+ *   - Gemini API 呼び出し (Pass 1 の新規翻訳 + Pass 2 の再翻訳) の合計は
+ *     TRANSLATION_LIMIT で頭打ち。flash-lite 無料枠 500 req/日に合わせる。
  *   - Gemini 無料枠の 15 RPM 制限に合わせ GEMINI_RPM でリクエストを平準化。
  *
  * 翻訳ストアの 1 エントリ:
@@ -28,8 +30,13 @@ import { writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 
 const BUCKET = process.env.R2_BUCKET_NAME || "stock-data-c1";
-const LIMIT = Number.parseInt(process.env.TRANSLATION_LIMIT || "50", 10);
-const REFRESH_LIMIT = Number.parseInt(process.env.REFRESH_LIMIT || "50", 10);
+// LIMIT: 1 実行あたりの Gemini API 呼び出し上限 (= 1 日の API 予算)。
+// Pass 1 の新規翻訳数 + Pass 2 の再翻訳数の合計をこの値で頭打ちにする。
+// flash-lite 無料枠は 500 リクエスト/日のため既定 500。
+const LIMIT = Number.parseInt(process.env.TRANSLATION_LIMIT || "500", 10);
+// REFRESH_LIMIT: Pass 2 で 1 実行に走査する古い翻訳の最大件数
+// (再翻訳 + 翻訳日更新のみ の合計)。翻訳日更新のみは API を使わない。
+const REFRESH_LIMIT = Number.parseInt(process.env.REFRESH_LIMIT || "500", 10);
 const REFRESH_AFTER_DAYS = Number.parseInt(
   process.env.REFRESH_AFTER_DAYS || "365",
   10,
@@ -359,6 +366,11 @@ async function main() {
       }
 
       // ソース変更あり (または source_hash 未保存): 再翻訳する。
+      // 1 日の API 予算 (LIMIT) を超える分は次回実行に持ち越す。
+      if (translated + refreshed >= LIMIT) {
+        console.log(`API budget (${LIMIT}) reached; deferring remaining re-translations to next run.`);
+        break;
+      }
       try {
         console.log(`[${symbol}] re-translating (source changed) (${refreshed + 1})`);
         const translation = await translateSummary(symbol, source);

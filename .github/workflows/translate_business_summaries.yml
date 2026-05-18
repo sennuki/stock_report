@@ -2,13 +2,17 @@ name: Translate Business Summaries
 
 on:
   schedule:
-    - cron: '17 * * * *'
+    # 1 日 1 回。flash-lite 無料枠は 500 リクエスト/日のため、1 実行で
+    # 最大 500 件処理する想定 (毎時実行だと初回で日次枠を使い切る)。
+    # データパイプライン (21:00 UTC) より後、トランスクリプト生成
+    # (02,10,18 時 UTC) を避けた時刻に実行する。
+    - cron: '30 23 * * *'
   workflow_dispatch:
     inputs:
       limit:
-        description: 'Maximum translations for this run'
+        description: 'Gemini API 呼び出し上限 (新規翻訳 + 再翻訳の合計)'
         required: false
-        default: '50'
+        default: '500'
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -46,14 +50,16 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_TRANSLATION_MODEL: "gemini-flash-lite-latest"
-          # Pass 1 (未翻訳) の 1 実行あたり最大本数。レート制限に当たれば
-          # スクリプトが 429 で安全に打ち切り、次回スケジュールで継続する。
-          TRANSLATION_LIMIT: ${{ github.event.inputs.limit || '50' }}
+          # 1 実行の Gemini API 呼び出し上限 (Pass 1 新規翻訳 + Pass 2 再翻訳
+          # の合計)。flash-lite 無料枠 500 req/日に合わせる。上限に達すれば
+          # 残りは翌日の実行に持ち越す。
+          TRANSLATION_LIMIT: ${{ github.event.inputs.limit || '500' }}
           # Pass 2 (再チェック): translation_date が REFRESH_AFTER_DAYS より
           # 古い翻訳を古い順に再チェックする。365 日で全銘柄が約 1 年で 1 周。
           # ソース英文が未変更なら翻訳日のみ更新し、API は呼ばない。
           REFRESH_AFTER_DAYS: '365'
-          REFRESH_LIMIT: ${{ github.event.inputs.limit || '50' }}
+          # Pass 2 で 1 実行に走査する古い翻訳の最大件数 (再翻訳 + 日付更新のみ)。
+          REFRESH_LIMIT: '500'
           # Gemini 無料枠 (15 RPM) 内に収めるリクエスト平準化レート。
           GEMINI_RPM: '13'
           TRANSLATION_SUMMARY_OUTPUT: "translation-summary.json"
