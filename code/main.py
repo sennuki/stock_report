@@ -81,6 +81,65 @@ def upload_base_stocks_list_to_r2(df_stocks):
     except Exception as e:
         utils.log_event("ERROR", "SYSTEM", f"Failed to upload stocks list to R2: {e}")
 
+
+def upload_broker_availability_to_r2():
+    """
+    日本の各証券会社の米国株取扱銘柄リストを market_data から取得し、
+    raw/broker_availability.json として R2 にアップロードする。
+
+    generate-reports.mjs はこのファイルを読んで各レポートの is_available_*
+    を判定する。これが無い (またはアップロードに失敗した) 場合、worker 側は
+    全銘柄を「取扱なし」として出力する。
+    1社の取得に失敗しても他社の結果は維持する (失敗した社は空リスト)。
+    """
+    # name -> 取扱シンボルの集合を返す callable
+    brokers = {
+        "monex": lambda: market_data.get_monex_available_symbols().keys(),
+        "rakuten": market_data.get_rakuten_available_symbols,
+        "sbi": market_data.get_sbi_available_symbols,
+        "mufg": market_data.get_mufg_available_symbols,
+        "matsui": market_data.get_matsui_available_symbols,
+        "dmm": market_data.get_dmm_available_symbols,
+        "paypay": market_data.get_paypay_available_symbols,
+        "moomoo": market_data.get_moomoo_available_symbols,
+        "iwaicosmo": market_data.get_iwaicosmo_available_symbols,
+    }
+
+    availability = {}
+    for name, fetch in brokers.items():
+        try:
+            symbols = sorted({s for s in fetch() if s})
+            availability[name] = symbols
+            utils.log_event("INFO", "SYSTEM", f"Broker '{name}': {len(symbols)} symbols")
+        except Exception as e:
+            availability[name] = []
+            utils.log_event("ERROR", "SYSTEM", f"Failed to fetch broker list '{name}': {e}")
+
+    json_data = json.dumps(availability, ensure_ascii=False, indent=2)
+
+    # worker の LOCAL_MODE 用にローカルにも書き出す。
+    try:
+        local_path = os.path.join(market_data.BASE_DIR, "data", "broker_availability.json")
+        with open(local_path, "w", encoding="utf-8") as f:
+            f.write(json_data)
+    except Exception as e:
+        utils.log_event("WARNING", "SYSTEM", f"Failed to write local broker_availability.json: {e}")
+
+    try:
+        if s3_client:
+            s3_client.put_object(
+                Bucket=R2_BUCKET_NAME,
+                Key="raw/broker_availability.json",
+                Body=json_data.encode('utf-8'),
+                ContentType='application/json'
+            )
+            utils.log_event("SUCCESS", "SYSTEM", "Uploaded broker_availability.json to R2")
+        else:
+            print("R2 is not configured. Skipping broker availability upload.")
+    except Exception as e:
+        utils.log_event("ERROR", "SYSTEM", f"Failed to upload broker availability to R2: {e}")
+
+
 if __name__ == "__main__":
     utils.log_event("INFO", "SYSTEM", "--- Python Data Fetch Pipeline Started ---")
 
@@ -123,6 +182,13 @@ if __name__ == "__main__":
                             "fetch_sp_indices_companies returned empty - falling back to default behavior")
     except Exception as e:
         utils.log_event("ERROR", "SYSTEM", f"Failed to fetch base stocks list: {e}")
+
+    # 1.5 日本の証券会社の取扱銘柄リストを取得 → R2 にアップ
+    #     generate-reports.mjs が is_available_* を判定するために使う。
+    try:
+        upload_broker_availability_to_r2()
+    except Exception as e:
+        utils.log_event("ERROR", "SYSTEM", f"Failed during upload_broker_availability_to_r2(): {e}")
 
     # 2. fetch_raw_data: 取得した銘柄リストを引き継いで生データを取得 → R2 にアップ
     try:

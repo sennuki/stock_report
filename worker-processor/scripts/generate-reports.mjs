@@ -40,6 +40,12 @@ const LOCAL_TRANSLATIONS_PATH = path.join(
   "translations",
   "business_summaries.json",
 );
+const LOCAL_BROKER_AVAILABILITY_PATH = path.join(
+  REPO_ROOT,
+  "code",
+  "data",
+  "broker_availability.json",
+);
 
 // S3 クライアントは R2 アクセスが必要な時のみ動的に初期化する (LOCAL_MODE 時は不要)。
 let s3Lazy = null;
@@ -68,6 +74,7 @@ async function getS3() {
 // raw/{sym}.json は code/raw_data/{sym}_raw.json に対応 (Python 側の命名規約)。
 function localPathForKey(key) {
   if (key === "raw/stocks_list.json") return LOCAL_STOCKS_JSON;
+  if (key === "raw/broker_availability.json") return LOCAL_BROKER_AVAILABILITY_PATH;
   if (key === "translations/business_summaries.json") return LOCAL_TRANSLATIONS_PATH;
   if (key === "reports/stocks.json") return LOCAL_STOCKS_JSON;
   if (key.startsWith("raw/")) {
@@ -79,6 +86,17 @@ function localPathForKey(key) {
     return path.join(LOCAL_REPORTS_DIR, `${sym}.json`);
   }
   throw new Error(`Unmapped R2 key for LOCAL_MODE: ${key}`);
+}
+
+// raw/broker_availability.json の取扱銘柄 Set に対し、ある銘柄が買えるか判定する。
+// Python 側 generate_json_reports.py の check_availability と同じく、
+// BRK-B ⇔ BRKB / BRK.B のような記号ゆれを吸収する。
+function isAvailableAt(brokerSet, symbol) {
+  if (!brokerSet || brokerSet.size === 0 || !symbol) return false;
+  if (brokerSet.has(symbol)) return true;
+  if (brokerSet.has(symbol.replace(/-/g, ""))) return true;
+  if (brokerSet.has(symbol.replace(/-/g, "."))) return true;
+  return false;
 }
 
 const sectorEtfMap = {
@@ -1868,6 +1886,25 @@ async function main() {
     console.log("  Translations not found or failed to load.");
   }
 
+  // 日本の証券会社の取扱銘柄リスト (main.py がアップロード)。
+  // broker 名 -> 取扱シンボルの Set。見つからない場合は全銘柄「取扱なし」扱い。
+  const brokerAvailability = {};
+  try {
+    console.log("Downloading raw/broker_availability.json...");
+    const rawBrokers = await getJson("raw/broker_availability.json");
+    for (const [name, syms] of Object.entries(rawBrokers || {})) {
+      brokerAvailability[name] = new Set(Array.isArray(syms) ? syms : []);
+    }
+    const counts = Object.entries(brokerAvailability)
+      .map(([n, s]) => `${n}:${s.size}`)
+      .join(" ");
+    console.log(`  broker availability loaded (${counts})`);
+  } catch (e) {
+    console.log(
+      "  broker_availability.json not found — is_available_* will all be false.",
+    );
+  }
+
   const dlFails = dlResults.filter((r) => !r.ok).length;
   if (dlFails) {
     console.log(`  ${dlFails} downloads failed`);
@@ -2065,6 +2102,9 @@ async function main() {
           summary_ja = formatSummary(summary_ja);
         }
 
+        // 証券会社の取扱判定は表示用シンボル (BRK.B 等) で行う。
+        const brokerCheckSymbol = metadata.Symbol || symbol;
+
         const reportData = {
           symbol: metadata.Symbol || symbol,
           symbol_yf: symbol,
@@ -2091,15 +2131,17 @@ async function main() {
             metrics: ranksBySymbol[symbol] || {},
           },
 
-          is_available_monex: true,
-          is_available_rakuten: true,
-          is_available_sbi: true,
-          is_available_mufg: true,
-          is_available_matsui: true,
-          is_available_dmm: true,
-          is_available_paypay: true,
-          is_available_moomoo: true,
-          is_available_iwaicosmo: true,
+          // 日本の証券会社での購入可否。broker_availability.json の取扱銘柄
+          // リストと照合する。表示シンボル (BRK.B 等) で判定する。
+          is_available_monex: isAvailableAt(brokerAvailability.monex, brokerCheckSymbol),
+          is_available_rakuten: isAvailableAt(brokerAvailability.rakuten, brokerCheckSymbol),
+          is_available_sbi: isAvailableAt(brokerAvailability.sbi, brokerCheckSymbol),
+          is_available_mufg: isAvailableAt(brokerAvailability.mufg, brokerCheckSymbol),
+          is_available_matsui: isAvailableAt(brokerAvailability.matsui, brokerCheckSymbol),
+          is_available_dmm: isAvailableAt(brokerAvailability.dmm, brokerCheckSymbol),
+          is_available_paypay: isAvailableAt(brokerAvailability.paypay, brokerCheckSymbol),
+          is_available_moomoo: isAvailableAt(brokerAvailability.moomoo, brokerCheckSymbol),
+          is_available_iwaicosmo: isAvailableAt(brokerAvailability.iwaicosmo, brokerCheckSymbol),
           movement_reason: movementReasons[symbol] || null,
           highlights,
           earnings_surprise: earningsSurprise,
