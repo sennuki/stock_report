@@ -58,6 +58,7 @@ async function getS3() {
       ListObjectsV2Command: mod.ListObjectsV2Command,
       GetObjectCommand: mod.GetObjectCommand,
       PutObjectCommand: mod.PutObjectCommand,
+      DeleteObjectCommand: mod.DeleteObjectCommand,
     };
   }
   return s3Lazy;
@@ -232,6 +233,78 @@ async function putJson(key, data) {
       ContentType: "application/json",
     }),
   );
+}
+
+async function deleteObject(key) {
+  if (LOCAL_MODE) return;
+  const { client, DeleteObjectCommand } = await getS3();
+  try {
+    await client.send(new DeleteObjectCommand({ Bucket: BUCKET, Key: key }));
+  } catch (e) {
+    // 既に存在しない等は無視 (reports/{sym}.json が未生成のケースなど)。
+    console.warn(`  delete ${key} failed (ignored): ${e.message}`);
+  }
+}
+
+// S&P 入れ替えで「除外」された銘柄の残骸を R2 から削除する。
+// 銘柄ユニバースは raw/stocks_list.json (= Wikipedia スクレイプ) が毎回上書き
+// するが、パイプラインは raw/ に書き込むだけで削除しないため、除外銘柄の
+// raw/{sym}.json が残り続けレポートも生成され続けてしまう。これを防ぐ。
+// 戻り値: 削除した銘柄の Set (呼び出し側で rawKeys から除外する)。
+async function pruneRemovedSymbols(rawKeys, baseStocksList) {
+  // ローカル/テスト実行 (raw/stocks_list.json が部分的) では prune しない。
+  if (LOCAL_MODE) return new Set();
+
+  const MIN_UNIVERSE = Number(process.env.PRUNE_MIN_UNIVERSE || 1400);
+  const MAX_PRUNE = Number(process.env.PRUNE_MAX || 60);
+
+  const universe = new Set(
+    baseStocksList.map((s) => s.Symbol_YF || s.Symbol).filter(Boolean),
+  );
+
+  // 安全策 1: Wikipedia スクレイプが失敗・部分取得でユニバースが極端に
+  // 小さいときは、正常銘柄を誤って消さないよう prune 全体をスキップする。
+  if (universe.size < MIN_UNIVERSE) {
+    console.warn(
+      `  prune skipped: universe too small (${universe.size} < ${MIN_UNIVERSE})`,
+    );
+    return new Set();
+  }
+
+  // ETF / 指数は S&P 構成銘柄リストに載らないため prune 対象から除外する。
+  const protectedSyms = new Set([
+    ...Object.values(sectorEtfMap),
+    ...Object.values(broadSectorEtfMap),
+    ...Object.values(marketIndexMap),
+    "^GSPC",
+  ]);
+
+  const rawSymbols = rawKeys.map((k) =>
+    k.slice("raw/".length).replace(/\.json$/, ""),
+  );
+  const stale = rawSymbols.filter(
+    (s) => !universe.has(s) && !protectedSyms.has(s) && !s.startsWith("^"),
+  );
+
+  if (stale.length === 0) {
+    console.log("  prune: no removed symbols");
+    return new Set();
+  }
+  // 安全策 2: 一度に大量に消そうとする場合は異常とみなしスキップする。
+  if (stale.length > MAX_PRUNE) {
+    console.warn(
+      `  prune skipped: too many stale symbols (${stale.length} > ${MAX_PRUNE}): ` +
+        `${stale.slice(0, 20).join(", ")}...`,
+    );
+    return new Set();
+  }
+
+  console.log(`  prune: removing ${stale.length} symbol(s): ${stale.join(", ")}`);
+  for (const sym of stale) {
+    await deleteObject(`raw/${sym}.json`);
+    await deleteObject(`reports/${sym}.json`);
+  }
+  return new Set(stale);
 }
 
 // === helpers ===
@@ -1739,7 +1812,7 @@ async function main() {
     console.log(`mode=R2 bucket=${BUCKET} concurrency=${CONCURRENCY}`);
   }
   console.log("Listing raw/ keys...");
-  const rawKeys = (await listAll("raw/")).filter(
+  let rawKeys = (await listAll("raw/")).filter(
     (k) => k.endsWith(".json") && k !== "raw/stocks_list.json",
   );
   console.log(`  found ${rawKeys.length} raw files`);
@@ -1749,6 +1822,15 @@ async function main() {
     baseStocksList = await getJson("raw/stocks_list.json");
   } catch {
     console.log("  raw/stocks_list.json not found, using empty metadata");
+  }
+
+  // S&P 入れ替えで「除外」された銘柄の残骸 (raw/reports) を削除し、
+  // 以降の処理対象 (rawKeys) からも外す。
+  const prunedSymbols = await pruneRemovedSymbols(rawKeys, baseStocksList);
+  if (prunedSymbols.size > 0) {
+    rawKeys = rawKeys.filter(
+      (k) => !prunedSymbols.has(k.slice("raw/".length).replace(/\.json$/, "")),
+    );
   }
 
   // risk-return チャートの "その他銘柄" は対象銘柄が属する指数の構成銘柄に
