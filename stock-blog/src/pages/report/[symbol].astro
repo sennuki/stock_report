@@ -484,10 +484,10 @@ function rankTierClass(tier: string): string {
                 <span class={`text-2xl font-black ${reportData.movement_reason.change_pct >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                   {reportData.movement_reason.change_pct >= 0 ? '+' : ''}{(reportData.movement_reason.change_pct * 100).toFixed(2)}%
                 </span>
-                <span class="text-sm opacity-60">S&P 500 変動率上位銘柄</span>
+                <span class="text-sm opacity-60">{reportData.movement_reason.index || 'S&P 500'} 変動率上位銘柄</span>
               </div>
               <p class="text-skin-base whitespace-pre-wrap">{reportData.movement_reason.reason}</p>
-              <p class="text-[10px] opacity-40 mt-4 text-right italic">※Gemini AI 3.1 Flash Lite による調査・分析 (Google Search 連携)</p>
+              <p class="text-[10px] opacity-40 mt-4 text-right italic">※Gemma 4 31B による調査・分析 (Google Search 連携)</p>
             </div>
           )}
           

@@ -7,7 +7,7 @@
    - ALWAYS verify the current date and available AI models (Gemini 3.1, Gemma 4 series, etc.) using `google_web_search` before making technical judgments or suggesting model changes.
    
 2. **Model Awareness & Standardization (April 2026):**
-   - **Market Movement Reasons:** ALWAYS use `models/gemini-2.5-flash-lite`. It is the most stable and balanced model for financial analysis in the current environment.
+   - **Market Movement Reasons:** ALWAYS use `models/gemma-4-31b-it` with Google Search grounding (`tools: [{ google_search: {} }]`). 株価が大きく変動した銘柄の変動理由調査に使用する。Gemma 4 31B は Gemini API 経由で Google 検索グラウンディングに対応する。
    - **Translations, Summaries, and General Text:** ALWAYS use `models/gemma-4-26b-a4b-it` (Gemma 4 26B MoE). It is the most efficient and high-quality open-weight model for these tasks.
    - **Legacy Models:** Models from the 1.5, 2.0, and early 3.1 series are deprecated or shut down. Do NOT use them in any new or existing code.
 

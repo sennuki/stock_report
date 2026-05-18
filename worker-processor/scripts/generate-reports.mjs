@@ -1946,7 +1946,18 @@ async function main() {
     subIndustryMap[subInd].push(peerInfo);
   }
 
-  const movementReasons = {};
+  // 株価変動理由は generate-movement-reasons.mjs が別ステップで生成し
+  // reports/movement_reasons.json に保存する。ここではそれを読み込み、
+  // reports/{symbol}.json の movement_reason に流し込む。
+  let movementReasons = {};
+  try {
+    const mr = await getJson("reports/movement_reasons.json");
+    movementReasons = mr?.reasons || {};
+    console.log(`loaded ${Object.keys(movementReasons).length} movement reasons`);
+  } catch {
+    console.log("reports/movement_reasons.json not found; no movement reasons.");
+  }
+
   const ETFS = [
     "SPY",
     "MDY",

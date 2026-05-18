@@ -26,7 +26,13 @@ export interface ReportData {
   highlights: any;
   earnings_surprise?: any;
   next_earnings?: any;
-  movement_reason?: string;
+  movement_reason?: {
+    date: string;
+    change_pct: number;
+    z?: number;
+    index?: string;
+    reason: string;
+  } | null;
 }
 
 /**
