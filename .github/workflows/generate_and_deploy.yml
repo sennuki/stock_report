@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: '0 21 * * 1-5' # 平日毎日実行
   push:
-    branches: [ master, c1 ]
+    branches: [ master ]
     paths-ignore:
       - '.github/workflows/translate_business_summaries.yml'
       - 'worker-processor/scripts/translate-business-summaries.mjs'
@@ -19,17 +19,14 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   # generate-reports.mjs / main.py がレポート生成・データ取得する銘柄。
   # セクター ETF / SPY は fetch_raw_data 側で自動付与される。
-  #   - master       : "all" (S&P 500/400/600 全銘柄を処理)
-  #   - それ以外(c1等): "MSFT,AAPL,NVDA" (テスト集合のみ)
-  #   - workflow_dispatch の test_symbols 入力があればそれを最優先。
-  # 注意: 空文字にすると generate-reports.mjs はデフォルトの 3 銘柄に
-  #       フォールバックするため、master では必ず "all" を渡すこと。
-  TEST_SYMBOLS: ${{ github.event.inputs.test_symbols || (github.ref_name == 'master' && 'all') || 'MSFT,AAPL,NVDA' }}
+  # 通常は "all" (S&P 500/400/600 全銘柄)。workflow_dispatch の
+  # test_symbols 入力があればそれを優先する。
+  TEST_SYMBOLS: ${{ github.event.inputs.test_symbols || 'all' }}
 
 jobs:
   run-pipeline-and-deploy:
     runs-on: ubuntu-latest
-    environment: ${{ github.ref_name == 'master' && 'production' || 'c1' }}
+    environment: production
     permissions:
       contents: write
       deployments: write
@@ -72,8 +69,8 @@ jobs:
           cd code
           python main.py
         env:
-          # master は全504銘柄、それ以外 (c1 等) はテストモードで数銘柄に限定。
-          TEST_MODE: ${{ github.ref_name == 'master' && 'false' || 'true' }}
+          # 全銘柄を取得する (TEST_MODE=false)。
+          TEST_MODE: "false"
           PYTHON_MAX_WORKERS: 2
           R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
@@ -176,22 +173,16 @@ jobs:
           # サポートせず、ビルド時に設定を dist/server/wrangler.json へ
           # フラット化する (.wrangler/deploy/config.json で redirect)。
           # そのため wrangler.jsonc の env.production も --env production も
-          # 無視される。master ではこの生成済み設定を直接書き換えて、本番
-          # Worker 名 (stock-blog) と amerikabu.com のカスタムドメインを付与。
-          # それ以外のブランチは stock-blog-c1 のまま (routes なし) で、本番
-          # ドメインを奪わない。
+          # 無視される。生成済み設定を直接書き換えて、本番 Worker 名
+          # (stock-blog) と amerikabu.com のカスタムドメインを付与する。
           GEN_CFG=dist/server/wrangler.json
-          if [ "${{ github.ref_name }}" = "master" ]; then
-            echo "Deploying site Worker: stock-blog (+ amerikabu.com)"
-            jq '.name = "stock-blog"
-                | .routes = [
-                    { "pattern": "amerikabu.com", "custom_domain": true },
-                    { "pattern": "www.amerikabu.com", "custom_domain": true }
-                  ]' "$GEN_CFG" > "$GEN_CFG.tmp"
-            mv "$GEN_CFG.tmp" "$GEN_CFG"
-          else
-            echo "Deploying site Worker: stock-blog-c1"
-          fi
+          echo "Deploying site Worker: stock-blog (+ amerikabu.com)"
+          jq '.name = "stock-blog"
+              | .routes = [
+                  { "pattern": "amerikabu.com", "custom_domain": true },
+                  { "pattern": "www.amerikabu.com", "custom_domain": true }
+                ]' "$GEN_CFG" > "$GEN_CFG.tmp"
+          mv "$GEN_CFG.tmp" "$GEN_CFG"
           DEPLOY_OUTPUT=$(npx wrangler deploy)
           echo "$DEPLOY_OUTPUT"
 

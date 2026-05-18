@@ -20,7 +20,7 @@ concurrency:
 jobs:
   translate-business-summaries:
     runs-on: ubuntu-latest
-    environment: ${{ github.ref_name == 'master' && 'production' || 'c1' }}
+    environment: production
     permissions:
       contents: read
     steps:

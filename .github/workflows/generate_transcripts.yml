@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     # GitHub Actions の 6 時間上限に対する安全余裕。
     timeout-minutes: 330
-    environment: ${{ github.ref_name == 'master' && 'production' || 'c1' }}
+    environment: production
     permissions:
       contents: read
     steps:
