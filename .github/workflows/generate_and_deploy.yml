@@ -172,16 +172,27 @@ jobs:
           pnpm run build
 
           # Worker としてデプロイ。
-          # master は wrangler.jsonc の env.production を使い、本番 Worker
-          # (stock-blog) にデプロイ + amerikabu.com を紐付ける。
-          # それ以外のブランチはトップレベル設定 (stock-blog-c1, routes なし)。
+          # @astrojs/cloudflare アダプタは wrangler の environments を
+          # サポートせず、ビルド時に設定を dist/server/wrangler.json へ
+          # フラット化する (.wrangler/deploy/config.json で redirect)。
+          # そのため wrangler.jsonc の env.production も --env production も
+          # 無視される。master ではこの生成済み設定を直接書き換えて、本番
+          # Worker 名 (stock-blog) と amerikabu.com のカスタムドメインを付与。
+          # それ以外のブランチは stock-blog-c1 のまま (routes なし) で、本番
+          # ドメインを奪わない。
+          GEN_CFG=dist/server/wrangler.json
           if [ "${{ github.ref_name }}" = "master" ]; then
-            echo "Deploying site Worker: stock-blog (env=production)"
-            DEPLOY_OUTPUT=$(npx wrangler deploy --env production)
+            echo "Deploying site Worker: stock-blog (+ amerikabu.com)"
+            jq '.name = "stock-blog"
+                | .routes = [
+                    { "pattern": "amerikabu.com", "custom_domain": true },
+                    { "pattern": "www.amerikabu.com", "custom_domain": true }
+                  ]' "$GEN_CFG" > "$GEN_CFG.tmp"
+            mv "$GEN_CFG.tmp" "$GEN_CFG"
           else
             echo "Deploying site Worker: stock-blog-c1"
-            DEPLOY_OUTPUT=$(npx wrangler deploy)
           fi
+          DEPLOY_OUTPUT=$(npx wrangler deploy)
           echo "$DEPLOY_OUTPUT"
 
           # デプロイされたWorkerのURLを抽出
