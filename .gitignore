@@ -19,6 +19,11 @@ stock-blog/public/output_reports_full/
 stock-blog/src/data/blog/
 stock-blog/src/data/stocks.json
 stock-blog/public/reports/*.json
+# 決算説明会トランスクリプト: 正は R2。public/ はローカル開発配信用のコピー。
+stock-blog/public/reports/transcripts/
 public/reports/
 code/data/
 .env
+.wrangler/
+**/.wrangler/
+stock-blog/public/reports/*.json

@@ -1,24 +1,20 @@
 name: Generate Earnings Transcripts
 
 # 各銘柄の最新四半期の決算説明会トランスクリプトを和訳・要約し、R2 に蓄積する。
-#
-# 【このファイルは手動実行（先行版）】
-#   定期実行 (schedule/cron) は機能一式が master にマージされてから有効化する。
-#   現状の master には run_transcript_batch.py 等が無いため、cron で実行すると
-#   失敗する。それまでは workflow_dispatch のみとし、実行時は ref に機能ブランチ
-#   (c1) を選ぶこと（c1 をチェックアウトして c1 のコードで走る）。
-#
 # 制約への対応:
 #   - gemma-4-26b-a4b-it は 1 日 1500 リクエスト。1 本あたり概算 14 回消費。
 #     translate_summary を flash-lite へ移したため gemma はトランスクリプトが専有。
 #   - gemma は応答が遅く 1 本あたり約 13.5 分。1 実行は TRANSCRIPT_MAX_MINUTES=300
-#     により約 22 本で頭打ち。定期実行（c1 マージ後）は 1 日 3 回で約66本/日。
+#     により約 22 本で頭打ち。1 日 3 回 ≒ 66 本/日（≒ 920 回）で 1500 内に収まる。
 #   - GitHub Actions は 1 ジョブ 6 時間まで。job の timeout-minutes と
 #     TRANSCRIPT_MAX_MINUTES の二段で安全に打ち切る。
 #   - R2 は 10GB まで。md 1 本は約 90KB と小さく、最新四半期のみのため増加は緩やか。
 # 索引・md とも R2 のみに保存し、Git へはコミットしない（ページが SSR で読む）。
 
 on:
+  schedule:
+    # 1 日 3 回（8 時間おき）。各実行 約5h で非重複。21:00 のデータパイプラインを避ける。
+    - cron: '0 2,10,18 * * *'
   workflow_dispatch:
     inputs:
       limit:

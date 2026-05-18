@@ -1,5 +1,5 @@
 import { defineCollection } from "astro:content";
-import { z } from "astro:schema";
+import { z } from "astro/zod";
 import { SITE } from "@/config";
 
 export const BLOG_PATH = "src/content/blog";

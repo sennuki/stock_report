@@ -1,0 +1,361 @@
+---
+import { SITE } from "@/config";
+
+interface Props {
+  symbol: string;
+  security?: string;
+  securityJa?: string;
+  sector?: string;
+  highlights?: any;
+  earningsSurprise?: any;
+  analystRatings?: any;
+}
+
+const {
+  symbol,
+  security = "",
+  securityJa = "",
+  sector = "",
+  highlights = {},
+  earningsSurprise = {},
+  analystRatings = {},
+} = Astro.props;
+
+const sectorTranslations: Record<string, string> = {
+  "Communication Services": "通信サービス",
+  "Consumer Discretionary": "一般消費財",
+  "Consumer Staples": "生活必需品",
+  Energy: "エネルギー",
+  Financials: "金融",
+  "Health Care": "ヘルスケア",
+  Industrials: "資本財",
+  "Information Technology": "情報技術",
+  Materials: "素材",
+  "Real Estate": "不動産",
+  Utilities: "公益事業",
+};
+
+const sectorJa = sectorTranslations[sector] || sector || "";
+
+// クライアントへ渡すデータをまとめる
+const cardData = {
+  symbol,
+  security,
+  securityJa,
+  sectorJa,
+  currentPrice: analystRatings?.currentPrice ?? null,
+  pe_forward: highlights?.pe_forward ?? null,
+  pe_ttm: highlights?.pe_ttm ?? null,
+  roe: highlights?.roe ?? null,
+  dividend_yield: highlights?.dividend_yield ?? null,
+  revenue_growth: highlights?.revenue_growth ?? null,
+  earnings_growth: highlights?.earnings_growth ?? null,
+  operating_margins: highlights?.operating_margins ?? null,
+  debt_to_equity: highlights?.debt_to_equity ?? null,
+  surprise_pct: earningsSurprise?.surprise_pct ?? null,
+  siteName: SITE.title,
+  siteUrl: SITE.website,
+};
+---
+
+<section
+  class="share-card-wrapper bg-skin-fill/30 border border-skin-line rounded-lg p-4 sm:p-5 mt-6 mb-8"
+  data-card={JSON.stringify(cardData)}
+  aria-labelledby="share-card-heading"
+>
+  <h2 id="share-card-heading" class="text-sm font-bold opacity-80 mb-3 uppercase tracking-wider flex items-center gap-2">
+    <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">attach_money</span>
+    シェア・転載用ツール
+  </h2>
+  <div class="flex flex-wrap gap-2">
+    <button
+      type="button"
+      class="share-card-download inline-flex items-center gap-1.5 px-3 py-2 text-sm rounded-md border border-skin-line bg-skin-card hover:border-skin-accent hover:text-skin-accent transition-colors"
+      aria-label="銘柄サマリーを画像として保存"
+      title="銘柄サマリー画像をダウンロード（ブログ・SNS転載用）"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+      </svg>
+      <span>サマリー画像を保存</span>
+    </button>
+
+    <button
+      type="button"
+      class="share-card-twitter inline-flex items-center gap-1.5 px-3 py-2 text-sm rounded-md border border-skin-line bg-skin-card hover:border-skin-accent hover:text-skin-accent transition-colors"
+      aria-label="Xでシェア"
+      title="X (Twitter) でこの銘柄のレポートをシェア"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+      </svg>
+      <span>Xでシェア</span>
+    </button>
+
+    <button
+      type="button"
+      class="share-card-copy-link inline-flex items-center gap-1.5 px-3 py-2 text-sm rounded-md border border-skin-line bg-skin-card hover:border-skin-accent hover:text-skin-accent transition-colors"
+      aria-label="ページのリンクをコピー"
+      title="このページのURLをコピー"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 015.656 0l3 3a4 4 0 01-5.656 5.656l-1.5-1.5M10.172 13.828a4 4 0 01-5.656 0l-3-3a4 4 0 015.656-5.656l1.5 1.5" />
+      </svg>
+      <span class="link-text">リンクをコピー</span>
+    </button>
+  </div>
+  <p class="text-xs opacity-60 mt-3 leading-relaxed">
+    ※ ブログ・X投稿等への転載は、本サイトへのリンクをあわせてご記載ください。データは <a href="/disclaimer" class="underline">免責事項</a> をご確認のうえご利用ください。
+  </p>
+</section>
+
+<script is:inline>
+  (function () {
+    const wrappers = document.querySelectorAll(".share-card-wrapper");
+    if (!wrappers.length) return;
+
+    function fmtPct(v, dp) {
+      if (v === null || v === undefined || !isFinite(v)) return "---";
+      return (v * 100).toFixed(dp ?? 1) + "%";
+    }
+    function fmtNum(v, dp, suffix) {
+      if (v === null || v === undefined || !isFinite(v)) return "---";
+      return v.toFixed(dp ?? 1) + (suffix || "");
+    }
+    function fmtPrice(v) {
+      if (v === null || v === undefined || !isFinite(v)) return "---";
+      return "$" + v.toFixed(2);
+    }
+
+    function buildSummaryCanvas(data, isDark) {
+      const W = 1200;
+      const H = 630;
+      const c = document.createElement("canvas");
+      c.width = W;
+      c.height = H;
+      const ctx = c.getContext("2d");
+      if (!ctx) return null;
+
+      const colors = isDark
+        ? {
+            bg1: "#0f172a",
+            bg2: "#1e293b",
+            text: "#f1f5f9",
+            sub: "#94a3b8",
+            line: "rgba(148,163,184,0.25)",
+            cardBg: "rgba(30,41,59,0.6)",
+            green: "#10b981",
+            red: "#ef4444",
+            accent: "#60a5fa",
+          }
+        : {
+            bg1: "#fafafa",
+            bg2: "#e2e8f0",
+            text: "#0f172a",
+            sub: "#475569",
+            line: "rgba(15,23,42,0.12)",
+            cardBg: "rgba(255,255,255,0.85)",
+            green: "#059669",
+            red: "#dc2626",
+            accent: "#2563eb",
+          };
+
+      // 背景グラデーション
+      const grad = ctx.createLinearGradient(0, 0, W, H);
+      grad.addColorStop(0, colors.bg1);
+      grad.addColorStop(1, colors.bg2);
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, W, H);
+
+      // 上部装飾線
+      ctx.strokeStyle = colors.accent;
+      ctx.lineWidth = 6;
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(W, 0);
+      ctx.stroke();
+
+      // タイトル：ティッカー
+      ctx.fillStyle = colors.text;
+      ctx.font = "bold 110px system-ui, -apple-system, sans-serif";
+      ctx.textAlign = "left";
+      ctx.textBaseline = "alphabetic";
+      ctx.fillText(data.symbol, 60, 150);
+
+      // 社名
+      ctx.fillStyle = colors.sub;
+      ctx.font = "32px system-ui, -apple-system, sans-serif";
+      const namePrimary = data.securityJa || data.security || "";
+      const nameSecondary =
+        data.securityJa && data.security ? data.security : "";
+      if (namePrimary) ctx.fillText(namePrimary, 60, 200);
+      if (nameSecondary) {
+        ctx.font = "24px system-ui, -apple-system, sans-serif";
+        ctx.fillText(nameSecondary, 60, 235);
+      }
+
+      // セクター（右上タグ）
+      if (data.sectorJa) {
+        ctx.font = "bold 22px system-ui, -apple-system, sans-serif";
+        const sectorText = data.sectorJa;
+        const sectorMetrics = ctx.measureText(sectorText);
+        const padX = 18;
+        const padY = 10;
+        const tagW = sectorMetrics.width + padX * 2;
+        const tagH = 36;
+        const tagX = W - 60 - tagW;
+        const tagY = 60;
+        ctx.fillStyle = colors.accent;
+        ctx.beginPath();
+        ctx.roundRect(tagX, tagY, tagW, tagH, 18);
+        ctx.fill();
+        ctx.fillStyle = "#ffffff";
+        ctx.fillText(sectorText, tagX + padX, tagY + tagH - 11);
+      }
+
+      // 株価 + 決算サプライズ
+      const priceY = 290;
+      ctx.fillStyle = colors.text;
+      ctx.font = "bold 64px system-ui, -apple-system, sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillText(fmtPrice(data.currentPrice), 60, priceY);
+
+      if (typeof data.surprise_pct === "number" && isFinite(data.surprise_pct)) {
+        const isUp = data.surprise_pct >= 0;
+        const sp =
+          (isUp ? "+" : "") + (data.surprise_pct).toFixed(2) + "%";
+        ctx.fillStyle = isUp ? colors.green : colors.red;
+        ctx.font = "bold 36px system-ui, -apple-system, sans-serif";
+        ctx.fillText(sp + " (直近EPSサプライズ)", 360, priceY - 10);
+      }
+
+      // 指標カード
+      const metrics = [
+        { label: "予想 PER", value: fmtNum(data.pe_forward, 1, "x") },
+        { label: "実績 PER", value: fmtNum(data.pe_ttm, 1, "x") },
+        { label: "ROE", value: fmtPct(data.roe, 1) },
+        { label: "配当利回り", value: fmtPct(data.dividend_yield, 2) },
+        { label: "売上成長率(YoY)", value: fmtPct(data.revenue_growth, 1) },
+        { label: "営業利益率", value: fmtPct(data.operating_margins, 1) },
+      ];
+      const cardW = 170;
+      const cardH = 110;
+      const gap = 18;
+      const totalW = cardW * 6 + gap * 5;
+      const startX = (W - totalW) / 2;
+      const cardY = 360;
+      metrics.forEach((m, i) => {
+        const x = startX + i * (cardW + gap);
+        ctx.fillStyle = colors.cardBg;
+        ctx.beginPath();
+        ctx.roundRect(x, cardY, cardW, cardH, 14);
+        ctx.fill();
+        ctx.strokeStyle = colors.line;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        ctx.fillStyle = colors.sub;
+        ctx.font = "20px system-ui, -apple-system, sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText(m.label, x + cardW / 2, cardY + 38);
+
+        ctx.fillStyle = colors.text;
+        ctx.font = "bold 32px system-ui, -apple-system, sans-serif";
+        ctx.fillText(m.value, x + cardW / 2, cardY + 80);
+      });
+
+      // フッター：URL/出典
+      ctx.fillStyle = colors.line;
+      ctx.fillRect(60, H - 100, W - 120, 1);
+
+      ctx.fillStyle = colors.text;
+      ctx.font = "bold 26px system-ui, -apple-system, sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillText(data.siteName, 60, H - 50);
+
+      ctx.fillStyle = colors.sub;
+      ctx.font = "20px system-ui, -apple-system, sans-serif";
+      ctx.textAlign = "right";
+      const pageUrl = (window.location.origin || "") + window.location.pathname;
+      ctx.fillText(pageUrl, W - 60, H - 50);
+
+      ctx.fillStyle = colors.sub;
+      ctx.font = "16px system-ui, -apple-system, sans-serif";
+      ctx.textAlign = "left";
+      const today = new Date().toISOString().slice(0, 10);
+      ctx.fillText("Generated: " + today + " | データ: yfinance", 60, H - 22);
+
+      return c;
+    }
+
+    wrappers.forEach((wrapper) => {
+      const data = JSON.parse(wrapper.dataset.card || "{}");
+      const dlBtn = wrapper.querySelector(".share-card-download");
+      const twBtn = wrapper.querySelector(".share-card-twitter");
+      const cpBtn = wrapper.querySelector(".share-card-copy-link");
+
+      dlBtn?.addEventListener("click", () => {
+        const isDark =
+          document.documentElement.classList.contains("dark") ||
+          document.documentElement.getAttribute("data-theme") === "dark";
+        const c = buildSummaryCanvas(data, isDark);
+        if (!c) return;
+        const a = document.createElement("a");
+        a.href = c.toDataURL("image/png");
+        const safeSymbol = String(data.symbol || "stock").replace(
+          /[^A-Za-z0-9_-]/g,
+          ""
+        );
+        a.download = safeSymbol + "_summary.png";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      });
+
+      twBtn?.addEventListener("click", () => {
+        const url = window.location.href;
+        const lines = [];
+        lines.push(
+          `📊 ${data.symbol}${data.securityJa ? "（" + data.securityJa + "）" : ""}の銘柄分析`
+        );
+        if (typeof data.currentPrice === "number") {
+          lines.push(`株価: ${fmtPrice(data.currentPrice)}`);
+        }
+        const stat = [];
+        if (typeof data.pe_forward === "number")
+          stat.push("予想PER " + data.pe_forward.toFixed(1) + "x");
+        if (typeof data.dividend_yield === "number")
+          stat.push("配当利回り " + (data.dividend_yield * 100).toFixed(2) + "%");
+        if (typeof data.roe === "number")
+          stat.push("ROE " + (data.roe * 100).toFixed(1) + "%");
+        if (stat.length) lines.push(stat.join(" / "));
+        lines.push("");
+        lines.push("#米国株 #" + data.symbol + " #SP500");
+
+        const text = lines.join("\n");
+        const intent =
+          "https://twitter.com/intent/tweet?text=" +
+          encodeURIComponent(text) +
+          "&url=" +
+          encodeURIComponent(url);
+        window.open(intent, "_blank", "noopener,noreferrer");
+      });
+
+      cpBtn?.addEventListener("click", async () => {
+        const linkText = cpBtn.querySelector(".link-text");
+        try {
+          await navigator.clipboard.writeText(window.location.href);
+          if (linkText) {
+            const original = linkText.textContent;
+            linkText.textContent = "コピー完了！";
+            setTimeout(() => {
+              if (linkText) linkText.textContent = original;
+            }, 2000);
+          }
+        } catch (e) {
+          alert("URL: " + window.location.href);
+        }
+      });
+    });
+  })();
+</script>

@@ -40,30 +40,50 @@ const base = import.meta.env.BASE_URL.endsWith("/")
   {...attrs}
 >
   <div class="border-t border-border py-8 sm:py-10">
-    <div class="mb-8">
-      <h2 class="text-sm font-bold mb-4 tracking-wider opacity-80 uppercase">Sector Tags</h2>
-      <div class="flex flex-wrap gap-2">
-        {sectors.map((sector: string) => (
-          <a
-            href={`${base}#${sector}`} 
-            class="px-3 py-1 text-xs border border-skin-line rounded-full hover:border-skin-accent hover:text-skin-accent transition-all bg-skin-card hover:shadow-sm"
-          >
-            {sectorTranslations[sector] || sector}
-          </a>
-        ))}
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 mb-8">
+      <div>
+        <h2 class="text-sm font-bold mb-3 tracking-wider opacity-80 uppercase">サイト情報</h2>
+        <ul class="space-y-2 text-sm">
+          <li><a href={`${base}about`} class="hover:text-skin-accent transition-colors">このサイトについて</a></li>
+          <li><a href={`${base}posts`} class="hover:text-skin-accent transition-colors">解説記事</a></li>
+          <li><a href={`${base}az`} class="hover:text-skin-accent transition-colors">銘柄一覧（A-Z）</a></li>
+          <li><a href={`${base}search`} class="hover:text-skin-accent transition-colors">検索</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="text-sm font-bold mb-3 tracking-wider opacity-80 uppercase">運営</h2>
+        <ul class="space-y-2 text-sm">
+          <li><a href={`${base}contact`} class="hover:text-skin-accent transition-colors">お問い合わせ</a></li>
+          <li><a href={`${base}privacy`} class="hover:text-skin-accent transition-colors">プライバシーポリシー</a></li>
+          <li><a href={`${base}terms`} class="hover:text-skin-accent transition-colors">利用規約</a></li>
+          <li><a href={`${base}disclaimer`} class="hover:text-skin-accent transition-colors">免責事項</a></li>
+        </ul>
+      </div>
+      <div class="col-span-2">
+        <h2 class="text-sm font-bold mb-3 tracking-wider opacity-80 uppercase">セクター</h2>
+        <div class="flex flex-wrap gap-2">
+          {sectors.map((sector: string) => (
+            <a
+              href={`${base}#${sector}`}
+              class="px-3 py-1 text-xs border border-skin-line rounded-full hover:border-skin-accent hover:text-skin-accent transition-all bg-skin-card hover:shadow-sm"
+            >
+              {sectorTranslations[sector] || sector}
+            </a>
+          ))}
+        </div>
       </div>
     </div>
-    
+
     <div class="flex flex-col items-center justify-between gap-6 sm:flex-row border-t border-border pt-8">
       <div class="text-sm opacity-70">
-        © {currentYear} S&P 500 Stock Analysis Report.
+        © {currentYear} アメリカ株インサイト
       </div>
       <div class="text-xs opacity-60 text-center sm:text-right max-w-md leading-relaxed">
         <p class="mb-2">
           本サイトは投資に関する一般的な情報を提供するものであり、特定の投資判断や推奨を行うものではありません。
         </p>
         <p>
-	本サイトに掲載されている財務データ（yfinance提供）は、システムの自動処理によるものであり、その正確性、完全性、最新性を保証するものではありません。実際の投資にあたっては、必ず企業の公式決算報告書（SEC提出書類等）を確認し、自己の責任において判断を行ってください。
+          本サイトに掲載されている財務データ（yfinance提供）は、システムの自動処理によるものであり、その正確性、完全性、最新性を保証するものではありません。実際の投資にあたっては、必ず企業の公式決算報告書（SEC提出書類等）を確認し、自己の責任において判断を行ってください。詳細は<a href={`${base}disclaimer`} class="underline hover:text-skin-accent">免責事項</a>をご確認ください。
         </p>
       </div>
     </div>

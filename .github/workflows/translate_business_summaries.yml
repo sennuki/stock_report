@@ -14,20 +14,19 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 concurrency:
-  group: translate-business-summaries-c1
+  group: translate-business-summaries-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
   translate-business-summaries:
     runs-on: ubuntu-latest
-    environment: c1
+    environment: ${{ github.ref_name == 'master' && 'production' || 'c1' }}
     permissions:
       contents: read
     steps:
-      - name: Checkout c1 repository code
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: c1
           fetch-depth: 1
 
       - name: Set up Node.js
@@ -46,7 +45,7 @@ jobs:
           node scripts/translate-business-summaries.mjs
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          GEMINI_TRANSLATION_MODEL: "gemini-3.1-flash-lite-preview"
+          GEMINI_TRANSLATION_MODEL: "gemini-flash-lite-latest"
           TRANSLATION_LIMIT: ${{ github.event.inputs.limit || '3' }}
           TRANSLATION_SUMMARY_OUTPUT: "translation-summary.json"
           R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -62,7 +61,6 @@ jobs:
           {
             echo "### Business Summary Translation"
             echo ""
-            echo "- Code branch: c1"
             if [ -f translation-summary.json ]; then
               node -e "const fs=require('fs'); const s=JSON.parse(fs.readFileSync('translation-summary.json','utf8')); console.log('- Translated: ' + s.translated); console.log('- Symbols: ' + (s.translated_symbols.length ? s.translated_symbols.join(', ') : '(none)')); console.log('- Skipped existing Japanese: ' + s.skipped_japanese); console.log('- Skipped no source: ' + s.skipped_no_source); console.log('- Failed: ' + s.failed);"
             else

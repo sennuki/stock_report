@@ -477,62 +477,172 @@ def get_market_info(symbol):
         # print(f"Error fetching info for {symbol}: {e}") # Debug output
         return symbol, "NYSE", None
 
-def fetch_sp500_companies_optimized():
-    print("S&P 500リストを取得中...")
-    url = "https://en.wikipedia.org/wiki/List_of_S&P_500_companies"
+def _fetch_index_constituents(index_label: str, url: str):
+    """Wikipedia から指定された指数 (S&P 500/400/600) の銘柄リストを取得し、
+    polars DataFrame を返す（市場情報なしの純粋なリスト）。
+
+    返す DataFrame は以下のカラムを持つ:
+      - Symbol (表示用、ドット区切り)
+      - Symbol_YF (Yahoo Finance 用、ハイフン区切り)
+      - Security
+      - GICS Sector
+      - GICS Sub-Industry
+      - Index (引数の index_label がそのまま入る)
+    """
+    print(f"{index_label} リストを取得中... URL={url}")
     try:
-        # Wikipediaのテーブルを取得
-        wiki_df = pd.read_html(StringIO(requests.get(url, headers={"User-Agent": "Mozilla/5.0"}).text))[0]
-        df = pl.from_pandas(wiki_df).select(['Symbol', 'Security', 'GICS Sector', 'GICS Sub-Industry'])
-        
+        html = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=30).text
+
+        # Wikipedia の銘柄リストページは通常 id="constituents" の table を持つ。
+        # それを優先して取得し、見つからない場合は最初のテーブルにフォールバック。
+        wiki_df = None
+        try:
+            tables = pd.read_html(StringIO(html), attrs={"id": "constituents"})
+            if tables:
+                wiki_df = tables[0]
+                print(f"  → constituents テーブルを検出 ({len(wiki_df)} 行)")
+        except Exception as e_inner:
+            print(f"  → id=constituents で取得不可 ({e_inner})、最初のテーブルにフォールバック")
+
+        if wiki_df is None:
+            tables = pd.read_html(StringIO(html))
+            print(f"  → ページ内テーブル数: {len(tables)}")
+            # Symbol カラムを持つ最初のテーブルを採用する
+            for i, t in enumerate(tables):
+                cols = [str(c).strip() for c in t.columns]
+                if any(c.lower() in ("symbol", "ticker", "ticker symbol") for c in cols):
+                    wiki_df = t
+                    print(f"  → table[{i}] を採用 ({len(wiki_df)} 行) cols={cols[:6]}")
+                    break
+
+        if wiki_df is None or wiki_df.empty:
+            print(f"  ✗ {index_label}: 構成銘柄テーブルが見つかりませんでした")
+            return pl.DataFrame()
+
+        # カラム名のゆらぎ吸収（'Ticker symbol' → 'Symbol' など）
+        rename_map = {}
+        for c in wiki_df.columns:
+            cs = str(c).strip()
+            if cs.lower() in ("ticker symbol", "ticker"):
+                rename_map[c] = "Symbol"
+            elif cs.lower() in ("company", "security name"):
+                rename_map[c] = "Security"
+        if rename_map:
+            wiki_df = wiki_df.rename(columns=rename_map)
+
+        required_cols = ["Symbol", "Security", "GICS Sector", "GICS Sub-Industry"]
+        missing = [c for c in required_cols if c not in wiki_df.columns]
+        if missing:
+            print(f"  ✗ {index_label}: 必須カラムが欠けています: {missing} (実際のカラム: {list(wiki_df.columns)[:8]})")
+            return pl.DataFrame()
+
+        df = pl.from_pandas(wiki_df).select(required_cols)
+
         # Symbol_YF: Yahoo Finance用 (ドットをハイフンに変換: BRK.B -> BRK-B)
         # Symbol: 表示用 (ドットに統一: BRK-B -> BRK.B)
         df = df.with_columns([
             pl.col('Symbol').str.replace(r"\.", "-", literal=False).alias('Symbol_YF'),
-            pl.col('Symbol').str.replace(r"-", ".", literal=False).alias('Symbol')
+            pl.col('Symbol').str.replace(r"-", ".", literal=False).alias('Symbol'),
+            pl.lit(index_label).alias('Index'),
         ])
-
-        # マネックスの日本語名マッピングを取得 (手動補完分を含む)
-        ja_name_combined_mapping = get_combined_ja_name_map()
-
-        symbols = df['Symbol_YF'].to_list()
-        ex_map = {}
-        change_map = {}
-        ja_name_map = {}
-        
-        print(f"{len(symbols)} 銘柄の市場情報を取得中... (並列処理)")
-        # Rate limit回避のため並列数を抑える
-        # GitHub Actions では 1、ローカルでも 1 をデフォルトにする
-        default_max_workers = 1 if os.getenv("GITHUB_ACTIONS") == "true" else 1
-        current_max_workers = int(os.getenv("MAX_WORKERS", default_max_workers))
-
-        with ThreadPoolExecutor(max_workers=current_max_workers) as ex:
-            f_map = {ex.submit(get_market_info, s): s for s in symbols}
-            for f in tqdm(as_completed(f_map), total=len(symbols)):
-                s, e, c = f.result()
-                ex_map[s] = e
-                change_map[s] = c
-                
-                # 日本語名の紐付け (Yahoo Finance 用シンボル A -> A, BRK-B -> BRK.B など考慮)
-                display_symbol = s.replace("-", ".")
-                ja_name = ja_name_combined_mapping.get(display_symbol)
-                if not ja_name:
-                    ja_name = ja_name_combined_mapping.get(s)
-                
-                ja_name_map[s] = ja_name
-
-        return df.with_columns([
-            pl.col('Symbol_YF').map_elements(lambda s: ex_map.get(s, "NYSE"), return_dtype=pl.Utf8).alias('Exchange'),
-            pl.col('Symbol_YF').map_elements(lambda s: change_map.get(s), return_dtype=pl.Float64).alias('Daily_Change'),
-            pl.col('Symbol_YF').map_elements(lambda s: ja_name_map.get(s), return_dtype=pl.Utf8).alias('Security_JA')
-        ])
+        print(f"  ✓ {index_label}: {len(df)} 銘柄を取得")
+        return df
     except Exception as e:
-        print(f"Failed to fetch S&P 500 list: {e}")
+        print(f"  ✗ Failed to fetch {index_label} list: {e}")
         return pl.DataFrame()
 
+def _enrich_with_market_info(df):
+    """与えられた銘柄リストに Yahoo Finance の市場情報を付与する。
+
+    Exchange, Daily_Change, Security_JA を追加した DataFrame を返す。
+    元のカラムはすべて保持される。
+    """
+    if df.is_empty():
+        return df
+
+    # マネックスの日本語名マッピングを取得 (手動補完分を含む)
+    ja_name_combined_mapping = get_combined_ja_name_map()
+
+    symbols = df['Symbol_YF'].to_list()
+    ex_map = {}
+    change_map = {}
+    ja_name_map = {}
+
+    print(f"{len(symbols)} 銘柄の市場情報を取得中... (並列処理)")
+    # Rate limit回避のため並列数を抑える
+    # GitHub Actions では 1、ローカルでも 1 をデフォルトにする
+    default_max_workers = 1 if os.getenv("GITHUB_ACTIONS") == "true" else 1
+    current_max_workers = int(os.getenv("MAX_WORKERS", default_max_workers))
+
+    with ThreadPoolExecutor(max_workers=current_max_workers) as ex:
+        f_map = {ex.submit(get_market_info, s): s for s in symbols}
+        for f in tqdm(as_completed(f_map), total=len(symbols)):
+            s, e, c = f.result()
+            ex_map[s] = e
+            change_map[s] = c
+
+            # 日本語名の紐付け (Yahoo Finance 用シンボル A -> A, BRK-B -> BRK.B など考慮)
+            display_symbol = s.replace("-", ".")
+            ja_name = ja_name_combined_mapping.get(display_symbol)
+            if not ja_name:
+                ja_name = ja_name_combined_mapping.get(s)
+            ja_name_map[s] = ja_name
+
+    return df.with_columns([
+        pl.col('Symbol_YF').map_elements(lambda s: ex_map.get(s, "NYSE"), return_dtype=pl.Utf8).alias('Exchange'),
+        pl.col('Symbol_YF').map_elements(lambda s: change_map.get(s), return_dtype=pl.Float64).alias('Daily_Change'),
+        pl.col('Symbol_YF').map_elements(lambda s: ja_name_map.get(s), return_dtype=pl.Utf8).alias('Security_JA'),
+    ])
+
+
+# Wikipedia URL 定義 (S&P 500 / 400 / 600)
+SP_INDEX_URLS = {
+    "S&P 500": "https://en.wikipedia.org/wiki/List_of_S&P_500_companies",
+    "S&P 400": "https://en.wikipedia.org/wiki/List_of_S&P_400_companies",
+    "S&P 600": "https://en.wikipedia.org/wiki/List_of_S&P_600_companies",
+}
+
+
+def fetch_sp_indices_companies(indices=None):
+    """S&P 500 / 400 / 600 の銘柄リストを Wikipedia から取得して結合し、
+    Yahoo Finance の市場情報を付与した DataFrame を返す。
+
+    引数 indices で対象指数を絞り込める（既定: 3 指数すべて）。
+    重複する銘柄（複数指数に跨る場合）は最初に出現する指数のみ採用する。
+    """
+    if indices is None:
+        indices = list(SP_INDEX_URLS.keys())
+
+    frames = []
+    for label in indices:
+        url = SP_INDEX_URLS.get(label)
+        if not url:
+            continue
+        df_part = _fetch_index_constituents(label, url)
+        if not df_part.is_empty():
+            frames.append(df_part)
+
+    if not frames:
+        return pl.DataFrame()
+
+    # 縦結合 + 重複除去（先勝ち：S&P 500 に含まれていれば 400/600 側は捨てる）
+    combined = pl.concat(frames, how='vertical_relaxed').unique(subset=['Symbol_YF'], keep='first')
+
+    return _enrich_with_market_info(combined)
+
+
+def fetch_sp500_companies_optimized():
+    """既存呼び出しとの互換のために残す。S&P 500 のみを返す。"""
+    df = _fetch_index_constituents("S&P 500", SP_INDEX_URLS["S&P 500"])
+    if df.is_empty():
+        return df
+    return _enrich_with_market_info(df)
+
 if __name__ == "__main__":
-    print("S&P 500データの取得テストを実行します...")
-    df = fetch_sp500_companies_optimized()
-    print("\n--- S&P 500 List (First 5 rows) ---")
+    print("S&P 500/400/600 データの取得テストを実行します...")
+    df = fetch_sp_indices_companies()
+    print("\n--- S&P 500/400/600 List (First 5 rows) ---")
     print(df.head())
+    print("\n--- Index breakdown ---")
+    print(df.group_by('Index').len())
     print(f"Total records: {len(df)}")

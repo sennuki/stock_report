@@ -198,10 +198,10 @@ def get_financial_data(ticker_obj):
 
     # 損益計算書
     is_aliases = {
-        'Total Revenue': ['Total Revenue', 'Revenue', 'Operating Revenue'],
+        'Total Revenue': ['Total Revenue', 'Revenue', 'Operating Revenue', 'TotalRevenue', 'OperatingRevenue'],
         'Gross Profit': ['Gross Profit', 'GrossProfit'],
         'Operating Income': ['Operating Income', 'OperatingIncome', 'Operating Profit'],
-        'Net Income': ['Net Income', 'NetIncome', 'Net Income Common Stockholders'],
+        'Net Income': ['Net Income', 'NetIncome', 'Net Income Common Stockholders', 'Net Income Continuous Operations', 'Net Income from Continuing Operations'],
         'Basic EPS': ['Basic EPS', 'BasicEPS', 'Earnings Per Share Basic']
     }
 
@@ -239,26 +239,31 @@ def get_financial_data(ticker_obj):
     # 4. 総還元性向
     def process_tp(df_cf, df_is=None):
         try:
-            if df_cf is None or df_cf.empty:
+            if df_cf is None or (isinstance(df_cf, pd.DataFrame) and df_cf.empty):
                 return pl.DataFrame()
             
             # Use pandas level merge to ensure Net Income is available
             df_source = df_cf.copy()
             if df_is is not None and not df_is.empty:
                 # Find any net income related rows in IS
-                ni_keys = ['Net Income', 'NetIncome', 'Net Income Common Stockholders', 'Net Income From Continuing Operations']
-                ni_rows = df_is.loc[df_is.index.isin(ni_keys)]
+                # Use case-insensitive search or explicit list
+                ni_keys = [
+                    'Net Income', 'NetIncome', 'Net Income Common Stockholders', 
+                    'Net Income From Continuing Operations', 'Net Income from Continuing Operations',
+                    'Net Income Continuous Operations', 'Net Income from Continuing Operation Net Minority Interest'
+                ]
+                ni_rows = df_is[df_is.index.str.lower().isin([k.lower() for k in ni_keys])]
                 if not ni_rows.empty:
                     # Rename them to 'Net Income' for simplicity during merge
-                    ni_rows.index = ['Net Income'] * len(ni_rows)
-                    # If df_source already has these keys, they will be handled by extract_with_aliases
+                    ni_rows = ni_rows.iloc[[0]].copy() # Take the first matching row
+                    ni_rows.index = ['Net Income']
                     df_source = pd.concat([df_source, ni_rows])
 
             # Use extract_with_aliases logic locally for TP
             tp_aliases = {
-                'Net Income From Continuing Operations': ['Net Income From Continuing Operations', 'Net Income from Continuing Operations', 'Net Income', 'NetIncome'],
-                'Repurchase Of Capital Stock': ['Repurchase Of Capital Stock', 'Repurchase of Capital Stock', 'Repurchase Of Common Stock', 'Repurchase of Common Stock', 'Common Stock Repurchased', 'RepurchaseOfCapitalStock'],
-                'Cash Dividends Paid': ['Cash Dividends Paid', 'Cash dividends paid', 'Common Stock Dividend Paid', 'CashDividendsPaid', 'DividendsPaid']
+                'Net Income From Continuing Operations': ['Net Income From Continuing Operations', 'Net Income from Continuing Operations', 'Net Income', 'NetIncome', 'Net Income Common Stockholders', 'Net Income Continuous Operations'],
+                'Repurchase Of Capital Stock': ['Repurchase Of Capital Stock', 'Repurchase of Capital Stock', 'Repurchase Of Common Stock', 'Repurchase of Common Stock', 'Common Stock Repurchased', 'RepurchaseOfCapitalStock', 'Treasury Stock'],
+                'Cash Dividends Paid': ['Cash Dividends Paid', 'Cash dividends paid', 'Common Stock Dividend Paid', 'CashDividendsPaid', 'DividendsPaid', 'Dividends']
             }
             
             # Use existing extract_with_aliases if possible, or just mimic its logic
@@ -703,7 +708,7 @@ def get_dps_eps_chart_data(data_dict, is_data_dict):
 
         # 実績分の配当 (棒グラフ - 土台)
         fig.add_trace(go.Bar(
-            name='年間配当 (年間推移)', x=df_ann_plot['Date'], y=df_ann_plot['ActualValue'],
+            name='実績配当 (年間推移)', x=df_ann_plot['Date'], y=df_ann_plot['ActualValue'],
             marker_color='#1f77b4', # 濃い青
             text=labels_base,
             textposition='auto',
@@ -719,14 +724,14 @@ def get_dps_eps_chart_data(data_dict, is_data_dict):
             labels_est = [f"${r['Value']:.2f}" if r['IsEstimate'] else "" for r in df_ann_plot.to_dicts()]
             
             fig.add_trace(go.Bar(
-                name='年間配当 (年間推移)', x=df_ann_plot['Date'], y=df_ann_plot['EstimatedPart'],
-                marker_color='#aec7e8', # 薄い青
+                name='推定配当 (年間推移)', x=df_ann_plot['Date'], y=df_ann_plot['EstimatedPart'],
+                marker_color='#aec7e8', # 薄い青（水色）
                 text=labels_est,
                 textposition='auto',
-                hovertemplate='年度: %{x}<br>配当額: $%{text}<extra></extra>',
+                hovertemplate='年度: %{x}<br>推定配当額: $%{text}<extra></extra>',
                 visible=True,
                 legendgroup='annual_div',
-                showlegend=False
+                showlegend=True
             ))
         
         # 利回りトレース (年初株価ベース - 折れ線)
@@ -734,7 +739,7 @@ def get_dps_eps_chart_data(data_dict, is_data_dict):
             fig.add_trace(go.Scatter(
                 name='配当利回り (年間推移)', x=df_ann_plot['Date'], y=df_ann_plot['Yield'],
                 mode='lines+markers',
-                line=dict(color='#ff7f0e', width=3, dash='dot'),
+                line=dict(color='#ff7f0e', width=3),
                 marker=dict(size=8),
                 yaxis='y2',
                 hovertemplate='年度: %{x}<br>配当利回り: %{y:.2%}<extra></extra>',
@@ -761,7 +766,7 @@ def get_dps_eps_chart_data(data_dict, is_data_dict):
             fig.add_trace(go.Scatter(
                 name='配当利回り (権利落日別)', x=df_q_plot['Date'], y=df_q_plot['Yield_Q'],
                 mode='lines+markers',
-                line=dict(color='#d62728', width=2, dash='dot'),
+                line=dict(color='#d62728', width=2),
                 yaxis='y2',
                 hovertemplate='権利落日: %{x}<br>予想利回り: %{y:.2%}<extra></extra>',
                 visible=False
@@ -933,27 +938,49 @@ def get_is_chart_data(data_dict):
         if not valid_dates: return 0
         df_plot = df.filter(pl.col('Date').is_in(valid_dates)).unique(subset=['Item', 'Date']).sort('Date')
 
+        # Ensure alignment by joining each item with the valid_dates list
+        base_df = pl.DataFrame({'Date': valid_dates}).sort('Date')
+        def get_aligned_data(item_name):
+            item_df = df_plot.filter(pl.col('Item') == item_name)
+            return base_df.join(item_df, on='Date', how='left')
+
         trace_count = 0
         items = [('Total Revenue', '売上高', '#aec7e8'), ('Gross Profit', '売上総利益', '#1f77b4'),
                  ('Operating Income', '営業利益', '#ffbb78'), ('Net Income', '純利益', '#2ca02c')]
         for item_key, name, color in items:
-            sub = df_plot.filter(pl.col('Item') == item_key)
+            sub = get_aligned_data(item_key)
             if not sub.is_empty():
                 fig.add_trace(go.Bar(name=name + suffix, x=sub['Date'], y=sub['Value'], marker_color=color, visible=visible))
                 trace_count += 1
         
         # 利益率
         try:
-            df_pivot = df_plot.pivot(on='Item', index='Date', values='Value').sort('Date')
-            ratio_configs = [('Gross Profit', 'Total Revenue', '売上総利益率', '#1f77b4'),
-                             ('Operating Income', 'Total Revenue', '営業利益率', '#ffbb78'),
-                             ('Net Income', 'Total Revenue', '純利益率', '#2ca02c')]
-            for num, den, name, color in ratio_configs:
-                if num in df_pivot.columns and den in df_pivot.columns:
-                    calc = df_pivot.with_columns((pl.col(num) / pl.col(den)).alias('Ratio'))
-                    fig.add_trace(go.Scatter(name=name + suffix, x=calc['Date'], y=calc['Ratio'], line=dict(color=color, width=2), mode='lines+markers', yaxis='y2', hovertemplate='%{y:.1%}', visible=visible))
+            # We already have aligned ni and rev
+            rev = get_aligned_data('Total Revenue')
+            gp = get_aligned_data('Gross Profit')
+            op = get_aligned_data('Operating Income')
+            ni = get_aligned_data('Net Income')
+
+            ratio_configs = [(gp, '売上総利益率', '#1f77b4'),
+                             (op, '営業利益率', '#ffbb78'),
+                             (ni, '純利益率', '#2ca02c')]
+            for num_df, name, color in ratio_configs:
+                if not num_df.is_empty() and not rev.is_empty():
+                    # Calculate ratio safely
+                    calc_val = []
+                    for i in range(len(rev)):
+                        r_val = rev['Value'][i]
+                        n_val = num_df['Value'][i]
+                        if r_val and r_val != 0 and n_val is not None:
+                            calc_val.append(n_val / r_val)
+                        else:
+                            calc_val.append(None)
+                    
+                    fig.add_trace(go.Scatter(name=name + suffix, x=rev['Date'], y=calc_val, line=dict(color=color, width=2), mode='lines+markers', yaxis='y2', hovertemplate='%{y:.1%}', visible=visible))
                     trace_count += 1
-        except: pass
+        except Exception as e:
+            # print(f"Error calculating ratios: {e}")
+            pass
         return trace_count
 
     # トレース追加
@@ -998,13 +1025,19 @@ def get_cf_chart_data(data_dict):
         if not valid_dates: return 0
         df_plot = df.filter(pl.col('Date').is_in(valid_dates)).unique(subset=['Item', 'Date']).sort('Date')
 
+        # Ensure alignment by joining each item with the valid_dates list
+        base_df = pl.DataFrame({'Date': valid_dates}).sort('Date')
+        def get_aligned_data(item_name):
+            item_df = df_plot.filter(pl.col('Item') == item_name)
+            return base_df.join(item_df, on='Date', how='left')
+
         trace_count = 0
         items = [('Net Income', '純利益', '#2ca02c'), ('Operating Cash Flow', '営業CF', '#aec7e8'), 
                  ('Investing Cash Flow', '投資CF', '#1f77b4'), ('Financing Cash Flow', '財務CF', '#ffbb78'), 
                  ('Free Cash Flow', 'フリーCF', '#9467bd')]
 
         for item_key, name, color in items:
-            sub = df_plot.filter(pl.col('Item') == item_key)
+            sub = get_aligned_data(item_key)
             if not sub.is_empty():
                 fig.add_trace(go.Bar(name=name + suffix, x=sub['Date'], y=sub['Value'], marker_color=color, visible=visible))
                 trace_count += 1
@@ -1039,16 +1072,33 @@ def get_tp_chart_data(data_dict):
         
         # 日付の選定
         limit = 6 if suffix == "" else 8
-        valid_dates = df.filter(pl.col('Item') == 'Net Income From Continuing Operations').select('Date').unique().sort('Date')['Date'].to_list()[-limit:]
+        
+        # 純利益がある日付を取得
+        ni_dates = df.filter(pl.col('Item') == 'Net Income From Continuing Operations').select('Date').unique()['Date'].to_list()
+        
+        # 還元データ（配当金または自社株買い）が実際に存在する（nullや*でない）日付を取得
+        # extract_with_aliases で '*' はすでになくなっているはずだが、念のため is_not_null でチェック
+        ret_data = df.filter(pl.col('Item').is_in(['Cash Dividends Paid', 'Repurchase Of Capital Stock']) & pl.col('Value').is_not_null())
+        ret_dates = ret_data.select('Date').unique()['Date'].to_list()
+        
+        # 両方のデータが揃っている日付のみを採用
+        valid_dates = sorted([d for d in ni_dates if d in ret_dates])[-limit:]
+        
         if not valid_dates: return 0
         
         df_plot = df.filter(pl.col('Date').is_in(valid_dates)).unique(subset=['Item', 'Date']).sort('Date')
         
-        ni = df_plot.filter(pl.col('Item') == 'Net Income From Continuing Operations')
-        div = df_plot.filter(pl.col('Item') == 'Cash Dividends Paid')
-        repo = df_plot.filter(pl.col('Item') == 'Repurchase Of Capital Stock')
-        div_r = df_plot.filter(pl.col('Item') == 'Dividends Ratio / Net Income')
-        total_r = df_plot.filter(pl.col('Item') == 'Total Payout Ratio / Net Income')
+        # Ensure alignment by joining each item with the valid_dates list
+        base_df = pl.DataFrame({'Date': valid_dates}).sort('Date')
+        def get_aligned_data(item_name):
+            item_df = df_plot.filter(pl.col('Item') == item_name)
+            return base_df.join(item_df, on='Date', how='left').fill_null(0.0)
+
+        ni = get_aligned_data('Net Income From Continuing Operations')
+        div = get_aligned_data('Cash Dividends Paid')
+        repo = get_aligned_data('Repurchase Of Capital Stock')
+        div_r = get_aligned_data('Dividends Ratio / Net Income')
+        total_r = get_aligned_data('Total Payout Ratio / Net Income')
 
         trace_count = 0
         # 純利益

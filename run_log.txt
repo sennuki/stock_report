@@ -1,2 +1,1 @@
-[2026-04-10 21:51:00] [DEBUG  ] [STZ   ] Error in revenue_by_segment: DataFrame.groupby() got an unexpected keyword argument 'axis'
-[2026-04-12 11:56:09] [DEBUG  ] [AAPL  ] Error fetching yfinance earnings_dates: ['Earnings Date']
+[2026-05-01 21:56:14] [ERROR  ] [SYSTEM] GEMINI_API_KEY not found in environment variables.

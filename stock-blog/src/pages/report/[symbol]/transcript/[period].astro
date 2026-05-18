@@ -1,0 +1,206 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import Breadcrumbs from "@/components/Breadcrumbs.astro";
+import stocks from "@/data/stocks.json";
+import { loadTranscriptIndex, renderTranscriptBody } from "@/utils/transcripts";
+import fs from "node:fs";
+import path from "node:path";
+import { env } from "cloudflare:workers";
+import SentimentPanel from "@/components/report/SentimentPanel.astro";
+
+export const prerender = false;
+
+const { symbol, period } = Astro.params;
+
+// period は "2026-Q3" 形式。FY と四半期に分解する。
+const periodMatch = (period || "").match(/^(\d{4})-Q([1-4])$/);
+const fiscalYear = periodMatch ? Number(periodMatch[1]) : null;
+const fiscalQuarter = periodMatch ? Number(periodMatch[2]) : null;
+const validParams = !!(symbol && fiscalYear && fiscalQuarter);
+
+const objectKey = validParams
+  ? `reports/transcripts/${symbol}_${fiscalYear}_Q${fiscalQuarter}.md`
+  : "";
+const fileName = validParams
+  ? `${symbol}_${fiscalYear}_Q${fiscalQuarter}.md`
+  : "";
+
+let markdownRaw: string | null = null;
+
+// 1) 本番 (Cloudflare Worker): R2 バインディングから直接読む。
+if (validParams) {
+  try {
+    const bucket = (env as any)?.STOCK_DATA;
+    if (bucket) {
+      const object = await bucket.get(objectKey);
+      if (object) {
+        markdownRaw = await object.text();
+      }
+    }
+  } catch (e: any) {
+    if (import.meta.env.DEV) console.error(`R2 transcript fetch failed:`, e);
+  }
+}
+
+// 2) ローカル開発フォールバック: public/reports/transcripts/ を読む。
+if (!markdownRaw && validParams) {
+  try {
+    // 2-a) node:fs を試す
+    if (fs && path) {
+      const possibleRoots = [
+        process.cwd(),
+        path.join(process.cwd(), "stock-blog"),
+      ];
+      for (const root of possibleRoots) {
+        try {
+          const testPath = path.resolve(
+            root,
+            "public",
+            "reports",
+            "transcripts",
+            fileName
+          );
+          if (fs.existsSync(testPath)) {
+            markdownRaw = fs.readFileSync(testPath, "utf-8");
+            break;
+          }
+        } catch (e) {}
+      }
+    }
+    // 2-b) workerd 開発環境では node:fs が制限されるため自身へ fetch する
+    if (!markdownRaw && import.meta.env.DEV) {
+      const devUrl = new URL(`/reports/transcripts/${fileName}`, Astro.url);
+      const resp = await fetch(devUrl);
+      if (resp.ok) markdownRaw = await resp.text();
+    }
+  } catch (e: any) {
+    if (import.meta.env.DEV)
+      console.error(`Local transcript fallback failed:`, e);
+  }
+}
+
+const stockInfo = (stocks as any[]).find((s: any) => s.Symbol_YF === symbol);
+const companyName = stockInfo?.Security_JA || stockInfo?.Security || "";
+// 企業名が未登録の銘柄では symbol と重複した括弧書きを出さない。
+const nameParen =
+  companyName && companyName !== symbol ? `（${companyName}）` : "";
+
+// 感情分析データは索引 (R2) に格納されている（generate_transcript_report.py が生成）。
+const transcriptIndex = await loadTranscriptIndex(env, Astro.url);
+const indexEntry = (transcriptIndex[symbol as string] || []).find(
+  e => e.fy === fiscalYear && e.fq === fiscalQuarter
+);
+const sentiment = indexEntry?.sentiment ?? null;
+
+// 先頭の H1 はページ見出しと重複するため取り除いてから変換する。
+let bodyHtml = "";
+if (markdownRaw) {
+  const stripped = markdownRaw.replace(/^#\s.*\n+/, "");
+  bodyHtml = renderTranscriptBody(stripped);
+}
+
+const base = import.meta.env.BASE_URL.endsWith("/")
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+const reportUrl = `${base}report/${symbol}`;
+
+const title = markdownRaw
+  ? `${symbol}${nameParen} FY${fiscalYear} Q${fiscalQuarter} 決算説明会 全文和訳・要約`
+  : `${symbol} 決算説明会トランスクリプト`;
+const description = markdownRaw
+  ? `${symbol}${nameParen}のFY${fiscalYear}第${fiscalQuarter}四半期 決算電話会議（Earnings Call）の日本語要約と逐次翻訳。経営陣のコメントやアナリストとの質疑応答をまとめています。`
+  : `${symbol} の決算説明会トランスクリプト。`;
+---
+
+<Layout title={title} description={description}>
+  <Header />
+
+  <main id="main-content" class="mx-auto w-full max-w-app px-4 py-8">
+    <Breadcrumbs
+      items={[
+        { name: "トップ", href: "/" },
+        { name: "銘柄一覧", href: "/az" },
+        { name: `${symbol}${nameParen}`, href: `/report/${symbol}` },
+        { name: "決算説明会" },
+      ]}
+    />
+
+    <div class="mb-6">
+      <a
+        href={reportUrl}
+        class="text-skin-accent inline-flex items-center hover:underline"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="mr-1 h-4 w-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          aria-hidden="true"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+        {symbol} の銘柄分析レポートに戻る
+      </a>
+    </div>
+
+    {
+      markdownRaw ? (
+        <article
+          class="border-skin-line bg-skin-card rounded-lg border p-4 shadow-sm sm:p-8"
+          data-pagefind-body
+        >
+          <h1 class="mb-2 text-3xl font-bold" data-pagefind-meta="title">
+            {`${symbol}${nameParen}`} FY{fiscalYear} Q{fiscalQuarter} 決算説明会
+          </h1>
+          <p class="mb-6 text-sm text-gray-500">
+            決算電話会議（Earnings Call）の日本語要約と逐次翻訳
+          </p>
+
+          <div class="mb-8 rounded-lg border border-amber-200/60 bg-amber-50/40 p-4 text-xs text-amber-800/90 dark:border-amber-800/40 dark:bg-amber-900/20 dark:text-amber-200/80">
+            本ページの和訳・要約は
+            AI（生成モデル）により自動生成されたものです。
+            原文のニュアンスと異なる場合があります。投資判断の際は必ず企業公式の
+            IR 情報および原文トランスクリプトをご確認ください。
+          </div>
+
+          {sentiment && <SentimentPanel sentiment={sentiment} />}
+
+          <div class="app-prose max-w-none" set:html={bodyHtml} />
+        </article>
+      ) : (
+        <div class="border-skin-line bg-skin-card rounded-lg border p-10 text-center shadow-sm">
+          <p class="text-xl">トランスクリプトが見つかりません</p>
+          <p class="mt-4 text-gray-500">
+            {symbol} の FY{fiscalYear ?? "?"} Q{fiscalQuarter ?? "?"}{" "}
+            決算説明会レポートはまだ生成されていません。
+          </p>
+          <a
+            href={reportUrl}
+            class="text-skin-accent mt-6 inline-block hover:underline"
+          >
+            {symbol} の銘柄分析レポートへ
+          </a>
+        </div>
+      )
+    }
+  </main>
+  <Footer />
+</Layout>
+
+<style is:global>
+  /* 逐次翻訳: 発言（話者ターン）ごとの灰色ボックス */
+  .app-prose .transcript-turn {
+    margin: 0.7rem 0;
+    padding: 0.3rem 1.1rem;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    background: rgba(128, 128, 128, 0.08);
+  }
+</style>

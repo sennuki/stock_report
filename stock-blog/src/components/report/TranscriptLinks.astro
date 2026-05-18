@@ -1,0 +1,81 @@
+---
+// 決算説明会トランスクリプトへのリンクセクション。
+// 索引 (R2: reports/transcripts/index.json) に登録のある銘柄でのみ表示する。
+import { scoreTextClass, formatScore, type Sentiment } from "@/utils/sentiment";
+
+interface Transcript {
+  fy: number;
+  fq: number;
+  period: string;
+  generated?: string;
+  sentiment?: Sentiment;
+}
+interface Props {
+  symbol: string;
+  base: string;
+  transcripts: Transcript[];
+}
+const { symbol, base, transcripts } = Astro.props;
+---
+
+{
+  transcripts.length > 0 && (
+    <section id="earnings-transcript" class="mt-12 scroll-mt-20">
+      <h2 class="mb-6 flex items-center gap-2 border-b pb-2 text-2xl font-bold">
+        <span
+          class="material-symbols-outlined text-skin-accent"
+          aria-hidden="true"
+        >
+          record_voice_over
+        </span>
+        {symbol}の決算説明会（全文和訳・要約）
+      </h2>
+      <p class="mb-4 text-sm text-gray-500">
+        決算電話会議（Earnings
+        Call）の内容を日本語に翻訳・要約したレポートです。経営陣のコメントやアナリストとの質疑応答、AIによるセンチメント分析を確認できます。
+      </p>
+      <ul class="space-y-3">
+        {transcripts.map(t => (
+          <li>
+            <a
+              href={`${base}report/${symbol}/transcript/${t.period}`}
+              class="border-skin-line bg-skin-fill/30 hover:bg-skin-accent/10 hover:border-skin-accent/40 flex items-center justify-between gap-4 rounded-lg border p-4 no-underline transition-colors"
+            >
+              <span class="flex flex-wrap items-center gap-x-3 gap-y-1">
+                <span class="text-skin-base font-bold">
+                  FY{t.fy} 第{t.fq}四半期 決算説明会レポート
+                </span>
+                {t.sentiment?.overall && (
+                  <span
+                    class={`text-xs font-bold ${scoreTextClass(t.sentiment.overall.score)}`}
+                  >
+                    トーン {formatScore(t.sentiment.overall.score)}{" "}
+                    {t.sentiment.overall.label}
+                  </span>
+                )}
+              </span>
+              <span class="text-skin-accent inline-flex shrink-0 items-center text-sm">
+                全文を読む
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="ml-1 h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M14 5l7 7m0 0l-7 7m7-7H3"
+                  />
+                </svg>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}

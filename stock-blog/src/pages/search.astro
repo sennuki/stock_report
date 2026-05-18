@@ -1,132 +1,306 @@
 ---
-import "@pagefind/default-ui/css/ui.css";
-import Main from "@/layouts/Main.astro";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
+import Breadcrumbs from "@/components/Breadcrumbs.astro";
+import stocks from "@/data/stocks.json";
 import { SITE } from "@/config";
 
-const backUrl = SITE.showBackButton ? `${Astro.url.pathname}` : "/";
+interface Stock {
+  Symbol_YF: string;
+  Symbol: string;
+  Security: string;
+  Security_JA?: string;
+  "GICS Sector"?: string;
+  Index?: string;
+}
+
+// 検索に必要な最小限のフィールドだけクライアントへ渡す
+const searchData = (stocks as Stock[]).map(s => ({
+  s: s.Symbol_YF || s.Symbol,
+  n: s.Security || "",
+  j: s.Security_JA || "",
+  c: s["GICS Sector"] || "",
+  i: s.Index || "S&P 500",
+}));
+
+const sectorTranslations: Record<string, string> = {
+  "Communication Services": "通信サービス",
+  "Consumer Discretionary": "一般消費財",
+  "Consumer Staples": "生活必需品",
+  "Energy": "エネルギー",
+  "Financials": "金融",
+  "Health Care": "ヘルスケア",
+  "Industrials": "資本財",
+  "Information Technology": "情報技術",
+  "Materials": "素材",
+  "Real Estate": "不動産",
+  "Utilities": "公益事業",
+};
+
+const base = import.meta.env.BASE_URL.endsWith("/")
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+
+const baseNoSlash = base.replace(/\/$/, "");
+
+const title = `銘柄検索 | ${SITE.title}`;
+const description = "S&P 500 構成銘柄をティッカーコード・英語社名・日本語社名から即座に検索できます。気になる銘柄をすばやく探してファンダメンタル分析レポートを確認しましょう。";
 ---
 
-<Layout title={`Search | ${SITE.title}`}>
+<Layout title={title} description={description}>
   <Header />
-  <Main pageTitle="Search" pageDesc="Search any article ..." data-pagefind-ignore>
-    <div id="pagefind-search" transition:persist data-backurl={backUrl}></div>
-  </Main>
+  <main id="main-content" class="w-full px-4 py-8 max-w-app mx-auto">
+    <Breadcrumbs items={[
+      { name: "トップ", href: "/" },
+      { name: "銘柄検索" },
+    ]} />
+    <h1 class="text-3xl font-bold mb-2">銘柄検索</h1>
+    <p class="opacity-70 mb-6 text-sm leading-relaxed">
+      ティッカー（例: <code class="text-xs">AAPL</code>）、英語社名（例: <code class="text-xs">Apple</code>）、日本語社名（例: <code class="text-xs">アップル</code>）から検索できます。↑↓で移動、Enterで決定。
+    </p>
+
+    <div class="relative mb-2">
+      <label for="stock-search-input" class="sr-only">銘柄を検索</label>
+      <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 opacity-50 pointer-events-none" aria-hidden="true">finance</span>
+      <input
+        id="stock-search-input"
+        type="search"
+        autocomplete="off"
+        autocapitalize="off"
+        spellcheck="false"
+        placeholder="ティッカーまたは社名を入力…"
+        class="w-full pl-12 pr-10 py-3 text-base rounded-lg border border-skin-line bg-skin-card focus:outline-none focus:border-skin-accent focus:ring-2 focus:ring-skin-accent/30 transition-all"
+        aria-controls="stock-search-results"
+        aria-autocomplete="list"
+        role="combobox"
+        aria-expanded="false"
+      />
+      <button
+        id="stock-search-clear"
+        type="button"
+        aria-label="検索クリア"
+        class="hidden absolute right-3 top-1/2 -translate-y-1/2 opacity-50 hover:opacity-100 transition-opacity"
+      >
+        ✕
+      </button>
+    </div>
+    <p id="stock-search-status" class="text-xs opacity-60 mb-4" aria-live="polite"></p>
+
+    <ul
+      id="stock-search-results"
+      role="listbox"
+      class="space-y-1.5"
+    ></ul>
+  </main>
   <Footer />
 </Layout>
 
-<script>
-  function initSearch() {
-    const pageFindSearch: HTMLElement | null =
-      document.querySelector("#pagefind-search");
+<script
+  is:inline
+  define:vars={{ stocks: searchData, sectorTranslations, baseNoSlash }}
+>
+  (function () {
+    const input = document.getElementById("stock-search-input");
+    const results = document.getElementById("stock-search-results");
+    const status = document.getElementById("stock-search-status");
+    const clearBtn = document.getElementById("stock-search-clear");
+    if (!input || !results || !status || !clearBtn) return;
 
-    if (!pageFindSearch) return;
+    const MAX_RESULTS = 50;
+    let activeIndex = -1;
 
-    const params = new URLSearchParams(window.location.search);
+    // ひらがな↔カタカナの簡易正規化（半角・全角は ToLower のみ）
+    const hiraToKata = (s) =>
+      s.replace(/[ぁ-ゖ]/g, (ch) =>
+        String.fromCharCode(ch.charCodeAt(0) + 0x60),
+      );
 
-    const onIdle = window.requestIdleCallback || (cb => setTimeout(cb, 1));
+    const normalize = (s) => hiraToKata(String(s || "").toLowerCase().trim());
 
-    onIdle(async () => {
-      // @ts-expect-error — Missing types for @pagefind/default-ui package.
-      const { PagefindUI } = await import("@pagefind/default-ui");
+    const highlight = (text, query) => {
+      if (!query) return escapeHtml(text);
+      const idx = text.toLowerCase().indexOf(query.toLowerCase());
+      if (idx === -1) return escapeHtml(text);
+      const before = text.slice(0, idx);
+      const match = text.slice(idx, idx + query.length);
+      const after = text.slice(idx + query.length);
+      return (
+        escapeHtml(before) +
+        '<mark class="bg-yellow-200 dark:bg-yellow-700/50 text-inherit rounded px-0.5">' +
+        escapeHtml(match) +
+        "</mark>" +
+        escapeHtml(after)
+      );
+    };
 
-      // Init pagefind ui
-      const search = new PagefindUI({
-        element: "#pagefind-search",
-        showImages: false,
-        showSubResults: true,
-        bundlePath: `${import.meta.env.BASE_URL}pagefind/`,
-        processTerm: function (term: string) {
-          params.set("q", term); // Update the `q` parameter in the URL
-          history.replaceState(history.state, "", "?" + params.toString()); // Push the new URL without reloading
+    const escapeHtml = (s) =>
+      String(s)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
 
-          const backUrl = pageFindSearch?.dataset?.backurl;
-          sessionStorage.setItem("backUrl", backUrl + "?" + params.toString());
+    function score(stock, q) {
+      const sym = stock.s.toLowerCase();
+      const name = stock.n.toLowerCase();
+      const nameJa = normalize(stock.j);
+      const qLower = q.toLowerCase();
+      const qNorm = normalize(q);
 
-          return term;
-        },
-      });
+      if (sym === qLower) return 0;
+      if (sym.startsWith(qLower)) return 1;
+      if (name.startsWith(qLower)) return 2;
+      if (nameJa.startsWith(qNorm)) return 3;
+      if (sym.includes(qLower)) return 4;
+      if (name.includes(qLower)) return 5;
+      if (nameJa.includes(qNorm)) return 6;
+      return -1;
+    }
 
-      // If search param exists (eg: search?q=astro), trigger search
-      const query = params.get("q");
-      if (query) {
-        search.triggerSearch(query);
+    function renderResults(query) {
+      const q = query.trim();
+      results.innerHTML = "";
+      activeIndex = -1;
+      input.setAttribute("aria-expanded", q ? "true" : "false");
+
+      if (!q) {
+        status.textContent = `S&P 500 全 ${stocks.length} 銘柄が対象です。`;
+        clearBtn.classList.add("hidden");
+        return;
       }
 
-      // Reset search param if search input is cleared
-      const searchInput = document.querySelector(".pagefind-ui__search-input");
-      const clearButton = document.querySelector(".pagefind-ui__search-clear");
-      searchInput?.addEventListener("input", resetSearchParam);
-      clearButton?.addEventListener("click", resetSearchParam);
+      clearBtn.classList.remove("hidden");
 
-      function resetSearchParam(e: Event) {
-        if ((e.target as HTMLInputElement)?.value.trim() === "") {
+      const matched = stocks
+        .map((st) => ({ st, sc: score(st, q) }))
+        .filter((x) => x.sc >= 0)
+        .sort((a, b) => a.sc - b.sc || a.st.s.localeCompare(b.st.s))
+        .slice(0, MAX_RESULTS);
+
+      if (matched.length === 0) {
+        status.textContent = `「${q}」に一致する銘柄は見つかりませんでした。`;
+        return;
+      }
+
+      status.textContent = `${matched.length} 件${matched.length === MAX_RESULTS ? "+" : ""} ヒット`;
+
+      const frag = document.createDocumentFragment();
+      matched.forEach(({ st }, i) => {
+        const li = document.createElement("li");
+        li.setAttribute("role", "option");
+        li.setAttribute("data-symbol", st.s);
+        li.id = `stock-search-result-${i}`;
+        li.className =
+          "block bg-skin-card border border-skin-line rounded-md hover:border-skin-accent hover:shadow-sm transition-all";
+        const sectorJa = (sectorTranslations || {})[st.c] || st.c || "";
+        const indexLabel = st.i || "";
+        li.innerHTML = `
+          <a href="${baseNoSlash}/report/${encodeURIComponent(st.s)}"
+             class="flex items-center gap-3 px-4 py-3 focus:outline-none focus:bg-skin-fill/30">
+            <span class="font-mono font-bold text-skin-accent w-20 shrink-0">${highlight(st.s, q)}</span>
+            <span class="flex-1 min-w-0">
+              <span class="block truncate font-medium">${highlight(st.n, q)}</span>
+              ${st.j ? `<span class="block truncate text-xs opacity-70">${highlight(st.j, q)}</span>` : ""}
+            </span>
+            ${indexLabel ? `<span class="hidden md:inline-block text-[10px] font-bold px-2 py-0.5 rounded border border-skin-accent/40 text-skin-accent shrink-0">${escapeHtml(indexLabel)}</span>` : ""}
+            ${sectorJa ? `<span class="hidden sm:inline-block text-xs px-2 py-0.5 rounded-full border border-skin-line opacity-70 shrink-0">${escapeHtml(sectorJa)}</span>` : ""}
+          </a>
+        `;
+        frag.appendChild(li);
+      });
+      results.appendChild(frag);
+    }
+
+    function setActive(i) {
+      const items = results.querySelectorAll("li");
+      if (!items.length) {
+        activeIndex = -1;
+        input.removeAttribute("aria-activedescendant");
+        return;
+      }
+      if (i < 0) i = items.length - 1;
+      if (i >= items.length) i = 0;
+      activeIndex = i;
+      items.forEach((el, idx) => {
+        if (idx === i) {
+          el.classList.add("border-skin-accent", "bg-skin-fill/30");
+          el.scrollIntoView({ block: "nearest" });
+          input.setAttribute("aria-activedescendant", el.id);
+        } else {
+          el.classList.remove("border-skin-accent", "bg-skin-fill/30");
+        }
+      });
+    }
+
+    input.addEventListener("input", (e) => {
+      const v = e.target.value;
+      renderResults(v);
+      const params = new URLSearchParams(window.location.search);
+      if (v.trim()) {
+        params.set("q", v);
+      } else {
+        params.delete("q");
+      }
+      const qs = params.toString();
+      history.replaceState(history.state, "", qs ? "?" + qs : window.location.pathname);
+    });
+
+    input.addEventListener("keydown", (e) => {
+      const items = results.querySelectorAll("li");
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        if (!items.length) return;
+        setActive(activeIndex + 1);
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        if (!items.length) return;
+        setActive(activeIndex - 1);
+      } else if (e.key === "Enter") {
+        if (activeIndex >= 0 && items[activeIndex]) {
+          const link = items[activeIndex].querySelector("a");
+          if (link) {
+            e.preventDefault();
+            window.location.href = link.href;
+          }
+        } else if (items.length === 1) {
+          const link = items[0].querySelector("a");
+          if (link) {
+            e.preventDefault();
+            window.location.href = link.href;
+          }
+        }
+      } else if (e.key === "Escape") {
+        if (input.value) {
+          input.value = "";
+          renderResults("");
           history.replaceState(history.state, "", window.location.pathname);
+        } else {
+          input.blur();
         }
       }
     });
-  }
 
-  document.addEventListener("astro:after-swap", () => {
-    const pagefindSearch = document.querySelector("#pagefind-search");
+    clearBtn.addEventListener("click", () => {
+      input.value = "";
+      renderResults("");
+      input.focus();
+      history.replaceState(history.state, "", window.location.pathname);
+    });
 
-    // if pagefind search form already exists, don't initialize search component
-    if (pagefindSearch && pagefindSearch.querySelector("form")) return;
+    // Pre-fill from ?q=
+    const initial = new URLSearchParams(window.location.search).get("q");
+    if (initial) {
+      input.value = initial;
+      renderResults(initial);
+    } else {
+      renderResults("");
+    }
 
-    initSearch();
-  });
-  initSearch();
+    // Auto-focus on load (skip if user is on mobile to avoid pop-up keyboard surprise)
+    if (!/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) {
+      input.focus();
+    }
+  })();
 </script>
-
-<style is:global>
-  #pagefind-search {
-    --pagefind-ui-font: var(--font-app);
-    --pagefind-ui-text: var(--foreground);
-    --pagefind-ui-background: var(--background);
-    --pagefind-ui-border: var(--border);
-    --pagefind-ui-primary: var(--accent);
-    --pagefind-ui-tag: var(--background);
-    --pagefind-ui-border-radius: 0.375rem;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-image-border-radius: 8px;
-    --pagefind-ui-image-box-ratio: 3 / 2;
-
-    form::before {
-      background-color: var(--foreground);
-    }
-
-    input {
-      font-weight: 400;
-      border: 1px solid var(--border);
-    }
-
-    input:focus-visible {
-      outline: 1px solid var(--accent);
-    }
-
-    .pagefind-ui__result-title a {
-      color: var(--accent);
-      outline-offset: 1px;
-      outline-color: var(--accent);
-      text-decoration-style: dashed;
-      text-underline-offset: 4px;
-    }
-
-    .pagefind-ui__result-title a:focus-visible,
-    .pagefind-ui__search-clear:focus-visible {
-      text-decoration-line: none;
-      outline-width: 2px;
-      outline-style: dashed;
-    }
-
-    .pagefind-ui__result:last-of-type {
-      border-bottom: 0;
-    }
-
-    .pagefind-ui__result-nested .pagefind-ui__result-link:before {
-      font-family: system-ui;
-    }
-  }
-</style>

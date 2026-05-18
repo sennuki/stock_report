@@ -1,4 +1,5 @@
 import { defineConfig, envField } from "astro/config";
+import cloudflare from "@astrojs/cloudflare";
 import tailwindcss from "@tailwindcss/vite";
 import sitemap from "@astrojs/sitemap";
 import remarkToc from "remark-toc";
@@ -15,7 +16,8 @@ import { SITE } from "./src/config";
 export default defineConfig({
   site: SITE.website,
   base: "/",
-  output: "static",
+  output: "server",
+  adapter: cloudflare({}),
 
   integrations: [
     sitemap({
@@ -45,17 +47,6 @@ export default defineConfig({
     // This will be fixed in Astro 6 with Vite 7 support
     // See: https://github.com/withastro/astro/issues/14030
     plugins: [tailwindcss()],
-    optimizeDeps: {
-      exclude: ["@resvg/resvg-js"],
-    },
-    build: {
-      rollupOptions: {
-        external: ["@resvg/resvg-js", /.*\.node$/],
-      },
-    },
-    ssr: {
-      external: ["@resvg/resvg-js"],
-    },
   },
 
   image: {
@@ -75,6 +66,8 @@ export default defineConfig({
         context: "server",
         optional: true,
       }),
+      // PUBLIC_WORKER_API_URL は schema 登録すると import.meta.env 経由で
+      // 取りにくくなるため、Vite の素の PUBLIC_* プレフィックス挙動に任せる。
     },
   },
 });

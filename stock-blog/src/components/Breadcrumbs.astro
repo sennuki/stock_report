@@ -1,0 +1,42 @@
+---
+interface Crumb {
+  name: string;
+  href?: string;
+}
+
+interface Props {
+  items: Crumb[];
+}
+
+const { items } = Astro.props;
+
+const base = import.meta.env.BASE_URL.endsWith("/")
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+---
+
+<nav
+  aria-label="パンくずリスト"
+  class="text-sm mb-4 text-skin-base/70"
+>
+  <ol class="flex flex-wrap items-center gap-1.5">
+    {items.map((item, idx) => {
+      const isLast = idx === items.length - 1;
+      const href = item.href
+        ? (item.href.startsWith("/") ? `${base.replace(/\/$/, "")}${item.href}` : item.href)
+        : undefined;
+      return (
+        <li class="flex items-center gap-1.5">
+          {idx > 0 && (
+            <span class="opacity-40" aria-hidden="true">/</span>
+          )}
+          {isLast || !href ? (
+            <span class="font-medium text-skin-base" aria-current="page">{item.name}</span>
+          ) : (
+            <a href={href} class="text-skin-accent hover:underline">{item.name}</a>
+          )}
+        </li>
+      );
+    })}
+  </ol>
+</nav>

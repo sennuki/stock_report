@@ -14,6 +14,7 @@ type Props = {
   pubDatetime?: Date;
   modDatetime?: Date | null;
   scrollSmooth?: boolean;
+  extraStructuredData?: Record<string, any> | Record<string, any>[];
 };
 
 // Helper to ensure trailing slash
@@ -33,6 +34,7 @@ const {
   pubDatetime,
   modDatetime,
   scrollSmooth = false,
+  extraStructuredData,
 } = Astro.props;
 
 const socialImageURL = new URL(ogImage, Astro.url);
@@ -52,6 +54,10 @@ const structuredData = {
     },
   ],
 };
+
+const extraDataArray = extraStructuredData
+  ? (Array.isArray(extraStructuredData) ? extraStructuredData : [extraStructuredData])
+  : [];
 ---
 
 <!doctype html>
@@ -62,17 +68,9 @@ const structuredData = {
 >
   <head>
     <!-- Google AdSense -->
-    <script is:inline async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1931450677701386"
-     crossorigin="anonymous"></script>
+    <script defer is:inline src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1931450677701386" crossorigin="anonymous"></script>
     <!-- Google tag (gtag.js) -->
-    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-FMHBEP634W"></script>
-    <script is:inline>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-FMHBEP634W');
-    </script>
+    <script defer is:inline src="https://www.googletagmanager.com/gtag/js?id=G-FMHBEP634W"></script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link
@@ -83,8 +81,16 @@ const structuredData = {
     <link rel="canonical" href={canonicalURL} />
     <meta name="generator" content={Astro.generator} />
 
-    <!-- Google Fonts Material Symbols -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <!-- Preconnect to third-party origins to reduce TLS handshake time -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://s3.tradingview.com" crossorigin />
+    <link rel="preconnect" href="https://www.tradingview-widget.com" crossorigin />
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+    <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
+
+    <!-- Google Fonts Material Symbols (subset to used icons only) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&text=align_horizontal_leftattach_moneybreaking_newscalendar_todaydata_explorationfinanceink_highlightermoneymonbagmonitoringnote_stackoverviewpercent_discountprice_changetrending_downtrending_upscatter_plotshow_chartsisid_charttarget" />
 
     <!-- General Meta Tags -->
     <title>{title}</title>
@@ -133,6 +139,13 @@ const structuredData = {
       is:inline
       set:html={JSON.stringify(structuredData)}
     />
+    {extraDataArray.map(data => (
+      <script
+        type="application/ld+json"
+        is:inline
+        set:html={JSON.stringify(data)}
+      />
+    ))}
 
     <!-- Enable RSS feed auto-discovery  -->
     <!-- https://docs.astro.build/en/recipes/rss/#enabling-rss-feed-auto-discovery -->
@@ -158,19 +171,6 @@ const structuredData = {
     }
 
     <ClientRouter />
-
-    <!-- Plotly.js -->
-    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" is:inline charset="utf-8"></script>
-
-    <script is:inline>
-      // View Transitions 遷移後に Plotly チャートが存在する場合のみ強制リロード
-      // (SPA遷移では Plotly のグローバルな状態やイベントリスナーが壊れやすいため)
-      document.addEventListener('astro:after-swap', () => {
-        if (document.querySelector('.plotly-chart-wrapper')) {
-          window.location.reload();
-        }
-      });
-    </script>
 
     <!-- Minimal inline script to prevent FOUC - sets theme immediately -->
     <script is:inline>
@@ -210,5 +210,22 @@ const structuredData = {
 
     <!-- Load full theme logic -->
     <script src="../scripts/theme.ts"></script>
+
+    <!-- GA4 initialization -->
+    <script is:inline>
+      function initGA() {
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { window.dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-FMHBEP634W');
+      }
+
+      document.addEventListener('astro:page-load', initGA);
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initGA);
+      } else {
+        initGA();
+      }
+    </script>
   </body>
 </html>

@@ -53,12 +53,14 @@ const isActive = (path: string) => {
   >
     <a
       href={base}
+      aria-label={`${SITE.title} - ホームへ戻る`}
       class="absolute py-1 text-xl leading-8 font-semibold whitespace-nowrap sm:static sm:my-auto sm:text-2xl sm:leading-none"
     >
       {SITE.title}
     </a>
     <nav
       id="nav-menu"
+      aria-label="メインナビゲーション"
       class="flex w-full flex-col items-center sm:ms-2 sm:flex-row sm:justify-end sm:space-x-4 sm:py-0"
     >
       <button
@@ -86,6 +88,14 @@ const isActive = (path: string) => {
             class:list={{ "active-nav": isActive("/az") }}
           >
             A-Z
+          </a>
+        </li>
+        <li class="col-span-2 sm:col-span-1">
+          <a
+            href={`${base}posts`}
+            class:list={{ "active-nav": isActive("/posts") }}
+          >
+            解説記事
           </a>
         </li>
         <li class="col-span-2 sm:col-span-1">
