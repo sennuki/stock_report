@@ -190,7 +190,7 @@ FE,FirstEnergy,Utilities,Electric Utilities,FE,NYSE,-0.0029411764705882075,フ�
 FFIV,"F5, Inc.",Information Technology,Communications Equipment,FFIV,NASDAQ,0.013134907796829512,F5ネットワークス,true,true,true,true,true,true,false,false
 FICO,Fair Isaac,Information Technology,Application Software,FICO,NYSE,0.03157807186159995,フェア・アイザック,true,true,true,true,true,true,true,false
 FIS,Fidelity National Information Services,Financials,Transaction & Payment Processing Services,FIS,NYSE,0.014282622808915745,フィディリティ・ナショナル・インフォメーション・サービシズ,true,true,true,true,true,true,false,false
-FISV,Fiserv,Financials,Transaction & Payment Processing Services,FISV,NASDAQ,0.04410701373825014,フィサーブ,true,true,true,true,true,true,true,false
+FI,Fiserv,Financials,Transaction & Payment Processing Services,FI,NASDAQ,0.04410701373825014,フィサーブ,true,true,true,true,true,true,true,false
 FITB,Fifth Third Bancorp,Financials,Regional Banks,FITB,NASDAQ,0.0405942665829671,フィフス・サード・バンコープ,true,true,true,true,true,true,false,false
 FIX,Comfort Systems USA,Industrials,Construction & Engineering,FIX,NYSE,0.08027429566096263,コンフォート・システムズUSA,true,true,true,true,true,true,false,true
 FOX,Fox Corporation (Class B),Communication Services,Broadcasting,FOX,NASDAQ,0.004279069767441802,フォックス　クラスB,true,true,true,true,true,true,false,false
