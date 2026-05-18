@@ -1082,10 +1082,15 @@ function _rrPoint(symbol, x, y, xBounds, yBounds) {
 // 機能でタブ切替に変換される。 初期表示は 1年。
 // marketIndexEtf は対象銘柄が属する指数の ETF (S&P 400→MDY / S&P 600→IJR)。
 // S&P 500 銘柄では "SPY" となり、SPY は常に描画されるため追加プロットしない。
-function generateRiskReturnChart(allMetrics, targetSymbol, sectorEtf, broadSectorEtf, marketIndexEtf, sp500Set) {
+function generateRiskReturnChart(allMetrics, targetSymbol, sectorEtf, broadSectorEtf, marketIndexEtf, peerSet) {
   if (!allMetrics || allMetrics.length === 0) return null;
   const datasets = [];
-  const limitToSp500 = sp500Set && sp500Set.size > 0;
+  // "その他銘柄" は対象銘柄が属する指数 (S&P 500/400/600) の構成銘柄に限定する。
+  const limitToPeers = peerSet && peerSet.size > 0;
+  // 対象銘柄が属する指数のラベル (凡例表示用。peerSet の指数に対応)。
+  const peerIndexLabel =
+    ({ SPY: "S&P 500", MDY: "S&P 400", IJR: "S&P 600" })[marketIndexEtf] ||
+    "S&P 500";
   // 対象銘柄が S&P 400/600 のとき、その指数 ETF を SPY に加えて描画する。
   const indexEtfLabels = { MDY: "S&P 400", IJR: "S&P 600" };
   const ownIndexEtf =
@@ -1126,7 +1131,7 @@ function generateRiskReturnChart(allMetrics, targetSymbol, sectorEtf, broadSecto
         m.symbol !== broadSectorEtf &&
         m.symbol !== "SPY" &&
         m.symbol !== ownIndexEtf &&
-        (!limitToSp500 || sp500Set.has(m.symbol)) &&
+        (!limitToPeers || peerSet.has(m.symbol)) &&
         hasValue(m),
     );
 
@@ -1144,7 +1149,7 @@ function generateRiskReturnChart(allMetrics, targetSymbol, sectorEtf, broadSecto
     // -> セクター ETF (SPDR) -> S&P 500 ETF -> ターゲット (最前面)。
     // 優先表示は ターゲット > S&P 500 ETF > セクター ETF > Vanguard ETF > その他 S&P 銘柄。
     datasets.push({
-      label: `S&P銘柄 (${p.label})`,
+      label: `${peerIndexLabel}銘柄 (${p.label})`,
       data: others.map((m) =>
         _rrPoint(m.symbol, m[hvKey], m[retKey], xBounds, yBounds),
       ),
@@ -1746,15 +1751,15 @@ async function main() {
     console.log("  raw/stocks_list.json not found, using empty metadata");
   }
 
-  // risk-return チャートの "その他銘柄" を S&P 500 構成銘柄に限定するための集合。
-  // stocks_list.json は S&P 500/400/600 のメタデータを含むため、Index 列で
-  // S&P 500 のみ (約 500 銘柄) に絞り込む。
-  const sp500Symbols = new Set(
-    baseStocksList
-      .filter((s) => s.Index === "S&P 500")
-      .map((s) => s.Symbol_YF || s.Symbol)
-      .filter(Boolean),
-  );
+  // risk-return チャートの "その他銘柄" は対象銘柄が属する指数の構成銘柄に
+  // 限定する。stocks_list.json の Index 列で S&P 500/400/600 ごとの集合を作る。
+  const indexSymbolSets = {};
+  for (const s of baseStocksList) {
+    const idx = s.Index;
+    const sym = s.Symbol_YF || s.Symbol;
+    if (!idx || !sym) continue;
+    (indexSymbolSets[idx] ??= new Set()).add(sym);
+  }
 
   console.log(`Downloading ${rawKeys.length} raw objects...`);
   const rawDataMap = {};
@@ -1905,6 +1910,12 @@ async function main() {
           'SPY';
         // 対象銘柄が属する指数の ETF (S&P 400→MDY / S&P 600→IJR / 既定 SPY)。
         const marketIndexEtf = marketIndexMap[metadata["Index"]] || 'SPY';
+        // "その他銘柄" は対象銘柄が属する指数の構成銘柄に限定する
+        // (S&P 400 銘柄なら S&P 400 銘柄をプロットする)。指数不明時は S&P 500。
+        const peerIndexSet =
+          indexSymbolSets[metadata["Index"]] ||
+          indexSymbolSets["S&P 500"] ||
+          null;
         const etfRawData = rawDataMap[sectorEtf];
 
         const highlights = extractHighlights(rawData);
@@ -1927,7 +1938,7 @@ async function main() {
           sectorEtf,
           broadSectorEtf,
           marketIndexEtf,
-          sp500Symbols,
+          peerIndexSet,
         );
         // BS / IS / CF は master の Plotly レイアウトに合わせた専用関数を使う。
         // generateFinancialChart は単純スタックしか作らないため使用しない。
