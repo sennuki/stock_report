@@ -344,11 +344,58 @@ def calculate_dcf(symbol, ticker=None, yf_info=None, yf_growth_estimates=None):
         terminal_growth = risk_free_rate
         
         # 3. キャッシュフロー予測
+        # 基準 FCF: 直近 1 四半期末の TTM 単一値は運転資本変動などのノイズが
+        # 大きいため、直近 3 会計年度の年次 FCF の「中央値」を基準とする
+        # (成長率推定が median_of_winsorized なのと手法を揃える)。
+        # 年次データが 2 期未満しか取れない場合のみ TTM 値にフォールバック。
+        annual_fcfs = []
+        try:
+            cf = db_ticker.annual_cash_flow()
+            cf_df = cf.df() if cf is not None else None
+            if cf_df is not None and not cf_df.empty and 'Breakdown' in cf_df.columns:
+                fcf_rows = cf_df[cf_df['Breakdown'].astype(str)
+                                 .str.contains('Free Cash Flow', case=False, na=False)]
+                if not fcf_rows.empty:
+                    # 列は年度。新しい順に直近 3 年を採用。
+                    date_cols = sorted(
+                        (c for c in cf_df.columns if c != 'Breakdown'), reverse=True)
+                    for c in date_cols[:3]:
+                        v = fcf_rows.iloc[0][c]
+                        try:
+                            fv = float(str(v).replace(',', '')) if isinstance(v, str) else float(v)
+                            if not pd.isna(fv):
+                                annual_fcfs.append(fv)
+                        except (ValueError, TypeError):
+                            pass
+        except Exception:
+            annual_fcfs = []
+
         df_ttm_fcf = db_ticker.ttm_fcf()
-        if df_ttm_fcf.empty:
+        ttm_fcf = None
+        if df_ttm_fcf is not None and not df_ttm_fcf.empty:
+            ttm_fcf = float(df_ttm_fcf.iloc[-1]['ttm_free_cash_flow_usd'])
+
+        if len(annual_fcfs) >= 2:
+            base_fcf = float(pd.Series(annual_fcfs).median())
+            base_fcf_method = f"median_of_{len(annual_fcfs)}y_annual_fcf"
+        elif ttm_fcf is not None:
+            base_fcf = ttm_fcf
+            base_fcf_method = "ttm_fcf_fallback"
+        else:
             return None
-        base_fcf = float(df_ttm_fcf.iloc[-1]['ttm_free_cash_flow_usd'])
-        
+
+        # FCF が継続的にマイナスの企業は DCF / リバース DCF の前提が成立しない
+        # (どんな成長率を掛けても将来 FCF は負のまま) ため評価対象外とする。
+        if base_fcf <= 0:
+            return {
+                "dcf_applicable": False,
+                "dcf_not_applicable_reason": "negative_normalized_fcf",
+                "base_fcf": float(base_fcf),
+                "base_fcf_method": base_fcf_method,
+                "annual_fcfs": [float(x) for x in annual_fcfs],
+                "ttm_fcf": float(ttm_fcf) if ttm_fcf is not None else None,
+            }
+
         projections = []
         current_fcf = base_fcf
         
@@ -473,6 +520,10 @@ def calculate_dcf(symbol, ticker=None, yf_info=None, yf_growth_estimates=None):
             "growth_winsorize_bounds": {"floor": float(risk_free_rate), "cap": float(WINSORIZE_CAP)},
             "growth_aggregation": "median_of_winsorized",
             "base_fcf": float(base_fcf),
+            "base_fcf_method": base_fcf_method,
+            "annual_fcfs": [float(x) for x in annual_fcfs],
+            "ttm_fcf": float(ttm_fcf) if ttm_fcf is not None else None,
+            "dcf_applicable": True,
             "reverse_growth": float(reverse_growth) if reverse_growth is not None else None
         }
     except Exception as e:

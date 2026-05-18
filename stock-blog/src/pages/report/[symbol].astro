@@ -1423,6 +1423,30 @@ function rankTierClass(tier: string): string {
                 </p>
               </div>
             </div>
+          ) : reportData.dcf_valuation && reportData.dcf_valuation.dcf_applicable === false ? (
+            <div class="p-6 sm:p-8 bg-skin-fill/10 border border-skin-line rounded-lg space-y-3">
+              <h3 class="text-lg font-bold flex items-center gap-2">
+                <span class="material-symbols-outlined text-orange-500" aria-hidden="true">info</span>
+                DCF 評価対象外
+              </h3>
+              <p class="text-sm opacity-80 leading-relaxed">
+                {symbol} は基準となるフリーキャッシュフロー（直近3会計年度の中央値）が
+                マイナスのため、DCF理論株価およびリバースDCFを算出していません。
+                将来FCFがマイナスのままでは理論株価が成立しないためで、大型投資フェーズや
+                構造的にキャッシュを消費する企業で起こります。
+              </p>
+              {typeof reportData.dcf_valuation.base_fcf === 'number' && (
+                <div class="text-sm">
+                  <span class="opacity-60">基準FCF（中央値）:</span>{' '}
+                  <span class="font-bold">${(reportData.dcf_valuation.base_fcf / 1e9).toFixed(2)}B</span>
+                  {Array.isArray(reportData.dcf_valuation.annual_fcfs) && reportData.dcf_valuation.annual_fcfs.length > 0 && (
+                    <span class="opacity-60">
+                      {' '}（年次FCF: {reportData.dcf_valuation.annual_fcfs.map((v: number) => '$' + (v / 1e9).toFixed(1) + 'B').join(', ')}）
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
           ) : (
             <div class="p-8 bg-skin-fill/10 border border-skin-line rounded-lg text-center italic text-gray-500">
               この銘柄のDCF分析データは現在利用できません（金融セクターや指標不足など）。
