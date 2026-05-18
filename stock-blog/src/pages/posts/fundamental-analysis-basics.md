@@ -128,7 +128,9 @@ title: "ファンダメンタル分析の基礎：企業価値を見極めるた
 
 - [PER（株価収益率）とは何か](/posts/per-explained)
 - [ROE（自己資本利益率）とは何か](/posts/roe-explained)
+- [PBR（株価純資産倍率）とは何か](/posts/pbr-explained)
 - [DCF 法（割引キャッシュフロー）とは](/posts/dcf-explained)
+- [フリーキャッシュフローとは何か](/posts/fcf-explained)
 - [米国株投資の始め方](/posts/us-stocks-getting-started)
 - [S&P 500 とは](/posts/sp500-explained)
 

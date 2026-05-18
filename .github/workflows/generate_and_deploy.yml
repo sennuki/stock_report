@@ -17,12 +17,14 @@ on:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-  # テスト実行で処理する銘柄。各 GICS セクターの代表銘柄を 1 つずつ指定。
+  # generate-reports.mjs / main.py がレポート生成・データ取得する銘柄。
   # セクター ETF / SPY は fetch_raw_data 側で自動付与される。
-  # master では空 (= 従来どおりの挙動)、それ以外 (c1 等) はテスト集合。
-  # workflow_dispatch の test_symbols 入力があればそれを最優先。
-  # 全銘柄テスト中は "all" に設定して全504銘柄を処理。
-  TEST_SYMBOLS: ${{ github.event.inputs.test_symbols || (github.ref_name != 'master' && 'all') || '' }}
+  #   - master       : "all" (S&P 500/400/600 全銘柄を処理)
+  #   - それ以外(c1等): "MSFT,AAPL,NVDA" (テスト集合のみ)
+  #   - workflow_dispatch の test_symbols 入力があればそれを最優先。
+  # 注意: 空文字にすると generate-reports.mjs はデフォルトの 3 銘柄に
+  #       フォールバックするため、master では必ず "all" を渡すこと。
+  TEST_SYMBOLS: ${{ github.event.inputs.test_symbols || (github.ref_name == 'master' && 'all') || 'MSFT,AAPL,NVDA' }}
 
 jobs:
   run-pipeline-and-deploy:
@@ -169,8 +171,17 @@ jobs:
           echo "Building with PUBLIC_WORKER_API_URL=$PUBLIC_WORKER_API_URL"
           pnpm run build
 
-          # Workerとしてデプロイ (wrangler.jsonc の設定を使用)
-          DEPLOY_OUTPUT=$(npx wrangler deploy)
+          # Worker としてデプロイ。
+          # wrangler.jsonc の name は c1 用 (stock-blog-c1) なので、
+          # master では --name で本番 Worker (stock-blog = amerikabu.com) を
+          # 明示的に上書きする。それ以外のブランチは c1 用 Worker のまま。
+          if [ "${{ github.ref_name }}" = "master" ]; then
+            WORKER_NAME="stock-blog"
+          else
+            WORKER_NAME="stock-blog-c1"
+          fi
+          echo "Deploying site Worker as: $WORKER_NAME"
+          DEPLOY_OUTPUT=$(npx wrangler deploy --name "$WORKER_NAME")
           echo "$DEPLOY_OUTPUT"
 
           # デプロイされたWorkerのURLを抽出
