@@ -173,15 +173,17 @@ jobs:
           # サポートせず、ビルド時に設定を dist/server/wrangler.json へ
           # フラット化する (.wrangler/deploy/config.json で redirect)。
           # そのため wrangler.jsonc の env.production も --env production も
-          # 無視される。生成済み設定を直接書き換えて、本番 Worker 名
-          # (stock-blog) と amerikabu.com のカスタムドメインを付与する。
+          # 無視される。生成済み設定の Worker 名を本番 (stock-blog) に変更。
+          #
+          # routes は宣言しない: amerikabu.com / www.amerikabu.com の
+          # カスタムドメインは初回デプロイで紐付け済みで Cloudflare 側に
+          # 永続する。routes を宣言すると wrangler が再デプロイ毎に
+          # /zones/.../workers/routes を照合し、CLOUDFLARE_API_TOKEN に
+          # zone の Workers Routes 権限が無いと Authentication error で
+          # 失敗する。del(.routes) で生成設定からも routes を確実に除去。
           GEN_CFG=dist/server/wrangler.json
-          echo "Deploying site Worker: stock-blog (+ amerikabu.com)"
-          jq '.name = "stock-blog"
-              | .routes = [
-                  { "pattern": "amerikabu.com", "custom_domain": true },
-                  { "pattern": "www.amerikabu.com", "custom_domain": true }
-                ]' "$GEN_CFG" > "$GEN_CFG.tmp"
+          echo "Deploying site Worker: stock-blog"
+          jq 'del(.routes) | .name = "stock-blog"' "$GEN_CFG" > "$GEN_CFG.tmp"
           mv "$GEN_CFG.tmp" "$GEN_CFG"
           DEPLOY_OUTPUT=$(npx wrangler deploy)
           echo "$DEPLOY_OUTPUT"

@@ -10,12 +10,14 @@
 			"binding": "STOCK_DATA",
 			"bucket_name": "stock-data-c1"
 		}
-	],
-	// 注意: @astrojs/cloudflare アダプタは wrangler の environments を
-	// サポートしない (ビルド時に dist/server/wrangler.json へフラット化し、
-	// env ブロックを削除する)。そのためここに env を書いても無視される。
-	// master の本番デプロイ (Worker 名 stock-blog + amerikabu.com の
-	// カスタムドメイン) は .github/workflows/generate_and_deploy.yml が
-	// 生成済み設定を jq で書き換えて行う。
-	"routes": []
+	]
+	// 本番デプロイ (Worker 名 stock-blog) は generate_and_deploy.yml が
+	// 生成済み dist/server/wrangler.json を jq で書き換えて行う。
+	// @astrojs/cloudflare アダプタは wrangler の environments 非対応のため
+	// env ブロックは書いても無視される。
+	// amerikabu.com / www.amerikabu.com のカスタムドメインは初回デプロイで
+	// 紐付け済みで Cloudflare 側に永続する。routes を宣言すると wrangler が
+	// 再デプロイ毎に /zones/.../workers/routes を照合し、API トークンに
+	// zone の Workers Routes 権限が無いと Authentication error で失敗する
+	// ため、ここでも CI でも routes は宣言しない。
 }
