@@ -135,9 +135,9 @@ const badgeClass = (kind: IndexItem["kind"]) =>
             <p class="text-sm leading-relaxed mb-3">
               決算説明会スクリプトを更新しました。
             </p>
-            <ul class="space-y-1">
+            <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-1">
               {recentTranscripts.map(t => (
-                <li class="text-sm">
+                <li class="text-sm truncate">
                   <a
                     href={t.href}
                     class="text-skin-accent hover:underline"
