@@ -278,22 +278,22 @@ async function main() {
       `maxAttempts=${MAX_ATTEMPTS} volWindow=${VOL_WINDOW} rpm=${GEMINI_RPM}`,
   );
 
-  // 同日スキップ: 当日生成済みなら何もしない。
-  if (!FORCE) {
-    try {
-      const existing = await getJson(OUTPUT_KEY);
-      if (existing?.generated_date === todayIso()) {
-        const n = Object.keys(existing.reasons || {}).length;
-        console.log(
-          `${OUTPUT_KEY} already generated today (${n} reasons). Skipping. ` +
-            `Set FORCE_MOVEMENT_REASONS=true to regenerate.`,
-        );
-        return;
-      }
-    } catch {
-      // ファイルが無ければ生成する。
-    }
+  // 既存ファイルを読む (同日スキップ判定 + 旧→新の差分で「今回外れた銘柄」を特定)。
+  let existing = null;
+  try {
+    existing = await getJson(OUTPUT_KEY);
+  } catch {
+    // ファイルが無ければ生成する。
   }
+  if (!FORCE && existing?.generated_date === todayIso()) {
+    const n = Object.keys(existing.reasons || {}).length;
+    console.log(
+      `${OUTPUT_KEY} already generated today (${n} reasons). Skipping. ` +
+        `Set FORCE_MOVEMENT_REASONS=true (workflow_dispatch の force) to regenerate.`,
+    );
+    return;
+  }
+  const prevSymbols = new Set(Object.keys(existing?.reasons || {}));
 
   // ユニバース (Index・社名付き) を取得。
   let stocksList;
@@ -430,6 +430,50 @@ async function main() {
   console.log(
     `Saved ${OUTPUT_KEY}: ok=${ok} failed=${failed} ` +
       `api_requests=${apiRequestsUsed}${stopped ? " (stopped early)" : ""}`,
+  );
+
+  // 次の generate-reports.mjs 実行を待たずにサイトへ即時反映するため、
+  // reports/{symbol}.json の movement_reason を直接書き換える。
+  // 今回選定から外れた前回銘柄は null に戻す (古い理由を残さない)。
+  await patchReports(reasons, prevSymbols);
+}
+
+// 選定銘柄の reports/{symbol}.json に movement_reason を直接反映する。
+async function patchReports(reasons, prevSymbols) {
+  const newSymbols = new Set(Object.keys(reasons));
+  const ops = [
+    ...Object.entries(reasons).map(([sym, value]) => ({ sym, value })),
+    ...[...prevSymbols]
+      .filter((sym) => !newSymbols.has(sym))
+      .map((sym) => ({ sym, value: null })),
+  ];
+  if (ops.length === 0) return;
+
+  let patched = 0;
+  let cleared = 0;
+  let patchFailed = 0;
+  await pMap(
+    ops,
+    async ({ sym, value }) => {
+      try {
+        const report = await getJson(`reports/${sym}.json`);
+        report.movement_reason = value;
+        await putJson(`reports/${sym}.json`, report);
+        if (value === null) cleared += 1;
+        else patched += 1;
+      } catch (e) {
+        // レポートが未生成の銘柄などは generate-reports.mjs 側で
+        // movement_reasons.json から反映されるためスキップでよい。
+        patchFailed += 1;
+        console.error(
+          `[${sym}] report patch failed: ${String(e?.message || e)}`,
+        );
+      }
+    },
+    { concurrency: 10 },
+  );
+  console.log(
+    `Patched reports: set=${patched} cleared=${cleared} failed=${patchFailed}`,
   );
 }
 

@@ -120,28 +120,6 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
-      - name: Generate stock movement reasons (Gemini + Google Search)
-        # 大きく変動した銘柄 (S&P 500/400/600 横断で |z| 上位約20銘柄) の理由を
-        # gemini-2.5-flash-lite で生成し reports/movement_reasons.json に保存する。
-        # 次の generate-reports.mjs がそれを読み reports/{symbol}.json に流す。
-        # グラウンディング無料枠 (約20回/日) に合わせ API リクエストを20回で頭打ち。
-        # 失敗してもサイトのデプロイは止めない (理由コメントは付加価値情報のため)。
-        continue-on-error: true
-        timeout-minutes: 20
-        run: |
-          cd worker-processor
-          node scripts/generate-movement-reasons.mjs
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          MOVEMENT_REASON_MODEL: "gemini-2.5-flash-lite"
-          MOVEMENT_TARGET: '20'
-          MOVEMENT_API_BUDGET: '20'
-          GEMINI_RPM: '13'
-          R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
-          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-          R2_BUCKET_NAME: "stock-data-c1"
-
       - name: Generate reports/*.json on the runner
         run: |
           cd worker-processor
