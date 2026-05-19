@@ -58,10 +58,13 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           MOVEMENT_REASON_MODEL: "gemini-2.5-flash-lite"
-          MOVEMENT_TARGET: '20'
-          # gemini-2.5-flash-lite の Google 検索グラウンディング無料枠
-          # (約20回/日) に合わせ API リクエストを20回で頭打ちにする。
-          MOVEMENT_API_BUDGET: '20'
+          MOVEMENT_TARGET: '18'
+          # gemini-2.5-flash-lite の Google 検索グラウンディング無料枠は
+          # 実測で約19回/日。余裕を取り18回で頭打ちにし 429 を回避する。
+          MOVEMENT_API_BUDGET: '18'
+          # ハード上限の下ではリトライ1回 = 新規1銘柄を諦めることになり
+          # 網羅率がむしろ下がるため、再試行せず1銘柄1リクエストとする。
+          MOVEMENT_MAX_ATTEMPTS: '1'
           GEMINI_RPM: '13'
           # workflow_dispatch の force 入力。workflow_run 起動時は空文字。
           FORCE_MOVEMENT_REASONS: ${{ github.event.inputs.force }}
