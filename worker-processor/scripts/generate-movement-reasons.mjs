@@ -3,15 +3,21 @@
  * 株価が大きく変動した銘柄の理由を生成し reports/movement_reasons.json に保存する。
  *
  * 選定 (zスコア):
- *   S&P 500 / 400 / 600 それぞれで、当日の対数リターンを銘柄ごとの過去ボラティリティ
- *   で標準化した z スコアを計算し、上昇側・下落側の上位 N 銘柄 (既定 10) を選ぶ。
+ *   S&P 500 / 400 / 600 全体で、当日の対数リターンを銘柄ごとの過去ボラティリティで
+ *   標準化した z スコアを計算し、|z| が大きい順に上位 TARGET 銘柄 (既定 20) を選ぶ。
  *   生の変動率でランクすると「元々ボラの高い小型株」が常連化してしまうため、
- *   「その銘柄にとって異例の動き」を z で抽出する。過去ボラは当日リターンを母数から
- *   除いた直近 VOL_WINDOW 営業日の標準偏差。
+ *   「その銘柄にとって異例の動き」を |z| で抽出する。過去ボラは当日リターンを母数
+ *   から除いた直近 VOL_WINDOW 営業日の標準偏差。
  *
  * 理由生成:
- *   選定銘柄ごとに Gemma (gemma-4-31b-it) を Google 検索グラウンディング付きで呼び、
+ *   選定銘柄ごとに gemini-2.5-flash-lite を Google 検索グラウンディング付きで呼び、
  *   変動理由を日本語で生成する。
+ *
+ * API 予算:
+ *   gemini-2.5-flash-lite の Google 検索グラウンディングは無料枠で 1 日あたりの
+ *   利用回数が少ない (約 20 回)。API リクエスト総数を API_BUDGET で頭打ちにし、
+ *   超過 (429) を防ぐ。TARGET = API_BUDGET = 20 を既定とし、1 銘柄 1 リクエストで
+ *   ちょうど使い切る。リトライもこの予算を消費し、予算が尽きたら打ち切る。
  *
  * 出力 (reports/movement_reasons.json):
  *   { generated_date, generated_at, model,
@@ -20,8 +26,8 @@
  *
  * 同日スキップ:
  *   generated_date が当日のファイルが既にあれば何もしない。データ取得パイプラインは
- *   1 日に複数回 (master への push ごとに) 走るため、Gemma 呼び出しと Google 検索
- *   グラウンディング枠の二重消費を防ぐ。FORCE_MOVEMENT_REASONS=true で強制再生成。
+ *   1 日に複数回 (master への push ごとに) 走るため、API 予算の二重消費を防ぐ。
+ *   FORCE_MOVEMENT_REASONS=true で強制再生成。
  */
 
 import "dotenv/config";
@@ -36,15 +42,25 @@ import pMap from "p-map";
 const BUCKET = process.env.R2_BUCKET_NAME || "stock-data-c1";
 const OUTPUT_KEY =
   process.env.MOVEMENT_REASONS_KEY || "reports/movement_reasons.json";
-const MODEL = (process.env.MOVEMENT_REASON_MODEL || "gemma-4-31b-it").replace(
-  /^models\//,
-  "",
-);
+const MODEL = (
+  process.env.MOVEMENT_REASON_MODEL || "gemini-2.5-flash-lite"
+).replace(/^models\//, "");
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 // Gemini 無料枠は 15 RPM。安全マージンを取って既定 13 RPM。
 const GEMINI_RPM = Math.max(1, Number.parseInt(process.env.GEMINI_RPM || "13", 10));
-// 各指数で選ぶ上昇・下落の銘柄数。
-const TOP_N = Math.max(1, Number.parseInt(process.env.MOVEMENT_TOP_N || "10", 10));
+// |z| 上位で理由を生成する銘柄数。
+const TARGET = Math.max(1, Number.parseInt(process.env.MOVEMENT_TARGET || "20", 10));
+// API リクエスト総数の上限。グラウンディング無料枠 (約 20 回/日) に合わせる。
+// リトライもこの予算を消費し、尽きたら打ち切る。
+const API_BUDGET = Math.max(
+  1,
+  Number.parseInt(process.env.MOVEMENT_API_BUDGET || "20", 10),
+);
+// 1 銘柄あたりの最大試行回数 (各試行が API_BUDGET を 1 消費する)。
+const MAX_ATTEMPTS = Math.max(
+  1,
+  Number.parseInt(process.env.MOVEMENT_MAX_ATTEMPTS || "2", 10),
+);
 // z 計算用の過去ボラの窓 (営業日数)。当日リターンは母数から除外する。
 const VOL_WINDOW = Math.max(
   20,
@@ -59,7 +75,6 @@ const MIN_UNIVERSE = Math.max(
 );
 const FORCE = process.env.FORCE_MOVEMENT_REASONS === "true";
 const DOWNLOAD_CONCURRENCY = 20;
-const INDICES = ["S&P 500", "S&P 400", "S&P 600"];
 
 if (!GEMINI_API_KEY) {
   console.error("GEMINI_API_KEY is required.");
@@ -185,7 +200,13 @@ function buildPrompt({ symbol, name, date, changePct, indexLabel }) {
   ].join("\n");
 }
 
-// Gemma を Google 検索グラウンディング付きで呼び、変動理由テキストを返す。
+// API リクエストの累計。API_BUDGET を超えないよう全リクエストでカウントする。
+let apiRequestsUsed = 0;
+
+class RateLimitError extends Error {}
+
+// gemini-2.5-flash-lite を Google 検索グラウンディング付きで呼び、理由テキストを返す。
+// 各 fetch が API_BUDGET を 1 消費する。予算が尽きたら BudgetExhausted を投げる。
 async function generateReason(meta) {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(
     MODEL,
@@ -201,50 +222,60 @@ async function generateReason(meta) {
     body: JSON.stringify(payload),
   };
 
-  const maxAttempts = 3;
-  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+  let lastErr = null;
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    if (apiRequestsUsed >= API_BUDGET) {
+      throw lastErr || new Error("API budget exhausted before request.");
+    }
     await paceGemini();
+    apiRequestsUsed += 1;
+
     let res;
     try {
       res = await fetch(url, opts);
     } catch (e) {
-      if (attempt < maxAttempts) {
-        await sleep(1000 * 2 ** (attempt - 1));
+      lastErr = e;
+      if (attempt < MAX_ATTEMPTS && apiRequestsUsed < API_BUDGET) {
+        await sleep(2000 * attempt + Math.random() * 1000);
         continue;
       }
       throw e;
     }
-    if (!res.ok) {
-      const body = await res.text();
-      if ((res.status === 429 || res.status >= 500) && attempt < maxAttempts) {
-        const waitMs = res.status === 429 ? 30000 * attempt : 1000 * 2 ** (attempt - 1);
-        console.log(
-          `[${meta.symbol}] Gemini API ${res.status}, retrying in ${waitMs}ms (${attempt}/${maxAttempts})`,
-        );
-        await sleep(waitMs);
-        continue;
-      }
-      const err = new Error(`Gemini API ${res.status}: ${body.slice(0, 300)}`);
-      err.status = res.status;
-      throw err;
+
+    if (res.ok) {
+      const data = await res.json();
+      const text = (data.candidates?.[0]?.content?.parts || [])
+        .map((p) => p.text || "")
+        .join("")
+        .trim();
+      if (!text) throw new Error("Gemini returned empty text.");
+      return text
+        .replace(/^```(?:json|text)?/i, "")
+        .replace(/```$/i, "")
+        .trim();
     }
-    const data = await res.json();
-    const text = (data.candidates?.[0]?.content?.parts || [])
-      .map((p) => p.text || "")
-      .join("")
-      .trim();
-    if (!text) throw new Error("Gemini returned empty text.");
-    return text
-      .replace(/^```(?:json|text)?/i, "")
-      .replace(/```$/i, "")
-      .trim();
+
+    const body = await res.text();
+    // 429: 予算超過。これ以上叩いても無駄なので呼び出し側に伝えて全体を打ち切る。
+    if (res.status === 429) {
+      throw new RateLimitError(`Gemini API 429: ${body.slice(0, 300)}`);
+    }
+    // 5xx: 過渡的エラー。予算が残っていれば 1 回だけ間を置いて再試行する。
+    lastErr = new Error(`Gemini API ${res.status}: ${body.slice(0, 300)}`);
+    lastErr.status = res.status;
+    if (res.status >= 500 && attempt < MAX_ATTEMPTS && apiRequestsUsed < API_BUDGET) {
+      await sleep(3000 * attempt + Math.random() * 2000);
+      continue;
+    }
+    throw lastErr;
   }
-  throw new Error("unreachable");
+  throw lastErr || new Error("unreachable");
 }
 
 async function main() {
   console.log(
-    `bucket=${BUCKET} model=${MODEL} topN=${TOP_N} volWindow=${VOL_WINDOW} rpm=${GEMINI_RPM}`,
+    `bucket=${BUCKET} model=${MODEL} target=${TARGET} apiBudget=${API_BUDGET} ` +
+      `maxAttempts=${MAX_ATTEMPTS} volWindow=${VOL_WINDOW} rpm=${GEMINI_RPM}`,
   );
 
   // 同日スキップ: 当日生成済みなら何もしない。
@@ -324,28 +355,30 @@ async function main() {
   );
   console.log(`${candidates.length} symbols have a valid z-score.`);
 
-  // 指数ごとに z で上昇側・下落側の上位 TOP_N を選定。
-  const uniq = new Map();
-  for (const idx of INDICES) {
-    const inIndex = candidates
-      .filter((c) => c.index === idx)
-      .sort((a, b) => b.z - a.z);
-    const up = inIndex.slice(0, TOP_N);
-    const down = inIndex.slice(-TOP_N);
-    for (const c of [...up, ...down]) {
-      if (!uniq.has(c.symbol)) uniq.set(c.symbol, c);
-    }
-    console.log(
-      `  ${idx}: ${inIndex.length} candidates -> up ${up.length}, down ${down.length}`,
-    );
+  // 全指数横断で |z| が大きい順に上位 TARGET 銘柄を選定。
+  const targets = [...candidates]
+    .sort((a, b) => Math.abs(b.z) - Math.abs(a.z))
+    .slice(0, TARGET);
+  for (const idx of ["S&P 500", "S&P 400", "S&P 600"]) {
+    console.log(`  selected from ${idx}: ${targets.filter((t) => t.index === idx).length}`);
   }
-  const targets = [...uniq.values()];
-  console.log(`Generating reasons for ${targets.length} symbols via ${MODEL}...`);
+  console.log(
+    `Generating reasons for ${targets.length} symbols via ${MODEL} ` +
+      `(API budget ${API_BUDGET})...`,
+  );
 
   const reasons = {};
   let ok = 0;
   let failed = 0;
+  let stopped = false;
   for (const t of targets) {
+    if (apiRequestsUsed >= API_BUDGET) {
+      console.log(
+        `API budget (${API_BUDGET}) reached; ${targets.length - ok - failed} ` +
+          `symbol(s) left unprocessed.`,
+      );
+      break;
+    }
     try {
       const reason = await generateReason({
         symbol: t.symbol,
@@ -364,13 +397,19 @@ async function main() {
       ok += 1;
       console.log(
         `[${t.symbol}] ${t.index} z=${t.z.toFixed(2)} ` +
-          `change=${(t.change_pct * 100).toFixed(2)}% ok (${ok}/${targets.length})`,
+          `change=${(t.change_pct * 100).toFixed(2)}% ok ` +
+          `(${ok}/${targets.length}, api=${apiRequestsUsed}/${API_BUDGET})`,
       );
     } catch (e) {
       failed += 1;
       console.error(
         `[${t.symbol}] reason generation failed: ${String(e?.message || e)}`,
       );
+      if (e instanceof RateLimitError) {
+        console.log("Rate limited (429); stopping this run.");
+        stopped = true;
+        break;
+      }
     }
   }
 
@@ -388,7 +427,10 @@ async function main() {
     model: MODEL,
     reasons,
   });
-  console.log(`Saved ${OUTPUT_KEY}: ok=${ok} failed=${failed}`);
+  console.log(
+    `Saved ${OUTPUT_KEY}: ok=${ok} failed=${failed} ` +
+      `api_requests=${apiRequestsUsed}${stopped ? " (stopped early)" : ""}`,
+  );
 }
 
 main().catch((e) => {

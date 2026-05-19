@@ -7,7 +7,7 @@
    - ALWAYS verify the current date and available AI models (Gemini 3.1, Gemma 4 series, etc.) using `google_web_search` before making technical judgments or suggesting model changes.
    
 2. **Model Awareness & Standardization (April 2026):**
-   - **Market Movement Reasons:** ALWAYS use `models/gemma-4-31b-it` with Google Search grounding (`tools: [{ google_search: {} }]`). 株価が大きく変動した銘柄の変動理由調査に使用する。Gemma 4 31B は Gemini API 経由で Google 検索グラウンディングに対応する。
+   - **Market Movement Reasons:** ALWAYS use `models/gemini-2.5-flash-lite` with Google Search grounding (`tools: [{ google_search: {} }]`). 株価が大きく変動した銘柄の変動理由調査に使用する。`gemma-4-31b-it` でも検索グラウンディングは可能だが INTERNAL (500) エラーが多発し実用に耐えないため使用しない。`gemini-3.1-flash-lite` は検索グラウンディング非対応。グラウンディングの無料枠は 1 日あたり約 20 回と少ないため、対象銘柄数は予算内に収めること。
    - **Translations, Summaries, and General Text:** ALWAYS use `models/gemma-4-26b-a4b-it` (Gemma 4 26B MoE). It is the most efficient and high-quality open-weight model for these tasks.
    - **Legacy Models:** Models from the 1.5, 2.0, and early 3.1 series are deprecated or shut down. Do NOT use them in any new or existing code.
 
