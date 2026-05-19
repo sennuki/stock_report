@@ -11,6 +11,9 @@ import { env } from "cloudflare:workers";
 // R2 から実行時にデータを読むため SSR で動かす。
 export const prerender = false;
 
+// 決算トランスクリプトのブロックに並べる最大件数 (新しい順)。
+const TRANSCRIPT_LIMIT = 50;
+
 const title = "更新履歴｜新規レポート・決算トランスクリプトの追加状況";
 const description =
   "S&P 500/400/600 の構成銘柄入れ替えによる新規レポートの追加や、決算説明会トランスクリプトの追加など、サイトの更新を新しい順にまとめています。";
@@ -27,23 +30,31 @@ for (const s of stocks as any[]) {
   if (sym) nameBySymbol.set(sym, s.Security_JA || s.Security || sym);
 }
 
-interface UpdateItem {
+interface IndexItem {
   date: string;
-  kind: "transcript" | "index_added" | "index_removed";
+  kind: "index_added" | "index_removed";
   label: string;
   text: string;
   href?: string;
 }
 
-const items: UpdateItem[] = [];
+interface TranscriptItem {
+  symbol: string;
+  name: string;
+  /** "2026 Q1" 形式 (表示用)。 */
+  period: string;
+  generated: string;
+  href: string;
+}
 
 // 1) 指数構成銘柄の入れ替え
+const indexItems: IndexItem[] = [];
 const changes = await loadChangeHistory(env, Astro.url);
 for (const c of changes) {
   if (!c?.date || !c?.symbol) continue;
   const name = c.security || nameBySymbol.get(c.symbol) || c.symbol;
   if (c.type === "index_added") {
-    items.push({
+    indexItems.push({
       date: c.date,
       kind: "index_added",
       label: "新規レポート",
@@ -51,7 +62,7 @@ for (const c of changes) {
       href: `${baseNoSlash}/report/${c.symbol}`,
     });
   } else if (c.type === "index_removed") {
-    items.push({
+    indexItems.push({
       date: c.date,
       kind: "index_removed",
       label: "指数除外",
@@ -59,40 +70,41 @@ for (const c of changes) {
     });
   }
 }
+indexItems.sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
+const indexDisplay = indexItems.slice(0, 120);
 
-// 2) 決算説明会トランスクリプト
+// 日付ごとにグループ化 (indexDisplay は降順なので挿入順が保たれる)。
+const indexByDate = new Map<string, IndexItem[]>();
+for (const it of indexDisplay) {
+  if (!indexByDate.has(it.date)) indexByDate.set(it.date, []);
+  indexByDate.get(it.date)!.push(it);
+}
+
+// 2) 決算説明会トランスクリプト: 件数が多いため 1 ブロックにまとめる。
+const transcripts: TranscriptItem[] = [];
 const transcriptIndex = await loadTranscriptIndex(env, Astro.url);
 for (const [symbol, entries] of Object.entries(transcriptIndex)) {
   const name = nameBySymbol.get(symbol) || symbol;
   for (const e of entries || []) {
-    if (!e?.generated) continue;
-    items.push({
-      date: e.generated,
-      kind: "transcript",
-      label: "決算トランスクリプト",
-      text: `${name}（${symbol}）の ${e.period} 決算説明会トランスクリプトを追加しました。`,
+    if (!e?.generated || !e?.period) continue;
+    transcripts.push({
+      symbol,
+      name,
+      period: String(e.period).replace("-", " "),
+      generated: e.generated,
       href: `${baseNoSlash}/report/${symbol}/transcript/${e.period}`,
     });
   }
 }
+transcripts.sort((a, b) =>
+  a.generated < b.generated ? 1 : a.generated > b.generated ? -1 : 0
+);
+const recentTranscripts = transcripts.slice(0, TRANSCRIPT_LIMIT);
 
-// 新しい順にソートし、表示件数を絞る。
-items.sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
-const display = items.slice(0, 120);
-
-// 日付ごとにグループ化 (display は既に降順なので挿入順が保たれる)。
-const byDate = new Map<string, UpdateItem[]>();
-for (const it of display) {
-  if (!byDate.has(it.date)) byDate.set(it.date, []);
-  byDate.get(it.date)!.push(it);
-}
-
-const badgeClass = (kind: UpdateItem["kind"]) =>
-  kind === "transcript"
-    ? "bg-skin-accent/10 text-skin-accent"
-    : kind === "index_added"
-      ? "bg-green-600/10 text-green-600"
-      : "bg-red-600/10 text-red-600";
+const badgeClass = (kind: IndexItem["kind"]) =>
+  kind === "index_added"
+    ? "bg-green-600/10 text-green-600"
+    : "bg-red-600/10 text-red-600";
 ---
 
 <Layout title={title} description={description}>
@@ -103,17 +115,46 @@ const badgeClass = (kind: UpdateItem["kind"]) =>
     />
     <h1 class="text-3xl font-bold mb-2">更新履歴</h1>
     <p class="opacity-70 mb-8 text-sm leading-relaxed">
-      S&P 500/400/600 の構成銘柄入れ替えによる新規レポートの追加や、決算説明会トランスクリプトの追加など、サイトの更新を新しい順にまとめています。
+      S&P 500/400/600 の構成銘柄入れ替えによる新規レポートの追加や、決算説明会トランスクリプトの追加など、サイトの更新をまとめています。
     </p>
 
     {
-      display.length === 0 && (
+      recentTranscripts.length === 0 && indexDisplay.length === 0 && (
         <p class="opacity-70">まだ更新履歴がありません。</p>
       )
     }
 
+    {/* 決算説明会トランスクリプト: 1 ブロックにまとめて表示 */}
     {
-      [...byDate.entries()].map(([date, group]) => (
+      recentTranscripts.length > 0 && (
+        <section class="mb-10">
+          <div class="bg-skin-card p-4 rounded-lg border border-skin-line">
+            <span class="inline-block text-xs font-bold px-2 py-0.5 rounded mb-2 bg-skin-accent/10 text-skin-accent">
+              決算トランスクリプト
+            </span>
+            <p class="text-sm leading-relaxed mb-3">
+              決算説明会スクリプトを更新しました。
+            </p>
+            <ul class="space-y-1">
+              {recentTranscripts.map(t => (
+                <li class="text-sm">
+                  <a
+                    href={t.href}
+                    class="text-skin-accent hover:underline"
+                  >
+                    {t.name}（{t.symbol}）{t.period}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )
+    }
+
+    {/* 指数構成銘柄の入れ替え: 日付ごとに表示 */}
+    {
+      [...indexByDate.entries()].map(([date, group]) => (
         <section class="mb-8">
           <h2 class="text-lg font-bold mb-3 border-b pb-2">{date}</h2>
           <ul class="space-y-3">
