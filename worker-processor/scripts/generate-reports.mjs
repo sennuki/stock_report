@@ -325,6 +325,90 @@ async function pruneRemovedSymbols(rawKeys, baseStocksList) {
   return new Set(stale);
 }
 
+// S&P 500/400/600 の構成銘柄入れ替えを検出し、変更履歴
+// (reports/change_history.json) に追記する。現ユニバースを前回スナップショット
+// と比較し、追加/除外を日付付きで記録する。更新履歴ページ (/updates) が読む。
+async function recordIndexChanges(baseStocksList) {
+  if (LOCAL_MODE) return;
+  const KEY = "reports/change_history.json";
+  const MIN_UNIVERSE = Number(process.env.PRUNE_MIN_UNIVERSE || 1400);
+  // スクレイプ揺れで一度に大量の増減が出たら異常とみなす上限。
+  const MAX_CHANGES = Number(process.env.INDEX_CHANGE_MAX || 80);
+  const MAX_STORED_EVENTS = 500;
+
+  const current = new Map();
+  for (const s of baseStocksList) {
+    const sym = s.Symbol_YF || s.Symbol;
+    if (!sym || !s.Index) continue;
+    current.set(sym, { symbol: sym, security: s.Security || sym, index: s.Index });
+  }
+  if (current.size < MIN_UNIVERSE) {
+    console.log(
+      `  change history skipped: universe too small (${current.size} < ${MIN_UNIVERSE})`,
+    );
+    return;
+  }
+
+  let history = { universe: [], events: [] };
+  try {
+    const loaded = await getJson(KEY);
+    if (loaded && typeof loaded === "object") {
+      if (Array.isArray(loaded.universe)) history.universe = loaded.universe;
+      if (Array.isArray(loaded.events)) history.events = loaded.events;
+    }
+  } catch {
+    // 初回実行: ファイルが無い。
+  }
+
+  const prev = new Map(
+    history.universe.filter((e) => e && e.symbol).map((e) => [e.symbol, e]),
+  );
+
+  // 初回 (前回スナップショット無し): ベースラインのみ保存しイベントは作らない。
+  if (prev.size === 0) {
+    history.universe = [...current.values()];
+    await putJson(KEY, history);
+    console.log(`  change history: baseline established (${current.size} symbols)`);
+    return;
+  }
+
+  const added = [...current.values()].filter((e) => !prev.has(e.symbol));
+  const removed = [...prev.values()].filter((e) => !current.has(e.symbol));
+
+  // 安全策: 大量の増減はスクレイプ失敗とみなし記録しない (ベースラインも
+  // 更新せず、次の正常実行で再判定させる)。
+  if (added.length + removed.length > MAX_CHANGES) {
+    console.warn(
+      `  change history skipped: ${added.length + removed.length} changes ` +
+        `exceed ${MAX_CHANGES} (likely a scrape glitch)`,
+    );
+    return;
+  }
+
+  if (added.length > 0 || removed.length > 0) {
+    const date = new Date().toISOString().slice(0, 10);
+    const toEvent = (type) => (e) => ({
+      date,
+      type,
+      symbol: e.symbol,
+      security: e.security,
+      index: e.index,
+    });
+    const newEvents = [
+      ...added.map(toEvent("index_added")),
+      ...removed.map(toEvent("index_removed")),
+    ];
+    history.events = [...newEvents, ...history.events].slice(0, MAX_STORED_EVENTS);
+    console.log(
+      `  change history: ${added.length} added, ${removed.length} removed`,
+    );
+  }
+
+  // ユニバースのスナップショットを最新化 (security 名の更新も取り込む)。
+  history.universe = [...current.values()];
+  await putJson(KEY, history);
+}
+
 // === helpers ===
 
 // master の risk_return.py / performance_comparison.py に合わせた期間定義。
@@ -1859,6 +1943,14 @@ async function main() {
     const sym = s.Symbol_YF || s.Symbol;
     if (!idx || !sym) continue;
     (indexSymbolSets[idx] ??= new Set()).add(sym);
+  }
+
+  // 指数構成銘柄の入れ替えを検出して変更履歴に記録する。
+  // 失敗してもレポート生成は止めない。
+  try {
+    await recordIndexChanges(baseStocksList);
+  } catch (e) {
+    console.error(`  change history update failed (ignored): ${e.message}`);
   }
 
   console.log(`Downloading ${rawKeys.length} raw objects...`);
