@@ -2145,17 +2145,15 @@ async function main() {
   const isEtf = (s) => ETFS.includes(s);
   const ranksBySymbol = computeRanks(rawDataMap, sectorBySymbol, isEtf);
 
-  // ランキング一覧ページ用のトップ100抽出データ。
-  // 銘柄レポート内 (ranks.metrics) に既に格納済みだが、横断表示用には
-  // 別ファイルに上位だけ抜き出した方が Astro 側で扱いやすい。
+  // ランキング一覧ページ用のメタデータマップだけここで構築し、
+  // 実際の rankings.json 書き出しはレポート生成後に行う。
+  // 書き出しを最後にずらすことで R2 書込みの transient error が起きても
+  // 個別レポート / stocks.json の更新が阻害されないようにする。
   const metadataBySymbol = {};
   for (const s of baseStocksList) {
     if (s.Symbol_YF) metadataBySymbol[s.Symbol_YF] = s;
     if (s.Symbol && !metadataBySymbol[s.Symbol]) metadataBySymbol[s.Symbol] = s;
   }
-  const rankings = buildRankings(ranksBySymbol, metadataBySymbol);
-  await putJson("reports/rankings.json", rankings);
-  console.log(`Saved reports/rankings.json (${Object.keys(rankings).length} metrics).`);
 
   // 処理する銘柄を決定する。
   //   - TEST_SYMBOLS 環境変数 (例: "MSFT,AAPL,NVDA") があればそのリストを優先
@@ -2422,6 +2420,16 @@ async function main() {
     console.log(
       `Saved reports/stocks.json with ${finalList.length} items.`,
     );
+  }
+
+  // ランキング一覧ページ用 rankings.json は重要度が低いので、失敗しても
+  // パイプライン全体を落とさず警告だけ出して続行する。
+  try {
+    const rankings = buildRankings(ranksBySymbol, metadataBySymbol);
+    await putJson("reports/rankings.json", rankings);
+    console.log(`Saved reports/rankings.json (${Object.keys(rankings).length} metrics).`);
+  } catch (e) {
+    console.error(`rankings.json write failed (ignored): ${e?.message || e}`);
   }
 
   const elapsed = ((Date.now() - t0) / 1000).toFixed(1);
