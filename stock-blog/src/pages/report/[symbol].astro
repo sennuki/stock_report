@@ -685,7 +685,11 @@ function rankTierClass(tier: string): string {
                               return (
                                 <tr class="border-b border-skin-line/40 last:border-b-0">
                                   <td class="pl-8 pr-4 py-2 opacity-70">{label}</td>
-                                  <td class="px-4 py-2 text-right font-medium">{fmtRankValue(m.value, unit)}</td>
+                                  <td class="px-4 py-2 text-right font-medium">
+                                    {(key === 'dividend_rate' || key === 'dividend_yield') && (m.value == null || !Number.isFinite(m.value) || m.value === 0)
+                                      ? '無配'
+                                      : fmtRankValue(m.value, unit)}
+                                  </td>
                                   <td class={`px-4 py-2 text-right ${overall ? rankTierClass(overall.tier) : 'opacity-40'}`}>
                                     {overall ? overall.text : '対象外'}
                                   </td>
@@ -838,7 +842,7 @@ function rankTierClass(tier: string): string {
                 <div class="bg-skin-fill/20 p-4 rounded-lg border border-skin-line">
                   <div class="text-sm opacity-70 mb-1">配当利回り</div>
                   <div class="text-2xl font-bold text-skin-base">
-                    {typeof reportData.highlights.dividend_yield === 'number' ? (reportData.highlights.dividend_yield * 100).toFixed(2) + '%' : '実績なし'}
+                    {typeof reportData.highlights.dividend_yield === 'number' ? (reportData.highlights.dividend_yield * 100).toFixed(2) + '%' : '無配'}
                   </div>
                   <div class="text-xs opacity-50 mt-1">配当性向: {typeof reportData.highlights.payout_ratio === 'number' ? (reportData.highlights.payout_ratio * 100).toFixed(1) + '%' : '---'}</div>
                 </div>
@@ -1051,9 +1055,20 @@ function rankTierClass(tier: string): string {
           </div>
 
           <div id="dividend-history" class="scroll-mt-20 my-24">
-            <ChartJs chartData={reportData.charts.dps} id="chart-dps" title="1株あたり配当金" />
-            {(!reportData.charts.dps || !reportData.charts.dps.error) && (
-              <p class="text-sm text-gray-500 mt-24 block relative z-10">※「権利落日別」タブでは、当時の株価に基づいた予想配当利回り（年換算）も表示しています。</p>
+            {reportData.charts.dps ? (
+              <>
+                <ChartJs chartData={reportData.charts.dps} id="chart-dps" title="1株あたり配当金" />
+                {!reportData.charts.dps.error && (
+                  <p class="text-sm text-gray-500 mt-24 block relative z-10">※「権利落日別」タブでは、当時の株価に基づいた予想配当利回り（年換算）も表示しています。</p>
+                )}
+              </>
+            ) : (
+              <div class="mt-24 mb-8">
+                <h3 class="text-2xl font-bold mb-8 text-foreground">1株あたり配当金</h3>
+                <div class="flex items-center justify-center h-[200px] border border-dashed border-skin-line rounded-lg">
+                  <p class="text-skin-base opacity-70 italic">無配</p>
+                </div>
+              </div>
             )}
           </div>
         </section>
