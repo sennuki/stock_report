@@ -1872,6 +1872,53 @@ function rankSymbols(entries, dir) {
   return result;
 }
 
+// ランキング一覧ページで取り上げる指標 (MVP)。
+// 銘柄レポート内には全 RANK_METRICS が保存されるが、一覧ページは
+// SEO とメンテ性のために最初は 4 指標に絞る。
+const RANKING_PAGE_METRICS = [
+  "market_cap",
+  "dividend_yield",
+  "forward_pe",
+  "revenue_cagr_3y",
+];
+
+// 各指標について上位 100 銘柄を抽出して { metric_key: { label, unit, top: [...] } } を返す。
+// 表示に必要な最小限の情報 (シンボル、社名、セクター、値、順位) だけ含める。
+function buildRankings(ranksBySymbol, metadataBySymbol) {
+  const metricMap = Object.fromEntries(RANK_METRICS.map((m) => [m.key, m]));
+  const out = {};
+  for (const key of RANKING_PAGE_METRICS) {
+    const metric = metricMap[key];
+    if (!metric) continue;
+    const entries = [];
+    for (const sym of Object.keys(ranksBySymbol)) {
+      const r = ranksBySymbol[sym]?.[key];
+      if (!r || !r.overall || r.value == null) continue;
+      const meta = metadataBySymbol[sym] || {};
+      entries.push({
+        symbol: meta.Symbol || sym,
+        symbol_yf: sym,
+        security: meta.Security || sym,
+        security_ja: meta.Security_JA || null,
+        sector: meta["GICS Sector"] || null,
+        value: r.value,
+        rank: r.overall.rank,
+        total: r.overall.total,
+      });
+    }
+    entries.sort((a, b) => a.rank - b.rank);
+    out[key] = {
+      key,
+      label: metric.label,
+      unit: metric.unit,
+      dir: metric.dir,
+      total: entries.length,
+      top: entries.slice(0, 100),
+    };
+  }
+  return out;
+}
+
 // すべての銘柄を横断して全指標のランキングを計算する。
 // rawDataMap には ETF (SPY/XLK/...) も含まれるので S&P 1500 個別株のみを母集団にする。
 // sectorBySymbol: 各銘柄の (正規化済) GICS Sector。Unknown はセクター順位の母集団から除外。
@@ -2097,6 +2144,18 @@ async function main() {
   console.log("Computing ranks (overall + sector)...");
   const isEtf = (s) => ETFS.includes(s);
   const ranksBySymbol = computeRanks(rawDataMap, sectorBySymbol, isEtf);
+
+  // ランキング一覧ページ用のトップ100抽出データ。
+  // 銘柄レポート内 (ranks.metrics) に既に格納済みだが、横断表示用には
+  // 別ファイルに上位だけ抜き出した方が Astro 側で扱いやすい。
+  const metadataBySymbol = {};
+  for (const s of baseStocksList) {
+    if (s.Symbol_YF) metadataBySymbol[s.Symbol_YF] = s;
+    if (s.Symbol && !metadataBySymbol[s.Symbol]) metadataBySymbol[s.Symbol] = s;
+  }
+  const rankings = buildRankings(ranksBySymbol, metadataBySymbol);
+  await putJson("reports/rankings.json", rankings);
+  console.log(`Saved reports/rankings.json (${Object.keys(rankings).length} metrics).`);
 
   // 処理する銘柄を決定する。
   //   - TEST_SYMBOLS 環境変数 (例: "MSFT,AAPL,NVDA") があればそのリストを優先

@@ -1,0 +1,90 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import fallbackRankings from "@/data/rankings.json";
+import { env } from "cloudflare:workers";
+
+let rankings: Record<string, any> = fallbackRankings as Record<string, any>;
+
+try {
+  const bucket = (env as any)?.STOCK_DATA;
+  if (bucket) {
+    const object = await bucket.get("reports/rankings.json");
+    if (object) {
+      const text = await object.text();
+      rankings = JSON.parse(text);
+    }
+  }
+} catch (e) {
+  console.error("Failed to load rankings from R2", e);
+}
+
+type RankingMetric = {
+  slug: string;
+  metricKey: string;
+  label: string;
+  description: string;
+};
+
+// 表示順とスラグの対応 (ファイル名に使うので URL 安全な kebab-case)
+const RANKING_PAGES: RankingMetric[] = [
+  {
+    slug: "market-cap",
+    metricKey: "market_cap",
+    label: "時価総額ランキング",
+    description: "S&P 1500 のうち時価総額が大きい順に並べたベスト100。",
+  },
+  {
+    slug: "dividend-yield",
+    metricKey: "dividend_yield",
+    label: "配当利回りランキング",
+    description: "配当利回り (年率) が高い順に並べた高配当銘柄ベスト100。",
+  },
+  {
+    slug: "forward-pe",
+    metricKey: "forward_pe",
+    label: "PER 割安ランキング (予想)",
+    description: "予想 PER が低い順に並べたバリュー候補ベスト100。",
+  },
+  {
+    slug: "revenue-cagr-3y",
+    metricKey: "revenue_cagr_3y",
+    label: "売上成長率ランキング (3年CAGR)",
+    description: "直近3年の売上 CAGR が高い順に並べた成長株ベスト100。",
+  },
+];
+
+const visiblePages = RANKING_PAGES.filter((p) => rankings[p.metricKey]?.top?.length);
+
+const title = "銘柄ランキング (ベスト100) - アメリカ株インサイト";
+const description = "時価総額・配当利回り・PER 割安・売上成長率など、S&P 1500 銘柄のベスト100ランキング。";
+---
+
+<Layout title={title} description={description}>
+  <Header />
+  <main id="main-content" class="app-layout">
+    <section class="py-8">
+      <h1 class="text-3xl font-bold mb-2">銘柄ランキング (ベスト100)</h1>
+      <p class="opacity-80 mb-8">S&P 500 / 400 / 600 を母集団とした各指標ベスト100ランキングです。</p>
+
+      {visiblePages.length === 0 ? (
+        <p class="text-gray-500 italic">ランキングデータがまだ生成されていません。</p>
+      ) : (
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {visiblePages.map((p) => (
+            <a
+              href={`/ranking/${p.slug}`}
+              class="block p-6 rounded-lg border border-skin-line bg-skin-fill/20 hover:bg-skin-fill/40 transition-colors"
+            >
+              <h2 class="text-xl font-bold mb-2 text-skin-accent">{p.label}</h2>
+              <p class="text-sm opacity-80">{p.description}</p>
+              <p class="text-xs opacity-60 mt-2">対象: {rankings[p.metricKey]?.total ?? 0} 銘柄</p>
+            </a>
+          ))}
+        </div>
+      )}
+    </section>
+    <Footer />
+  </main>
+</Layout>
