@@ -171,6 +171,25 @@ jobs:
             rm -f "$TMP"
             echo "Failed to fetch stocks.json from R2; keeping existing file"
           fi
+
+          # rankings.json も同様に取得。 reports/rankings.json は
+          # ベスト100ランキングページ (/ranking/[metric]) のビルド時データソース。
+          RANKINGS_FILE=../stock-blog/src/data/rankings.json
+          TMP2=$(mktemp)
+          if npx wrangler r2 object get stock-data-c1/reports/rankings.json \
+             --file="$TMP2" --remote 2>/dev/null; then
+            METRICS=$(python3 -c "import json; print(len(json.load(open('$TMP2'))))" 2>/dev/null || echo 0)
+            echo "rankings.json downloaded: $METRICS metrics"
+            if [ "$METRICS" -gt 0 ]; then
+              mv "$TMP2" "$RANKINGS_FILE"
+            else
+              rm -f "$TMP2"
+              echo "rankings.json has no metrics; keeping existing file"
+            fi
+          else
+            rm -f "$TMP2"
+            echo "Failed to fetch rankings.json from R2; keeping existing file"
+          fi
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

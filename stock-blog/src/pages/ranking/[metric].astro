@@ -1,0 +1,150 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import fallbackRankings from "@/data/rankings.json";
+import { env } from "cloudflare:workers";
+
+// URL スラグと内部メトリックキーのマッピング
+const METRIC_MAP: Record<string, { metricKey: string; label: string; subtitle: string }> = {
+  "market-cap": {
+    metricKey: "market_cap",
+    label: "時価総額ランキング",
+    subtitle: "S&P 1500 のうち時価総額が大きい順 (米ドル建て)",
+  },
+  "dividend-yield": {
+    metricKey: "dividend_yield",
+    label: "配当利回りランキング",
+    subtitle: "配当利回り (年率) が高い順",
+  },
+  "forward-pe": {
+    metricKey: "forward_pe",
+    label: "PER 割安ランキング (予想)",
+    subtitle: "予想 PER (Forward P/E) が低い順",
+  },
+  "revenue-cagr-3y": {
+    metricKey: "revenue_cagr_3y",
+    label: "売上成長率ランキング (3年CAGR)",
+    subtitle: "直近 3 年の売上年平均成長率が高い順",
+  },
+};
+
+const { metric } = Astro.params as { metric: string };
+const config = METRIC_MAP[metric];
+
+if (!config) {
+  return Astro.redirect("/ranking");
+}
+
+let rankings: Record<string, any> = fallbackRankings as Record<string, any>;
+try {
+  const bucket = (env as any)?.STOCK_DATA;
+  if (bucket) {
+    const object = await bucket.get("reports/rankings.json");
+    if (object) {
+      const text = await object.text();
+      rankings = JSON.parse(text);
+    }
+  }
+} catch (e) {
+  console.error("Failed to load rankings from R2", e);
+}
+
+const data = rankings[config.metricKey];
+const entries: any[] = data?.top ?? [];
+const unit: string = data?.unit ?? "ratio";
+
+function fmtValue(v: number | null | undefined, unit: string): string {
+  if (v == null || !Number.isFinite(v)) return "---";
+  if (unit === "currency") {
+    const abs = Math.abs(v);
+    if (abs >= 1e12) return `$${(v / 1e12).toFixed(2)}T`;
+    if (abs >= 1e9) return `$${(v / 1e9).toFixed(2)}B`;
+    if (abs >= 1e6) return `$${(v / 1e6).toFixed(2)}M`;
+    if (abs >= 1e3) return `$${(v / 1e3).toFixed(1)}K`;
+    return `$${v.toFixed(0)}`;
+  }
+  if (unit === "percent") return `${(v * 100).toFixed(2)}%`;
+  if (unit === "price") return `$${v.toFixed(2)}`;
+  if (unit === "count") return v.toLocaleString();
+  return v.toFixed(2);
+}
+
+const sectorTranslations: Record<string, string> = {
+  "Communication Services": "通信サービス",
+  "Consumer Discretionary": "一般消費財",
+  "Consumer Staples": "生活必需品",
+  Energy: "エネルギー",
+  Financials: "金融",
+  "Health Care": "ヘルスケア",
+  Industrials: "資本財",
+  "Information Technology": "情報技術",
+  Materials: "素材",
+  "Real Estate": "不動産",
+  Utilities: "公益事業",
+};
+
+const title = `${config.label} - アメリカ株インサイト`;
+const description = `${config.subtitle}。S&P 1500 銘柄のベスト${entries.length}ランキングをまとめています。`;
+---
+
+<Layout title={title} description={description}>
+  <Header />
+  <main id="main-content" class="app-layout">
+    <section class="py-8">
+      <nav class="text-sm opacity-70 mb-4">
+        <a href="/ranking" class="hover:text-skin-accent">← ランキング一覧へ戻る</a>
+      </nav>
+      <h1 class="text-3xl font-bold mb-2">{config.label}</h1>
+      <p class="opacity-80 mb-6">{config.subtitle}</p>
+
+      {entries.length === 0 ? (
+        <div class="p-6 border border-dashed border-skin-line rounded-lg">
+          <p class="text-gray-500 italic">ランキングデータがまだ生成されていません。</p>
+        </div>
+      ) : (
+        <div class="overflow-x-auto rounded-lg border border-skin-line">
+          <table class="min-w-full text-sm">
+            <thead class="bg-skin-fill/30 text-left">
+              <tr>
+                <th class="px-4 py-3 w-16">順位</th>
+                <th class="px-4 py-3">銘柄</th>
+                <th class="px-4 py-3 hidden sm:table-cell">セクター</th>
+                <th class="px-4 py-3 text-right">{data?.label ?? "値"}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {entries.map((e, i) => (
+                <tr class="border-t border-skin-line/40 hover:bg-skin-fill/20">
+                  <td class="px-4 py-2 font-bold opacity-80">{e.rank}</td>
+                  <td class="px-4 py-2">
+                    <a
+                      href={`/report/${e.symbol_yf}`}
+                      class="block hover:text-skin-accent"
+                    >
+                      <div class="font-mono font-bold">{e.symbol}</div>
+                      <div class="text-xs opacity-70 truncate max-w-xs">
+                        {e.security_ja || e.security}
+                      </div>
+                    </a>
+                  </td>
+                  <td class="px-4 py-2 hidden sm:table-cell text-xs opacity-70">
+                    {sectorTranslations[e.sector] || e.sector || "---"}
+                  </td>
+                  <td class="px-4 py-2 text-right font-mono font-medium">
+                    {fmtValue(e.value, unit)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      <p class="text-xs text-gray-500 mt-6 italic">
+        ※ データは yfinance ベース。財務指標は各社決算ベースで集計しています。母集団は S&P 500/400/600 の個別銘柄 (ETF を除く)。
+      </p>
+    </section>
+    <Footer />
+  </main>
+</Layout>
