@@ -119,7 +119,7 @@ const { symbol, highlights, earnings_surprise } = Astro.props;
         <div class="bg-skin-fill/20 p-4 rounded-lg border border-skin-line">
           <div class="text-sm opacity-70 mb-1">配当利回り</div>
           <div class="text-2xl font-bold text-skin-base">
-            {typeof highlights.dividend_yield === 'number' ? (highlights.dividend_yield * 100).toFixed(2) + '%' : '実績なし'}
+            {typeof highlights.dividend_yield === 'number' ? highlights.dividend_yield.toFixed(2) + '%' : '実績なし'}
           </div>
           <div class="text-xs opacity-50 mt-1">配当性向: {typeof highlights.payout_ratio === 'number' ? (highlights.payout_ratio * 100).toFixed(1) + '%' : '---'}</div>
         </div>

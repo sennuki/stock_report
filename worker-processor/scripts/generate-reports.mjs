@@ -1327,6 +1327,8 @@ function generateRiskReturnChart(allMetrics, targetSymbol, sectorEtf, broadSecto
     // 描画順 (配列の後ほど前面): その他 S&P 銘柄 (背景) -> Vanguard セクター ETF
     // -> セクター ETF (SPDR) -> S&P 500 ETF -> ターゲット (最前面)。
     // 優先表示は ターゲット > S&P 500 ETF > セクター ETF > Vanguard ETF > その他 S&P 銘柄。
+    // order: 小さい値ほど前面 (Chart.js の描画順)。
+    // ターゲット=0 (最前面), ETF類=1-2, S&P銘柄=3 (最背面)。
     datasets.push({
       label: `${peerIndexLabel}銘柄 (${p.label})`,
       data: others.map((m) =>
@@ -1334,6 +1336,7 @@ function generateRiskReturnChart(allMetrics, targetSymbol, sectorEtf, broadSecto
       ),
       backgroundColor: "rgba(114, 119, 123, 0.4)",
       pointRadius: 2.5,
+      order: 3,
       visible: isDefault,
     });
     if (broadSectorEtf && broadSectorEtf !== "SPY") {
@@ -1346,6 +1349,7 @@ function generateRiskReturnChart(allMetrics, targetSymbol, sectorEtf, broadSecto
         pointRadius: 7,
         pointBorderColor: "#ffffff",
         pointBorderWidth: 1.5,
+        order: 2,
         visible: isDefault,
       });
     }
@@ -1359,6 +1363,7 @@ function generateRiskReturnChart(allMetrics, targetSymbol, sectorEtf, broadSecto
         pointRadius: 8,
         pointBorderColor: "#ffffff",
         pointBorderWidth: 1.5,
+        order: 2,
         visible: isDefault,
       });
     }
@@ -1371,6 +1376,7 @@ function generateRiskReturnChart(allMetrics, targetSymbol, sectorEtf, broadSecto
       pointRadius: 8,
       pointBorderColor: "#ffffff",
       pointBorderWidth: 1.5,
+      order: 1,
       visible: isDefault,
     });
     if (ownIndexEtf) {
@@ -1384,6 +1390,7 @@ function generateRiskReturnChart(allMetrics, targetSymbol, sectorEtf, broadSecto
         pointRadius: 8,
         pointBorderColor: "#ffffff",
         pointBorderWidth: 1.5,
+        order: 1,
         visible: isDefault,
       });
     }
@@ -1396,6 +1403,7 @@ function generateRiskReturnChart(allMetrics, targetSymbol, sectorEtf, broadSecto
       pointRadius: 10,
       pointBorderColor: "#ffffff",
       pointBorderWidth: 1.5,
+      order: 0,
       visible: isDefault,
     });
   }

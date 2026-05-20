@@ -1,0 +1,242 @@
+---
+interface Props {
+  reportData: any;
+  analystSummary: any;
+  stockInfo: any;
+}
+
+const { reportData, analystSummary, stockInfo } = Astro.props;
+
+const h = reportData?.highlights ?? {};
+const dcf = reportData?.dcf_valuation;
+const es = reportData?.earnings_surprise;
+const ar = analystSummary;
+const mr = reportData?.movement_reason;
+
+const pct = (v: any, digits = 2) =>
+  typeof v === "number" && isFinite(v) ? `${(v * 100).toFixed(digits)}%` : "---";
+const num = (v: any, digits = 2) =>
+  typeof v === "number" && isFinite(v) ? v.toFixed(digits) : "---";
+const usd = (v: any, digits = 2) =>
+  typeof v === "number" && isFinite(v) ? `$${v.toFixed(digits)}` : "---";
+const usdLarge = (v: any) => {
+  if (typeof v !== "number" || !isFinite(v)) return "---";
+  const abs = Math.abs(v);
+  if (abs >= 1e12) return `$${(v / 1e12).toFixed(2)}T`;
+  if (abs >= 1e9) return `$${(v / 1e9).toFixed(2)}B`;
+  if (abs >= 1e6) return `$${(v / 1e6).toFixed(2)}M`;
+  return `$${v.toFixed(0)}`;
+};
+
+const symbol = reportData?.symbol ?? "";
+const companyJa = reportData?.security_ja || reportData?.security || "";
+const companyEn = reportData?.security || "";
+const sector = reportData?.sector ?? "---";
+const subIndustry = reportData?.sub_industry ?? "---";
+const index = reportData?.index ?? stockInfo?.Index ?? "---";
+
+const currentPrice = ar?.currentPrice ?? dcf?.current_price;
+const fairPrice = dcf?.fair_price;
+const upside =
+  typeof currentPrice === "number" &&
+  typeof ar?.targetMean === "number" &&
+  isFinite(currentPrice) &&
+  currentPrice > 0
+    ? (((ar.targetMean - currentPrice) / currentPrice) * 100).toFixed(1)
+    : null;
+const dcfUpside =
+  typeof fairPrice === "number" &&
+  typeof currentPrice === "number" &&
+  isFinite(fairPrice) &&
+  isFinite(currentPrice) &&
+  currentPrice > 0
+    ? (((fairPrice - currentPrice) / currentPrice) * 100).toFixed(1)
+    : null;
+
+const prompt = `以下は ${symbol}（${companyJa} / ${companyEn}）の銘柄データです。このデータを基に投資判断のサポートをお願いします。
+
+## 基本情報
+- ティッカー: ${symbol}
+- 企業名: ${companyJa}（${companyEn}）
+- セクター: ${sector}
+- 業種: ${subIndustry}
+- 指数: ${index}
+
+## 会社概要
+${reportData?.business_summary_ja ?? "情報なし"}
+
+## 財務ハイライト（直近）
+- 現在株価: ${usd(currentPrice)}
+- 予想PER: ${num(h.pe_forward)}倍
+- 実績PER (TTM): ${num(h.pe_ttm)}倍
+- 配当利回り: ${typeof h.dividend_yield === "number" && isFinite(h.dividend_yield) ? `${h.dividend_yield.toFixed(2)}%` : "---"}
+- 配当性向: ${pct(h.payout_ratio)}
+- ROE: ${pct(h.roe)}
+- 売上高成長率 (YoY): ${pct(h.revenue_growth)}
+- 純利益率: ${pct(h.profit_margins)}
+- 営業利益率: ${pct(h.operating_margins)}
+- 負債資本比率 (D/E): ${num(h.debt_to_equity)}
+- 流動比率: ${num(h.current_ratio)}
+- EPS (TTM): ${usd(h.eps_ttm)}
+- EPS (予想): ${usd(h.eps_forward)}
+- 時価総額: ${usdLarge(reportData?.info?.marketCap)}
+
+## 直近四半期決算（EPSサプライズ）
+${
+  es
+    ? `- 決算発表日: ${es.date ?? "---"}
+- 市場予想EPS: ${usd(es.estimate)}
+- 実績EPS: ${usd(es.actual)}
+- サプライズ: ${typeof es.surprise_pct === "number" ? `${es.surprise_pct >= 0 ? "+" : ""}${es.surprise_pct.toFixed(2)}% (${es.surprise_pct >= 0 ? "Beat" : "Miss"})` : "---"}`
+    : "- データなし"
+}
+
+## アナリスト評価${ar ? ` (${ar.total}名)` : ""}
+${
+  ar
+    ? `- 総合評価: ${ar.assessment}
+- 内訳: 強気買い ${ar.ratings?.strongBuy ?? 0}名 / 買い ${ar.ratings?.buy ?? 0}名 / 中立 ${ar.ratings?.hold ?? 0}名 / 売り ${ar.ratings?.sell ?? 0}名 / 強い売り ${ar.ratings?.strongSell ?? 0}名
+- 目標株価: 平均 ${usd(ar.targetMean)}（低 ${usd(ar.targetLow)} / 高 ${usd(ar.targetHigh)}）${upside !== null ? `\n- 現在株価比アップサイド: ${Number(upside) >= 0 ? "+" : ""}${upside}%` : ""}`
+    : "- データなし"
+}
+
+## DCF理論株価分析
+${
+  dcf
+    ? `- 現在株価: ${usd(dcf.current_price)}
+- DCF理論株価（フェアバリュー）: ${usd(dcf.fair_price)}${dcfUpside !== null ? `\n- 現在株価比乖離: ${Number(dcfUpside) >= 0 ? "+" : ""}${dcfUpside}% (${Number(dcfUpside) >= 0 ? "割安" : "割高"})` : ""}
+- WACC: ${pct(dcf.wacc_details?.wacc)}
+- 成長率（1〜5年）: ${pct(dcf.growth_1_5y)}
+- 成長率（6〜10年）: ${pct(dcf.growth_6_10y)}
+- ターミナル成長率: ${pct(dcf.terminal_growth)}
+- 売上 3Y CAGR: ${pct(dcf.cagr_details?.revenue)}
+- EPS 9Y CAGR: ${pct(dcf.cagr_details?.eps_9y_cagr)}`
+    : "- データなし"
+}
+${
+  mr
+    ? `
+## 直近の株価変動理由（${mr.date ?? ""}）
+変動率: ${typeof mr.change_pct === "number" ? `${mr.change_pct >= 0 ? "+" : ""}${(mr.change_pct * 100).toFixed(2)}%` : "---"}
+${mr.reason ?? ""}`
+    : ""
+}
+
+---
+上記データを踏まえ、以下の観点から投資判断の参考となる分析をお願いします。
+
+1. **バリュエーション** — PER・DCFフェアバリューと現在株価を比較し、割安・適正・割高を判断してください。
+2. **成長性・収益性** — 売上/EPS成長率、ROE、利益率の水準と傾向を評価してください。
+3. **リスク要因** — 財務レバレッジ、ベータ、アナリスト評価の分散など、懸念点を挙げてください。
+4. **総合的な投資判断** — 上記を踏まえ、買い・中立・売りの見解とその根拠を教えてください。`;
+---
+
+<div id="ai-prompt-wrap">
+  <button
+    id="ai-prompt-btn"
+    type="button"
+    class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-skin-accent text-skin-accent hover:bg-skin-accent hover:text-white transition-colors text-sm font-semibold"
+    aria-haspopup="dialog"
+    aria-controls="ai-prompt-modal"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+    </svg>
+    AIに投資分析を依頼する
+  </button>
+</div>
+
+<!-- Modal -->
+<div
+  id="ai-prompt-modal"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="ai-prompt-modal-title"
+  class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+>
+  <div class="bg-skin-card border border-skin-line rounded-xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col">
+    <div class="flex items-center justify-between px-6 py-4 border-b border-skin-line">
+      <h2 id="ai-prompt-modal-title" class="text-lg font-bold flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-skin-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+        </svg>
+        AI投資分析プロンプト — {symbol}
+      </h2>
+      <button id="ai-prompt-close" type="button" aria-label="閉じる" class="p-1 rounded hover:bg-skin-fill/40 transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="px-6 py-3 bg-skin-fill/30 border-b border-skin-line text-sm opacity-70">
+      以下のテキストをコピーして Claude・ChatGPT などの AI チャットに貼り付けてください。
+    </div>
+
+    <div class="flex-1 overflow-y-auto p-4">
+      <pre id="ai-prompt-text" class="whitespace-pre-wrap text-xs leading-relaxed bg-skin-fill/10 border border-skin-line rounded-lg p-4 font-mono select-all">{prompt}</pre>
+    </div>
+
+    <div class="px-6 py-4 border-t border-skin-line flex justify-end gap-3">
+      <button id="ai-prompt-close2" type="button" class="px-4 py-2 rounded-lg border border-skin-line text-sm hover:bg-skin-fill/30 transition-colors">
+        閉じる
+      </button>
+      <button id="ai-prompt-copy" type="button" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-skin-accent text-white text-sm font-semibold hover:opacity-90 transition-opacity">
+        <svg id="ai-copy-icon" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+        </svg>
+        <span id="ai-copy-label">コピー</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const btn = document.getElementById('ai-prompt-btn');
+  const modal = document.getElementById('ai-prompt-modal');
+  const closeBtn = document.getElementById('ai-prompt-close');
+  const closeBtn2 = document.getElementById('ai-prompt-close2');
+  const copyBtn = document.getElementById('ai-prompt-copy');
+  const copyLabel = document.getElementById('ai-copy-label');
+  const copyIcon = document.getElementById('ai-copy-icon');
+  const promptText = document.getElementById('ai-prompt-text');
+
+  function openModal() {
+    modal?.classList.remove('hidden');
+    modal?.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    modal?.classList.add('hidden');
+    modal?.classList.remove('flex');
+    document.body.style.overflow = '';
+  }
+
+  btn?.addEventListener('click', openModal);
+  closeBtn?.addEventListener('click', closeModal);
+  closeBtn2?.addEventListener('click', closeModal);
+  modal?.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+  copyBtn?.addEventListener('click', async () => {
+    const text = promptText?.textContent ?? '';
+    try {
+      await navigator.clipboard.writeText(text);
+      if (copyLabel) copyLabel.textContent = 'コピーしました！';
+      if (copyIcon) copyIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />';
+      setTimeout(() => {
+        if (copyLabel) copyLabel.textContent = 'コピー';
+        if (copyIcon) copyIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />';
+      }, 2000);
+    } catch {
+      // フォールバック: テキストを選択
+      const range = document.createRange();
+      if (promptText) {
+        range.selectNodeContents(promptText);
+        const sel = window.getSelection();
+        sel?.removeAllRanges();
+        sel?.addRange(range);
+      }
+    }
+  });
+</script>
