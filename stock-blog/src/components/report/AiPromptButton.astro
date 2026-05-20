@@ -53,7 +53,12 @@ const dcfUpside =
     ? (((fairPrice - currentPrice) / currentPrice) * 100).toFixed(1)
     : null;
 
-const prompt = `以下は ${symbol}（${companyJa} / ${companyEn}）の銘柄データです。このデータを基に投資判断のサポートをお願いします。
+// テンプレートリテラル内に直接 " / " を書くと、esbuild のパーサーが直前の
+// "${...}" の閉じ "}" の後の "/" を正規表現の開始として誤認するケースがある
+// (Astro の transform を通したときに発生)。文字列として補間して回避する。
+const SLASH = " / ";
+
+const prompt = `以下は ${symbol}（${companyJa}${SLASH}${companyEn}）の銘柄データです。このデータを基に投資判断のサポートをお願いします。
 
 ## 基本情報
 - ティッカー: ${symbol}
@@ -95,8 +100,8 @@ ${
 ${
   ar
     ? `- 総合評価: ${ar.assessment}
-- 内訳: 強気買い ${ar.ratings?.strongBuy ?? 0}名 / 買い ${ar.ratings?.buy ?? 0}名 / 中立 ${ar.ratings?.hold ?? 0}名 / 売り ${ar.ratings?.sell ?? 0}名 / 強い売り ${ar.ratings?.strongSell ?? 0}名
-- 目標株価: 平均 ${usd(ar.targetMean)}（低 ${usd(ar.targetLow)} / 高 ${usd(ar.targetHigh)}）${upside !== null ? `\n- 現在株価比アップサイド: ${Number(upside) >= 0 ? "+" : ""}${upside}%` : ""}`
+- 内訳: 強気買い ${ar.ratings?.strongBuy ?? 0}名${SLASH}買い ${ar.ratings?.buy ?? 0}名${SLASH}中立 ${ar.ratings?.hold ?? 0}名${SLASH}売り ${ar.ratings?.sell ?? 0}名${SLASH}強い売り ${ar.ratings?.strongSell ?? 0}名
+- 目標株価: 平均 ${usd(ar.targetMean)}（低 ${usd(ar.targetLow)}${SLASH}高 ${usd(ar.targetHigh)}）${upside !== null ? `\n- 現在株価比アップサイド: ${Number(upside) >= 0 ? "+" : ""}${upside}%` : ""}`
     : "- データなし"
 }
 
