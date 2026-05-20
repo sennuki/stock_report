@@ -127,8 +127,11 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
           ds.pointRadius = isPerformanceChart ? 0 : 4;
         }
         if (ds.type === 'scatter') {
-          // マーカーサイズを統一。「その他のS&P500銘柄」だけ少し小さく。
-          ds.pointRadius = (ds.label && ds.label.includes('銘柄')) ? 4 : 7;
+          // JSON側で pointRadius が指定されていない場合のみデフォルト値を設定。
+          // 「その他のS&P500銘柄」だけ少し小さく、それ以外は7。
+          if (ds.pointRadius === undefined) {
+            ds.pointRadius = (ds.label && ds.label.includes('銘柄')) ? 4 : 7;
+          }
           ds.pointHoverRadius = 12;
         }
         if (hasStacking && ds.type === 'bar') {
