@@ -506,6 +506,18 @@ function calculateDailyChange(history) {
   return (last - prev) / prev;
 }
 
+// yfinance の info.regularMarketPrice はキャッシュで古い値を返すことがある。
+// history の最終 Close は毎回フレッシュに取得されるため、こちらをプライマリとする。
+function getLastClosePrice(rawData) {
+  const hist = rawData.history;
+  if (Array.isArray(hist) && hist.length > 0) {
+    const last = hist[hist.length - 1];
+    if (typeof last?.Close === "number" && last.Close > 0) return last.Close;
+  }
+  const info = rawData.info || {};
+  return info.currentPrice || info.regularMarketPrice || null;
+}
+
 function getSectorETF(sector, subIndustry) {
   return sectorEtfMap[subIndustry] || sectorEtfMap[sector] || 'SPY';
 }
@@ -869,7 +881,7 @@ function extractAnalystRatings(rawData) {
     targetLowPrice: info.targetLowPrice || null,
     targetMedianPrice: info.targetMedianPrice || null,
     numberOfAnalystOpinions: info.numberOfAnalystOpinions || 0,
-    currentPrice: info.currentPrice || info.regularMarketPrice || null,
+    currentPrice: getLastClosePrice(rawData),
     strongBuy: currentRating.strongBuy || 0,
     buy: currentRating.buy || 0,
     hold: currentRating.hold || 0,
@@ -1831,7 +1843,7 @@ const RANK_METRICS = [
     return typeof y === "number" ? y / 100 : null;
   }},
   // --- ファクト寄り (規模感・雑学) ---
-  { key: "stock_price",         label: "株価 (1株あたり)",        group: "facts",    dir: "desc", unit: "price",    get: (r) => r.info?.regularMarketPrice ?? null },
+  { key: "stock_price",         label: "株価 (1株あたり)",        group: "facts",    dir: "desc", unit: "price",    get: (r) => getLastClosePrice(r) },
   { key: "revenue_ttm",         label: "TTM 売上",                group: "facts",    dir: "desc", unit: "currency", get: (r) => r.info?.totalRevenue ?? null },
   { key: "employees",           label: "従業員数",                group: "facts",    dir: "desc", unit: "count",    get: (r) => r.info?.fullTimeEmployees ?? null },
   { key: "total_cash",          label: "現金保有額",              group: "facts",    dir: "desc", unit: "currency", get: (r) => r.info?.totalCash ?? null },
@@ -1844,7 +1856,7 @@ const RANK_METRICS = [
     return (typeof m === "number" && typeof emp === "number" && emp > 0) ? m / emp : null;
   }},
   { key: "range_position_52w",  label: "52週レンジ内位置",        group: "facts",    dir: "desc", unit: "percent",  get: (r) => {
-    const cur = r.info?.regularMarketPrice, hi = r.info?.fiftyTwoWeekHigh, lo = r.info?.fiftyTwoWeekLow;
+    const cur = getLastClosePrice(r), hi = r.info?.fiftyTwoWeekHigh, lo = r.info?.fiftyTwoWeekLow;
     if (typeof cur !== "number" || typeof hi !== "number" || typeof lo !== "number" || hi <= lo) return null;
     return (cur - lo) / (hi - lo); // 0=安値、1=高値
   }},
