@@ -390,17 +390,32 @@ def get_moomoo_available_symbols():
         return symbols
 
     try:
-        # Polarsで高速読み込み (code列のみ)
         df = pl.read_csv(csv_path)
         if "code" in df.columns:
             for code in df["code"]:
                 if code and code.startswith("US."):
-                    symbol = code[3:] # "US.AAPL" -> "AAPL"
+                    symbol = code[3:]  # "US.AAPL" -> "AAPL"
                     if symbol:
                         symbols.add(symbol)
     except Exception as e:
-        print(f"Error reading moomoo list: {e}")
-        
+        print(f"Error reading moomoo list with Polars: {e}, falling back to csv module")
+        try:
+            import csv as _csv
+            with open(csv_path, newline="", encoding="utf-8") as f:
+                reader = _csv.reader(f)
+                header = next(reader, [])
+                if "code" in header:
+                    code_idx = header.index("code")
+                    for row in reader:
+                        if len(row) > code_idx:
+                            code = row[code_idx].strip()
+                            if code.startswith("US."):
+                                symbol = code[3:]
+                                if symbol:
+                                    symbols.add(symbol)
+        except Exception as e2:
+            print(f"Error reading moomoo list with csv module: {e2}")
+
     return symbols
 
 def get_iwaicosmo_available_symbols():

@@ -94,8 +94,12 @@ function localPathForKey(key) {
 function isAvailableAt(brokerSet, symbol) {
   if (!brokerSet || brokerSet.size === 0 || !symbol) return false;
   if (brokerSet.has(symbol)) return true;
-  if (brokerSet.has(symbol.replace(/-/g, ""))) return true;
+  // 記号なし (BRK-B / BRK.B → BRKB)
+  if (brokerSet.has(symbol.replace(/[-\.]/g, ""))) return true;
+  // ハイフン → ドット (BRK-B → BRK.B)
   if (brokerSet.has(symbol.replace(/-/g, "."))) return true;
+  // ドット → ハイフン (BRK.B → BRK-B)
+  if (brokerSet.has(symbol.replace(/\./g, "-"))) return true;
   return false;
 }
 
@@ -1915,7 +1919,10 @@ async function main() {
   }
   console.log("Listing raw/ keys...");
   let rawKeys = (await listAll("raw/")).filter(
-    (k) => k.endsWith(".json") && k !== "raw/stocks_list.json",
+    (k) =>
+      k.endsWith(".json") &&
+      k !== "raw/stocks_list.json" &&
+      k !== "raw/broker_availability.json",
   );
   console.log(`  found ${rawKeys.length} raw files`);
 
