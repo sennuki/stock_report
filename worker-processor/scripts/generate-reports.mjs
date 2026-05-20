@@ -2308,6 +2308,12 @@ async function main() {
             Has_Movement_Reason: !!movementReasons[symbol],
           });
         }
+        // メモリ解放: 1532銘柄分の raw JSON を保持し続けると 4GB を超えて
+        // OOM になるため、処理済みの非 ETF を rawDataMap から外す。
+        // ETF (SPY, XLK 等) は他銘柄の performance chart で参照されるため残す。
+        if (!isETF) {
+          delete rawDataMap[symbol];
+        }
         return { ok: true, symbol };
       } catch (e) {
         return { ok: false, symbol, error: e };

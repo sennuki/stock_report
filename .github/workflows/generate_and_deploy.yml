@@ -138,6 +138,10 @@ jobs:
           # R2 アクセスは S3 互換 API (AWS SDK) 経由 -- Cloudflare REST API は
           # 1200 req/5min のグローバル制限があり 3000 リクエストでは破綻するため。
           # TEST_SYMBOLS が空のときはデフォルトのテスト銘柄 (MSFT,AAPL,NVDA) を処理。
+          # 1500銘柄分の raw JSON はピークで 3-4GB に達し、Node のデフォルト
+          # ヒープ (~4GB) では OOM になる。runner の RAM (~7GB) に合わせて
+          # 6GB まで上げる (処理済み銘柄は順次 GC で回収される)。
+          export NODE_OPTIONS="--max-old-space-size=6144"
           node scripts/generate-reports.mjs
         env:
           R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
