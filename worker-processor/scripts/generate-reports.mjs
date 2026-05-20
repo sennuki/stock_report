@@ -1034,14 +1034,23 @@ function _bsDatasets(balanceSheet, suffix, hidden) {
 
   const currentAssets = pick(get("Current Assets"));
   const nonCurrentAssets = pick(get("Total Non Current Assets"));
-  const currentLiab = pick(get("Current Liabilities"));
-  const nonCurrentLiab = pick(
-    get("Total Non Current Liabilities Net Minority Interest"),
+  const currentLiabRaw = get("Current Liabilities");
+  const currentLiab = pick(currentLiabRaw);
+  // yfinance が四半期によってフィールド名を変えるためフォールバック付きで取得する。
+  // 優先順: Net Minority Interest 付き → 別名 → 総負債 - 流動負債で導出
+  const nclRaw = get("Total Non Current Liabilities Net Minority Interest");
+  const nclFallback = get("Total Non Current Liabilities");
+  const totalLiabRaw = get("Total Liabilities Net Minority Interest");
+  const nclMerged = nclRaw.map((v, i) =>
+    v !== 0 ? v :
+    nclFallback[i] !== 0 ? nclFallback[i] :
+    Math.max(0, totalLiabRaw[i] - currentLiabRaw[i])
   );
+  const nonCurrentLiab = pick(nclMerged);
   let equity = pick(get("Total Equity Gross Minority Interest"));
   if (sum(equity) === 0) equity = pick(get("Stockholders Equity"));
   const totalAssetsValid = pick(totalAssets);
-  const totalLiabValid = pick(get("Total Liabilities Net Minority Interest"));
+  const totalLiabValid = pick(totalLiabRaw);
 
   const hasBreakdown = sum(currentAssets) !== 0 && sum(currentLiab) !== 0;
 
