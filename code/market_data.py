@@ -316,10 +316,52 @@ def get_manual_ja_name_map():
         "FBIN": "フォーチュン・ブランズ・イノベーションズ",
     }
 
+def get_ja_translations_csv_map():
+    """code/data/ja_translations.csv から {Symbol: Security_JA} を読み込む。
+
+    このCSVは S&P 500 + マネックス・楽天等の主要ブローカー + 手動翻訳を
+    マージした単一の翻訳ソースで、ブローカー CSV の取得失敗や Wikipedia の
+    新規 S&P 400/600 追加で日本語名が空になるのを防ぐ目的でリポジトリに
+    コミットされている。新たに翻訳を追加するときはこの CSV に行を追加するだけで
+    良い（Python 側の get_manual_ja_name_map に追記する必要はない）。
+    """
+    csv_path = os.path.join(BASE_DIR, "data", "ja_translations.csv")
+    if not os.path.exists(csv_path):
+        return {}
+    mapping = {}
+    try:
+        import csv as _csv
+        with open(csv_path, encoding="utf-8") as f:
+            reader = _csv.DictReader(f)
+            for row in reader:
+                sym = (row.get("Symbol") or "").strip()
+                ja = (row.get("Security_JA") or "").strip()
+                if sym and ja:
+                    mapping[sym] = ja
+                # Symbol_YF も別キーとして登録（クラス株などのため）
+                sym_yf = (row.get("Symbol_YF") or "").strip()
+                if sym_yf and ja and sym_yf != sym:
+                    mapping.setdefault(sym_yf, ja)
+    except Exception as e:
+        print(f"Failed to load ja_translations.csv: {e}")
+    return mapping
+
+
 def get_combined_ja_name_map():
+    """日本語名マッピングを 3 ソースの優先順位でマージして返す。
+
+    優先順位（後勝ち）:
+      1. マネックス CSV (ブローカー実取扱、自動更新)
+      2. ja_translations.csv (コミット済みの網羅的マスタ)
+      3. get_manual_ja_name_map() (Python ハードコード、最優先)
+
+    通常運用では 2 の CSV に追記して翻訳を増やす。Python 側の手動 dict は
+    緊急対応・コードレビューで明示したい銘柄のために残してある。
+    """
     monex_mapping = get_monex_available_symbols()
+    csv_mapping = get_ja_translations_csv_map()
     manual_mapping = get_manual_ja_name_map()
-    return {**monex_mapping, **manual_mapping}
+    return {**monex_mapping, **csv_mapping, **manual_mapping}
 
 def get_rakuten_available_symbols():
     """
@@ -809,6 +851,17 @@ def _enrich_with_market_info(df):
             if not ja_name:
                 ja_name = ja_name_combined_mapping.get(s)
             ja_name_map[s] = ja_name
+
+    # 未翻訳銘柄の警告ログ（CI 出力で網羅性を確認できるようにする）
+    untranslated = [s for s, ja in ja_name_map.items() if not ja]
+    if untranslated:
+        # 英語名と Index も合わせて出して CSV 追加作業を楽にする
+        idx_map = dict(zip(df['Symbol_YF'].to_list(), df['Index'].to_list() if 'Index' in df.columns else [''] * len(df)))
+        sec_map = dict(zip(df['Symbol_YF'].to_list(), df['Security'].to_list() if 'Security' in df.columns else [''] * len(df)))
+        print(f"\n[WARN] {len(untranslated)} 銘柄に Security_JA が設定されていません。")
+        print("  これらは code/data/ja_translations.csv に追記してください:")
+        for s in sorted(untranslated):
+            print(f"    {s},{s},{sec_map.get(s, '')},,{idx_map.get(s, '')},todo")
 
     return df.with_columns([
         pl.col('Symbol_YF').map_elements(lambda s: ex_map.get(s, "NYSE"), return_dtype=pl.Utf8).alias('Exchange'),

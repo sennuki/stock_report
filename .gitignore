@@ -23,7 +23,9 @@ stock-blog/public/reports/*.json
 # 決算説明会トランスクリプト: 正は R2。public/ はローカル開発配信用のコピー。
 stock-blog/public/reports/transcripts/
 public/reports/
-code/data/
+# code/data/ 配下のうちブローカーCSVキャッシュは実行時生成なので除外。
+# ja_translations.csv は翻訳マスタとしてコミットするため除外しない。
+code/data/broker_lists/
 .env
 .wrangler/
 **/.wrangler/
