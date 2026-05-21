@@ -183,6 +183,23 @@ if __name__ == "__main__":
     except Exception as e:
         utils.log_event("ERROR", "SYSTEM", f"Failed to fetch base stocks list: {e}")
 
+    # Wikipedia 取得失敗時: R2 に保存済みの stocks_list.json をフォールバックとして使う。
+    # これにより、Wikipedia がブロックされても直前の成功実行時の全銘柄を取得できる。
+    if not symbols and s3_client:
+        try:
+            obj = s3_client.get_object(Bucket=R2_BUCKET_NAME, Key="raw/stocks_list.json")
+            prev = json.loads(obj["Body"].read().decode("utf-8"))
+            symbols = [
+                s.get("Symbol_YF") or s.get("Symbol")
+                for s in prev
+                if s.get("Symbol_YF") or s.get("Symbol")
+            ]
+            utils.log_event("INFO", "SYSTEM",
+                            f"Wikipedia fetch failed; using R2 stocks_list.json fallback: {len(symbols)} symbols")
+        except Exception as e2:
+            utils.log_event("WARNING", "SYSTEM",
+                            f"R2 stocks_list.json fallback also failed: {e2}")
+
     # 1.5 日本の証券会社の取扱銘柄リストを取得 → R2 にアップ
     #     generate-reports.mjs が is_available_* を判定するために使う。
     try:
