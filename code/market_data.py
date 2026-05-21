@@ -35,17 +35,25 @@ def get_monex_available_symbols():
     """
     url = "https://mst.monex.co.jp/pc/pdfroot/public/50/99/Monex_US_LIST.csv"
     csv_path = os.path.join(BROKER_LISTS_DIR, "Monex_US_LIST.csv")
-    
-    # 既にファイルがある場合はそれを使う（デバッグ・キャッシュ用）
-    if os.path.exists(csv_path):
-        try:
-            with open(csv_path, "rb") as f:
-                content = f.read().decode("cp932", errors="replace")
-        except Exception:
-            content = None
-    else:
-        content = None
+    # リポジトリにコミット済みのCSVをフォールバックとして使う
+    repo_root = os.path.dirname(BASE_DIR)
+    fallback_csv_path = os.path.join(repo_root, "stock-blog", "scripts", "data", "broker_lists", "Monex_US_LIST.csv")
 
+    def _read_csv(path):
+        try:
+            with open(path, "rb") as f:
+                return f.read().decode("cp932", errors="replace")
+        except Exception:
+            return None
+
+    # 1. キャッシュ済みファイルを優先
+    content = _read_csv(csv_path) if os.path.exists(csv_path) else None
+    # 2. リポジトリ内のコミット済みファイルにフォールバック
+    if not content:
+        content = _read_csv(fallback_csv_path)
+        if content:
+            print(f"Monex CSV: using committed fallback at {fallback_csv_path}")
+    # 3. ネットワークから取得
     if not content:
         if curl_requests:
             try:
@@ -194,6 +202,61 @@ def get_manual_ja_name_map():
         "FWONA": "リバティ・メディア・フォーミュラ・ワン (Class A)",
         "NWSA": "ニューズ・コーポレーション (Class A)",
         "FOXA": "フォックス・コーポレーション (Class A)",
+
+        # === マネックス未カバー: 一般消費財 ===
+        "LESL": "レスリーズ",
+        "MDC": "MDCホールディングス",
+        "MHO": "M/Iホームズ",
+        "MODG": "トップゴルフ・キャロウェイ・ブランズ",
+        "SKX": "スケッチャーズ",
+        "THS": "ツリーハウス・フーズ",
+        "TPH": "トライポイント・ホームズ",
+
+        # === マネックス未カバー: 生活必需品 ===
+        "SPTN": "スパルタン・ナッシュ",
+
+        # === マネックス未カバー: エネルギー ===
+        "DRQ": "ドリル・クイップ",
+        "ETRN": "エクイトランス・ミッドストリーム",
+        "HFC": "HFシンクレア",
+        "PDCE": "PDCエナジー",
+
+        # === マネックス未カバー: 金融 ===
+        "ARI": "アポロ・コマーシャル REIT",
+        "ATH": "アシーン・ホールディング",
+        "CCCS": "CCC インテリジェント・ソリューションズ",
+        "CMA": "コメリカ",
+        "COOP": "ミスター・クーパー・グループ",
+        "DNB": "ダン＆ブラッドストリート",
+        "SNV": "シノバス・ファイナンシャル",
+        "SPKE": "スパーク・エナジー",
+
+        # === マネックス未カバー: ヘルスケア ===
+        "AMED": "アメディシス",
+
+        # === マネックス未カバー: 資本財 ===
+        "MOG": "ムーグ",
+        "MTOR": "メリター",
+        "TGI": "トライアンフ・グループ",
+        "TRQ": "ターコイズ・ヒル・リソーシーズ",
+        "UFP": "UFPテクノロジーズ",
+
+        # === マネックス未カバー: 情報技術 ===
+        "HBI": "ヘインズブランズ",
+        "MXIM": "マキシム・インテグレーテッド",
+        "PDCO": "パターソン・カンパニーズ",
+        "PSTG": "ピュア・ストレージ",
+        "SGEN": "シアトル・ジェネティクス",
+        "SWI": "ソーラーウィンズ",
+        "ZI": "ズームインフォ・テクノロジーズ",
+
+        # === マネックス未カバー: 素材 ===
+        "HHC": "ハワード・ヒューズ・ホールディングス",
+        "TMST": "ティムケン・スチール",
+        "X": "USスチール",
+
+        # === マネックス未カバー: 公益事業 ===
+        "SJW": "SJWグループ",
     }
 
 def get_combined_ja_name_map():

@@ -1,6 +1,5 @@
 ---
 import type { HTMLAttributes } from "astro/types";
-import stocksData from "@/data/stocks.json";
 
 const currentYear = new Date().getFullYear();
 
@@ -9,25 +8,6 @@ type Props = {
 } & HTMLAttributes<"footer">;
 
 const { noMarginTop = false, class: className, ...attrs } = Astro.props;
-
-// セクター一覧を抽出してユニークなリストを作成
-const sectors = [...new Set(stocksData.map((stock: any) => stock["GICS Sector"]))]
-  .filter(Boolean)
-  .sort() as string[];
-
-const sectorTranslations: Record<string, string> = {
-  "Communication Services": "通信サービス",
-  "Consumer Discretionary": "一般消費財",
-  "Consumer Staples": "生活必需品",
-  "Energy": "エネルギー",
-  "Financials": "金融",
-  "Health Care": "ヘルスケア",
-  "Industrials": "資本財",
-  "Information Technology": "情報技術",
-  "Materials": "素材",
-  "Real Estate": "不動産",
-  "Utilities": "公益事業"
-};
 
 const base = import.meta.env.BASE_URL.endsWith("/")
   ? import.meta.env.BASE_URL
@@ -40,7 +20,7 @@ const base = import.meta.env.BASE_URL.endsWith("/")
   {...attrs}
 >
   <div class="border-t border-border py-8 sm:py-10">
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 mb-8">
+    <div class="grid grid-cols-2 gap-6 mb-8">
       <div>
         <h2 class="text-sm font-bold mb-3 tracking-wider opacity-80 uppercase">サイト情報</h2>
         <ul class="space-y-2 text-sm">
@@ -58,19 +38,6 @@ const base = import.meta.env.BASE_URL.endsWith("/")
           <li><a href={`${base}terms`} class="hover:text-skin-accent transition-colors">利用規約</a></li>
           <li><a href={`${base}disclaimer`} class="hover:text-skin-accent transition-colors">免責事項</a></li>
         </ul>
-      </div>
-      <div class="col-span-2">
-        <h2 class="text-sm font-bold mb-3 tracking-wider opacity-80 uppercase">セクター</h2>
-        <div class="flex flex-wrap gap-2">
-          {sectors.map((sector: string) => (
-            <a
-              href={`${base}#${sector}`}
-              class="px-3 py-1 text-xs border border-skin-line rounded-full hover:border-skin-accent hover:text-skin-accent transition-all bg-skin-card hover:shadow-sm"
-            >
-              {sectorTranslations[sector] || sector}
-            </a>
-          ))}
-        </div>
       </div>
     </div>
 
