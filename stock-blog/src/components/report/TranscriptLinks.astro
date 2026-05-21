@@ -8,6 +8,7 @@ interface Transcript {
   fq: number;
   period: string;
   generated?: string;
+  report_date?: string;
   sentiment?: Sentiment;
 }
 interface Props {
@@ -16,6 +17,14 @@ interface Props {
   transcripts: Transcript[];
 }
 const { symbol, base, transcripts } = Astro.props;
+
+// YYYY-MM-DD → "YYYY年M月D日" 日本語表記。パース失敗時は元の文字列。
+function formatJaDate(iso?: string): string | null {
+  if (!iso) return null;
+  const m = iso.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (!m) return iso;
+  return `${m[1]}年${Number(m[2])}月${Number(m[3])}日`;
+}
 ---
 
 {
@@ -45,6 +54,14 @@ const { symbol, base, transcripts } = Astro.props;
                 <span class="text-skin-base font-bold">
                   FY{t.fy} 第{t.fq}四半期 決算説明会レポート
                 </span>
+                {t.report_date && (
+                  <span class="text-skin-base/80 text-xs">
+                    発表日{" "}
+                    <time datetime={t.report_date} class="font-bold">
+                      {formatJaDate(t.report_date)}
+                    </time>
+                  </span>
+                )}
                 {t.sentiment?.overall && (
                   <span
                     class={`text-xs font-bold ${scoreTextClass(t.sentiment.overall.score)}`}

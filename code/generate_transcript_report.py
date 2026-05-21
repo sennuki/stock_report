@@ -118,7 +118,7 @@ def save_transcript_index(index):
     print(f"Index updated: {TRANSCRIPT_INDEX_PATH}")
 
 
-def update_transcript_index(symbol, fiscal_year, fiscal_quarter, sentiment=None):
+def update_transcript_index(symbol, fiscal_year, fiscal_quarter, sentiment=None, report_date=None):
     """1 銘柄分のエントリを索引に追記（同一 FY/Q は上書き）して保存する。"""
     index = load_transcript_index()
 
@@ -133,6 +133,8 @@ def update_transcript_index(symbol, fiscal_year, fiscal_quarter, sentiment=None)
         "period": f"{fiscal_year}-Q{fiscal_quarter}",
         "generated": time.strftime("%Y-%m-%d"),
     }
+    if report_date:
+        entry["report_date"] = report_date
     if sentiment:
         entry["sentiment"] = sentiment
     entries.append(entry)
@@ -376,6 +378,19 @@ def generate_transcript_report(symbol, fiscal_year, fiscal_quarter):
         print(f"Error fetching transcript: {e}")
         return
 
+    # 1-b. 決算発表日 (report_date) を一覧 API から取得して索引に記録する。
+    # 取得失敗時は致命的ではない（索引には report_date を含めない）。
+    report_date = None
+    try:
+        lst = transcripts.get_transcripts_list()
+        mask = (lst["fiscal_year"] == fiscal_year) & (lst["fiscal_quarter"] == fiscal_quarter)
+        match = lst.loc[mask]
+        if not match.empty:
+            raw = match["report_date"].iloc[0]
+            report_date = str(raw)[:10] if raw is not None else None
+    except Exception as e:
+        print(f"  report_date の取得に失敗: {e}")
+
     # 2. AI Client
     client = get_gemini_client()
     if not client:
@@ -502,7 +517,7 @@ def generate_transcript_report(symbol, fiscal_year, fiscal_quarter):
     sentiment["hedging"] = compute_hedging_metrics(df, management, analysts, qa_start)
 
     # 8. 銘柄ページがリンクを出すための索引を更新（Git にコミットして配信）
-    update_transcript_index(symbol, fiscal_year, fiscal_quarter, sentiment)
+    update_transcript_index(symbol, fiscal_year, fiscal_quarter, sentiment, report_date)
 
     # 9. 本番 SSR ページ用に R2 へアップロード（R2 未設定ならスキップ）
     upload_transcript_to_r2(symbol, fiscal_year, fiscal_quarter, final_report)
