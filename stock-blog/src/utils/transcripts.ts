@@ -63,6 +63,8 @@ export interface TranscriptEntry {
   period: string;
   /** 生成日 (YYYY-MM-DD)。 */
   generated?: string;
+  /** 決算発表日 (YYYY-MM-DD)。defeatbeta の transcripts list 由来。 */
+  report_date?: string;
   sentiment?: Sentiment;
 }
 

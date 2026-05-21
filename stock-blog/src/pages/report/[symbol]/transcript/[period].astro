@@ -93,6 +93,16 @@ const indexEntry = (transcriptIndex[symbol as string] || []).find(
   e => e.fy === fiscalYear && e.fq === fiscalQuarter
 );
 const sentiment = indexEntry?.sentiment ?? null;
+const reportDate = indexEntry?.report_date ?? null;
+
+// YYYY-MM-DD → "YYYY年M月D日" 日本語表記。パース失敗時は元の文字列を返す。
+function formatJaDate(iso: string | null): string | null {
+  if (!iso) return null;
+  const m = iso.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (!m) return iso;
+  return `${m[1]}年${Number(m[2])}月${Number(m[3])}日`;
+}
+const reportDateJa = formatJaDate(reportDate);
 
 // 先頭の H1 はページ見出しと重複するため取り除いてから変換する。
 let bodyHtml = "";
@@ -159,9 +169,25 @@ const description = markdownRaw
           <h1 class="mb-2 text-3xl font-bold" data-pagefind-meta="title">
             {`${symbol}${nameParen}`} FY{fiscalYear} Q{fiscalQuarter} 決算説明会
           </h1>
-          <p class="mb-6 text-sm text-gray-500">
+          <p class="mb-2 text-sm text-gray-500">
             決算電話会議（Earnings Call）の日本語要約と逐次翻訳
           </p>
+          {reportDateJa && (
+            <p class="mb-6 flex items-center gap-1.5 text-sm">
+              <span
+                class="material-symbols-outlined text-skin-accent text-base"
+                aria-hidden="true"
+              >
+                event
+              </span>
+              <span class="text-skin-base">
+                決算発表日:
+                <time datetime={reportDate!} class="font-bold ml-1">
+                  {reportDateJa}
+                </time>
+              </span>
+            </p>
+          )}
 
           <div class="mb-8 rounded-lg border border-amber-200/60 bg-amber-50/40 p-4 text-xs text-amber-800/90 dark:border-amber-800/40 dark:bg-amber-900/20 dark:text-amber-200/80">
             本ページの和訳・要約は
