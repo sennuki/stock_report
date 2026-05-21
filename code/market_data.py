@@ -754,8 +754,37 @@ def _fetch_index_constituents(index_label: str, url: str):
       - Index (引数の index_label がそのまま入る)
     """
     print(f"{index_label} リストを取得中... URL={url}")
+    # Wikipedia の User-Agent ポリシー (https://meta.wikimedia.org/wiki/User-Agent_policy)
+    # に従い、ボット名と連絡先 (GitHub repo) を含む説明的な UA を送る。
+    # 「Mozilla/5.0」など汎用 UA は CI / クラウド IP からだとブロックされやすい。
+    wiki_headers = {
+        "User-Agent": (
+            "amerikabu-stockfetcher/1.0 "
+            "(+https://github.com/sennuki/stock_report) python-requests"
+        ),
+        "Accept": "text/html,application/xhtml+xml",
+    }
     try:
-        html = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=30).text
+        # 一時的な 429/5xx に備えて指数バックオフでリトライする (合計 3 回)。
+        html = None
+        for attempt in range(3):
+            try:
+                resp = requests.get(url, headers=wiki_headers, timeout=30)
+                if resp.status_code == 200:
+                    html = resp.text
+                    break
+                print(f"  → HTTP {resp.status_code} (attempt {attempt + 1}/3)")
+                if resp.status_code in (403, 451):
+                    # 恒久ブロックの可能性が高いのでリトライしない
+                    break
+            except requests.RequestException as req_err:
+                print(f"  → request error (attempt {attempt + 1}/3): {req_err}")
+            if attempt < 2:
+                import time as _time
+                _time.sleep(2 ** attempt)
+        if html is None:
+            print(f"  ✗ {index_label}: Wikipedia へのリクエストが全試行失敗")
+            return pl.DataFrame()
 
         # Wikipedia の銘柄リストページは通常 id="constituents" の table を持つ。
         # それを優先して取得し、見つからない場合は最初のテーブルにフォールバック。
