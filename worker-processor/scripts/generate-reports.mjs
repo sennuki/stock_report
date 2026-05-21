@@ -1884,15 +1884,51 @@ function rankSymbols(entries, dir) {
   return result;
 }
 
-// ランキング一覧ページで取り上げる指標 (MVP)。
-// 銘柄レポート内には全 RANK_METRICS が保存されるが、一覧ページは
-// SEO とメンテ性のために最初は 4 指標に絞る。
+// ランキング一覧ページで取り上げる指標。
+// 銘柄レポート内には全 RANK_METRICS が保存されるが、一覧ページ用には
+// 別ファイル (rankings.json) に上位 100 銘柄だけ抽出する。
 const RANKING_PAGE_METRICS = [
+  // 規模感
   "market_cap",
-  "dividend_yield",
+  "revenue_ttm",
+  "employees",
+  "total_cash",
+  // 収益性
+  "roe",
+  "roa",
+  "operating_margin",
+  "gross_margin",
+  // バリュエーション
   "forward_pe",
+  "pbr",
+  "psr",
+  // 成長性
   "revenue_cagr_3y",
+  "eps_9y_cagr",
+  // 配当
+  "dividend_yield",
+  "dividend_rate",
+  // 生産性
+  "revenue_per_employee",
+  "mcap_per_employee",
+  // 株価・リスク
+  "stock_price",
+  "range_position_52w",
+  "beta",
 ];
+
+// 同会社の複数株式クラスのうち、ランキングで非表示にする銘柄。
+// yfinance.info.marketCap は会社全体の時価総額を両クラスに返すため、
+// そのままだと「同じ会社が同じ値で 2 回」一覧に出る。代表クラスのみ残す。
+const RANKING_DUPLICATE_CLASS_EXCLUDED = new Set([
+  "GOOG",   // Alphabet Class C (議決権なし): GOOGL (Class A) を残す
+  "NWS",    // News Corp Class B: NWSA (Class A) を残す
+  "FOX",    // Fox Class B: FOXA (Class A) を残す
+  "LBRDK",  // Liberty Broadband K: LBRDA (A) を残す
+  "LSXMK",  // Liberty Media SiriusXM K: LSXMA (A) を残す
+  "BATRK",  // Liberty Media Braves K: BATRA (A) を残す
+  "FWONK",  // Liberty Media F1 K: FWONA (A) を残す
+]);
 
 // 各指標について上位 100 銘柄を抽出して { metric_key: { label, unit, top: [...] } } を返す。
 // 表示に必要な最小限の情報 (シンボル、社名、セクター、値、順位) だけ含める。
@@ -1904,6 +1940,7 @@ function buildRankings(ranksBySymbol, metadataBySymbol) {
     if (!metric) continue;
     const entries = [];
     for (const sym of Object.keys(ranksBySymbol)) {
+      if (RANKING_DUPLICATE_CLASS_EXCLUDED.has(sym)) continue;
       const r = ranksBySymbol[sym]?.[key];
       if (!r || !r.overall || r.value == null) continue;
       const meta = metadataBySymbol[sym] || {};
@@ -1919,6 +1956,9 @@ function buildRankings(ranksBySymbol, metadataBySymbol) {
       });
     }
     entries.sort((a, b) => a.rank - b.rank);
+    // 除外銘柄により順位に欠番が生じるため、ランキング一覧表示用に
+    // 連番 (1, 2, 3, ...) に振り直す。元の overall.rank は個別レポート側に残る。
+    entries.forEach((e, i) => { e.rank = i + 1; e.total = entries.length; });
     out[key] = {
       key,
       label: metric.label,
