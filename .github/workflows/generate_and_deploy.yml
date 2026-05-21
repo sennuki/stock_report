@@ -66,7 +66,11 @@ jobs:
           echo "TODAY=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
           echo "MONTH=$(date +'%Y-%m')" >> $GITHUB_ENV
 
+      # push イベントはコード変更のデプロイのみ行い、株価生データの取得はしない。
+      # push 時に取得すると「今日分フェッチ済み」フラグが立ち、市場終了後の
+      # 定期実行 (21:00 UTC) が全銘柄をスキップしてしまうため。
       - name: Restore fetch status cache (same-day retry skip)
+        if: github.event_name != 'push'
         uses: actions/cache@v4
         with:
           path: code/data/fetch_status.json
@@ -74,6 +78,7 @@ jobs:
           restore-keys: fetch-status-${{ runner.os }}-
 
       - name: Restore broker list cache
+        if: github.event_name != 'push'
         uses: actions/cache@v4
         with:
           path: code/data/broker_lists
@@ -81,6 +86,7 @@ jobs:
           restore-keys: broker-lists-${{ runner.os }}-
 
       - name: Run Python Data Fetch (Uploads to R2)
+        if: github.event_name != 'push'
         run: |
           cd code
           python main.py
