@@ -1884,14 +1884,37 @@ function rankSymbols(entries, dir) {
   return result;
 }
 
-// ランキング一覧ページで取り上げる指標 (MVP)。
-// 銘柄レポート内には全 RANK_METRICS が保存されるが、一覧ページは
-// SEO とメンテ性のために最初は 4 指標に絞る。
+// ランキング一覧ページで取り上げる指標。
+// 銘柄レポート内には全 RANK_METRICS が保存されるが、一覧ページ用には
+// 別ファイル (rankings.json) に上位 100 銘柄だけ抽出する。
 const RANKING_PAGE_METRICS = [
+  // 規模感
   "market_cap",
-  "dividend_yield",
+  "revenue_ttm",
+  "employees",
+  "total_cash",
+  // 収益性
+  "roe",
+  "roa",
+  "operating_margin",
+  "gross_margin",
+  // バリュエーション
   "forward_pe",
+  "pbr",
+  "psr",
+  // 成長性
   "revenue_cagr_3y",
+  "eps_9y_cagr",
+  // 配当
+  "dividend_yield",
+  "dividend_rate",
+  // 生産性
+  "revenue_per_employee",
+  "mcap_per_employee",
+  // 株価・リスク
+  "stock_price",
+  "range_position_52w",
+  "beta",
 ];
 
 // 各指標について上位 100 銘柄を抽出して { metric_key: { label, unit, top: [...] } } を返す。
