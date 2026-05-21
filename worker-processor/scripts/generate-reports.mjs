@@ -2467,6 +2467,27 @@ async function main() {
         (s) => !updatedKey.has(s.Symbol_YF || s.Symbol),
       );
       finalList = [...merged, ...updatedStocksList];
+    } else {
+      // R2 モード: stocks_list.json にいて raw データなし (fetch 失敗・新規追加) の
+      // 銘柄も A-Z 一覧・カウントに含める。メタデータのみで Daily_Change は null。
+      const processedSymbols = new Set(
+        updatedStocksList.map((s) => s.Symbol_YF || s.Symbol),
+      );
+      const etfSet = new Set([
+        ...Object.values(sectorEtfMap),
+        ...Object.values(broadSectorEtfMap),
+        ...Object.values(marketIndexMap),
+      ]);
+      const metadataOnly = baseStocksList.filter((s) => {
+        const sym = s.Symbol_YF || s.Symbol;
+        return sym && !processedSymbols.has(sym) && !etfSet.has(sym);
+      });
+      if (metadataOnly.length > 0) {
+        console.log(
+          `  Adding ${metadataOnly.length} metadata-only stocks (no raw data) to stocks.json`,
+        );
+        finalList = [...updatedStocksList, ...metadataOnly];
+      }
     }
     await putJson("reports/stocks.json", finalList);
     console.log(
