@@ -36,8 +36,10 @@ def sanitize_json(obj):
     return obj
 
 # --- 当日取得済み銘柄の差分管理 ---
-# GitHub Actions キャッシュと組み合わせることで、当日中の再実行・リトライ時に
-# 取得済み銘柄をスキップし、yfinance への重複リクエストを防ぐ。
+# GitHub Actions キャッシュ (run_id スコープ) と組み合わせることで、同一ラン
+# の再実行 (Re-run failed jobs) 時に取得済み銘柄をスキップし、yfinance への
+# 重複リクエストを防ぐ。別ランは run_id が異なるためキャッシュを共有せず、
+# 毎回フレッシュに全銘柄を取得する。
 _STATUS_PATH = os.path.join(os.path.dirname(__file__), "data", "fetch_status.json")
 _status_lock = threading.Lock()
 
