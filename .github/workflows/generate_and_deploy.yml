@@ -69,13 +69,19 @@ jobs:
       # push イベントはコード変更のデプロイのみ行い、株価生データの取得はしない。
       # push 時に取得すると「今日分フェッチ済み」フラグが立ち、市場終了後の
       # 定期実行 (21:00 UTC) が全銘柄をスキップしてしまうため。
-      - name: Restore fetch status cache (same-day retry skip)
+      #
+      # キャッシュキーは run_id + run_attempt にしてラン単位でスコープする。
+      # 「同じ run の再実行 (Re-run failed jobs)」は restore-keys で同じ run_id の
+      # 直近キャッシュを拾い、取得済み銘柄をスキップして残りだけ再取得する。
+      # 別の run (別の workflow_dispatch / schedule) は run_id が異なるため
+      # 古いキャッシュを引きずらず、毎回フレッシュに全銘柄を取得する。
+      - name: Restore fetch status cache (same-run retry skip)
         if: github.event_name != 'push'
         uses: actions/cache@v4
         with:
           path: code/data/fetch_status.json
-          key: fetch-status-${{ runner.os }}-${{ env.TODAY }}
-          restore-keys: fetch-status-${{ runner.os }}-
+          key: fetch-status-${{ runner.os }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: fetch-status-${{ runner.os }}-${{ github.run_id }}-
 
       - name: Restore broker list cache
         if: github.event_name != 'push'
