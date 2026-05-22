@@ -375,6 +375,9 @@ function rankTierClass(tier: string): string {
   if (tier === "top25") return "text-skin-base font-medium";
   return "opacity-70";
 }
+function rankingSlug(key: string): string {
+  return key.replace(/_/g, '-');
+}
 ---
 
 <Layout title={title} description={description} extraStructuredData={extraStructuredData}>
@@ -682,7 +685,9 @@ function rankTierClass(tier: string): string {
                               const sector = fmtRank(m.sector);
                               return (
                                 <tr class="border-b border-skin-line/40 last:border-b-0">
-                                  <td class="pl-8 pr-4 py-2 opacity-70">{label}</td>
+                                  <td class="pl-8 pr-4 py-2 opacity-70">
+                                    <a href={`/ranking/${rankingSlug(key)}`} class="underline underline-offset-2 decoration-dotted hover:text-skin-accent">{label}</a>
+                                  </td>
                                   <td class="px-4 py-2 text-right font-medium">
                                     {(key === 'dividend_rate' || key === 'dividend_yield') && (m.value == null || !Number.isFinite(m.value) || m.value === 0)
                                       ? '無配'
