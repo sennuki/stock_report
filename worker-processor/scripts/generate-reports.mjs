@@ -8,6 +8,7 @@
  */
 
 import "dotenv/config";
+import { normalizeDividendYield } from './highlights-utils.mjs';
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -560,7 +561,7 @@ function extractHighlights(rawData) {
     operating_margins: info.operatingMargins || null,
     pe_forward: info.forwardPE || null,
     pe_ttm: info.trailingPE || null,
-    dividend_yield: info.dividendYield || null,
+    dividend_yield: normalizeDividendYield(info.dividendYield),
     debt_to_equity: info.debtToEquity || null,
     earnings_growth: info.earningsGrowth || null,
     profit_margins: info.profitMargins || null,
@@ -1741,13 +1742,14 @@ function generateDpsEpsChart(dividends, history) {
   return _mergeGroups(annual, perPayment);
 }
 
+const _NO_SEGMENT_DATA = { error: '詳細なセグメント収益のデータが取得できませんでした（企業による未開示、またはデータソースの制約によるもの）。' };
 function generateSegmentChart(segmentData) {
   if (!segmentData || !Array.isArray(segmentData) || segmentData.length === 0)
-    return null;
+    return _NO_SEGMENT_DATA;
   const segmentsArr = Object.keys(segmentData[0]).filter(
     (k) => !["Date", "report_date", "symbol", "index"].includes(k),
   );
-  if (segmentsArr.length === 0) return null;
+  if (segmentsArr.length === 0) return _NO_SEGMENT_DATA;
   const labels = segmentData.map((row) =>
     String(row.Date || row.report_date || row.index).split(" ")[0],
   );
