@@ -32,7 +32,7 @@ for (const s of stocks as any[]) {
 
 interface IndexItem {
   date: string;
-  kind: "index_added" | "index_removed";
+  kind: "index_added" | "index_removed" | "ticker_changed";
   label: string;
   text: string;
   href?: string;
@@ -50,18 +50,46 @@ interface TranscriptItem {
 // 1) 指数構成銘柄の入れ替え
 const indexItems: IndexItem[] = [];
 const changes = await loadChangeHistory(env, Astro.url);
+
+// 同日・同指数で security 名が同じ added+removed ペア = ティッカー変更として扱う
+const addedBySecurity = new Map<string, (typeof changes)[0]>();
+const removedBySecurity = new Map<string, (typeof changes)[0]>();
+for (const c of changes) {
+  if (!c?.date || !c?.symbol || !c?.security) continue;
+  const key = `${c.date}|${c.security}|${c.index}`;
+  if (c.type === "index_added") addedBySecurity.set(key, c);
+  else if (c.type === "index_removed") removedBySecurity.set(key, c);
+}
+const tickerChangedKeys = new Set<string>(
+  [...addedBySecurity.keys()].filter(k => removedBySecurity.has(k))
+);
+
 for (const c of changes) {
   if (!c?.date || !c?.symbol) continue;
   const name = c.security || nameBySymbol.get(c.symbol) || c.symbol;
+  const key = `${c.date}|${c.security}|${c.index}`;
   if (c.type === "index_added") {
-    indexItems.push({
-      date: c.date,
-      kind: "index_added",
-      label: "新規レポート",
-      text: `${name}（${c.symbol}）が ${c.index} に採用され、レポートを追加しました。`,
-      href: `${baseNoSlash}/report/${c.symbol}`,
-    });
+    if (tickerChangedKeys.has(key)) {
+      // ティッカー変更: removed 側の旧シンボルと合わせて1件にまとめる
+      const oldEvent = removedBySecurity.get(key)!;
+      indexItems.push({
+        date: c.date,
+        kind: "ticker_changed",
+        label: "ティッカー変更",
+        text: `${name} のティッカーが ${oldEvent.symbol} から ${c.symbol} に変更されました（${c.index}）。`,
+        href: `${baseNoSlash}/report/${c.symbol}`,
+      });
+    } else {
+      indexItems.push({
+        date: c.date,
+        kind: "index_added",
+        label: "新規レポート",
+        text: `${name}（${c.symbol}）が ${c.index} に採用され、レポートを追加しました。`,
+        href: `${baseNoSlash}/report/${c.symbol}`,
+      });
+    }
   } else if (c.type === "index_removed") {
+    if (tickerChangedKeys.has(key)) continue; // added 側でまとめ済み
     indexItems.push({
       date: c.date,
       kind: "index_removed",
@@ -104,6 +132,8 @@ const recentTranscripts = transcripts.slice(0, TRANSCRIPT_LIMIT);
 const badgeClass = (kind: IndexItem["kind"]) =>
   kind === "index_added"
     ? "bg-green-600/10 text-green-600"
+    : kind === "ticker_changed"
+    ? "bg-blue-600/10 text-blue-600"
     : "bg-red-600/10 text-red-600";
 ---
 
