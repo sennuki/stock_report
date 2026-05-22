@@ -8,6 +8,7 @@
  */
 
 import "dotenv/config";
+import { normalizeDividendYield } from './highlights-utils.mjs';
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -560,9 +561,7 @@ function extractHighlights(rawData) {
     operating_margins: info.operatingMargins || null,
     pe_forward: info.forwardPE || null,
     pe_ttm: info.trailingPE || null,
-    // dividendYield はバージョンによって percent 単位 (0.36 = 0.36%) で返ることがある。
-    // 他の percent 指標と単位を揃えるため 0.1 超なら 100 で割って小数化する。
-    dividend_yield: (() => { const y = info.dividendYield; return typeof y === 'number' ? (y > 0.1 ? y / 100 : y) : null; })(),
+    dividend_yield: normalizeDividendYield(info.dividendYield),
     debt_to_equity: info.debtToEquity || null,
     earnings_growth: info.earningsGrowth || null,
     profit_margins: info.profitMargins || null,

@@ -199,6 +199,10 @@ const fmt = (v: any, suffix = "") =>
   typeof v === "number" && isFinite(v) ? `${v.toFixed(2)}${suffix}` : null;
 const fmtPct = (v: any) =>
   typeof v === "number" && isFinite(v) ? `${(v * 100).toFixed(1)}%` : null;
+// 配当利回りは yfinance がパーセント単位で返す場合がある (0.36 = 0.36%)。
+// 0.5 超なら明らかに % 単位なので ÷100 して小数に揃える。
+const normDividendYield = (v: any) =>
+  typeof v === "number" ? (v > 0.5 ? v / 100 : v) : v;
 
 const h = reportData?.highlights ?? {};
 const descParts: string[] = [
@@ -206,7 +210,7 @@ const descParts: string[] = [
 ];
 if (fmt(h.pe_forward)) descParts.push(`予想PER ${fmt(h.pe_forward, "倍")}`);
 if (fmt(h.pe_ttm)) descParts.push(`実績PER ${fmt(h.pe_ttm, "倍")}`);
-if (fmtPct(h.dividend_yield)) descParts.push(`配当利回り ${fmtPct(h.dividend_yield)}`);
+if (fmtPct(normDividendYield(h.dividend_yield))) descParts.push(`配当利回り ${fmtPct(normDividendYield(h.dividend_yield))}`);
 if (fmtPct(h.revenue_growth)) descParts.push(`売上成長率 ${fmtPct(h.revenue_growth)}`);
 if (fmtPct(h.roe)) descParts.push(`ROE ${fmtPct(h.roe)}`);
 const metricsLine = descParts.length > 1 ? descParts.slice(1).join("・") + "。" : "";
@@ -845,7 +849,7 @@ function rankingSlug(key: string): string {
                 <div class="bg-skin-fill/20 p-4 rounded-lg border border-skin-line">
                   <div class="text-sm opacity-70 mb-1">配当利回り</div>
                   <div class="text-2xl font-bold text-skin-base">
-                    {typeof reportData.highlights.dividend_yield === 'number' ? (reportData.highlights.dividend_yield * 100).toFixed(2) + '%' : '無配'}
+                    {typeof reportData.highlights.dividend_yield === 'number' ? (normDividendYield(reportData.highlights.dividend_yield) * 100).toFixed(2) + '%' : '無配'}
                   </div>
                   <div class="text-xs opacity-50 mt-1">配当性向: {typeof reportData.highlights.payout_ratio === 'number' ? (reportData.highlights.payout_ratio * 100).toFixed(1) + '%' : '---'}</div>
                 </div>
