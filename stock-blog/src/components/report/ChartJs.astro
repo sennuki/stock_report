@@ -137,6 +137,10 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
         if (hasStacking && ds.type === 'bar') {
           if (canvas.id === 'chart-dps') {
             ds.stack = ds.stack || (ds.label && ds.label.includes('権利落日') ? 'div_q' : 'div_annual');
+          } else if (canvas.id === 'chart-segment') {
+            ds.stack = ds.stack || 'segment';
+          } else if (canvas.id === 'chart-geo') {
+            ds.stack = ds.stack || 'geography';
           } else {
             ds.stack = ds.stack || (ds.label && ds.label.includes('資産') ? 'assets' : 'liabilities');
           }
