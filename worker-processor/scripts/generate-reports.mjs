@@ -1742,35 +1742,70 @@ function generateDpsEpsChart(dividends, history) {
   return _mergeGroups(annual, perPayment);
 }
 
-const _NO_SEGMENT_DATA = { error: '詳細なセグメント収益のデータが取得できませんでした（企業による未開示、またはデータソースの制約によるもの）。' };
-function generateSegmentChart(segmentData) {
-  if (!segmentData || !Array.isArray(segmentData) || segmentData.length === 0)
-    return _NO_SEGMENT_DATA;
-  const segmentsArr = Object.keys(segmentData[0]).filter(
-    (k) => !["Date", "report_date", "symbol", "index"].includes(k),
-  );
-  if (segmentsArr.length === 0) return _NO_SEGMENT_DATA;
-  const labels = segmentData.map((row) =>
+const _SEG_COLORS = [
+  "rgba(31, 119, 180, 0.8)",
+  "rgba(255, 127, 14, 0.8)",
+  "rgba(44, 160, 44, 0.8)",
+  "rgba(214, 39, 40, 0.8)",
+  "rgba(148, 103, 189, 0.8)",
+  "rgba(140, 86, 75, 0.8)",
+  "rgba(227, 119, 194, 0.8)",
+  "rgba(127, 127, 127, 0.8)",
+  "rgba(188, 189, 34, 0.8)",
+  "rgba(23, 190, 207, 0.8)",
+];
+const _DATE_KEYS = ["Date", "report_date", "symbol", "index"];
+
+function _segmentDatasets(data, suffix, hidden, stackName) {
+  if (!data || data.length === 0) return null;
+  const segCols = Object.keys(data[0]).filter((k) => !_DATE_KEYS.includes(k));
+  if (segCols.length === 0) return null;
+  const labels = data.map((row) =>
     String(row.Date || row.report_date || row.index).split(" ")[0],
   );
-  const colors = [
-    "rgba(31, 119, 180, 0.7)",
-    "rgba(255, 127, 14, 0.7)",
-    "rgba(44, 160, 44, 0.7)",
-    "rgba(214, 39, 40, 0.7)",
-    "rgba(148, 103, 189, 0.7)",
-    "rgba(140, 86, 75, 0.7)",
-    "rgba(227, 119, 194, 0.7)",
-    "rgba(127, 127, 127, 0.7)",
-    "rgba(188, 189, 34, 0.7)",
-    "rgba(23, 190, 207, 0.7)",
-  ];
-  const datasets = segmentsArr.map((seg, i) => ({
-    label: seg,
-    data: segmentData.map((row) => Number(row[seg]) || 0),
-    backgroundColor: colors[i % colors.length],
+  const datasets = segCols.map((seg, i) => ({
+    label: `${seg}${suffix}`,
+    data: data.map((row) => Number(row[seg]) || 0),
+    backgroundColor: _SEG_COLORS[i % _SEG_COLORS.length],
+    hidden,
+    stack: stackName,
   }));
   return { labels, datasets };
+}
+
+// segmentData: records 配列 (defeatbeta-api から取得した生データ)
+// stackName:   Chart.js の stack 識別子 ('segment' | 'geography')
+// errorLabel:  エラーメッセージ用ラベル ('セグメント収益' | '地域別収益')
+function generateSegmentChart(segmentData, stackName = 'segment', errorLabel = 'セグメント収益') {
+  const NO_DATA = { error: `詳細な${errorLabel}のデータが取得できませんでした（企業による未開示、またはデータソースの制約によるもの）。` };
+  if (!segmentData || !Array.isArray(segmentData) || segmentData.length === 0)
+    return NO_DATA;
+  const segCols = Object.keys(segmentData[0]).filter((k) => !_DATE_KEYS.includes(k));
+  if (segCols.length === 0) return NO_DATA;
+
+  // 日付昇順ソート
+  const sorted = [...segmentData].sort((a, b) =>
+    String(a.Date || a.report_date || '').localeCompare(String(b.Date || b.report_date || '')),
+  );
+
+  // 四半期: 直近12四半期
+  const quarterlyData = sorted.slice(-12);
+
+  // 通年: 年（決算期）ごとに集計して直近6年
+  const byYear = {};
+  for (const row of sorted) {
+    const year = String(row.Date || row.report_date || '').slice(0, 4);
+    if (year.length < 4) continue;
+    if (!byYear[year]) { byYear[year] = { Date: year }; for (const c of segCols) byYear[year][c] = 0; }
+    for (const c of segCols) byYear[year][c] += Number(row[c]) || 0;
+  }
+  const annualData = Object.values(byYear)
+    .sort((a, b) => a.Date.localeCompare(b.Date))
+    .slice(-6);
+
+  const annual    = _tagGroupLabels(_segmentDatasets(annualData,    " (通年)",  false, stackName));
+  const quarterly = _tagGroupLabels(_segmentDatasets(quarterlyData, " (四半期)", true,  stackName));
+  return _mergeGroups(annual, quarterly) || NO_DATA;
 }
 
 function formatSummary(text) {
@@ -2316,8 +2351,8 @@ async function main() {
           rawData.quarterly_income_stmt || [],
         );
         const dpsChart = generateDpsEpsChart(rawData.dividends, rawData.history);
-        const segmentChart = generateSegmentChart(rawData.revenue_by_segment);
-        const geoChart = generateSegmentChart(rawData.revenue_by_geography);
+        const segmentChart = generateSegmentChart(rawData.revenue_by_segment, 'segment',   'セグメント収益');
+        const geoChart     = generateSegmentChart(rawData.revenue_by_geography, 'geography', '地域別収益');
 
         const sector =
           metadata["GICS Sector"] || normalizeSector(rawData.info?.sector) || "Unknown";
