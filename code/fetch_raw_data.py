@@ -210,14 +210,21 @@ def fetch_raw_data_for_ticker(symbol):
                 return None
             return df_to_dict_safe(d.to_frame() if hasattr(d, 'to_frame') else d)
 
+        # revenue_by_segment / revenue_by_geography は yfinance には存在しない。
+        # defeatbeta-api 経由で取得する utils.YFinanceAdapterTicker を使う。
+        # ETF は defeatbeta が対応していないためスキップ。
+        rev_adapter = utils.YFinanceAdapterTicker(symbol) if symbol not in SECTOR_ETFS else None
+
         def _rev_seg():
-            fn = getattr(ticker, 'revenue_by_segment', None)
-            val = _safe_get(lambda: fn() if callable(fn) else fn, symbol, "revenue_by_segment")
+            if rev_adapter is None:
+                return None
+            val = _safe_get(rev_adapter.revenue_by_segment, symbol, "revenue_by_segment")
             return df_to_dict_safe(val)
 
         def _rev_geo():
-            fn = getattr(ticker, 'revenue_by_geography', None)
-            val = _safe_get(lambda: fn() if callable(fn) else fn, symbol, "revenue_by_geography")
+            if rev_adapter is None:
+                return None
+            val = _safe_get(rev_adapter.revenue_by_geography, symbol, "revenue_by_geography")
             return df_to_dict_safe(val)
 
         raw_payload = {
