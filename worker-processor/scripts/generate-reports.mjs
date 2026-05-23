@@ -1756,9 +1756,9 @@ const _SEG_COLORS = [
 ];
 const _DATE_KEYS = ["Date", "report_date", "symbol", "index"];
 
-function _segmentDatasets(data, suffix, hidden, stackName) {
+function _segmentDatasets(data, suffix, hidden, stackName, orderedCols, colorMap) {
   if (!data || data.length === 0) return null;
-  const segCols = Object.keys(data[0]).filter((k) => !_DATE_KEYS.includes(k));
+  const segCols = orderedCols || Object.keys(data[0]).filter((k) => !_DATE_KEYS.includes(k));
   if (segCols.length === 0) return null;
   const labels = data.map((row) =>
     String(row.Date || row.report_date || row.index).split(" ")[0],
@@ -1766,7 +1766,7 @@ function _segmentDatasets(data, suffix, hidden, stackName) {
   const datasets = segCols.map((seg, i) => ({
     label: `${seg}${suffix}`,
     data: data.map((row) => Number(row[seg]) || 0),
-    backgroundColor: _SEG_COLORS[i % _SEG_COLORS.length],
+    backgroundColor: colorMap ? (colorMap[seg] ?? _SEG_COLORS[i % _SEG_COLORS.length]) : _SEG_COLORS[i % _SEG_COLORS.length],
     hidden,
     stack: stackName,
   }));
@@ -1788,6 +1788,20 @@ function generateSegmentChart(segmentData, stackName = 'segment', errorLabel = '
     String(a.Date || a.report_date || '').localeCompare(String(b.Date || b.report_date || '')),
   );
 
+  // 最新行の値を基準にセグメント列を並び替え: 値降順、"other"含む項目は末尾
+  const latestRow = sorted[sorted.length - 1] ?? {};
+  const orderedCols = [...segCols].sort((a, b) => {
+    const aOther = a.toLowerCase().includes('other');
+    const bOther = b.toLowerCase().includes('other');
+    if (aOther !== bOther) return aOther ? 1 : -1;
+    return (Number(latestRow[b]) || 0) - (Number(latestRow[a]) || 0);
+  });
+
+  // セグメント名→色を固定（通年・四半期タブ間で色を統一）
+  const colorMap = Object.fromEntries(
+    orderedCols.map((col, i) => [col, _SEG_COLORS[i % _SEG_COLORS.length]]),
+  );
+
   // 四半期: 直近24四半期（通年6年に合わせた期間）
   const quarterlyData = sorted.slice(-24);
 
@@ -1803,8 +1817,8 @@ function generateSegmentChart(segmentData, stackName = 'segment', errorLabel = '
     .sort((a, b) => a.Date.localeCompare(b.Date))
     .slice(-6);
 
-  const annual    = _tagGroupLabels(_segmentDatasets(annualData,    " (通年)",  false, stackName));
-  const quarterly = _tagGroupLabels(_segmentDatasets(quarterlyData, " (四半期)", true,  stackName));
+  const annual    = _tagGroupLabels(_segmentDatasets(annualData,    " (通年)",  false, stackName, orderedCols, colorMap));
+  const quarterly = _tagGroupLabels(_segmentDatasets(quarterlyData, " (四半期)", true,  stackName, orderedCols, colorMap));
   return _mergeGroups(annual, quarterly) || NO_DATA;
 }
 
