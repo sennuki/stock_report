@@ -1788,8 +1788,8 @@ function generateSegmentChart(segmentData, stackName = 'segment', errorLabel = '
     String(a.Date || a.report_date || '').localeCompare(String(b.Date || b.report_date || '')),
   );
 
-  // 四半期: 直近12四半期
-  const quarterlyData = sorted.slice(-12);
+  // 四半期: 直近24四半期（通年6年に合わせた期間）
+  const quarterlyData = sorted.slice(-24);
 
   // 通年: 年（決算期）ごとに集計して直近6年
   const byYear = {};
