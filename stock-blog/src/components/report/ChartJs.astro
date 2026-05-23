@@ -26,6 +26,17 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
       <div class="chart-controls flex justify-center gap-2 mb-8"></div>
       <div class="chartjs-graph-div w-full relative" style={`height: ${height}px;`}>
         <canvas id={id}></canvas>
+        <button
+          class="chart-dl-btn absolute top-2 right-2 z-10 p-1.5 rounded bg-skin-fill/80 border border-skin-line text-skin-base opacity-30 hover:opacity-90 hover:text-skin-accent hover:border-skin-accent transition-opacity backdrop-blur-sm"
+          title="画像で保存"
+          type="button"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7,10 12,15 17,10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+        </button>
       </div>
     </>
   )}
@@ -313,6 +324,28 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
     });
     (canvas as any)._chart_instance = chart;
     setupControls(wrapper, chart, chartData);
+
+    const dlBtn = container.querySelector('.chart-dl-btn') as HTMLElement | null;
+    if (dlBtn) {
+      dlBtn.addEventListener('click', () => {
+        const { isDark } = getThemeColors();
+        const tmp = document.createElement('canvas');
+        tmp.width = canvas.width;
+        tmp.height = canvas.height;
+        const ctx2 = tmp.getContext('2d');
+        if (ctx2) {
+          ctx2.fillStyle = isDark ? '#111827' : '#ffffff';
+          ctx2.fillRect(0, 0, tmp.width, tmp.height);
+          ctx2.drawImage(canvas, 0, 0);
+        }
+        const symbol = wrapper.dataset.symbol || '';
+        const suffix = symbol ? `${symbol}_${canvas.id}` : canvas.id;
+        const a = document.createElement('a');
+        a.download = `${suffix}.png`;
+        a.href = tmp.toDataURL('image/png');
+        a.click();
+      });
+    }
   }
 
   function getCustomLegendLabels(chart: any, textColor: string) {
