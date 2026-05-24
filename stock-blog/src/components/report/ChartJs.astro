@@ -50,9 +50,13 @@ const { chartData, title, id, height = 450, yAxisPosition = 'left' } = Astro.pro
   function getThemeColors() {
     const html = document.documentElement;
     const isDark = html.classList.contains('dark') || html.getAttribute('data-theme') === 'dark';
+    // 本文の --foreground と凡例・軸ラベルの色を揃える。CSS 変数を読めない
+    // (SSR・古いブラウザ等の) フォールバックは旧来のテーマ別固定値。
+    const cssFg = getComputedStyle(html).getPropertyValue('--foreground').trim();
+    const textColor = cssFg || (isDark ? '#cbd5e1' : '#1f2937');
     return {
       isDark,
-      textColor: isDark ? '#e5e7eb' : '#1f2937', 
+      textColor,
       gridColor: isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.1)'
     };
   }

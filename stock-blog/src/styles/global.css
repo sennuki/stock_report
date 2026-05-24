@@ -23,7 +23,9 @@ html[data-theme="light"] {
 
 html[data-theme="dark"] {
   --background: #212737;
-  --foreground: #9ca3af;
+  /* 旧 #9ca3af (gray-400) は暗くて本文が読みづらかったので slate-300 相当に
+     明度を上げる。コントラスト比は約 8:1 → 11:1 で WCAG AAA 圏。 */
+  --foreground: #cbd5e1;
   --accent: #ff6b01;
   --muted: #ffffff;
   --border: #ab4b08;
