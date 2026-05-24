@@ -92,15 +92,20 @@ function localPathForKey(key) {
 // raw/broker_availability.json の取扱銘柄 Set に対し、ある銘柄が買えるか判定する。
 // Python 側 generate_json_reports.py の check_availability と同じく、
 // BRK-B ⇔ BRKB / BRK.B のような記号ゆれを吸収する。
-function isAvailableAt(brokerSet, symbol) {
-  if (!brokerSet || brokerSet.size === 0 || !symbol) return false;
-  if (brokerSet.has(symbol)) return true;
-  // 記号なし (BRK-B / BRK.B → BRKB)
-  if (brokerSet.has(symbol.replace(/[-\.]/g, ""))) return true;
-  // ハイフン → ドット (BRK-B → BRK.B)
-  if (brokerSet.has(symbol.replace(/-/g, "."))) return true;
-  // ドット → ハイフン (BRK.B → BRK-B)
-  if (brokerSet.has(symbol.replace(/\./g, "-"))) return true;
+// 第二引数以降はフォールバックシンボル (Symbol_YF など) で、
+// 表示用シンボルが見つからない場合にも確認する (BNY/BK 等のティッカー変更対応)。
+function isAvailableAt(brokerSet, ...symbols) {
+  if (!brokerSet || brokerSet.size === 0) return false;
+  for (const symbol of symbols) {
+    if (!symbol) continue;
+    if (brokerSet.has(symbol)) return true;
+    // 記号なし (BRK-B / BRK.B → BRKB)
+    if (brokerSet.has(symbol.replace(/[-\.]/g, ""))) return true;
+    // ハイフン → ドット (BRK-B → BRK.B)
+    if (brokerSet.has(symbol.replace(/-/g, "."))) return true;
+    // ドット → ハイフン (BRK.B → BRK-B)
+    if (brokerSet.has(symbol.replace(/\./g, "-"))) return true;
+  }
   return false;
 }
 
@@ -729,11 +734,11 @@ function extractEarningsSurprise(rawData) {
   if (!ed || !Array.isArray(ed) || ed.length === 0) return null;
   // yfinance provides a list where each element is a date's data
   // We need to find the latest one that has a "Reported EPS"
-  const sorted = [...ed].sort((a, b) => new Date(b.index || b.Date).getTime() - new Date(a.index || a.Date).getTime());
+  const sorted = [...ed].sort((a, b) => new Date(b["Earnings Date"] || b.index || b.Date).getTime() - new Date(a["Earnings Date"] || a.index || a.Date).getTime());
   for (const item of sorted) {
     if (item["Reported EPS"] !== null && item["Reported EPS"] !== undefined) {
       return {
-        date: String(item.index || item.Date).split(" ")[0],
+        date: String(item["Earnings Date"] || item.index || item.Date).split(" ")[0],
         actual: item["Reported EPS"],
         estimate: item["EPS Estimate"],
         surprise_pct: item["Surprise(%)"],
@@ -747,12 +752,12 @@ function extractNextEarnings(rawData) {
   const ed = rawData.earnings_dates;
   if (!ed || !Array.isArray(ed) || ed.length === 0) return null;
   const now = new Date();
-  const sorted = [...ed].sort((a, b) => new Date(a.index || a.Date).getTime() - new Date(b.index || b.Date).getTime());
+  const sorted = [...ed].sort((a, b) => new Date(a["Earnings Date"] || a.index || a.Date).getTime() - new Date(b["Earnings Date"] || b.index || b.Date).getTime());
   for (const item of sorted) {
-    const d = new Date(item.index || item.Date);
+    const d = new Date(item["Earnings Date"] || item.index || item.Date);
     if (d >= now && (item["Reported EPS"] === null || item["Reported EPS"] === undefined)) {
       return {
-        date: String(item.index || item.Date).split(" ")[0],
+        date: String(item["Earnings Date"] || item.index || item.Date).split(" ")[0],
         estimate: item["EPS Estimate"] || null,
       };
     }
@@ -2838,16 +2843,17 @@ async function main() {
           },
 
           // 日本の証券会社での購入可否。broker_availability.json の取扱銘柄
-          // リストと照合する。表示シンボル (BRK.B 等) で判定する。
-          is_available_monex: isAvailableAt(brokerAvailability.monex, brokerCheckSymbol),
-          is_available_rakuten: isAvailableAt(brokerAvailability.rakuten, brokerCheckSymbol),
-          is_available_sbi: isAvailableAt(brokerAvailability.sbi, brokerCheckSymbol),
-          is_available_mufg: isAvailableAt(brokerAvailability.mufg, brokerCheckSymbol),
-          is_available_matsui: isAvailableAt(brokerAvailability.matsui, brokerCheckSymbol),
-          is_available_dmm: isAvailableAt(brokerAvailability.dmm, brokerCheckSymbol),
-          is_available_paypay: isAvailableAt(brokerAvailability.paypay, brokerCheckSymbol),
-          is_available_moomoo: isAvailableAt(brokerAvailability.moomoo, brokerCheckSymbol),
-          is_available_iwaicosmo: isAvailableAt(brokerAvailability.iwaicosmo, brokerCheckSymbol),
+          // リストと照合する。表示シンボル優先、Symbol_YF もフォールバックとして確認
+          // (BNY/BK 等のティッカー変更後も旧ティッカーで登録されている証券会社に対応)。
+          is_available_monex: isAvailableAt(brokerAvailability.monex, brokerCheckSymbol, symbol),
+          is_available_rakuten: isAvailableAt(brokerAvailability.rakuten, brokerCheckSymbol, symbol),
+          is_available_sbi: isAvailableAt(brokerAvailability.sbi, brokerCheckSymbol, symbol),
+          is_available_mufg: isAvailableAt(brokerAvailability.mufg, brokerCheckSymbol, symbol),
+          is_available_matsui: isAvailableAt(brokerAvailability.matsui, brokerCheckSymbol, symbol),
+          is_available_dmm: isAvailableAt(brokerAvailability.dmm, brokerCheckSymbol, symbol),
+          is_available_paypay: isAvailableAt(brokerAvailability.paypay, brokerCheckSymbol, symbol),
+          is_available_moomoo: isAvailableAt(brokerAvailability.moomoo, brokerCheckSymbol, symbol),
+          is_available_iwaicosmo: isAvailableAt(brokerAvailability.iwaicosmo, brokerCheckSymbol, symbol),
           movement_reason: movementReasons[symbol] || null,
           highlights,
           earnings_surprise: earningsSurprise,

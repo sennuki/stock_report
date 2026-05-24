@@ -152,24 +152,27 @@ def generate_json_for_ticker(row, df_info, df_metrics, output_dir, force_transla
     exchange = row['Exchange']
     
     # Check availability
-    def check_availability(target, symbol_list):
+    # *symbols に表示用・Symbol_YF の両方を渡すことで、ティッカー変更後も
+    # 旧ティッカーのまま登録している証券会社のリストで正しく照合できる。
+    def check_availability(symbol_list, *symbols):
         if not symbol_list: return False
-        if target in symbol_list: return True
-        # Handle variations like BRK-B vs BRKB or BRK.B
-        variations = [target.replace("-", ""), target.replace("-", ".")]
-        for v in variations:
-            if v in symbol_list: return True
+        for sym in symbols:
+            if not sym: continue
+            if sym in symbol_list: return True
+            # BRK-B ⇔ BRKB / BRK.B のような表記ゆれを吸収
+            for v in [sym.replace("-", ""), sym.replace("-", "."), sym.replace(".", "-")]:
+                if v in symbol_list: return True
         return False
 
-    is_available_monex = check_availability(ticker_display, monex_symbols)
-    is_available_rakuten = check_availability(ticker_display, rakuten_symbols)
-    is_available_sbi = check_availability(ticker_display, sbi_symbols)
-    is_available_mufg = check_availability(ticker_display, mufg_symbols)
-    is_available_matsui = check_availability(ticker_display, matsui_symbols)
-    is_available_dmm = check_availability(ticker_display, dmm_symbols)
-    is_available_paypay = check_availability(ticker_display, paypay_symbols)
-    is_available_moomoo = check_availability(ticker_display, moomoo_symbols)
-    is_available_iwaicosmo = check_availability(ticker_display, iwaicosmo_symbols)
+    is_available_monex = check_availability(monex_symbols, ticker_display, chart_target_symbol)
+    is_available_rakuten = check_availability(rakuten_symbols, ticker_display, chart_target_symbol)
+    is_available_sbi = check_availability(sbi_symbols, ticker_display, chart_target_symbol)
+    is_available_mufg = check_availability(mufg_symbols, ticker_display, chart_target_symbol)
+    is_available_matsui = check_availability(matsui_symbols, ticker_display, chart_target_symbol)
+    is_available_dmm = check_availability(dmm_symbols, ticker_display, chart_target_symbol)
+    is_available_paypay = check_availability(paypay_symbols, ticker_display, chart_target_symbol)
+    is_available_moomoo = check_availability(moomoo_symbols, ticker_display, chart_target_symbol)
+    is_available_iwaicosmo = check_availability(iwaicosmo_symbols, ticker_display, chart_target_symbol)
     # TradingView symbol
     tv_ticker = ticker_display.replace("-", ".")
     full_symbol = f"{exchange}:{tv_ticker}"

@@ -799,7 +799,9 @@ function rankingSlug(key: string): string {
                         <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">breaking_news</span>
                         直近の四半期決算実績 (EPSサプライズ)
                       </h3>
-                      <p class="text-sm opacity-70 mt-1">決算発表日: {reportData.earnings_surprise.date}</p>
+                      {reportData.earnings_surprise.date && reportData.earnings_surprise.date !== 'undefined' && reportData.earnings_surprise.date !== 'null' && (
+                        <p class="text-sm opacity-70 mt-1">決算発表日: {reportData.earnings_surprise.date}</p>
+                      )}
                     </div>
                     <div class="flex items-center gap-6">
                       <div class="text-center">
