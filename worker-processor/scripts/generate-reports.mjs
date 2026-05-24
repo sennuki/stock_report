@@ -1102,10 +1102,17 @@ function _isDatasets(stmt, suffix, hidden) {
     .filter((k) => k !== "index" && !k.includes("TTM"))
     .sort();
   if (dates.length === 0) return null;
-  const get = (label) =>
-    dates.map((d) => Number(getValFromArray(stmt, label, d)) || 0);
+  // 欠損 (null / undefined) と 0 を区別するため、生値配列と数値配列を別々に保持する。
+  // 金融セクター等は損益計算書に Gross Profit / Operating Income が無く、
+  // yfinance が null を返す。これを 0 として描画すると棒が消えるだけでなく
+  // 凡例・率の折れ線も無意味に並ぶため、全期間欠損のシリーズは丸ごと省略する。
+  const getRaw = (label) => dates.map((d) => getValFromArray(stmt, label, d));
+  const toNum = (raw) => raw.map((v) => Number(v) || 0);
+  const allMissing = (raw) =>
+    raw.every((v) => v === null || v === undefined || Number(v) === 0);
 
-  const revenue = get("Total Revenue");
+  const revenueRaw = getRaw("Total Revenue");
+  const revenue = toNum(revenueRaw);
   // 通年は最後の 6 期、四半期は最後の 8 期を使う (master の挙動に合わせる)
   const sliceCount = suffix === " (四半期)" ? 8 : 6;
   const validIdx = revenue
@@ -1116,32 +1123,49 @@ function _isDatasets(stmt, suffix, hidden) {
   const pick = (arr) => validIdx.map((i) => arr[i]);
   const labels = validIdx.map((i) => dates[i].split(" ")[0]);
 
+  const grossRaw = getRaw("Gross Profit");
+  const opIncomeRaw = getRaw("Operating Income");
+  const netRaw = getRaw("Net Income");
+
   const rev = pick(revenue);
-  const grossProfit = pick(get("Gross Profit"));
-  const operatingIncome = pick(get("Operating Income"));
-  const netIncome = pick(get("Net Income"));
+  const grossProfit = pick(toNum(grossRaw));
+  const operatingIncome = pick(toNum(opIncomeRaw));
+  const netIncome = pick(toNum(netRaw));
   const ratio = (num, den) =>
     num.map((v, i) => (den[i] ? v / den[i] : null));
+
+  // 表示対象期間 (validIdx) で値がすべて欠損/0 のシリーズは棒も率も省略。
+  // 金融・不動産セクター等で Gross Profit / Operating Income が未報告のときに発動。
+  const grossMissing = allMissing(validIdx.map((i) => grossRaw[i]));
+  const opMissing = allMissing(validIdx.map((i) => opIncomeRaw[i]));
 
   const datasets = [
     { type: "bar", label: `売上高${suffix}`, data: rev,
       backgroundColor: "rgba(174, 199, 232, 0.85)", yAxisID: "y", order: 2, hidden },
-    { type: "bar", label: `売上総利益${suffix}`, data: grossProfit,
-      backgroundColor: "rgba(31, 119, 180, 0.85)", yAxisID: "y", order: 2, hidden },
-    { type: "bar", label: `営業利益${suffix}`, data: operatingIncome,
-      backgroundColor: "rgba(255, 187, 120, 0.85)", yAxisID: "y", order: 2, hidden },
-    { type: "bar", label: `純利益${suffix}`, data: netIncome,
-      backgroundColor: "rgba(44, 160, 44, 0.85)", yAxisID: "y", order: 2, hidden },
-    { type: "line", label: `売上総利益率${suffix}`, data: ratio(grossProfit, rev),
-      borderColor: "#1f77b4", backgroundColor: "#1f77b4",
-      borderWidth: 2, fill: false, pointRadius: 4, yAxisID: "y1", order: 1, hidden },
-    { type: "line", label: `営業利益率${suffix}`, data: ratio(operatingIncome, rev),
-      borderColor: "#ffbb78", backgroundColor: "#ffbb78",
-      borderWidth: 2, fill: false, pointRadius: 4, yAxisID: "y1", order: 1, hidden },
-    { type: "line", label: `純利益率${suffix}`, data: ratio(netIncome, rev),
-      borderColor: "#2ca02c", backgroundColor: "#2ca02c",
-      borderWidth: 2, fill: false, pointRadius: 4, yAxisID: "y1", order: 1, hidden },
   ];
+  if (!grossMissing) {
+    datasets.push({ type: "bar", label: `売上総利益${suffix}`, data: grossProfit,
+      backgroundColor: "rgba(31, 119, 180, 0.85)", yAxisID: "y", order: 2, hidden });
+  }
+  if (!opMissing) {
+    datasets.push({ type: "bar", label: `営業利益${suffix}`, data: operatingIncome,
+      backgroundColor: "rgba(255, 187, 120, 0.85)", yAxisID: "y", order: 2, hidden });
+  }
+  datasets.push({ type: "bar", label: `純利益${suffix}`, data: netIncome,
+    backgroundColor: "rgba(44, 160, 44, 0.85)", yAxisID: "y", order: 2, hidden });
+  if (!grossMissing) {
+    datasets.push({ type: "line", label: `売上総利益率${suffix}`, data: ratio(grossProfit, rev),
+      borderColor: "#1f77b4", backgroundColor: "#1f77b4",
+      borderWidth: 2, fill: false, pointRadius: 4, yAxisID: "y1", order: 1, hidden });
+  }
+  if (!opMissing) {
+    datasets.push({ type: "line", label: `営業利益率${suffix}`, data: ratio(operatingIncome, rev),
+      borderColor: "#ffbb78", backgroundColor: "#ffbb78",
+      borderWidth: 2, fill: false, pointRadius: 4, yAxisID: "y1", order: 1, hidden });
+  }
+  datasets.push({ type: "line", label: `純利益率${suffix}`, data: ratio(netIncome, rev),
+    borderColor: "#2ca02c", backgroundColor: "#2ca02c",
+    borderWidth: 2, fill: false, pointRadius: 4, yAxisID: "y1", order: 1, hidden });
   return { labels, datasets };
 }
 
