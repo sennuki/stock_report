@@ -577,11 +577,11 @@ function extractEarningsSurprise(rawData) {
   if (!ed || !Array.isArray(ed) || ed.length === 0) return null;
   // yfinance provides a list where each element is a date's data
   // We need to find the latest one that has a "Reported EPS"
-  const sorted = [...ed].sort((a, b) => new Date(b.index || b.Date).getTime() - new Date(a.index || a.Date).getTime());
+  const sorted = [...ed].sort((a, b) => new Date(b["Earnings Date"] || b.index || b.Date).getTime() - new Date(a["Earnings Date"] || a.index || a.Date).getTime());
   for (const item of sorted) {
     if (item["Reported EPS"] !== null && item["Reported EPS"] !== undefined) {
       return {
-        date: String(item.index || item.Date).split(" ")[0],
+        date: String(item["Earnings Date"] || item.index || item.Date).split(" ")[0],
         actual: item["Reported EPS"],
         estimate: item["EPS Estimate"],
         surprise_pct: item["Surprise(%)"],
@@ -595,12 +595,12 @@ function extractNextEarnings(rawData) {
   const ed = rawData.earnings_dates;
   if (!ed || !Array.isArray(ed) || ed.length === 0) return null;
   const now = new Date();
-  const sorted = [...ed].sort((a, b) => new Date(a.index || a.Date).getTime() - new Date(b.index || b.Date).getTime());
+  const sorted = [...ed].sort((a, b) => new Date(a["Earnings Date"] || a.index || a.Date).getTime() - new Date(b["Earnings Date"] || b.index || b.Date).getTime());
   for (const item of sorted) {
-    const d = new Date(item.index || item.Date);
+    const d = new Date(item["Earnings Date"] || item.index || item.Date);
     if (d >= now && (item["Reported EPS"] === null || item["Reported EPS"] === undefined)) {
       return {
-        date: String(item.index || item.Date).split(" ")[0],
+        date: String(item["Earnings Date"] || item.index || item.Date).split(" ")[0],
         estimate: item["EPS Estimate"] || null,
       };
     }
