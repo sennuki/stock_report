@@ -60,7 +60,7 @@ BEN,Franklin Resources,Financials,Asset Management & Custody Banks,BEN,NYSE,0.05
 BF.B,Brown–Forman,Consumer Staples,Distillers & Vintners,BF-B,NYSE,0.02032749858836812,ブラウン・フォーマン クラスB,true,true,false,false,true,false,false,false
 BG,Bunge Global,Consumer Staples,Agricultural Products & Services,BG,NYSE,-0.038569010980361335,ブンゲ・グローバル,true,true,true,true,true,true,false,false
 BIIB,Biogen,Health Care,Biotechnology,BIIB,NASDAQ,0.009338875918227813,バイオジェン,true,true,true,true,true,true,false,false
-BK,BNY Mellon,Financials,Asset Management & Custody Banks,BK,NYSE,0.018649981951630278,バンク・オブ・ニューヨーク・メロン,true,true,true,true,true,true,false,false
+BNY,BNY Mellon,Financials,Asset Management & Custody Banks,BK,NYSE,0.018649981951630278,バンク・オブ・ニューヨーク・メロン,true,true,true,true,true,true,false,false
 BKNG,Booking Holdings,Consumer Discretionary,"Hotels, Resorts & Cruise Lines",BKNG,NASDAQ,0.06470215097168559,ブッキング・ ホールディングス,true,true,true,true,true,true,true,false
 BKR,Baker Hughes,Energy,Oil & Gas Equipment & Services,BKR,NASDAQ,0.008000000000000033,ベーカー・ヒューズ,true,true,true,true,true,true,false,false
 BLDR,Builders FirstSource,Industrials,Building Products,BLDR,NYSE,0.08785153280972893,ビルダーズ・ファーストソース,true,true,true,true,true,true,false,false
