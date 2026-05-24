@@ -405,7 +405,9 @@ def calculate_dcf(symbol, ticker=None, yf_info=None, yf_growth_estimates=None):
         
         # 1-10年目の予測
         for i in range(1, 11):
-            if i <= 5:
+            if i <= 5 or growth_1_5y <= terminal_growth:
+                # 1-5年目は初期成長率。6年目以降も初期成長率 <= 永続成長率なら
+                # 漸減ロジックが「加速」になってしまうため、初期成長率を維持する。
                 rate = growth_1_5y
             else:
                 # 6年目以降はTerminal Growthに向けて線形に漸減させる
@@ -421,7 +423,10 @@ def calculate_dcf(symbol, ticker=None, yf_info=None, yf_growth_estimates=None):
             })
         
         # 6年目の成長率を growth_6_10y として保持 (Excel の C13 = C12-(C12-C14)/5 に相当)
-        growth_6_10y = growth_1_5y - (growth_1_5y - terminal_growth) / 5
+        if growth_1_5y <= terminal_growth:
+            growth_6_10y = growth_1_5y
+        else:
+            growth_6_10y = growth_1_5y - (growth_1_5y - terminal_growth) / 5
             
         # 継続価値 (Terminal Value)
         tv = (current_fcf * (1 + terminal_growth)) / (wacc - terminal_growth)
@@ -475,7 +480,9 @@ def calculate_dcf(symbol, ticker=None, yf_info=None, yf_growth_estimates=None):
                     fcf = base_fcf
                     pv_fcf_sum = 0
                     for i in range(1, 11):
-                        if i <= 5:
+                        if i <= 5 or g <= terminal_growth:
+                            # g <= 永続成長率なら漸減ロジックが「加速」になるため
+                            # 全年で g を維持する (リバース DCF の対称化)。
                             rate = g
                         else:
                             rate = g - (i - 5) * (g - terminal_growth) / 5
