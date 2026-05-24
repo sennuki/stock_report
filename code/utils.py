@@ -341,7 +341,11 @@ def calculate_dcf(symbol, ticker=None, yf_info=None, yf_growth_estimates=None):
             growth_1_5y = risk_free_rate
 
         # 永続成長率 = 5年平均リスクフリーレート
-        terminal_growth = risk_free_rate
+        # ただし Gordon Growth モデルは WACC > terminal_growth が前提のため、
+        # ディフェンシブ銘柄 (低 β + 高負債) で WACC が risk-free rate を
+        # 下回るケースでは TV が負になり破綻する。WACC より十分小さく
+        # キャップする (最低 1pt のスプレッドを確保)。
+        terminal_growth = min(risk_free_rate, max(0.0, wacc - 0.01))
         
         # 3. キャッシュフロー予測
         # 基準 FCF: 直近 1 四半期末の TTM 単一値は運転資本変動などのノイズが
