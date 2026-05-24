@@ -1805,7 +1805,6 @@ FHB,FHB,First Hawaiian Inc,ファースト・ハワイアン,,monex
 FHI,FHI,Federated Hermes Inc,フェデレーテッド・ハーミーズ,,monex
 FHN,FHN,First Horizon Corp,ファースト・ホライゾン・ナショナル,,monex
 FHTX,FHTX,Foghorn Therapeutics Inc,フォグホーン・セラピューティクス,,monex
-FI,FI,Fiserv,フィサーブ,S&P 500,stock_list_az.csv
 FIBK,FIBK,First Interstate BancSystem Inc,ファースト・インタステート・バンクシステム,,monex
 FICO,FICO,Fair Isaac,フェア・アイザック,S&P 500,stock_list_az.csv
 FID,FID,First Trust S&P International Dividend Aristocrats ETF,ファーストトラスト S&P インターナショナル 配当 貴族 ETF,,monex
@@ -1820,7 +1819,7 @@ FINX,FINX,Global X Fintech ETF,グローバルX フィンテックETF,,monex
 FIP,FIP,Ftai Infrastructure Inc,エフティエーアイインフラストラクチャ,,monex
 FIS,FIS,Fidelity National Information Services,フィディリティ・ナショナル・インフォメーション・サービシズ,S&P 500,stock_list_az.csv
 FISI,FISI,Financial Institutions Inc,フィナンシャル・インスティテューションズ,,monex
-FISV,FISV,Fiserv Inc,フィサーブ,,monex
+FISV,FISV,Fiserv,フィサーブ,S&P 500,stock_list_az.csv
 FITB,FITB,Fifth Third Bancorp,フィフス・サード・バンコープ,S&P 500,stock_list_az.csv
 FIVE,FIVE,Five Below,ファイブ・ビロー,,monex
 FIVN,FIVN,Five9 Inc,ファイブ9,,monex

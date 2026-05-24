@@ -911,7 +911,10 @@ SP_INDEX_URLS = {
 # 注意: ドット/ハイフンを含まないティッカーのみ対応 (Symbol と Symbol_YF を
 #       同一視して置換する)。
 TICKER_OVERRIDES = {
-    "FISV": "FI",  # Fiserv: 2025 年に FISV (NASDAQ) から FI (NYSE) へ変更
+    # Fiserv: 2025-11-11 に NYSE → NASDAQ へ上場替えし、ティッカーが FI → FISV に
+    # 戻った (https://mondovisione.com/.../fiserv-...20251029)。Wikipedia 反映が遅れて
+    # FI を返してきた場合に備えて FISV に上書きする。
+    "FI": "FISV",
 }
 
 
