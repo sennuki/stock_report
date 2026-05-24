@@ -13,6 +13,10 @@ on:
         description: 'Gemini API 呼び出し上限 (新規翻訳 + 再翻訳の合計)'
         required: false
         default: '500'
+      force_symbols:
+        description: '強制再翻訳する銘柄コード (カンマ区切り, 例: ACN,AAPL). source_hash を無視して再翻訳します'
+        required: false
+        default: ''
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -54,6 +58,7 @@ jobs:
           # の合計)。flash-lite 無料枠 500 req/日に合わせる。上限に達すれば
           # 残りは翌日の実行に持ち越す。
           TRANSLATION_LIMIT: ${{ github.event.inputs.limit || '500' }}
+          FORCE_RETRANSLATE_SYMBOLS: ${{ github.event.inputs.force_symbols || '' }}
           # Pass 2 (再チェック): translation_date が REFRESH_AFTER_DAYS より
           # 古い翻訳を古い順に再チェックする。365 日で全銘柄が約 1 年で 1 周。
           # ソース英文が未変更なら翻訳日のみ更新し、API は呼ばない。
@@ -77,7 +82,7 @@ jobs:
             echo "### Business Summary Translation"
             echo ""
             if [ -f translation-summary.json ]; then
-              node -e "const fs=require('fs'); const s=JSON.parse(fs.readFileSync('translation-summary.json','utf8')); console.log('- New translations: ' + s.translated); console.log('- New symbols: ' + (s.translated_symbols.length ? s.translated_symbols.join(', ') : '(none)')); console.log('- Refreshed (source changed): ' + s.refreshed); console.log('- Refreshed symbols: ' + (s.refreshed_symbols.length ? s.refreshed_symbols.join(', ') : '(none)')); console.log('- Touched (unchanged, date bumped): ' + s.touched); console.log('- Skipped no source: ' + s.skipped_no_source); console.log('- Failed: ' + s.failed);"
+              node -e "const fs=require('fs'); const s=JSON.parse(fs.readFileSync('translation-summary.json','utf8')); if(s.forced>0){console.log('- Force re-translated: ' + s.forced + ' (' + s.forced_symbols.join(', ') + ')')} console.log('- New translations: ' + s.translated); console.log('- New symbols: ' + (s.translated_symbols.length ? s.translated_symbols.join(', ') : '(none)')); console.log('- Refreshed (source changed): ' + s.refreshed); console.log('- Refreshed symbols: ' + (s.refreshed_symbols.length ? s.refreshed_symbols.join(', ') : '(none)')); console.log('- Touched (unchanged, date bumped): ' + s.touched); console.log('- Skipped no source: ' + s.skipped_no_source); console.log('- Failed: ' + s.failed);"
             else
               echo "- Summary file was not created."
             fi

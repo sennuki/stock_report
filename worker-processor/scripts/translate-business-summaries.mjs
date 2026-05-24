@@ -51,6 +51,14 @@ const GEMINI_MODEL = (
   process.env.GEMINI_TRANSLATION_MODEL || "gemini-3.1-flash-lite-preview"
 ).replace(/^models\//, "");
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+// FORCE_RETRANSLATE_SYMBOLS: カンマ区切りの銘柄コード。source_hash に関わらず
+// 強制的に再翻訳する (workflow_dispatch の force_symbols 入力から渡される)。
+const FORCE_RETRANSLATE_SYMBOLS = new Set(
+  (process.env.FORCE_RETRANSLATE_SYMBOLS || "")
+    .split(",")
+    .map((s) => s.trim().toUpperCase())
+    .filter(Boolean),
+);
 
 if (!GEMINI_API_KEY) {
   console.error("GEMINI_API_KEY is required.");
@@ -262,13 +270,61 @@ async function main() {
   let touched = 0;
   const translatedSymbols = [];
   const refreshedSymbols = [];
+  const forcedSymbols = [];
   let skippedNoSource = 0;
   let failed = 0;
   let stop = false;
 
+  // ---- Pass 0: 強制再翻訳 (FORCE_RETRANSLATE_SYMBOLS) ----
+  // source_hash に関わらず指定された銘柄を強制再翻訳する。
+  if (FORCE_RETRANSLATE_SYMBOLS.size > 0) {
+    console.log(`force re-translate: ${[...FORCE_RETRANSLATE_SYMBOLS].join(", ")}`);
+    for (const symbol of symbols.filter((s) => FORCE_RETRANSLATE_SYMBOLS.has(s))) {
+      if (translated >= LIMIT) {
+        console.log(`API budget (${LIMIT}) reached; skipping forced re-translation of ${symbol}.`);
+        break;
+      }
+      let source = null;
+      try {
+        source = await loadSource(symbol);
+      } catch (error) {
+        failed += 1;
+        console.log(`[${symbol}] raw download failed: ${error.message}`);
+        continue;
+      }
+      if (!source) {
+        skippedNoSource += 1;
+        console.log(`[${symbol}] no longBusinessSummary found; skipping forced re-translation.`);
+        continue;
+      }
+      try {
+        console.log(`[${symbol}] force re-translating (${translated + 1}/${LIMIT})`);
+        const translation = await translateSummary(symbol, source);
+        translations[symbol] = {
+          symbol,
+          business_summary_ja: translation,
+          translation_date: new Date().toISOString(),
+          source_hash: sourceHash(source),
+        };
+        await putJson(TRANSLATIONS_KEY, translations);
+        translated += 1;
+        forcedSymbols.push(symbol);
+      } catch (error) {
+        failed += 1;
+        console.error(`[${symbol}] forced re-translation failed: ${String(error?.message || error)}`);
+        if (isRateLimited(error)) {
+          console.log("Rate limited. Stopping this run so the next schedule can retry.");
+          stop = true;
+          break;
+        }
+      }
+    }
+  }
+
   // ---- Pass 1: 未翻訳の銘柄を翻訳 ----
   for (const symbol of symbols) {
     if (translated >= LIMIT) break;
+    if (FORCE_RETRANSLATE_SYMBOLS.has(symbol)) continue; // Pass 0 で処理済み
     if (getSavedTranslation(translations, symbol)) continue; // 翻訳済みは Pass 2 で扱う
 
     let source = null;
@@ -400,8 +456,8 @@ async function main() {
   }
 
   console.log(
-    `done translated=${translated} refreshed=${refreshed} touched=${touched} ` +
-      `skipped_no_source=${skippedNoSource} failed=${failed}`,
+    `done forced=${forcedSymbols.length} translated=${translated} refreshed=${refreshed} ` +
+      `touched=${touched} skipped_no_source=${skippedNoSource} failed=${failed}`,
   );
 
   if (SUMMARY_OUTPUT_PATH) {
@@ -409,6 +465,8 @@ async function main() {
       SUMMARY_OUTPUT_PATH,
       JSON.stringify(
         {
+          forced: forcedSymbols.length,
+          forced_symbols: forcedSymbols,
           translated,
           translated_symbols: translatedSymbols,
           refreshed,
