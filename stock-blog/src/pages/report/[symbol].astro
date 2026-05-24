@@ -350,6 +350,50 @@ const RANK_GROUPS: Array<{ genre: string; keys: RankMetric[] }> = [
     ["range_position_52w", "52週レンジ内位置", "percent"],
     ["beta",               "ベータ",           "ratio"],
   ]},
+  { genre: "アナリスト評価", keys: [
+    ["analyst_count",              "アナリスト数",            "count"],
+    ["target_upside",              "目標株価乖離率",          "percent"],
+    ["analyst_buy_ratio",          "Buy評価比率",             "percent"],
+    ["recommendation_mean",        "コンセンサス推奨スコア",  "ratio"],
+    ["target_price_dispersion",    "目標株価レンジ幅",        "percent"],
+    ["analyst_strong_buy_ratio",   "Strong Buy 専一率",       "percent"],
+    ["analyst_bear_ratio",         "弱気評価比率",            "percent"],
+  ]},
+  { genre: "財務健全性", keys: [
+    ["debt_to_equity_low", "D/E 比率 (低い順)", "ratio"],
+    ["current_ratio",      "流動比率",          "ratio"],
+    ["quick_ratio",        "当座比率",          "ratio"],
+  ]},
+  { genre: "キャッシュフロー", keys: [
+    ["free_cashflow", "フリーキャッシュフロー", "currency"],
+    ["fcf_margin",    "FCF マージン",           "percent"],
+  ]},
+  { genre: "株主構成・空売り", keys: [
+    ["held_pct_institutions", "機関投資家保有率",       "percent"],
+    ["held_pct_insiders",     "インサイダー保有率",     "percent"],
+    ["short_pct_float",       "空売り比率 (浮動株比)", "percent"],
+  ]},
+  { genre: "直近モメンタム", keys: [
+    ["earnings_growth",            "EPS 成長率 (通期 YoY)",   "percent"],
+    ["earnings_quarterly_growth",  "EPS 成長率 (四半期 YoY)", "percent"],
+  ]},
+  { genre: "バリュエーション (拡張)", keys: [
+    ["peg_ratio_low",         "PEG レシオ",         "ratio"],
+    ["enterprise_to_revenue", "EV / Revenue",       "ratio"],
+    ["ebitda_margin",         "EBITDA マージン",    "percent"],
+    ["earnings_yield",        "Earnings Yield",     "percent"],
+    ["roic_proxy",            "ROIC (推定)",        "percent"],
+  ]},
+  { genre: "パフォーマンス", keys: [
+    ["return_1y",        "1年リターン (年率)",      "percent"],
+    ["return_ytd",       "年初来リターン (年率)",   "percent"],
+    ["max_drawdown_1y",  "最大ドローダウン (1年)", "percent"],
+  ]},
+  { genre: "コンポジット・スコア", keys: [
+    ["piotroski_score",    "Piotroski F-Score",      "count"],
+    ["dividend_stability", "配当安定性スコア",       "count"],
+    ["magic_formula",      "Magic Formula (順位和)", "count"],
+  ]},
 ];
 function fmtRankValue(v: number | null | undefined, unit: RankUnit): string {
   if (v == null || !Number.isFinite(v)) return "---";
