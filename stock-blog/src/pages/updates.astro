@@ -11,8 +11,8 @@ import { env } from "cloudflare:workers";
 // R2 から実行時にデータを読むため SSR で動かす。
 export const prerender = false;
 
-// 決算トランスクリプトのブロックに並べる最大件数 (新しい順)。
-const TRANSCRIPT_LIMIT = 50;
+// 決算トランスクリプトのブロックに表示する日数 (新しい順)。
+const TRANSCRIPT_DAYS = 30;
 
 const title = "更新履歴｜新規レポート・決算トランスクリプトの追加状況";
 const description =
@@ -127,7 +127,10 @@ for (const [symbol, entries] of Object.entries(transcriptIndex)) {
 transcripts.sort((a, b) =>
   a.generated < b.generated ? 1 : a.generated > b.generated ? -1 : 0
 );
-const recentTranscripts = transcripts.slice(0, TRANSCRIPT_LIMIT);
+const cutoffDate = new Date();
+cutoffDate.setDate(cutoffDate.getDate() - TRANSCRIPT_DAYS);
+const cutoffStr = cutoffDate.toISOString().slice(0, 10);
+const recentTranscripts = transcripts.filter(t => t.generated >= cutoffStr);
 
 const transcriptsByDate = new Map<string, TranscriptItem[]>();
 for (const t of recentTranscripts) {
