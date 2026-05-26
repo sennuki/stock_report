@@ -25,9 +25,13 @@ const baseNoSlash = base.replace(/\/$/, "");
 
 // symbol -> 表示名 (日本語名があれば優先)
 const nameBySymbol = new Map<string, string>();
+const indexBySymbol = new Map<string, string>();
 for (const s of stocks as any[]) {
   const sym = s.Symbol_YF || s.Symbol;
-  if (sym) nameBySymbol.set(sym, s.Security_JA || s.Security || sym);
+  if (sym) {
+    nameBySymbol.set(sym, s.Security_JA || s.Security || sym);
+    if (s.Index) indexBySymbol.set(sym, s.Index);
+  }
 }
 
 interface IndexItem {
@@ -45,6 +49,7 @@ interface TranscriptItem {
   period: string;
   generated: string;
   href: string;
+  index: string;
 }
 
 // 1) 指数構成銘柄の入れ替え
@@ -121,6 +126,7 @@ for (const [symbol, entries] of Object.entries(transcriptIndex)) {
       period: String(e.period).replace("-", " "),
       generated: e.generated,
       href: `${baseNoSlash}/report/${symbol}/transcript/${e.period}`,
+      index: indexBySymbol.get(symbol) || "",
     });
   }
 }
@@ -203,28 +209,45 @@ const badgeClass = (kind: IndexItem["kind"]) =>
                   </p>
                 </li>
               ))}
-              {transcriptGroup.length > 0 && (
-                <li class="bg-skin-card p-4 rounded-lg border border-skin-line">
-                  <span class="inline-block text-xs font-bold px-2 py-0.5 rounded mb-2 bg-skin-accent/10 text-skin-accent">
-                    決算トランスクリプト
-                  </span>
-                  <p class="text-sm leading-relaxed mb-3">
-                    決算説明会スクリプトを更新しました。
-                  </p>
-                  <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-1">
-                    {transcriptGroup.map(t => (
-                      <li class="text-sm truncate">
-                        <a
-                          href={t.href}
-                          class="text-skin-accent hover:underline"
-                        >
-                          {t.name}（{t.symbol}）{t.period}
-                        </a>
-                      </li>
+              {transcriptGroup.length > 0 && (() => {
+                const SP500 = transcriptGroup.filter(t => t.index === "S&P 500");
+                const SP400 = transcriptGroup.filter(t => t.index === "S&P 400");
+                const SP600 = transcriptGroup.filter(t => t.index === "S&P 600");
+                const OTHER = transcriptGroup.filter(t => !["S&P 500","S&P 400","S&P 600"].includes(t.index));
+                const groups: { label: string; items: TranscriptItem[] }[] = [
+                  { label: "S&P 500", items: SP500 },
+                  { label: "S&P 400", items: SP400 },
+                  { label: "S&P 600", items: SP600 },
+                  { label: "その他", items: OTHER },
+                ].filter(g => g.items.length > 0);
+                return (
+                  <li class="bg-skin-card p-4 rounded-lg border border-skin-line">
+                    <span class="inline-block text-xs font-bold px-2 py-0.5 rounded mb-2 bg-skin-accent/10 text-skin-accent">
+                      決算トランスクリプト
+                    </span>
+                    <p class="text-sm leading-relaxed mb-3">
+                      決算説明会スクリプトを更新しました。
+                    </p>
+                    {groups.map(g => (
+                      <div class="mb-3">
+                        <p class="text-xs font-bold text-gray-500 mb-1">{g.label}</p>
+                        <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-1">
+                          {g.items.map(t => (
+                            <li class="text-sm truncate">
+                              <a
+                                href={t.href}
+                                class="text-skin-accent hover:underline"
+                              >
+                                {t.name}（{t.symbol}）{t.period}
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     ))}
-                  </ul>
-                </li>
-              )}
+                  </li>
+                );
+              })()}
             </ul>
           </section>
         );
