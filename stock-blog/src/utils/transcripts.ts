@@ -86,6 +86,28 @@ export function renderTranscriptBody(md: string): string {
   );
 }
 
+/** 当該四半期の主要 KPI。generate_transcript_report.py が defeatbeta の
+ * quarterly_income_statement から該当列を抽出して索引に書き込む。
+ * 値はすべて報告通貨ベース（多くの場合 USD）。比率 (margin/yoy) は小数（0.087 = 8.7%）。 */
+export interface QuarterFinancials {
+  /** 四半期末日 (YYYY-MM-DD)。 */
+  period_end: string;
+  revenue?: number | null;
+  revenue_yoy?: number | null;
+  gross_profit?: number | null;
+  gross_margin?: number | null;
+  operating_income?: number | null;
+  operating_margin?: number | null;
+  operating_income_yoy?: number | null;
+  net_income?: number | null;
+  net_margin?: number | null;
+  net_income_yoy?: number | null;
+  eps?: number | null;
+  /** "diluted" or "basic" — 取得できた方を採用。 */
+  eps_type?: "diluted" | "basic";
+  eps_yoy?: number | null;
+}
+
 export interface TranscriptEntry {
   fy: number;
   fq: number;
@@ -96,6 +118,8 @@ export interface TranscriptEntry {
   /** 決算発表日 (YYYY-MM-DD)。defeatbeta の transcripts list 由来。 */
   report_date?: string;
   sentiment?: Sentiment;
+  /** その期の主要 KPI（売上高・営業利益・純利益・EPS と YoY）。 */
+  financials?: QuarterFinancials;
 }
 
 export type TranscriptIndex = Record<string, TranscriptEntry[]>;
