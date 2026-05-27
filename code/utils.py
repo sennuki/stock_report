@@ -583,30 +583,85 @@ def _normalize_revenue_df(df: "pd.DataFrame") -> "pd.DataFrame":
 
 # defeatbeta-api 0.0.57 から revenue_by_segment() / revenue_by_geography() が
 # 削除され、 revenue_by_breakdown() が XBRL の全 breakdown をロング形式で返す
-# 仕様に変わった。 ticker.breakdown_type は SEC ファイリングの XBRL テーブル名
-# そのままで、 セグメント/地域の分類はテーブル名キーワードで判定する。
-_GEO_KEYWORDS = (
-    'geograph',          # "Geographic", "Geographical Areas"
-    'long lived',        # "Schedule Of Revenues From External Customers And Long Lived Assets Table"
-    'country',
-)
-# 'external customer' 単体はキーワードにしない。 "Revenue From External Customers By
-# Products And Services" のような製品テーブル名にも一致してしまうため。
-_SEG_KEYWORDS = (
-    'segment',           # "Segment Reporting", "Reportable Segments", ...
-    'business segment',
-    'operating segment',
-)
+# 仕様に変わった。 AAPL のように "Schedule Of Segment Reporting Information"
+# テーブルの中身が地域 (Americas/Europe/Greater China/Japan/Rest Of Asia
+# Pacific) であるケースがあるため、 テーブル名ではなく **item_name の中身** で
+# 各レコードを geography / segment に分類する。
+_GEO_TOKENS_EXACT = {
+    # アメリカ大陸
+    'americas', 'america', 'us', 'u.s.', 'u.s.a.', 'usa', 'united states',
+    'domestic', 'total united states', 'total us', 'total u.s.',
+    'outside united states', 'non us', 'non-us',
+    'canada', 'mexico', 'brazil', 'argentina', 'colombia', 'chile',
+    'latin america', 'south america', 'central america', 'other americas',
+    # 欧州・中東・アフリカ
+    'europe', 'european union', 'eu', 'emea',
+    'germany', 'france', 'uk', 'u.k.', 'united kingdom', 'ireland', 'italy',
+    'spain', 'netherlands', 'switzerland', 'sweden', 'norway', 'finland',
+    'denmark', 'belgium', 'austria', 'poland', 'russia', 'turkey',
+    'middle east', 'africa', 'saudi arabia', 'uae',
+    # アジア太平洋
+    'asia', 'asia pacific', 'asia-pacific', 'apac', 'pacific',
+    'rest of asia pacific', 'rest of asia-pacific', 'rest of world', 'row',
+    'other asia pacific', 'other asia',
+    'china', 'greater china', 'cn', 'china including hong kong',
+    'mainland china', 'hong kong', 'hk', 'macau',
+    'taiwan', 'tw',
+    'japan', 'jp',
+    'korea', 'south korea', 'kr',
+    'singapore', 'sg', 'india', 'in', 'indonesia', 'vietnam', 'thailand',
+    'malaysia', 'philippines', 'australia', 'new zealand',
+    # その他
+    'foreign', 'foreign countries', 'international', 'overseas',
+    'other countries', 'other foreign countries',
+    'all other countries', 'all other countries not separately disclosed',
+}
+# item_name の (case-insensitive) 部分文字列にヒットしたら geo。
+# 'country' は "Other Countries" などにマッチ。 'geograph' は "Geographic" などにマッチ。
+_GEO_SUBSTRINGS = ('country', 'countries', 'geograph')
 
 
-def _classify_breakdown_type(bt: str) -> str:
-    """XBRL テーブル名から 'segment' / 'geography' / 'other' を判定する。"""
+def _is_geo_item(name) -> bool:
+    """item_name が地理 (国/地域) を表すか判定する。"""
+    if not isinstance(name, str):
+        return False
+    s = name.strip().lower()
+    if not s:
+        return False
+    if s in _GEO_TOKENS_EXACT:
+        return True
+    return any(sub in s for sub in _GEO_SUBSTRINGS)
+
+
+# セグメント側のテーブル優先度。 アイテム数最多ロジックだけだと
+# MSFT のように真のセグメント (Productivity & Business Processes /
+# Intelligent Cloud / More Personal Computing = 3 つ) が 製品別テーブル
+# (Office/Xbox/Surface/... = 10+ items) に負けてしまうため、 テーブル名
+# キーワードで優先度を与え、 priority 値が最小のテーブルを各 report_date で
+# 採用する。 また、 これらキーワードに該当しないテーブル (例: "Statement
+# Table" は損益計算書の生データであり、 Xbox/Office/Surface 等の製品名が
+# 混じることがある) はセグメント候補から **除外** する。
+_SEG_TABLE_PRIORITY_KEYWORDS = (
+    'segment',              # 真の財務報告セグメント (Schedule Of Segment Reporting...)
+    'disaggregation',       # 製品/サービス別 (Disaggregation Of Revenue Table)
+    'market',               # NVDA "Scheduleof Revenueby Markets Table" など
+)
+# 'products and services' (= Schedule Of Entity Wide Information Revenue
+# From External Customers By Products And Services Table) はあえて優先候補
+# から外している。 MSFT の 2014-2015 年は priority=0 の Segment Reporting
+# テーブルが defeatbeta データに欠損しており、 そのテーブルが fallback で
+# 採用されると Xbox/Office/Surface などの製品名がセグメントに混入してしまう
+# ため。 該当銘柄の該当期間はセグメント空欄を許容する。
+
+
+def _segment_table_priority(bt):
+    """セグメント表示に採用してよいテーブルなら整数優先度を、
+    採用すべきでないテーブル (Statement Table 等) なら None を返す。"""
     s = (bt or '').lower()
-    if any(k in s for k in _GEO_KEYWORDS):
-        return 'geography'
-    if any(k in s for k in _SEG_KEYWORDS):
-        return 'segment'
-    return 'other'
+    for i, kw in enumerate(_SEG_TABLE_PRIORITY_KEYWORDS):
+        if kw in s:
+            return i
+    return None
 
 
 def _period_span_days(period_label) -> int:
@@ -631,8 +686,15 @@ def _pivot_breakdown_long_to_wide(long_df: "pd.DataFrame",
            item_name, item_value, depth, parent_name}
     出力: {symbol, report_date, <item_name_1>, <item_name_2>, ...} (1 行 = 1 四半期)
 
-    - 同一 classification (segment/geography) 内で複数の XBRL テーブルがある場合は
-      最もアイテム数の多いテーブル 1 つを採用する。
+    - 各レコードの **item_name の中身** で geography / segment を判定する。
+      (テーブル名 breakdown_type ではなく item 単位で判定するのは、 AAPL の
+      "Schedule Of Segment Reporting Information By Segment Table" のように
+      テーブル名は "Segment" でも中身が地域 (Americas/Europe/...) というケースが
+      あるため。)
+    - 同じ classification (geography/segment) に複数の XBRL テーブルが該当する
+      場合は、 (report_date, breakdown_type) 単位でアイテム数を比較し、 各
+      report_date で最もアイテム数の多いテーブル 1 つを採用する (= 期によって
+      細分化されたテーブルが切り替わってもベストを選ぶ)。
     - 親子階層による重複加算を避けるため depth=1 (ルート) のみ採用する。
     - 同じ report_date 内に複数の period_label (四半期 / YTD 累積 / 年次) が
       混在するため、 最も短いスパン (= 通常は 3 ヶ月の四半期値) のみを採用して
@@ -641,10 +703,11 @@ def _pivot_breakdown_long_to_wide(long_df: "pd.DataFrame",
     if long_df is None or long_df.empty:
         return pd.DataFrame()
     df = long_df.copy()
-    if 'breakdown_type' not in df.columns:
+    if 'item_name' not in df.columns or 'breakdown_type' not in df.columns:
         return pd.DataFrame()
-    df['__class'] = df['breakdown_type'].apply(_classify_breakdown_type)
-    df = df[df['__class'] == classification]
+    df['__is_geo'] = df['item_name'].apply(_is_geo_item)
+    target_geo = (classification == 'geography')
+    df = df[df['__is_geo'] == target_geo]
     if df.empty:
         return pd.DataFrame()
     # 階層がある場合は depth=1 のみ採用 (フォールバックあり)
@@ -652,26 +715,53 @@ def _pivot_breakdown_long_to_wide(long_df: "pd.DataFrame",
         depth1 = df[df['depth'] == 1]
         if not depth1.empty:
             df = depth1
-    # 同一 classification に複数 breakdown_type がある場合、 最もアイテム数の
-    # 多いテーブルを採用する (= より細かく分解されている方)。
-    counts = df.groupby('breakdown_type')['item_name'].nunique()
-    if counts.empty:
-        return pd.DataFrame()
-    chosen_bt = counts.idxmax()
-    df = df[df['breakdown_type'] == chosen_bt].copy()
     # period_label ごとのスパン (日数) を計算し、 各 report_date で最短スパンを採用
     if 'period_label' in df.columns:
         df['__span'] = df['period_label'].apply(_period_span_days)
-        # 0 や None は除外して有効な期間スパンの最短を選ぶ。 全て None/0 なら
-        # __span にかかわらず最初の period_label を採用。
         valid = df[df['__span'].fillna(-1) > 0]
         if not valid.empty:
             best = (valid.groupby('report_date')['__span'].idxmin())
             chosen = valid.loc[best, ['report_date', 'period_label']]
             df = df.merge(chosen, on=['report_date', 'period_label'], how='inner')
-        # 有効スパンが取れない (例: 全行で period_label が単一日付) 場合は
-        # period_label 列が単一値であることを前提に何もせず通す。
         df = df.drop(columns=['__span'], errors='ignore')
+    # report_date 単位で 1 つの breakdown_type を採用する。
+    #  - segment: テーブル名キーワード優先度 (segment > disaggregation > ...) を
+    #    第 1 キー、 アイテム数最多を第 2 キーとして選ぶ。 これにより、 MSFT の
+    #    "Schedule Of Segment Reporting Information By Segment Table" (3
+    #    セグメント) が "Schedule Of Entity Wide Information Revenue From
+    #    External Customers By Products And Services Table" (10+ 製品) に
+    #    負けないようにする。 一方 AAPL の "Schedule Of Segment Reporting
+    #    Information By Segment Table" は中身が地域 (geo) なので segment 側の
+    #    候補に入らず、 自然に "Disaggregation Of Revenue Table" が採用される。
+    #  - geography: 単純にアイテム数最多を採用 (AAPL の場合、 中身が地域である
+    #    "Schedule Of Segment Reporting Information By Segment Table" の 5
+    #    地域が "Long Lived Assets" の 3 地域に勝つ)。
+    if df.empty:
+        return pd.DataFrame()
+    counts = (
+        df.groupby(['report_date', 'breakdown_type'])['item_name']
+        .nunique()
+        .reset_index(name='__n')
+    )
+    if classification == 'segment':
+        counts['__prio'] = counts['breakdown_type'].apply(_segment_table_priority)
+        # 採用対象外 (priority=None) のテーブルは除外する。 これにより MSFT の
+        # 2010 年 "Statement Table" (Xbox/Office/Surface など製品レベルの内訳)
+        # がセグメント候補から外れる。
+        counts = counts[counts['__prio'].notna()]
+        if counts.empty:
+            return pd.DataFrame()
+        counts = counts.sort_values(
+            ['report_date', '__prio', '__n'], ascending=[True, True, False]
+        )
+    else:
+        counts = counts.sort_values(['report_date', '__n'], ascending=[True, False])
+    best_bt = counts.drop_duplicates('report_date', keep='first')[
+        ['report_date', 'breakdown_type']
+    ]
+    df = df.merge(best_bt, on=['report_date', 'breakdown_type'], how='inner')
+    if df.empty:
+        return pd.DataFrame()
     pivot = df.pivot_table(
         index=['symbol', 'report_date'],
         columns='item_name',
