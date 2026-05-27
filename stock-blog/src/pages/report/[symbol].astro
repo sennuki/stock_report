@@ -382,6 +382,15 @@ function rankTierClass(tier: string): string {
 function rankingSlug(key: string): string {
   return key.replace(/_/g, '-');
 }
+
+// DCF sanity check: negative fair price or more than 5× current price means model breakdown.
+const dcfFairPrice = reportData?.dcf_valuation?.fair_price;
+const dcfCurrentPrice = reportData?.dcf_valuation?.current_price;
+const dcfBroken =
+  reportData?.dcf_valuation != null &&
+  typeof dcfFairPrice === 'number' &&
+  (dcfFairPrice <= 0 ||
+    (typeof dcfCurrentPrice === 'number' && dcfCurrentPrice > 0 && dcfFairPrice > dcfCurrentPrice * 5));
 ---
 
 <Layout title={title} description={description} extraStructuredData={extraStructuredData}>
@@ -1083,19 +1092,7 @@ function rankingSlug(key: string): string {
             <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">data_exploration</span>
             {symbol}のDCF理論株価分析
           </h2>
-          {/* DCF サニティ判定: R2 上の古いレポートに残る極端な fair_price
-              （負値や現在価格の 5 倍超）はモデルの破綻なので「評価対象外」扱いにする。
-              新しい Python 側でも同等のチェックを入れている。 */}
-          {(() => {
-            const dv = reportData.dcf_valuation;
-            const fp = dv?.fair_price;
-            const cp = dv?.current_price;
-            const dcfBroken =
-              dv &&
-              typeof fp === 'number' &&
-              (fp <= 0 || (typeof cp === 'number' && cp > 0 && fp > cp * 5));
-            return dcfBroken;
-          })() ? (
+          {dcfBroken ? (
             <div class="p-6 sm:p-8 bg-skin-fill/10 border border-skin-line rounded-lg space-y-3">
               <h3 class="text-lg font-bold flex items-center gap-2">
                 <span class="material-symbols-outlined text-orange-500" aria-hidden="true">info</span>
