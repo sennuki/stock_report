@@ -742,15 +742,42 @@ def _pivot_breakdown_long_to_wide(long_df: "pd.DataFrame",
         depth1 = df[df['depth'] == 1]
         if not depth1.empty:
             df = depth1
-    # (2) 各 (report_date, breakdown_type) ごとに最短スパンの period_label を採用
+    # (2) period_label のスパン (日数) で四半期 / 年次データを分離。
+    #     - 四半期 = 60-120 日 (10-Q または 10-K 内の Q4 単独)
+    #     - 年次   = 300-400 日 (10-K の通年データ)
+    #     - YTD 累積 (180/270 日) は除外 (重複加算を避ける)
+    #
+    # 同じ breakdown_type で 四半期データを 1 行でも持つテーブルは "四半期
+    # スタイル" と判定し、 そのテーブル内では 四半期データのみ採用する。
+    # 四半期データが一切無いテーブル (例: ABBV の Long Lived Assets Table
+    # は 10-K の年次のみ) は "年次スタイル" として年次データを採用する。
+    # これにより、 GOOGL のように四半期データを持つテーブルで 12/31 の
+    # report_date に年次データしか無いケースを除外し、 通年売上が四半期
+    # として表示される異常を防ぐ。
     if 'period_label' in df.columns:
         df['__span'] = df['period_label'].apply(_period_span_days)
-        valid = df[df['__span'].fillna(-1) > 0].copy()
-        if not valid.empty:
-            valid['__min_span'] = valid.groupby(['report_date', 'breakdown_type'])['__span'].transform('min')
-            valid = valid[valid['__span'] == valid['__min_span']]
-            df = valid.drop(columns=['__min_span'])
-        df = df.drop(columns=['__span'], errors='ignore')
+        df['__is_q'] = df['__span'].fillna(-1).between(60, 120)
+        df['__is_y'] = df['__span'].fillna(-1).between(300, 400)
+        # 採用 span は classification (geography/segment) ごとに判定する。
+        # 同じ銘柄でも segment は四半期データを持ち geography は年次のみ、
+        # というケース (例: ABBV) がある。 classification ターゲット側
+        # (item_name が geo か否か) で四半期データが 1 行でも存在するなら
+        # 全テーブル横断で四半期データのみ採用 (AAPL の 9/27 や GOOGL の
+        # 12/31 のような年次データ混入を防ぐ)。 一方、 ターゲット側に
+        # 四半期データが無ければ年次データを採用 (ABBV geography は
+        # 10-K の年次のみ提供されている)。
+        df['__row_is_geo'] = df['item_name'].apply(_is_geo_item)
+        target_geo = (classification == 'geography')
+        target_mask = (df['__row_is_geo'] == target_geo)
+        target_has_q = bool(df.loc[target_mask, '__is_q'].any())
+        if target_has_q:
+            df = df[df['__is_q']].copy()
+        else:
+            df = df[df['__is_y']].copy()
+        df = df.drop(
+            columns=['__span', '__is_q', '__is_y', '__row_is_geo'],
+            errors='ignore',
+        )
     if df.empty:
         return pd.DataFrame()
     # (3) (4) 各テーブルの合計・純度を集計
