@@ -322,9 +322,9 @@ decorator==5.2.1 \
     --hash=sha256:65f266143752f734b0a7cc83c46f4618af75b8c5911b00ccb61d0ac9b6da0360 \
     --hash=sha256:d316bb415a2d9e2d2b3abcc4084c6502fc09240e292cd76a76afc106a1c8e04a
     # via ipython
-defeatbeta-api==0.0.53 \
-    --hash=sha256:2cabc765025376f3a8ae9a491cab175d837d1a22354dcdc6345ea594b9f1f671 \
-    --hash=sha256:c1103124e726807037d7381ed9fac5341355ae7f85808f9697b097ec4ac92c19
+defeatbeta-api==0.0.57 \
+    --hash=sha256:04206a94ee09ab1a9883b549c1afdbb52ef99430addc13b81111b0a338ddeb41 \
+    --hash=sha256:d29f635b2c9b3b2da67fce47db8f747bd62fba8a58c871344dca2be5f01b6939
     # via code
 distro==1.9.0 \
     --hash=sha256:2fa77c6fd8940f116ee1d6b94a2f90b13b5ea8d019b98bc8bafdcabcdd9bdbed \
