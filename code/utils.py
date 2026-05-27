@@ -586,11 +586,12 @@ def _normalize_revenue_df(df: "pd.DataFrame") -> "pd.DataFrame":
 # 仕様に変わった。 ticker.breakdown_type は SEC ファイリングの XBRL テーブル名
 # そのままで、 セグメント/地域の分類はテーブル名キーワードで判定する。
 _GEO_KEYWORDS = (
-    'geograph',          # "Geographic", "Geographical"
-    'geographical area',
-    'external customer', # "Revenues From External Customers..."
+    'geograph',          # "Geographic", "Geographical Areas"
+    'long lived',        # "Schedule Of Revenues From External Customers And Long Lived Assets Table"
     'country',
 )
+# 'external customer' 単体はキーワードにしない。 "Revenue From External Customers By
+# Products And Services" のような製品テーブル名にも一致してしまうため。
 _SEG_KEYWORDS = (
     'segment',           # "Segment Reporting", "Reportable Segments", ...
     'business segment',
