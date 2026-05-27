@@ -500,9 +500,15 @@ def calculate_dcf(symbol, ticker=None, yf_info=None, yf_growth_estimates=None):
         equity_value = enterprise_value + cash_value - total_debt
         fair_price = equity_value / shares
         
-        # 現在価格
-        price_df = db_ticker.price()
-        current_price = float(price_df['close'].iloc[-1]) if not price_df.empty else 0
+        # 現在価格: yf_info の最新値を優先、なければ defeatbeta price() にフォールバック
+        current_price = None
+        if yf_info is not None:
+            current_price = yf_info.get('currentPrice') or yf_info.get('regularMarketPrice')
+            if current_price:
+                current_price = float(current_price)
+        if not current_price:
+            price_df = db_ticker.price()
+            current_price = float(price_df['close'].iloc[-1]) if not price_df.empty else 0
         
         # リバースDCF：現在株価から逆算して必要な成長率を計算
         reverse_growth = None
