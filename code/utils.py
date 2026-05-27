@@ -463,11 +463,37 @@ def calculate_dcf(symbol, ticker=None, yf_info=None, yf_growth_estimates=None):
         
         equity_value = enterprise_value + cash_value - total_debt
         fair_price = equity_value / shares
-        
+
         # 現在価格
         price_df = db_ticker.price()
         current_price = float(price_df['close'].iloc[-1]) if not price_df.empty else 0
-        
+
+        # DCF サニティチェック: 計算ロジックが通っても、入力データの不整合や
+        # 極端な成長率 / 低 WACC が組み合わさると無意味な fair_price になり得る。
+        #   - 負の理論株価: 企業価値 < (負債 - 現金) または TV が負
+        #   - 現在価格との極端な乖離: 入力データ品質に問題がある可能性が高い
+        # フロントに「割安/割高」を出す材料にならない値はここで dcf_applicable=False
+        # に倒して "DCF 評価対象外" の説明文を表示させる。
+        FAIR_PRICE_MAX_MULTIPLE = 5.0  # 現在価格の 5 倍を超える理論株価は要警戒
+        implausible_reason = None
+        if fair_price <= 0:
+            implausible_reason = "negative_fair_price"
+        elif current_price > 0 and fair_price > current_price * FAIR_PRICE_MAX_MULTIPLE:
+            implausible_reason = "implausible_fair_price"
+        if implausible_reason is not None:
+            return {
+                "dcf_applicable": False,
+                "dcf_not_applicable_reason": implausible_reason,
+                "fair_price_raw": float(fair_price),
+                "current_price": float(current_price),
+                "wacc_details": wacc_details,
+                "cagr_details": {k: (float(v) if v is not None else None) for k, v in cagr_details.items()},
+                "growth_1_5y": float(growth_1_5y),
+                "terminal_growth": float(terminal_growth),
+                "base_fcf": float(base_fcf),
+                "base_fcf_method": base_fcf_method,
+            }
+
         # リバースDCF：現在株価から逆算して必要な成長率を計算
         reverse_growth = None
         try:

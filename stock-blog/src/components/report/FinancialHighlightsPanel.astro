@@ -1,0 +1,143 @@
+---
+// その四半期の決算ハイライト（売上高・営業利益・純利益・EPS と YoY）を
+// 表示するパネル。トランスクリプトページで AI センチメントの直前または直後に出す。
+import type { QuarterFinancials } from "@/utils/transcripts";
+
+interface Props {
+  financials: QuarterFinancials;
+}
+const { financials: f } = Astro.props;
+
+// 大きい金額（売上・利益）を「$12.34B」「¥567M」風に省略表記する。
+// 通貨記号は付与せず、報告通貨が USD の前提で `$` を付ける利用想定。
+function formatBigUSD(v: number | null | undefined): string | null {
+  if (v === null || v === undefined || !isFinite(v)) return null;
+  const abs = Math.abs(v);
+  const sign = v < 0 ? "-" : "";
+  if (abs >= 1e12) return `${sign}$${(abs / 1e12).toFixed(2)}T`;
+  if (abs >= 1e9) return `${sign}$${(abs / 1e9).toFixed(2)}B`;
+  if (abs >= 1e6) return `${sign}$${(abs / 1e6).toFixed(1)}M`;
+  if (abs >= 1e3) return `${sign}$${(abs / 1e3).toFixed(1)}K`;
+  return `${sign}$${abs.toFixed(2)}`;
+}
+
+function formatEPS(v: number | null | undefined): string | null {
+  if (v === null || v === undefined || !isFinite(v)) return null;
+  const sign = v < 0 ? "-" : "";
+  return `${sign}$${Math.abs(v).toFixed(2)}`;
+}
+
+function formatPct(v: number | null | undefined, digits = 1): string | null {
+  if (v === null || v === undefined || !isFinite(v)) return null;
+  return `${(v * 100).toFixed(digits)}%`;
+}
+
+function formatYoY(v: number | null | undefined): string | null {
+  const s = formatPct(v);
+  if (s === null) return null;
+  return v! >= 0 ? `+${s}` : s;
+}
+
+function yoyClass(v: number | null | undefined): string {
+  if (v === null || v === undefined || !isFinite(v)) return "text-gray-500";
+  if (v > 0) return "text-green-600 dark:text-green-400";
+  if (v < 0) return "text-red-600 dark:text-red-400";
+  return "text-gray-500";
+}
+
+function formatJaDate(iso: string | null | undefined): string | null {
+  if (!iso) return null;
+  const m = iso.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (!m) return iso;
+  return `${m[1]}年${Number(m[2])}月${Number(m[3])}日`;
+}
+
+// 表示する各行のデータ。値が null の項目は省く。
+interface Row {
+  label: string;
+  value: string;
+  sub?: string | null;
+  subClass?: string;
+}
+const rows: Row[] = [];
+
+const revenueStr = formatBigUSD(f.revenue);
+if (revenueStr) {
+  rows.push({
+    label: "売上高",
+    value: revenueStr,
+    sub: formatYoY(f.revenue_yoy),
+    subClass: yoyClass(f.revenue_yoy),
+  });
+}
+
+const opStr = formatBigUSD(f.operating_income);
+if (opStr) {
+  const marginStr = formatPct(f.operating_margin);
+  const yoyStr = formatYoY(f.operating_income_yoy);
+  // YoY を主、マージンを副。両方あれば YoY を選ぶ。
+  let sub: string | null = null;
+  let subClass = "";
+  if (yoyStr) {
+    sub = yoyStr + (marginStr ? `（利益率 ${marginStr}）` : "");
+    subClass = yoyClass(f.operating_income_yoy);
+  } else if (marginStr) {
+    sub = `利益率 ${marginStr}`;
+    subClass = "text-gray-500";
+  }
+  rows.push({ label: "営業利益", value: opStr, sub, subClass });
+}
+
+const niStr = formatBigUSD(f.net_income);
+if (niStr) {
+  rows.push({
+    label: "純利益",
+    value: niStr,
+    sub: formatYoY(f.net_income_yoy),
+    subClass: yoyClass(f.net_income_yoy),
+  });
+}
+
+const epsStr = formatEPS(f.eps);
+if (epsStr) {
+  rows.push({
+    label: f.eps_type === "basic" ? "EPS (基本)" : "希薄化後 EPS",
+    value: epsStr,
+    sub: formatYoY(f.eps_yoy),
+    subClass: yoyClass(f.eps_yoy),
+  });
+}
+
+const periodEndJa = formatJaDate(f.period_end);
+---
+
+{
+  rows.length > 0 && (
+    <section class="border-skin-line bg-skin-fill/30 mb-8 rounded-lg border p-5 sm:p-6">
+      <h2 class="mb-1 flex items-center gap-2 text-xl font-bold">
+        <span
+          class="material-symbols-outlined text-skin-accent"
+          aria-hidden="true"
+        >
+          query_stats
+        </span>
+        決算ハイライト
+      </h2>
+      <p class="mb-4 text-xs text-gray-500">
+        {periodEndJa && <>四半期末: {periodEndJa}　</>}
+        前年同期比 (YoY) は同四半期の前年実績との比較です。
+      </p>
+      <dl class="grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-4">
+        {rows.map(r => (
+          <div>
+            <dt class="text-xs text-gray-500">{r.label}</dt>
+            <dd class="text-skin-base mt-0.5 text-lg font-bold">{r.value}</dd>
+            {r.sub && (
+              <dd class={`text-xs font-bold ${r.subClass || ""}`}>{r.sub}</dd>
+            )}
+          </div>
+        ))}
+      </dl>
+    </section>
+  )
+}

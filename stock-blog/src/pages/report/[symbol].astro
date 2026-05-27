@@ -1127,7 +1127,32 @@ function rankingSlug(key: string): string {
             <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">data_exploration</span>
             {symbol}のDCF理論株価分析
           </h2>
-          {reportData.dcf_valuation && typeof reportData.dcf_valuation.fair_price === 'number' ? (
+          {/* DCF サニティ判定: R2 上の古いレポートに残る極端な fair_price
+              （負値や現在価格の 5 倍超）はモデルの破綻なので「評価対象外」扱いにする。
+              新しい Python 側でも同等のチェックを入れている。 */}
+          {(() => {
+            const dv = reportData.dcf_valuation;
+            const fp = dv?.fair_price;
+            const cp = dv?.current_price;
+            const dcfBroken =
+              dv &&
+              typeof fp === 'number' &&
+              (fp <= 0 || (typeof cp === 'number' && cp > 0 && fp > cp * 5));
+            return dcfBroken;
+          })() ? (
+            <div class="p-6 sm:p-8 bg-skin-fill/10 border border-skin-line rounded-lg space-y-3">
+              <h3 class="text-lg font-bold flex items-center gap-2">
+                <span class="material-symbols-outlined text-orange-500" aria-hidden="true">info</span>
+                DCF 評価対象外
+              </h3>
+              <p class="text-sm opacity-80 leading-relaxed">
+                {symbol} は入力データの不整合により DCF 理論株価が
+                現実的な値域から外れたため評価対象外としています。
+                成長率の急変や負の自己資本など、モデル前提が崩れる条件下では
+                理論株価が意味を持たないためです。
+              </p>
+            </div>
+          ) : reportData.dcf_valuation && typeof reportData.dcf_valuation.fair_price === 'number' ? (
             <div class="space-y-10">
               {/* Main Summary Card */}
               <div class="bg-skin-fill/20 p-6 sm:p-8 rounded-lg border-2 border-skin-accent/30 shadow-sm text-center md:text-left">
