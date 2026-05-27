@@ -59,7 +59,7 @@ cycler==0.12.1
     # via matplotlib
 decorator==5.2.1
     # via ipython
-defeatbeta-api==0.0.53
+defeatbeta-api==0.0.57
     # via code (code/pyproject.toml)
 distro==1.9.0
     # via

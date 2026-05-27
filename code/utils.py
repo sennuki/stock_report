@@ -555,6 +555,106 @@ def _normalize_revenue_df(df: "pd.DataFrame") -> "pd.DataFrame":
     return df
 
 
+# defeatbeta-api 0.0.57 から revenue_by_segment() / revenue_by_geography() が
+# 削除され、 revenue_by_breakdown() が XBRL の全 breakdown をロング形式で返す
+# 仕様に変わった。 ticker.breakdown_type は SEC ファイリングの XBRL テーブル名
+# そのままで、 セグメント/地域の分類はテーブル名キーワードで判定する。
+_GEO_KEYWORDS = (
+    'geograph',          # "Geographic", "Geographical"
+    'geographical area',
+    'external customer', # "Revenues From External Customers..."
+    'country',
+)
+_SEG_KEYWORDS = (
+    'segment',           # "Segment Reporting", "Reportable Segments", ...
+    'business segment',
+    'operating segment',
+)
+
+
+def _classify_breakdown_type(bt: str) -> str:
+    """XBRL テーブル名から 'segment' / 'geography' / 'other' を判定する。"""
+    s = (bt or '').lower()
+    if any(k in s for k in _GEO_KEYWORDS):
+        return 'geography'
+    if any(k in s for k in _SEG_KEYWORDS):
+        return 'segment'
+    return 'other'
+
+
+def _period_span_days(period_label) -> int:
+    """period_label ('YYYY-MM-DD/YYYY-MM-DD' または 'YYYY-MM-DD') から日数スパンを返す。
+    パースできない場合は None。 単一日付の場合は 0。"""
+    if not isinstance(period_label, str):
+        return None
+    if '/' not in period_label:
+        return 0
+    try:
+        start, end = period_label.split('/', 1)
+        return (pd.to_datetime(end) - pd.to_datetime(start)).days
+    except Exception:
+        return None
+
+
+def _pivot_breakdown_long_to_wide(long_df: "pd.DataFrame",
+                                  classification: str) -> "pd.DataFrame":
+    """defeatbeta 0.0.57 のロング形式 breakdown データをワイド形式に変換する。
+
+    入力: {symbol, report_date, period_label, form_type, breakdown_type,
+           item_name, item_value, depth, parent_name}
+    出力: {symbol, report_date, <item_name_1>, <item_name_2>, ...} (1 行 = 1 四半期)
+
+    - 同一 classification (segment/geography) 内で複数の XBRL テーブルがある場合は
+      最もアイテム数の多いテーブル 1 つを採用する。
+    - 親子階層による重複加算を避けるため depth=1 (ルート) のみ採用する。
+    - 同じ report_date 内に複数の period_label (四半期 / YTD 累積 / 年次) が
+      混在するため、 最も短いスパン (= 通常は 3 ヶ月の四半期値) のみを採用して
+      重複加算を防ぐ。
+    """
+    if long_df is None or long_df.empty:
+        return pd.DataFrame()
+    df = long_df.copy()
+    if 'breakdown_type' not in df.columns:
+        return pd.DataFrame()
+    df['__class'] = df['breakdown_type'].apply(_classify_breakdown_type)
+    df = df[df['__class'] == classification]
+    if df.empty:
+        return pd.DataFrame()
+    # 階層がある場合は depth=1 のみ採用 (フォールバックあり)
+    if 'depth' in df.columns:
+        depth1 = df[df['depth'] == 1]
+        if not depth1.empty:
+            df = depth1
+    # 同一 classification に複数 breakdown_type がある場合、 最もアイテム数の
+    # 多いテーブルを採用する (= より細かく分解されている方)。
+    counts = df.groupby('breakdown_type')['item_name'].nunique()
+    if counts.empty:
+        return pd.DataFrame()
+    chosen_bt = counts.idxmax()
+    df = df[df['breakdown_type'] == chosen_bt].copy()
+    # period_label ごとのスパン (日数) を計算し、 各 report_date で最短スパンを採用
+    if 'period_label' in df.columns:
+        df['__span'] = df['period_label'].apply(_period_span_days)
+        # 0 や None は除外して有効な期間スパンの最短を選ぶ。 全て None/0 なら
+        # __span にかかわらず最初の period_label を採用。
+        valid = df[df['__span'].fillna(-1) > 0]
+        if not valid.empty:
+            best = (valid.groupby('report_date')['__span'].idxmin())
+            chosen = valid.loc[best, ['report_date', 'period_label']]
+            df = df.merge(chosen, on=['report_date', 'period_label'], how='inner')
+        # 有効スパンが取れない (例: 全行で period_label が単一日付) 場合は
+        # period_label 列が単一値であることを前提に何もせず通す。
+        df = df.drop(columns=['__span'], errors='ignore')
+    pivot = df.pivot_table(
+        index=['symbol', 'report_date'],
+        columns='item_name',
+        values='item_value',
+        aggfunc='sum',
+    ).reset_index().fillna(0)
+    pivot.columns.name = None
+    return pivot
+
+
 class YFinanceAdapterTicker:
     def __init__(self, symbol):
         self.ticker = symbol
@@ -975,33 +1075,35 @@ class YFinanceAdapterTicker:
             return self._yf_ticker.quarterly_cashflow
         except: return pd.DataFrame()
 
-    def revenue_by_segment(self):
-        try:
-            df = self._db_ticker.revenue_by_segment()
-            if df is not None and not df.empty:
-                df = _normalize_revenue_df(df)
-            return df
-        except Exception as e:
-            log_event("DEBUG", self.ticker, f"Error in revenue_by_segment: {e}")
-            return pd.DataFrame()
-
     _GEO_NORM = {
         'United States': 'US', 'USA': 'US', 'U.S.A.': 'US', 'U.S.': 'US',
         'Total US': 'US', 'Total United States': 'US', 'Domestic': 'US',
         'Outside United States': 'International', 'Foreign': 'International',
     }
 
+    def _revenue_breakdown_raw(self):
+        """defeatbeta 0.0.57 の revenue_by_breakdown() 結果を 1 回だけ呼んでキャッシュ。"""
+        if not hasattr(self, '_breakdown_cache'):
+            try:
+                self._breakdown_cache = self._db_ticker.revenue_by_breakdown()
+            except Exception as e:
+                log_event("DEBUG", self.ticker, f"Error in revenue_by_breakdown: {e}")
+                self._breakdown_cache = pd.DataFrame()
+        return self._breakdown_cache
+
+    def revenue_by_segment(self):
+        raw = self._revenue_breakdown_raw()
+        df = _pivot_breakdown_long_to_wide(raw, 'segment')
+        return _normalize_revenue_df(df) if not df.empty else df
+
     def revenue_by_geography(self):
-        try:
-            df = self._db_ticker.revenue_by_geography()
-            if df is not None and not df.empty:
-                df.columns = [self._GEO_NORM.get(c.strip(), c.strip()) if isinstance(c, str) else c
-                              for c in df.columns]
-                df = _normalize_revenue_df(df)
+        raw = self._revenue_breakdown_raw()
+        df = _pivot_breakdown_long_to_wide(raw, 'geography')
+        if df.empty:
             return df
-        except Exception as e:
-            log_event("DEBUG", self.ticker, f"Error in revenue_by_geography: {e}")
-            return pd.DataFrame()
+        df.columns = [self._GEO_NORM.get(c.strip(), c.strip()) if isinstance(c, str) else c
+                      for c in df.columns]
+        return _normalize_revenue_df(df)
 
 def get_ticker(symbol):
     """
