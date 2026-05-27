@@ -315,8 +315,8 @@ export async function processAllStocks(env: Env) {
     
     const tpChart = generateTpChart(rawData.cashflow || [], rawData.income_stmt || []);
     const dpsChart = generateDpsEpsChart(rawData.dividends);
-    const segmentChart = generateSegmentChart(rawData.revenue_by_segment);
-    const geoChart = generateSegmentChart(rawData.revenue_by_geography);
+    const segmentChart = generateSegmentChart(rawData.revenue_by_segment, 'segment', 'セグメント収益');
+    const geoChart = generateSegmentChart(rawData.revenue_by_geography, 'geography', '地域別収益');
 
     const sector = metadata['GICS Sector'] || rawData.info?.sector || "Unknown";
     const subInd = metadata['GICS Sub-Industry'] || rawData.info?.industry || "Unknown";
@@ -765,25 +765,60 @@ function generateDpsEpsChart(dividends: any[]) {
   };
 }
 
-function generateSegmentChart(segmentData: any[]) {
-  if (!segmentData || !Array.isArray(segmentData) || segmentData.length === 0) return null;
-  const segmentsArr = Object.keys(segmentData[0]).filter(k => !['Date', 'report_date', 'symbol', 'index'].includes(k));
-  if (segmentsArr.length === 0) return null;
-  const labels = segmentData.map(row => String(row.Date || row.report_date || row.index).split(' ')[0]);
-  const colors = [
-    'rgba(31, 119, 180, 0.7)', 'rgba(255, 127, 14, 0.7)', 'rgba(44, 160, 44, 0.7)',
-    'rgba(214, 39, 40, 0.7)', 'rgba(148, 103, 189, 0.7)', 'rgba(140, 86, 75, 0.7)',
-    'rgba(227, 119, 194, 0.7)', 'rgba(127, 127, 127, 0.7)', 'rgba(188, 189, 34, 0.7)',
-    'rgba(23, 190, 207, 0.7)'
-  ];
-  const datasets = segmentsArr.map((seg, i) => {
-    return {
-      label: seg,
-      data: segmentData.map(row => Number(row[seg]) || 0),
-      backgroundColor: colors[i % colors.length]
-    };
-  });
+const _SEG_DATE_KEYS = ['Date', 'report_date', 'symbol', 'index'];
+const _SEG_COLORS_TS = [
+  'rgba(31,119,180,0.8)', 'rgba(255,127,14,0.8)', 'rgba(44,160,44,0.8)',
+  'rgba(214,39,40,0.8)', 'rgba(148,103,189,0.8)', 'rgba(140,86,75,0.8)',
+  'rgba(227,119,194,0.8)', 'rgba(127,127,127,0.8)', 'rgba(188,189,34,0.8)',
+  'rgba(23,190,207,0.8)',
+];
+
+function _segDs(data: any[], suffix: string, hidden: boolean, stack: string, cols: string[], colorMap: Record<string,string>) {
+  if (!data || data.length === 0) return null;
+  const labels = data.map(r => String(r.Date || r.report_date || '').split(' ')[0]);
+  const datasets = cols.map((seg, i) => ({
+    label: `${seg}${suffix}`,
+    data: data.map(r => Number(r[seg]) || 0),
+    backgroundColor: colorMap[seg] ?? _SEG_COLORS_TS[i % _SEG_COLORS_TS.length],
+    hidden,
+    stack,
+    _xLabels: labels,
+    _originalData: data.map(r => Number(r[seg]) || 0),
+  }));
   return { labels, datasets };
+}
+
+function generateSegmentChart(segmentData: any[], stackName = 'segment', errorLabel = 'セグメント収益'): any {
+  const NO_DATA = { error: `詳細な${errorLabel}のデータが取得できませんでした（企業による未開示、またはデータソースの制約によるもの）。` };
+  if (!segmentData || !Array.isArray(segmentData) || segmentData.length === 0) return NO_DATA;
+  const segCols = Object.keys(segmentData[0]).filter(k => !_SEG_DATE_KEYS.includes(k));
+  if (segCols.length === 0) return NO_DATA;
+
+  const sorted = [...segmentData].sort((a, b) =>
+    String(a.Date || a.report_date || '').localeCompare(String(b.Date || b.report_date || '')));
+  const latestRow: any = sorted[sorted.length - 1] ?? {};
+  const orderedCols = [...segCols].sort((a, b) => {
+    const aO = a.toLowerCase().includes('other'), bO = b.toLowerCase().includes('other');
+    if (aO !== bO) return aO ? 1 : -1;
+    return (Number(latestRow[b]) || 0) - (Number(latestRow[a]) || 0);
+  });
+  const colorMap = Object.fromEntries(orderedCols.map((c, i) => [c, _SEG_COLORS_TS[i % _SEG_COLORS_TS.length]]));
+
+  const quarterlyData = sorted.slice(-24);
+  const byYear: Record<string, any> = {};
+  for (const row of sorted) {
+    const year = String(row.Date || row.report_date || '').slice(0, 4);
+    if (year.length < 4) continue;
+    if (!byYear[year]) { byYear[year] = { Date: year }; for (const c of segCols) byYear[year][c] = 0; }
+    for (const c of segCols) byYear[year][c] += Number(row[c]) || 0;
+  }
+  const annualData = Object.values(byYear).sort((a: any, b: any) => a.Date.localeCompare(b.Date)).slice(-6);
+
+  const annual = _segDs(annualData, ' (通年)', false, stackName, orderedCols, colorMap);
+  const quarterly = _segDs(quarterlyData, ' (四半期)', true, stackName, orderedCols, colorMap);
+  if (!annual && !quarterly) return NO_DATA;
+  const base = annual || quarterly!;
+  return { labels: base.labels, datasets: [...(annual?.datasets ?? []), ...(quarterly?.datasets ?? [])] };
 }
 
 function formatSummary(text: string): string {

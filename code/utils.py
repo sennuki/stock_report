@@ -544,6 +544,17 @@ def calculate_dcf(symbol, ticker=None, yf_info=None, yf_growth_estimates=None):
 _shared_session = None
 
 
+def _normalize_revenue_df(df: "pd.DataFrame") -> "pd.DataFrame":
+    """Strip whitespace from column names and merge any duplicate columns (sum)."""
+    df.columns = [c.strip() if isinstance(c, str) else c for c in df.columns]
+    if df.columns.duplicated().any():
+        id_cols = [c for c in ('symbol', 'report_date') if c in df.columns]
+        df = df.T.groupby(level=0).max().T
+        others = [c for c in df.columns if c not in id_cols]
+        df = df[id_cols + others]
+    return df
+
+
 class YFinanceAdapterTicker:
     def __init__(self, symbol):
         self.ticker = symbol
@@ -968,76 +979,25 @@ class YFinanceAdapterTicker:
         try:
             df = self._db_ticker.revenue_by_segment()
             if df is not None and not df.empty:
-                # Strip whitespace from column names
-                df.columns = [c.strip() if isinstance(c, str) else c for c in df.columns]
-                # Merge duplicate columns by taking the maximum value (to avoid double-counting)
-                if df.columns.duplicated().any():
-                    # Preserve 'symbol' and 'report_date' which shouldn't be duplicated in a way that needs max
-                    # but if they are, groupby will handle them.
-                    # We want to group by columns and take the max for each row.
-                    df = df.T.groupby(level=0).max().T
-                    # Reorder columns to put symbol and report_date first if they exist
-                    cols = df.columns.tolist()
-                    if 'symbol' in cols and 'report_date' in cols:
-                        cols.remove('symbol')
-                        cols.remove('report_date')
-                        df = df[['symbol', 'report_date'] + cols]
+                df = _normalize_revenue_df(df)
             return df
         except Exception as e:
             log_event("DEBUG", self.ticker, f"Error in revenue_by_segment: {e}")
             return pd.DataFrame()
 
-    def revenue_by_product(self):
-        try:
-            df = self._db_ticker.revenue_by_product()
-            if df is not None and not df.empty:
-                # Strip whitespace from column names
-                df.columns = [c.strip() if isinstance(c, str) else c for c in df.columns]
-                # Merge duplicate columns by taking the maximum value (to avoid double-counting)
-                if df.columns.duplicated().any():
-                    df = df.T.groupby(level=0).max().T
-                    # Reorder columns to put symbol and report_date first if they exist
-                    cols = df.columns.tolist()
-                    if 'symbol' in cols and 'report_date' in cols:
-                        cols.remove('symbol')
-                        cols.remove('report_date')
-                        df = df[['symbol', 'report_date'] + cols]
-            return df
-        except Exception as e:
-            log_event("DEBUG", self.ticker, f"Error in revenue_by_product: {e}")
-            return pd.DataFrame()
+    _GEO_NORM = {
+        'United States': 'US', 'USA': 'US', 'U.S.A.': 'US', 'U.S.': 'US',
+        'Total US': 'US', 'Total United States': 'US', 'Domestic': 'US',
+        'Outside United States': 'International', 'Foreign': 'International',
+    }
 
     def revenue_by_geography(self):
         try:
             df = self._db_ticker.revenue_by_geography()
             if df is not None and not df.empty:
-                # Normalization mapping
-                norm_map = {
-                    'United States': 'US',
-                    'USA': 'US',
-                    'U.S.A.': 'US',
-                    'U.S.': 'US',
-                    'Total US': 'US',
-                    'Total United States': 'US',
-                    'International': 'International',
-                    'Outside United States': 'International',
-                    'Foreign': 'International',
-                    'Domestic': 'US',
-                }
-                # Normalize column names
-                df.columns = [norm_map.get(c.strip(), c.strip()) if isinstance(c, str) else c for c in df.columns]
-                # Merge duplicate columns by taking the maximum value (to avoid double-counting)
-                if df.columns.duplicated().any():
-                    # Preserve 'symbol' and 'report_date' which shouldn't be duplicated in a way that needs max
-                    # but if they are, groupby will handle them.
-                    # We want to group by columns and take the max for each row.
-                    df = df.T.groupby(level=0).max().T
-                    # Reorder columns to put symbol and report_date first if they exist
-                    cols = df.columns.tolist()
-                    if 'symbol' in cols and 'report_date' in cols:
-                        cols.remove('symbol')
-                        cols.remove('report_date')
-                        df = df[['symbol', 'report_date'] + cols]
+                df.columns = [self._GEO_NORM.get(c.strip(), c.strip()) if isinstance(c, str) else c
+                              for c in df.columns]
+                df = _normalize_revenue_df(df)
             return df
         except Exception as e:
             log_event("DEBUG", self.ticker, f"Error in revenue_by_geography: {e}")
