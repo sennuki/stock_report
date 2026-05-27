@@ -214,7 +214,7 @@ def calculate_dcf(symbol, ticker=None, yf_info=None, yf_growth_estimates=None):
             treasure_df['report_date'] = pd.to_datetime(treasure_df['report_date'])
             five_years_ago = pd.Timestamp.now() - pd.DateOffset(years=5)
             recent_treasure = treasure_df[treasure_df['report_date'] >= five_years_ago]
-            risk_free_rate = float(recent_treasure['bc10_year'].mean()) if not recent_treasure.empty else float(last_wacc_data.get('treasure_10y_yield', 0.04))
+            risk_free_rate = float(recent_treasure['bc_10year'].mean()) if not recent_treasure.empty else float(last_wacc_data.get('treasure_10y_yield', 0.04))
         except Exception:
             risk_free_rate = float(last_wacc_data.get('treasure_10y_yield', 0.04))
         wacc_details["risk_free_rate"] = risk_free_rate
