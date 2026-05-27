@@ -45,7 +45,7 @@ _status_lock = threading.Lock()
 
 # Bump when raw_payload schema changes so cached fetch_status entries from older
 # schemas are invalidated and the symbol is re-fetched.
-RAW_DATA_SCHEMA_VERSION = "v5-estimate-throttle-retry"
+RAW_DATA_SCHEMA_VERSION = "v6-new-metrics"
 
 def _load_status() -> dict:
     os.makedirs(os.path.dirname(_STATUS_PATH), exist_ok=True)
@@ -210,6 +210,31 @@ def fetch_raw_data_for_ticker(symbol):
                 return None
             return df_to_dict_safe(d.to_frame() if hasattr(d, 'to_frame') else d)
 
+        def _insider_trans():
+            d = _safe_get(lambda: ticker.insider_transactions, symbol, "insider_transactions")
+            return df_to_dict_safe(d)
+
+        def _institutional_holders():
+            d = _safe_get(lambda: ticker.institutional_holders, symbol, "institutional_holders")
+            return df_to_dict_safe(d)
+
+        def _sustainability():
+            d = _safe_get(lambda: ticker.sustainability, symbol, "sustainability")
+            if d is None or (hasattr(d, 'empty') and d.empty):
+                return None
+            try:
+                if isinstance(d, pd.DataFrame):
+                    result = {}
+                    for col in d.columns:
+                        for idx in d.index:
+                            key = str(idx) if len(d.columns) == 1 else f"{idx}_{col}"
+                            result[key] = clean_value(d.loc[idx, col])
+                    return stringify_keys_and_clean(result)
+                return stringify_keys_and_clean(d)
+            except Exception as e:
+                print(f"[{symbol}] sustainability conversion error: {e}")
+                return None
+
         # revenue_by_segment / revenue_by_geography は yfinance には存在しない。
         # defeatbeta-api 経由で取得する utils.YFinanceAdapterTicker を使う。
         # ETF は defeatbeta が対応していないためスキップ。
@@ -247,6 +272,9 @@ def fetch_raw_data_for_ticker(symbol):
             "dividends": _divs(),
             "revenue_by_segment": _rev_seg(),
             "revenue_by_geography": _rev_geo(),
+            "insider_transactions": _insider_trans(),
+            "institutional_holders": _institutional_holders(),
+            "sustainability": _sustainability(),
         }
 
         # ETFの場合はdefeatbetaを使わない

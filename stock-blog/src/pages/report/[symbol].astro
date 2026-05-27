@@ -864,6 +864,62 @@ function rankingSlug(key: string): string {
                   <div class="text-xs opacity-50 mt-1">流動比率: {typeof reportData.highlights.current_ratio === 'number' ? reportData.highlights.current_ratio.toFixed(2) : '---'}</div>
                 </div>
               </div>
+
+              {/* FCF / Short Interest row */}
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
+                <div class="bg-skin-fill/20 p-4 rounded-lg border border-skin-line">
+                  <div class="text-sm opacity-70 mb-1">FCF (直近12ヶ月)</div>
+                  <div class="text-2xl font-bold text-skin-base">
+                    {(() => {
+                      const v = reportData.fcf_metrics?.fcf_ttm;
+                      if (typeof v !== 'number') return '---';
+                      return v >= 0
+                        ? '$' + (v >= 1e9 ? (v/1e9).toFixed(1)+'B' : (v/1e6).toFixed(0)+'M')
+                        : '-$' + (Math.abs(v) >= 1e9 ? (Math.abs(v)/1e9).toFixed(1)+'B' : (Math.abs(v)/1e6).toFixed(0)+'M');
+                    })()}
+                  </div>
+                  <div class="text-xs opacity-50 mt-1">
+                    FCF利回り: {typeof reportData.fcf_metrics?.fcf_yield === 'number' ? (reportData.fcf_metrics.fcf_yield * 100).toFixed(1) + '%' : '---'}
+                  </div>
+                </div>
+                <div class="bg-skin-fill/20 p-4 rounded-lg border border-skin-line">
+                  <div class="text-sm opacity-70 mb-1">FCF / 1株 (TTM)</div>
+                  <div class="text-2xl font-bold text-skin-base">
+                    {typeof reportData.fcf_metrics?.fcf_per_share === 'number' ? '$' + reportData.fcf_metrics.fcf_per_share.toFixed(2) : '---'}
+                  </div>
+                </div>
+                {reportData.short_interest && (
+                  <div class="bg-skin-fill/20 p-4 rounded-lg border border-skin-line">
+                    <div class="text-sm opacity-70 mb-1">空売り残高率</div>
+                    <div class={`text-2xl font-bold ${
+                      typeof reportData.short_interest.short_percent_float === 'number' && reportData.short_interest.short_percent_float > 0.2
+                        ? 'text-red-600'
+                        : typeof reportData.short_interest.short_percent_float === 'number' && reportData.short_interest.short_percent_float > 0.1
+                        ? 'text-yellow-600'
+                        : 'text-skin-base'
+                    }`}>
+                      {typeof reportData.short_interest.short_percent_float === 'number' ? (reportData.short_interest.short_percent_float * 100).toFixed(1) + '%' : '---'}
+                    </div>
+                    <div class="text-xs opacity-50 mt-1">
+                      Days to Cover: {typeof reportData.short_interest.short_ratio === 'number' ? reportData.short_interest.short_ratio.toFixed(1) + '日' : '---'}
+                    </div>
+                  </div>
+                )}
+                {reportData.dividend_streak?.has_dividend && (
+                  <div class="bg-skin-fill/20 p-4 rounded-lg border border-skin-line">
+                    <div class="text-sm opacity-70 mb-1">連続増配年数</div>
+                    <div class="text-2xl font-bold text-skin-accent">
+                      {reportData.dividend_streak.streak > 0 ? reportData.dividend_streak.streak + '年' : '連続増配なし'}
+                    </div>
+                    {reportData.dividend_streak.streak >= 25 && (
+                      <div class="text-xs mt-1 px-2 py-0.5 bg-yellow-100 text-yellow-800 rounded-full inline-block font-bold">
+                        {reportData.dividend_streak.streak >= 50 ? '配当王 👑' : '配当貴族'}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
               <div class="mt-6 p-4 bg-red-50/30 dark:bg-red-900/20 border border-red-200/50 dark:border-red-800/30 rounded-lg text-xs text-red-800/80 dark:text-red-200/80">
                 <p class="font-bold flex items-center gap-1 mb-1">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -1478,6 +1534,152 @@ function rankingSlug(key: string): string {
             </div>
           )}
         </section>
+
+        {/* インサイダー取引 */}
+        {reportData.insider_transactions && reportData.insider_transactions.length > 0 && (
+          <section id="insider-transactions" class="mt-12">
+            <h2 class="text-2xl font-bold mb-6 border-b pb-2 flex items-center gap-2">
+              <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">manage_accounts</span>
+              {symbol}のインサイダー取引
+            </h2>
+            <div class="overflow-x-auto rounded-lg border border-skin-line">
+              <table class="min-w-full divide-y divide-skin-line text-sm">
+                <thead>
+                  <tr class="bg-skin-fill/10 text-xs uppercase tracking-wider">
+                    <th scope="col" class="px-4 py-3 text-left font-semibold opacity-70">日付</th>
+                    <th scope="col" class="px-4 py-3 text-left font-semibold opacity-70">インサイダー</th>
+                    <th scope="col" class="px-4 py-3 text-left font-semibold opacity-70 hidden md:table-cell">役職</th>
+                    <th scope="col" class="px-4 py-3 text-left font-semibold opacity-70">取引種別</th>
+                    <th scope="col" class="px-4 py-3 text-right font-semibold opacity-70">株数</th>
+                    <th scope="col" class="px-4 py-3 text-right font-semibold opacity-70">取引額</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-skin-line">
+                  {reportData.insider_transactions.map((t: any, idx: number) => {
+                    const txLower = (t.transaction || '').toLowerCase();
+                    const isSale = txLower.includes('sale') || txLower.includes('sell') || txLower.startsWith('s -');
+                    const isBuy = txLower.includes('purchase') || txLower.includes('buy') || txLower.startsWith('p -');
+                    return (
+                      <tr class={idx % 2 === 0 ? 'hover:bg-skin-fill/10' : 'bg-skin-fill/5 hover:bg-skin-fill/10'}>
+                        <td class="px-4 py-3 whitespace-nowrap opacity-80 font-mono text-xs">{t.date}</td>
+                        <td class="px-4 py-3 font-medium">{t.insider}</td>
+                        <td class="px-4 py-3 opacity-60 text-xs hidden md:table-cell">{t.title || '---'}</td>
+                        <td class="px-4 py-3">
+                          <span class={`text-xs font-medium px-2 py-0.5 rounded-full ${isSale ? 'bg-red-100 text-red-700' : isBuy ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
+                            {isSale ? '売却' : isBuy ? '購入' : (t.transaction || '---').split(',')[0].trim().slice(0, 20)}
+                          </span>
+                        </td>
+                        <td class="px-4 py-3 text-right font-mono text-xs">
+                          {typeof t.shares === 'number' ? t.shares.toLocaleString() : '---'}
+                        </td>
+                        <td class="px-4 py-3 text-right font-mono text-xs">
+                          {typeof t.value === 'number'
+                            ? '$' + (t.value >= 1e6 ? (t.value / 1e6).toFixed(1) + 'M' : t.value.toLocaleString())
+                            : '---'}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+            <p class="text-xs text-gray-400 mt-3">※米国SEC Form 4に基づく開示情報です。直近最大20件を表示しています。</p>
+          </section>
+        )}
+
+        {/* 機関投資家保有状況 */}
+        {reportData.institutional_ownership && (
+          <section id="institutional-ownership" class="mt-12">
+            <h2 class="text-2xl font-bold mb-6 border-b pb-2 flex items-center gap-2">
+              <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">account_balance</span>
+              {symbol}の株主構成
+            </h2>
+            <div class="grid grid-cols-2 gap-4 mb-6">
+              <div class="bg-skin-fill/20 p-4 rounded-lg border border-skin-line text-center">
+                <div class="text-xs opacity-60 mb-1">機関投資家保有率</div>
+                <div class="text-3xl font-bold text-skin-accent">
+                  {typeof reportData.institutional_ownership.pct_held_institutions === 'number'
+                    ? (reportData.institutional_ownership.pct_held_institutions * 100).toFixed(1) + '%'
+                    : '---'}
+                </div>
+              </div>
+              <div class="bg-skin-fill/20 p-4 rounded-lg border border-skin-line text-center">
+                <div class="text-xs opacity-60 mb-1">インサイダー保有率</div>
+                <div class="text-3xl font-bold text-skin-base">
+                  {typeof reportData.institutional_ownership.pct_held_insiders === 'number'
+                    ? (reportData.institutional_ownership.pct_held_insiders * 100).toFixed(1) + '%'
+                    : '---'}
+                </div>
+              </div>
+            </div>
+            {reportData.institutional_ownership.holders?.length > 0 && (
+              <div class="overflow-x-auto rounded-lg border border-skin-line">
+                <table class="min-w-full divide-y divide-skin-line text-sm">
+                  <thead>
+                    <tr class="bg-skin-fill/10 text-xs uppercase tracking-wider">
+                      <th scope="col" class="px-4 py-3 text-left font-semibold opacity-70">機関名</th>
+                      <th scope="col" class="px-4 py-3 text-right font-semibold opacity-70">保有株数</th>
+                      <th scope="col" class="px-4 py-3 text-right font-semibold opacity-70">保有率</th>
+                      <th scope="col" class="px-4 py-3 text-right font-semibold opacity-70 hidden md:table-cell">報告日</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-skin-line">
+                    {reportData.institutional_ownership.holders.map((h: any, idx: number) => (
+                      <tr class={idx % 2 === 0 ? 'hover:bg-skin-fill/10' : 'bg-skin-fill/5 hover:bg-skin-fill/10'}>
+                        <td class="px-4 py-3 font-medium">{h.holder}</td>
+                        <td class="px-4 py-3 text-right font-mono text-xs opacity-80">
+                          {typeof h.shares === 'number'
+                            ? (h.shares >= 1e9 ? (h.shares / 1e9).toFixed(2) + 'B' : h.shares >= 1e6 ? (h.shares / 1e6).toFixed(1) + 'M' : h.shares.toLocaleString())
+                            : '---'}
+                        </td>
+                        <td class="px-4 py-3 text-right font-bold text-skin-accent">
+                          {typeof h.pct_out === 'number' ? (h.pct_out * 100).toFixed(2) + '%' : '---'}
+                        </td>
+                        <td class="px-4 py-3 text-right opacity-60 text-xs hidden md:table-cell">
+                          {h.date_reported?.split(' ')[0] || '---'}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </section>
+        )}
+
+        {/* ESGスコア */}
+        {reportData.esg_scores && (
+          <section id="esg-scores" class="mt-12">
+            <h2 class="text-2xl font-bold mb-6 border-b pb-2 flex items-center gap-2">
+              <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">eco</span>
+              {symbol}のESGスコア
+            </h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {([
+                ['総合ESGスコア', reportData.esg_scores.total_esg, 'text-blue-600', 'bg-blue-500'],
+                ['環境 (E)', reportData.esg_scores.environment_score, 'text-green-600', 'bg-green-500'],
+                ['社会 (S)', reportData.esg_scores.social_score, 'text-yellow-600', 'bg-yellow-500'],
+                ['ガバナンス (G)', reportData.esg_scores.governance_score, 'text-purple-600', 'bg-purple-500'],
+              ] as [string, number|null, string, string][]).map(([label, value, textColor, bgColor]) => (
+                <div class="bg-skin-fill/20 p-4 rounded-lg border border-skin-line text-center">
+                  <div class="text-xs opacity-60 mb-2">{label}</div>
+                  <div class={`text-3xl font-bold ${textColor}`}>
+                    {typeof value === 'number' ? value.toFixed(1) : '---'}
+                  </div>
+                  {typeof value === 'number' && (
+                    <div class="mt-3 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                      <div class={`h-full rounded-full ${bgColor}`} style={`width: ${Math.min(value / 50 * 100, 100)}%`} />
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+            {reportData.esg_scores.peer_group && (
+              <p class="text-xs opacity-60 mt-4">ピアグループ: {reportData.esg_scores.peer_group}</p>
+            )}
+            <p class="text-xs text-gray-400 mt-2">※ESGスコアはサステイナリティクス社の評価に基づきます。スコアは低いほどリスクが低い（良好）ことを示します（0-100）。</p>
+          </section>
+        )}
 
         <hr class="my-12 border-skin-line" />
 
