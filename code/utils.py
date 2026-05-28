@@ -193,20 +193,55 @@ def calculate_dcf(symbol, ticker=None, yf_info=None, yf_growth_estimates=None):
         if df_wacc.empty:
             return None
         last_wacc_data = df_wacc.iloc[-1]
-        
+
+        # defeatbeta の wacc() は bc_10year (Fed H.15) を % 形式 (4.5 = 4.5%) のまま使い、
+        # sp500_10y_cagr を小数形式 (0.115 = 11.5%) で計算するため、CAPM の
+        # cost_of_equity と wacc が巨大な負値になる単位不一致バグがある。
+        # ここで各コンポーネントを小数に正規化して再計算する。
+        def _to_decimal(v, fallback):
+            """1.0 超の値は % 形式とみなし /100 して小数に変換する。"""
+            try:
+                f = float(v)
+                return f / 100.0 if f > 1.0 else f
+            except Exception:
+                return fallback
+
+        beta          = float(last_wacc_data.get('beta_5y', 1.0))
+        rfr_raw       = float(last_wacc_data.get('treasure_10y_yield', 0.04))
+        market_raw    = float(last_wacc_data.get('sp500_10y_cagr', 0.10))
+        tax_raw       = float(last_wacc_data.get('tax_rate_for_calcs', 0.21))
+        cod_raw       = float(last_wacc_data.get('cost_of_debt', 0.04))
+        w_eq          = float(last_wacc_data.get('weight_of_equity', 0.8))
+        w_de          = float(last_wacc_data.get('weight_of_debt', 0.2))
+
+        rfr_d    = _to_decimal(rfr_raw,    0.04)
+        market_d = _to_decimal(market_raw, 0.10)
+        tax_d    = _to_decimal(tax_raw,    0.21)
+        cod_d    = _to_decimal(cod_raw,    0.04)
+
+        # CAPM: Re = Rf + β(Rm - Rf)
+        cost_of_equity = rfr_d + beta * (market_d - rfr_d)
+        # 負値や非現実的な値をクランプ (Rf 未満にはならない、上限 35%)
+        cost_of_equity = max(rfr_d, min(0.35, cost_of_equity))
+
+        # WACC 再計算
+        wacc_recalc = w_eq * cost_of_equity + w_de * cod_d * (1.0 - tax_d)
+        # 合理的な範囲にクランプ (4% ≤ WACC ≤ 25%)
+        wacc_recalc = max(0.04, min(0.25, wacc_recalc))
+
         wacc_details = {
-            "wacc": float(last_wacc_data['wacc']),
-            "beta": float(last_wacc_data.get('beta_5y', 0)),
-            "risk_free_rate": float(last_wacc_data.get('treasure_10y_yield', 0.04)),
-            "market_return": float(last_wacc_data.get('sp500_10y_cagr', 0.10)),
-            "tax_rate": float(last_wacc_data.get('tax_rate_for_calcs', 0.21)),
-            "cost_of_equity": float(last_wacc_data.get('cost_of_equity', 0)),
-            "cost_of_debt": float(last_wacc_data.get('cost_of_debt', 0)),
-            "weight_of_equity": float(last_wacc_data.get('weight_of_equity', 0)),
-            "weight_of_debt": float(last_wacc_data.get('weight_of_debt', 0))
+            "wacc": wacc_recalc,
+            "beta": beta,
+            "risk_free_rate": rfr_d,
+            "market_return": market_d,
+            "tax_rate": tax_d,
+            "cost_of_equity": cost_of_equity,
+            "cost_of_debt": cod_d,
+            "weight_of_equity": w_eq,
+            "weight_of_debt": w_de,
         }
-        
-        wacc = wacc_details["wacc"]
+
+        wacc = wacc_recalc
 
         # リスクフリーレート: 直近5年の10年国債利回り平均 (Excelの L9 相当)
         try:
@@ -214,9 +249,10 @@ def calculate_dcf(symbol, ticker=None, yf_info=None, yf_growth_estimates=None):
             treasure_df['report_date'] = pd.to_datetime(treasure_df['report_date'])
             five_years_ago = pd.Timestamp.now() - pd.DateOffset(years=5)
             recent_treasure = treasure_df[treasure_df['report_date'] >= five_years_ago]
-            risk_free_rate = float(recent_treasure['bc_10year'].mean()) if not recent_treasure.empty else float(last_wacc_data.get('treasure_10y_yield', 0.04))
+            raw_rf = float(recent_treasure['bc_10year'].mean()) if not recent_treasure.empty else rfr_raw
+            risk_free_rate = raw_rf / 100.0 if raw_rf > 1.0 else raw_rf
         except Exception:
-            risk_free_rate = float(last_wacc_data.get('treasure_10y_yield', 0.04))
+            risk_free_rate = rfr_d
         wacc_details["risk_free_rate"] = risk_free_rate
 
         # 2. 成長率の取得
@@ -464,9 +500,15 @@ def calculate_dcf(symbol, ticker=None, yf_info=None, yf_growth_estimates=None):
         equity_value = enterprise_value + cash_value - total_debt
         fair_price = equity_value / shares
 
-        # 現在価格
-        price_df = db_ticker.price()
-        current_price = float(price_df['close'].iloc[-1]) if not price_df.empty else 0
+        # 現在価格: yf_info の最新値を優先、なければ defeatbeta price() にフォールバック
+        current_price = None
+        if yf_info is not None:
+            current_price = yf_info.get('currentPrice') or yf_info.get('regularMarketPrice')
+            if current_price:
+                current_price = float(current_price)
+        if not current_price:
+            price_df = db_ticker.price()
+            current_price = float(price_df['close'].iloc[-1]) if not price_df.empty else 0
 
         # DCF サニティチェック: 計算ロジックが通っても、入力データの不整合や
         # 極端な成長率 / 低 WACC が組み合わさると無意味な fair_price になり得る。
@@ -493,6 +535,7 @@ def calculate_dcf(symbol, ticker=None, yf_info=None, yf_growth_estimates=None):
                 "base_fcf": float(base_fcf),
                 "base_fcf_method": base_fcf_method,
             }
+
 
         # リバースDCF：現在株価から逆算して必要な成長率を計算
         reverse_growth = None
@@ -635,6 +678,25 @@ _GEO_TOKENS_EXACT = {
 # item_name の (case-insensitive) 部分文字列にヒットしたら geo。
 # 'country' は "Other Countries" などにマッチ。 'geograph' は "Geographic" などにマッチ。
 _GEO_SUBSTRINGS = ('country', 'countries', 'geograph')
+
+# 汎用 breakdown_type (例: "Disaggregation of Revenue") の中身が地理データの
+# 場合に、item_name から地理表だと判定するためのキーワード。
+_GEO_ITEM_PATTERNS = (
+    'united states', 'u.s.', 'americas', 'emea', 'apac', 'asia',
+    'europe', 'north america', 'latin america', 'middle east', 'africa',
+    'china', 'japan', 'germany', 'united kingdom', 'india', 'canada',
+    'international', 'domestic', 'foreign', 'rest of world',
+)
+
+
+def _looks_like_geo(item_names) -> bool:
+    """item_name の集合が地理的分類に見えるかを判定する。
+    半数以上 (最低2個) が地理キーワードに合致すれば True。"""
+    lowered = [str(n).lower() for n in item_names if n]
+    if not lowered:
+        return False
+    matched = sum(1 for n in lowered if any(p in n for p in _GEO_ITEM_PATTERNS))
+    return matched >= max(2, len(lowered) // 2)
 
 
 def _is_geo_item(name) -> bool:

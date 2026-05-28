@@ -729,6 +729,173 @@ function extractHighlights(rawData) {
   };
 }
 
+function extractFcfMetrics(rawData) {
+  const info = rawData.info || {};
+  const marketCap = info.marketCap || null;
+  const sharesOutstanding = info.sharesOutstanding || null;
+
+  // Most recent annual FCF
+  let fcfAnnual = null;
+  const cf = rawData.cashflow || [];
+  if (Array.isArray(cf) && cf.length > 0) {
+    const fcfRow = cf.find((r) => r.index === "Free Cash Flow");
+    if (fcfRow) {
+      const dates = Object.keys(fcfRow).filter((k) => k !== "index").sort().reverse();
+      if (dates.length > 0) fcfAnnual = Number(fcfRow[dates[0]]) || null;
+    }
+  }
+
+  // TTM FCF from 4 most recent quarters
+  let fcfTtm = null;
+  const qcf = rawData.quarterly_cashflow || [];
+  if (Array.isArray(qcf) && qcf.length > 0) {
+    const fcfRow = qcf.find((r) => r.index === "Free Cash Flow");
+    if (fcfRow) {
+      const dates = Object.keys(fcfRow).filter((k) => k !== "index").sort().reverse().slice(0, 4);
+      if (dates.length >= 4) {
+        const sum = dates.reduce((acc, d) => acc + (Number(fcfRow[d]) || 0), 0);
+        if (sum !== 0) fcfTtm = sum;
+      }
+    }
+  }
+
+  const fcf = fcfTtm ?? fcfAnnual;
+  return {
+    fcf_ttm: fcf,
+    fcf_per_share: fcf != null && sharesOutstanding ? fcf / sharesOutstanding : null,
+    fcf_yield: fcf != null && marketCap && marketCap > 0 ? fcf / marketCap : null,
+  };
+}
+
+function extractDividendStreak(dividends) {
+  if (!Array.isArray(dividends) || dividends.length === 0)
+    return { streak: 0, has_dividend: false };
+
+  const byYear = {};
+  for (const d of dividends) {
+    const dateStr = String(d.index || d.Date || d.date || "");
+    const year = dateStr.substring(0, 4);
+    if (!year || isNaN(parseInt(year))) continue;
+    const val = Number(d.Dividends || d.dividends || d.Value || d.value || 0);
+    byYear[year] = (byYear[year] || 0) + val;
+  }
+
+  const years = Object.keys(byYear).filter((y) => byYear[y] > 0).sort();
+  if (years.length === 0) return { streak: 0, has_dividend: false };
+  if (years.length === 1) return { streak: 0, has_dividend: true };
+
+  // Exclude current year if incomplete
+  const currentYear = new Date().getFullYear().toString();
+  const compareYears = years.filter((y) => y < currentYear);
+  if (compareYears.length < 2) return { streak: 0, has_dividend: true };
+
+  let streak = 0;
+  for (let i = compareYears.length - 1; i > 0; i--) {
+    const curr = compareYears[i];
+    const prev = compareYears[i - 1];
+    if (parseInt(curr) - parseInt(prev) === 1 && byYear[curr] >= byYear[prev] * 0.99) {
+      streak++;
+    } else {
+      break;
+    }
+  }
+
+  return { streak, has_dividend: true };
+}
+
+function extractShortInterest(rawData) {
+  const info = rawData.info || {};
+  const shortPct = info.shortPercentOfFloat ?? null;
+  const shortRatio = info.shortRatio ?? null;
+  if (shortPct == null && shortRatio == null) return null;
+
+  const sharesShort = info.sharesShort ?? null;
+  const sharesShortPrior = info.sharesShortPriorMonth ?? null;
+  return {
+    short_percent_float: shortPct,
+    short_ratio: shortRatio,
+    shares_short: sharesShort,
+    shares_short_prior_month: sharesShortPrior,
+    change_pct:
+      sharesShort != null && sharesShortPrior && sharesShortPrior > 0
+        ? (sharesShort - sharesShortPrior) / sharesShortPrior
+        : null,
+  };
+}
+
+function extractInsiderTransactions(rawData) {
+  const raw = rawData.insider_transactions;
+  if (!Array.isArray(raw) || raw.length === 0) return [];
+
+  return raw
+    .map((t) => {
+      const dateStr = String(t.index || t["Start Date"] || t.date || "").split(" ")[0];
+      return {
+        date: dateStr,
+        insider: String(t.Insider || t.insider || ""),
+        title: String(t.Position || t.position || ""),
+        transaction: String(t.Text || t.Transaction || t.transaction || ""),
+        shares: typeof t.Shares === "number" ? t.Shares : null,
+        value: typeof t.Value === "number" ? t.Value : null,
+      };
+    })
+    .filter((t) => t.date && t.date.length === 10 && t.insider)
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .slice(0, 20);
+}
+
+function extractInstitutionalOwnership(rawData) {
+  const info = rawData.info || {};
+  const raw = rawData.institutional_holders;
+  const pctInst = info.heldPercentInstitutions ?? null;
+  const pctIns = info.heldPercentInsiders ?? null;
+
+  if ((!Array.isArray(raw) || raw.length === 0) && pctInst == null && pctIns == null)
+    return null;
+
+  const holders = Array.isArray(raw)
+    ? raw
+        .filter((h) => h.Holder || h.holder)
+        .map((h) => ({
+          holder: String(h.Holder || h.holder || ""),
+          shares: typeof h.Shares === "number" ? h.Shares : null,
+          date_reported: String(h["Date Reported"] || h.dateReported || "").split(" ")[0],
+          pct_out: typeof h["% Out"] === "number" ? h["% Out"] : null,
+          value: typeof h.Value === "number" ? h.Value : null,
+        }))
+        .sort((a, b) => (b.pct_out || 0) - (a.pct_out || 0))
+        .slice(0, 10)
+    : [];
+
+  return { holders, pct_held_institutions: pctInst, pct_held_insiders: pctIns };
+}
+
+function extractEsgScores(rawData) {
+  const sust = rawData.sustainability;
+  if (!sust || typeof sust !== "object" || Array.isArray(sust)) return null;
+
+  const get = (key) => {
+    const v = sust[key];
+    return typeof v === "number" ? v : v != null ? Number(v) || null : null;
+  };
+
+  const total = get("totalEsg");
+  const env = get("environmentScore");
+  const social = get("socialScore");
+  const gov = get("governanceScore");
+
+  if (total == null && env == null && social == null && gov == null) return null;
+
+  return {
+    total_esg: total,
+    environment_score: env,
+    social_score: social,
+    governance_score: gov,
+    peer_group: sust.peerGroup != null ? String(sust.peerGroup) : null,
+    highest_controversy: get("highestControversy"),
+  };
+}
+
 function extractEarningsSurprise(rawData) {
   const ed = rawData.earnings_dates;
   if (!ed || !Array.isArray(ed) || ed.length === 0) return null;
@@ -1983,10 +2150,10 @@ function generateSegmentChart(segmentData, stackName = 'segment', errorLabel = '
     orderedCols.map((col, i) => [col, _SEG_COLORS[i % _SEG_COLORS.length]]),
   );
 
-  // 四半期: 直近24四半期（通年6年に合わせた期間）
-  const quarterlyData = sorted.slice(-24);
+  // 四半期: 直近40四半期（通年10年に合わせた期間）
+  const quarterlyData = sorted.slice(-40);
 
-  // 通年: 年（決算期）ごとに集計して直近6年
+  // 通年: 年（決算期）ごとに集計して直近10年
   const byYear = {};
   for (const row of sorted) {
     const year = String(row.Date || row.report_date || '').slice(0, 4);
@@ -1996,7 +2163,7 @@ function generateSegmentChart(segmentData, stackName = 'segment', errorLabel = '
   }
   const annualData = Object.values(byYear)
     .sort((a, b) => a.Date.localeCompare(b.Date))
-    .slice(-6);
+    .slice(-10);
 
   const annual    = _tagGroupLabels(_segmentDatasets(annualData,    " (通年)",  false, stackName, orderedCols, colorMap));
   const quarterly = _tagGroupLabels(_segmentDatasets(quarterlyData, " (四半期)", true,  stackName, orderedCols, colorMap));
@@ -2761,6 +2928,12 @@ async function main() {
           if (yfHistory) mergeTargetPrices(ratingChanges, yfHistory);
         }
         const analystRatings = extractAnalystRatings(rawData);
+        const fcfMetrics = extractFcfMetrics(rawData);
+        const dividendStreak = extractDividendStreak(rawData.dividends || []);
+        const shortInterest = extractShortInterest(rawData);
+        const insiderTransactions = extractInsiderTransactions(rawData);
+        const institutionalOwnership = extractInstitutionalOwnership(rawData);
+        const esgScores = extractEsgScores(rawData);
 
         const riskReturnChart = generateRiskReturnChart(
           riskReturnMetrics,
@@ -2886,6 +3059,12 @@ async function main() {
             };
           })(),
           dcf_valuation: rawData.dcf_valuation || null,
+          fcf_metrics: fcfMetrics,
+          dividend_streak: dividendStreak,
+          short_interest: shortInterest,
+          insider_transactions: insiderTransactions,
+          institutional_ownership: institutionalOwnership,
+          esg_scores: esgScores,
           charts: {
             risk_return: riskReturnChart,
             is: isChart,
