@@ -247,16 +247,32 @@ def calculate_dcf(symbol, ticker=None, yf_info=None, yf_growth_estimates=None):
 
         wacc = wacc_recalc
 
-        # リスクフリーレート: 直近5年の10年国債利回り平均 (Excelの L9 相当)
+        # リスクフリーレート: 直近3年の10年国債利回りの median
+        # 5 年だと 2021 年の超低金利期 (1.5%) が含まれて現在の金利環境 (~4.5%) と
+        # 乖離するため 3 年に短縮。 mean ではなく median を使うのは、 defeatbeta-api の
+        # daily_treasure_yield() に時折 outlier (欠損補完値・スケール混在等) が
+        # 紛れ込み、 mean が異常値に引っ張られて Rf が 30%+ になる事故が観測された
+        # ため (NVDA/AAPL 等)。 さらに % 形式 (4.5) と 小数形式 (0.045) を混在させる
+        # 可能性があるため _to_decimal で正規化したうえで、 0.5%〜10% の範囲に
+        # サニティクランプする (10Y 国債利回りが 10% を超えるのは現代では異常値)。
+        # これによって winsorize の floor が cap (20%) を超えて全シグナルが
+        # degenerate にクリップされる事故 (= 全シグナル一律 20% になる) を防ぐ。
+        RF_LOOKBACK_YEARS = 3
         try:
             treasure_df = db_ticker.treasure.daily_treasure_yield()
             treasure_df['report_date'] = pd.to_datetime(treasure_df['report_date'])
-            five_years_ago = pd.Timestamp.now() - pd.DateOffset(years=5)
-            recent_treasure = treasure_df[treasure_df['report_date'] >= five_years_ago]
-            raw_rf = float(recent_treasure['bc_10year'].mean()) if not recent_treasure.empty else rfr_raw
-            risk_free_rate = raw_rf / 100.0 if raw_rf > 1.0 else raw_rf
+            cutoff = pd.Timestamp.now() - pd.DateOffset(years=RF_LOOKBACK_YEARS)
+            recent_treasure = treasure_df[treasure_df['report_date'] >= cutoff]
+            yields = recent_treasure['bc_10year'].dropna() if not recent_treasure.empty else None
+            if yields is not None and len(yields) > 0:
+                raw_rf = float(yields.median())
+            else:
+                raw_rf = rfr_raw
+            risk_free_rate = _to_decimal(raw_rf, rfr_d)
         except Exception:
             risk_free_rate = rfr_d
+        # サニティクランプ (0.5% ≤ Rf ≤ 10%)
+        risk_free_rate = max(0.005, min(0.10, risk_free_rate))
         wacc_details["risk_free_rate"] = risk_free_rate
 
         # 2. 成長率の取得
@@ -371,10 +387,13 @@ def calculate_dcf(symbol, ticker=None, yf_info=None, yf_growth_estimates=None):
         # 上限は 20%: 5 年連続 20% 成長は実質トップ 5% 銘柄でも珍しく、 これ以上は
         # DCF の永続成長率前提と整合しなくなる (TV の分母が小さくなりすぎる)。
         # フロアを R_f に揃えることで 5→6 年目の成長率ジャンプが消えグライドパスが
-        # 滑らかになる (永続成長率 = R_f のため)。
+        # 滑らかになる (永続成長率 = R_f のため)。 ただし R_f が異常に高いと
+        # floor >= cap で全シグナルが degenerate に cap に張り付くため、 必ず
+        # 5pt 以上のレンジを確保する。
         WINSORIZE_CAP = 0.20
+        winsorize_floor = min(risk_free_rate, WINSORIZE_CAP - 0.05)
         signals_clipped = {
-            k: (min(max(v, risk_free_rate), WINSORIZE_CAP) if v is not None else None)
+            k: (min(max(v, winsorize_floor), WINSORIZE_CAP) if v is not None else None)
             for k, v in signals_raw.items()
         }
         valid_clipped = [v for v in signals_clipped.values() if v is not None]
@@ -622,7 +641,7 @@ def calculate_dcf(symbol, ticker=None, yf_info=None, yf_growth_estimates=None):
             "terminal_growth": float(terminal_growth),
             "growth_signals_raw": {k: (float(v) if v is not None else None) for k, v in signals_raw.items()},
             "growth_signals_clipped": {k: (float(v) if v is not None else None) for k, v in signals_clipped.items()},
-            "growth_winsorize_bounds": {"floor": float(risk_free_rate), "cap": float(WINSORIZE_CAP)},
+            "growth_winsorize_bounds": {"floor": float(winsorize_floor), "cap": float(WINSORIZE_CAP)},
             "growth_aggregation": "median_of_winsorized",
             "base_fcf": float(base_fcf),
             "base_fcf_method": base_fcf_method,
