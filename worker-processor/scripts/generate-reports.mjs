@@ -2810,6 +2810,7 @@ async function main() {
       metadata["GICS Sub-Industry"] || rawData.info?.industry || "Unknown";
     sectorBySymbol[symbol] = sector;
     const dailyChange = calculateDailyChange(rawData.history);
+    const info = rawData.info || {};
     const peerInfo = {
       Symbol: metadata.Symbol || symbol,
       Symbol_YF: symbol,
@@ -2817,6 +2818,15 @@ async function main() {
       // metadata が無い銘柄 (ETF など) は null。
       Index: metadata["Index"] || null,
       Daily_Change: dailyChange,
+      // 比較テーブル用メトリクス (rawDataMap が後で削除される前に確保)
+      Security: metadata.Security || info.shortName || info.longName || symbol,
+      Security_JA: metadata.Security_JA || null,
+      market_cap: info.marketCap ?? null,
+      pe_ttm: typeof info.trailingPE === "number" && info.trailingPE > 0 ? info.trailingPE : null,
+      pe_forward: typeof info.forwardPE === "number" && info.forwardPE > 0 ? info.forwardPE : null,
+      pbr: typeof info.priceToBook === "number" && info.priceToBook > 0 ? info.priceToBook : null,
+      roe: info.returnOnEquity ?? null,
+      revenue_growth: info.revenueGrowth ?? null,
     };
     if (!sectorMap[sector]) sectorMap[sector] = [];
     sectorMap[sector].push(peerInfo);
@@ -3057,15 +3067,55 @@ async function main() {
             const sectorFiltered = targetIndex
               ? sectorPool.filter((s) => s.Index === targetIndex)
               : sectorPool;
+            const subIndustryPeers = (subIndustryMap[subInd] || []).filter(
+              (s) => s.Symbol_YF !== symbol,
+            );
+
+            // 比較テーブル: 自社 + 同業種ピア (時価総額降順、最大10社)
+            const selfInfo = rawData.info || {};
+            const selfEntry = {
+              symbol: metadata.Symbol || symbol,
+              symbol_yf: symbol,
+              security: metadata.Security || selfInfo.shortName || selfInfo.longName || symbol,
+              security_ja: metadata.Security_JA || null,
+              is_self: true,
+              market_cap: selfInfo.marketCap ?? null,
+              pe_ttm: typeof selfInfo.trailingPE === "number" && selfInfo.trailingPE > 0 ? selfInfo.trailingPE : null,
+              pe_forward: typeof selfInfo.forwardPE === "number" && selfInfo.forwardPE > 0 ? selfInfo.forwardPE : null,
+              pbr: typeof selfInfo.priceToBook === "number" && selfInfo.priceToBook > 0 ? selfInfo.priceToBook : null,
+              roe: selfInfo.returnOnEquity ?? null,
+              revenue_growth: selfInfo.revenueGrowth ?? null,
+              daily_change: calculateDailyChange(rawData.history),
+            };
+            const peerComparison = [
+              selfEntry,
+              ...subIndustryPeers
+                .sort((a, b) => (b.market_cap || 0) - (a.market_cap || 0))
+                .slice(0, 10)
+                .map((p) => ({
+                  symbol: p.Symbol,
+                  symbol_yf: p.Symbol_YF,
+                  security: p.Security,
+                  security_ja: p.Security_JA || null,
+                  is_self: false,
+                  market_cap: p.market_cap,
+                  pe_ttm: p.pe_ttm,
+                  pe_forward: p.pe_forward,
+                  pbr: p.pbr,
+                  roe: p.roe,
+                  revenue_growth: p.revenue_growth,
+                  daily_change: p.Daily_Change,
+                })),
+            ];
+
             return {
-              sub_industry: (subIndustryMap[subInd] || []).filter(
-                (s) => s.Symbol_YF !== symbol,
-              ),
+              sub_industry: subIndustryPeers,
               sector: sectorFiltered.filter(
                 (s) =>
                   s.Symbol_YF !== symbol &&
                   !subIndustryMap[subInd]?.find((si) => si.Symbol_YF === s.Symbol_YF),
               ),
+              comparison: peerComparison,
             };
           })(),
           dcf_valuation: rawData.dcf_valuation || null,
