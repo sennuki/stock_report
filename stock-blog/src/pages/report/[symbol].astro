@@ -1376,7 +1376,11 @@ const dcfBroken =
                     if (c == null) return '---';
                     const cStr = fmt(c);
                     if (r == null || Math.abs(r - c) < 1e-9) return cStr;
-                    return cStr + ` (元 ${fmt(r)})`;
+                    return (
+                      <>
+                        {cStr} <span class="whitespace-nowrap">(元 {fmt(r)})</span>
+                      </>
+                    );
                   };
                   const signalRows: Array<[string, string, string]> = useMultiSignal ? [
                     ["EPS 9Y CAGR", "過去9年間の TTM EPS 年率成長", "eps_9y"],
