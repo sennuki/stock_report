@@ -1207,6 +1207,22 @@ const dcfBroken =
             </div>
           ) : reportData.dcf_valuation && typeof reportData.dcf_valuation.fair_price === 'number' ? (
             <div class="space-y-10">
+              {/* High Uncertainty Warning */}
+              {reportData.dcf_valuation.high_uncertainty && (
+                <div class="p-4 bg-amber-50 border border-amber-300 rounded-lg space-y-2">
+                  <div class="flex items-center gap-2 text-amber-700 font-bold">
+                    <span class="material-symbols-outlined" aria-hidden="true">warning</span>
+                    高乖離アラート: この理論株価は参考値としてご覧ください
+                  </div>
+                  <p class="text-sm text-amber-800 leading-relaxed">
+                    {reportData.dcf_valuation.uncertainty_reason === 'fair_price_much_higher_than_current'
+                      ? '理論株価が現在価格の 3 倍を超えています。 入力データ (WACC・成長率・基準FCF) の特性により計算結果が発散しやすい銘柄です。 下記の WACC や成長率の内訳を確認してください。'
+                      : reportData.dcf_valuation.uncertainty_reason === 'fair_price_much_lower_than_current'
+                      ? '理論株価が現在価格の 1/5 未満です。 純有利子負債が大きい、 FCF が一時的に低下している、 もしくは市場が将来の成長を強く織り込んでいる可能性があります。'
+                      : '計算結果が現在価格から大きく乖離しています。'}
+                  </p>
+                </div>
+              )}
               {/* Main Summary Card */}
               <div class="bg-skin-fill/20 p-6 sm:p-8 rounded-lg border-2 border-skin-accent/30 shadow-sm text-center md:text-left">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
@@ -1576,12 +1592,24 @@ const dcfBroken =
                 <span class="material-symbols-outlined text-orange-500" aria-hidden="true">info</span>
                 DCF 評価対象外
               </h3>
-              <p class="text-sm opacity-80 leading-relaxed">
-                {symbol} は基準となるフリーキャッシュフロー（直近3会計年度の中央値）が
-                マイナスのため、DCF理論株価およびリバースDCFを算出していません。
-                将来FCFがマイナスのままでは理論株価が成立しないためで、大型投資フェーズや
-                構造的にキャッシュを消費する企業で起こります。
-              </p>
+              {reportData.dcf_valuation.dcf_not_applicable_reason === 'negative_normalized_fcf' ? (
+                <p class="text-sm opacity-80 leading-relaxed">
+                  {symbol} は基準となるフリーキャッシュフロー（直近3会計年度の中央値）が
+                  マイナスのため、DCF理論株価およびリバースDCFを算出していません。
+                  将来FCFがマイナスのままでは理論株価が成立しないためで、大型投資フェーズや
+                  構造的にキャッシュを消費する企業で起こります。
+                </p>
+              ) : reportData.dcf_valuation.dcf_not_applicable_reason === 'negative_fair_price' ? (
+                <p class="text-sm opacity-80 leading-relaxed">
+                  {symbol} は DCF 計算の結果、理論株価が負になりました
+                  （企業価値が純有利子負債を下回るケース）。
+                  入力データの不整合または資本構造の特殊性により評価対象外としています。
+                </p>
+              ) : (
+                <p class="text-sm opacity-80 leading-relaxed">
+                  {symbol} は DCF 評価の前提が成立しないため算出していません。
+                </p>
+              )}
               {typeof reportData.dcf_valuation.base_fcf === 'number' && (
                 <div class="text-sm">
                   <span class="opacity-60">基準FCF（中央値）:</span>{' '}
