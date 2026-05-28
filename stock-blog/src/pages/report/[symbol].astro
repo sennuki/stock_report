@@ -1351,7 +1351,7 @@ const dcfBroken =
                               <tr class="font-bold border-t-2 border-skin-line"><td class="px-4 py-2 opacity-70 text-skin-base">将来成長率 (1-5年) <span class="text-[10px] font-normal opacity-50 block leading-tight">※EPS 9Y CAGR を 5%〜20% にクリップ (旧方式)</span></td><td class="px-4 py-2 text-right text-skin-accent">{fmt(reportData.dcf_valuation.growth_1_5y)}</td></tr>
                             </>
                           )}
-                          <tr><td class="px-4 py-2 opacity-70">将来成長率 (6年目) <span class="text-[10px] font-normal opacity-50 block leading-tight">※6-10年は線形補間で終端成長率へ収束</span></td><td class="px-4 py-2 text-right font-medium">{fmt(reportData.dcf_valuation.growth_6_10y)}</td></tr>
+                          <tr><td class="px-4 py-2 opacity-70">将来成長率 (6年目) <span class="text-[10px] font-normal opacity-50 block leading-tight">※6-15年は線形補間で終端成長率へ収束 (2段階モデル)</span></td><td class="px-4 py-2 text-right font-medium">{fmt(reportData.dcf_valuation.growth_6_10y)}</td></tr>
                           <tr class="bg-skin-fill/5"><td class="px-4 py-2 opacity-70">永続成長率 (Terminal)</td><td class="px-4 py-2 text-right font-medium">{fmt(reportData.dcf_valuation.terminal_growth)}</td></tr>
                         </tbody>
                       </table>
@@ -1366,7 +1366,7 @@ const dcfBroken =
                 <div class="space-y-4">
                   <h3 class="text-lg font-bold flex items-center gap-2">
                     <span class="material-symbols-outlined text-purple-500" aria-hidden="true">calendar_today</span>
-                    10年間のフリーキャッシュフロー予測 (USD)
+                    15年間のフリーキャッシュフロー予測 (USD)
                   </h3>
                   <div class="overflow-x-auto rounded-lg border border-skin-line">
                     <table class="min-w-full divide-y divide-skin-line text-xs">
@@ -1507,7 +1507,7 @@ const dcfBroken =
                         <div class="space-y-4 text-left">
                           <p class="text-skin-accent font-bold text-xs uppercase tracking-widest font-sans">■ 予測期間1-5年の成長率</p>
                           <div class="flex justify-center py-3">
-                            <img src="https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Cbg%7Bwhite%7D%20g_%7B1-5%7D%20%3D%20%5Ctext%7Bmedian%7D%5Cbigl%28%5C%7B%5Ctext%7Bwins%7D%28s_i%2C%20R_f%2C%2030%5C%25%29%20%5Cmid%20s_i%20%5Cin%20S%5C%7D%5Cbigr%29" alt="Growth Rate 1-5" class="dark:invert h-10" />
+                            <img src="https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Cbg%7Bwhite%7D%20g_%7B1-5%7D%20%3D%20%5Ctext%7Bmedian%7D%5Cbigl%28%5C%7B%5Ctext%7Bwins%7D%28s_i%2C%20R_f%2C%2040%5C%25%29%20%5Cmid%20s_i%20%5Cin%20S%5C%7D%5Cbigr%29" alt="Growth Rate 1-5" class="dark:invert h-10" />
                           </div>
                           <div class="opacity-60 text-[10px] flex flex-wrap justify-center gap-x-4 gap-y-1.5 font-sans border-t border-skin-line/10 pt-3">
                             <span><strong>S</strong>: EPS 9Y CAGR, 売上 3Y CAGR, FCF 3Y CAGR, EBITDA 3Y CAGR, アナリスト長期予想, 内部成長率 (ROE × 留保率)</span>
@@ -1517,39 +1517,39 @@ const dcfBroken =
                         </div>
 
                         <div class="space-y-4 pt-6 border-t border-skin-line/30 text-left">
-                          <p class="text-skin-accent font-bold text-xs uppercase tracking-widest font-sans">■ 予測期間6-10年の線形減衰</p>
+                          <p class="text-skin-accent font-bold text-xs uppercase tracking-widest font-sans">■ 予測期間6-15年の線形減衰 (Stage 2)</p>
                           <div class="flex justify-center py-3">
-                            <img src="https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Cbg%7Bwhite%7D%20g_i%20%3D%20g_%7B1-5%7D%20-%20%5Cfrac%7Bi-5%7D%7B5%7D%28g_%7B1-5%7D%20-%20R_f%29%2C%20i%20%3D%206...10" alt="Linear decline" class="dark:invert h-10" />
+                            <img src="https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Cbg%7Bwhite%7D%20g_i%20%3D%20g_%7B1-5%7D%20-%20%5Cfrac%7Bi-5%7D%7B10%7D%28g_%7B1-5%7D%20-%20R_f%29%2C%20i%20%3D%206...15" alt="Linear decline" class="dark:invert h-10" />
                           </div>
-                          <p class="opacity-60 text-[10px] font-sans text-center border-t border-skin-line/10 pt-2">成長率を段階的に長期リスクフリーレートへ収束</p>
+                          <p class="opacity-60 text-[10px] font-sans text-center border-t border-skin-line/10 pt-2">10年かけて成長率を長期リスクフリーレートへ収束 (2段階モデル)</p>
                         </div>
                       </div>
                     </div>
 
                     <div>
                       <h4 class="font-bold text-skin-accent mb-4 border-l-4 border-skin-accent pl-2">3. フリーキャッシュフロー現在価値</h4>
-                      <p class="text-sm mb-4">予測期間 (1-10年) のFCFと継続価値 (Terminal Value) を割引きます。</p>
+                      <p class="text-sm mb-4">予測期間 (1-15年) のFCFと継続価値 (Terminal Value) を割引きます。</p>
 
                       <div class="bg-skin-fill/20 p-6 rounded-md space-y-6 overflow-x-auto text-center font-serif">
                         <div class="space-y-4 text-left">
                           <p class="text-skin-accent font-bold text-xs uppercase tracking-widest font-sans">■ 予測FCF の現在価値化</p>
                           <div class="flex justify-center py-3">
-                            <img src="https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Cbg%7Bwhite%7D%20PV_%7BFCF%7D%20%3D%20%5Csum_%7Bt%3D1%7D%5E%7B10%7D%20%5Cfrac%7BFCF_t%7D%7B%281%2BWACC%29%5Et%7D" alt="FCF PV" class="dark:invert h-10" />
+                            <img src="https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Cbg%7Bwhite%7D%20PV_%7BFCF%7D%20%3D%20%5Csum_%7Bt%3D1%7D%5E%7B15%7D%20%5Cfrac%7BFCF_t%7D%7B%281%2BWACC%29%5Et%7D" alt="FCF PV" class="dark:invert h-10" />
                           </div>
                         </div>
 
                         <div class="space-y-4 pt-6 border-t border-skin-line/30 text-left">
                           <p class="text-skin-accent font-bold text-xs uppercase tracking-widest font-sans">■ 継続価値 (Terminal Value)</p>
                           <div class="flex justify-center py-3">
-                            <img src="https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Cbg%7Bwhite%7D%20TV%20%3D%20%5Cfrac%7BFCF_%7B10%7D%20%281%2BR_f%29%7D%7BWACC%20-%20R_f%7D" alt="Terminal Value" class="dark:invert h-12" />
+                            <img src="https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Cbg%7Bwhite%7D%20TV%20%3D%20%5Cfrac%7BFCF_%7B15%7D%20%281%2BR_f%29%7D%7BWACC%20-%20R_f%7D" alt="Terminal Value" class="dark:invert h-12" />
                           </div>
-                          <p class="opacity-60 text-[10px] font-sans text-center border-t border-skin-line/10 pt-2">11年目以降を永遠に成長を仮定（成長率 = R_f）</p>
+                          <p class="opacity-60 text-[10px] font-sans text-center border-t border-skin-line/10 pt-2">16年目以降を永遠に成長を仮定（成長率 = R_f）</p>
                         </div>
 
                         <div class="space-y-4 pt-6 border-t border-skin-line/30 text-left">
                           <p class="text-skin-accent font-bold text-xs uppercase tracking-widest font-sans">■ 企業価値 (Enterprise Value)</p>
                           <div class="flex justify-center py-3">
-                            <img src="https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Cbg%7Bwhite%7D%20EV%20%3D%20PV_%7BFCF%7D%20%2B%20%5Cfrac%7BTV%7D%7B%281%2BWACC%29%5E%7B10%7D%7D" alt="EV" class="dark:invert h-10" />
+                            <img src="https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Cbg%7Bwhite%7D%20EV%20%3D%20PV_%7BFCF%7D%20%2B%20%5Cfrac%7BTV%7D%7B%281%2BWACC%29%5E%7B15%7D%7D" alt="EV" class="dark:invert h-10" />
                           </div>
                         </div>
                       </div>

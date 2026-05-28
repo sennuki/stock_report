@@ -381,17 +381,18 @@ def calculate_dcf(symbol, ticker=None, yf_info=None, yf_growth_estimates=None):
             "sustainable": sustainable,
         }
 
-        # 将来成長率 (1-5年): 各シグナルを (R_f, 20%) で winsorize し median を取る。
+        # 将来成長率 (1-5年): 各シグナルを (R_f, 40%) で winsorize し median を取る。
         # ハードクリップ (5-20%) と異なり 1 つの外れ値で結果が引っ張られないため、
         # EPS 9Y CAGR が一時的に異常値でも他 5 つで補正できる。
-        # 上限は 20%: 5 年連続 20% 成長は実質トップ 5% 銘柄でも珍しく、 これ以上は
-        # DCF の永続成長率前提と整合しなくなる (TV の分母が小さくなりすぎる)。
+        # 上限は 40%: NVDA 級の超高成長銘柄 (revenue/FCF 100%+ YoY) を過小評価
+        # しないため。 2 段階モデル (1-5年=高成長、6-15年=10年かけて漸減) と
+        # 組み合わせることで、 高成長期の急減を回避しつつ最終的に Rf へ収束する。
+        # TV の発散は terminal_growth = min(Rf, WACC - 3pt) で別途防いでいる。
         # フロアを R_f に揃えることで 5→6 年目の成長率ジャンプが消えグライドパスが
-        # 滑らかになる (永続成長率 = R_f のため)。 ただし R_f が異常に高いと
-        # floor >= cap で全シグナルが degenerate に cap に張り付くため、 必ず
-        # 5pt 以上のレンジを確保する。
-        WINSORIZE_CAP = 0.20
-        winsorize_floor = min(risk_free_rate, WINSORIZE_CAP - 0.05)
+        # 滑らかになる。 ただし R_f が異常に高いと floor >= cap で全シグナルが
+        # degenerate に cap に張り付くため、 必ず 10pt 以上のレンジを確保する。
+        WINSORIZE_CAP = 0.40
+        winsorize_floor = min(risk_free_rate, WINSORIZE_CAP - 0.10)
         signals_clipped = {
             k: (min(max(v, winsorize_floor), WINSORIZE_CAP) if v is not None else None)
             for k, v in signals_raw.items()
@@ -468,19 +469,27 @@ def calculate_dcf(symbol, ticker=None, yf_info=None, yf_growth_estimates=None):
                 "ttm_fcf": float(ttm_fcf) if ttm_fcf is not None else None,
             }
 
+        # 2 段階モデル:
+        #   Stage 1 (1-5 年): 高成長期。 growth_1_5y で一定。
+        #   Stage 2 (6-15 年): 漸減期。 10 年かけて terminal_growth に線形収束。
+        #   Year 16 以降: Terminal Value (永続成長率 = terminal_growth)。
+        # 旧モデル (1-10 年予測、 6-10 年で 5 年漸減) では、 高成長銘柄
+        # (NVDA, TSLA 等) の 5→6 年目で成長率が急降下し過小評価が発生していた。
+        # 10 年漸減にすることで成長カーブが現実的になる。
+        FORECAST_YEARS = 15
+        DECAY_YEARS = 10  # Stage 2 の長さ (6-15 年)
         projections = []
         current_fcf = base_fcf
-        
-        # 1-10年目の予測
-        for i in range(1, 11):
+
+        for i in range(1, FORECAST_YEARS + 1):
             if i <= 5 or growth_1_5y <= terminal_growth:
-                # 1-5年目は初期成長率。6年目以降も初期成長率 <= 永続成長率なら
-                # 漸減ロジックが「加速」になってしまうため、初期成長率を維持する。
+                # Stage 1。 また growth <= terminal なら漸減が「加速」になるため
+                # 全年で growth_1_5y を維持。
                 rate = growth_1_5y
             else:
-                # 6年目以降はTerminal Growthに向けて線形に漸減させる
-                rate = growth_1_5y - (i - 5) * (growth_1_5y - terminal_growth) / 5
-            
+                # Stage 2: (i - 5) / DECAY_YEARS の割合だけ terminal に近づく
+                rate = growth_1_5y - (i - 5) * (growth_1_5y - terminal_growth) / DECAY_YEARS
+
             current_fcf *= (1 + rate)
             discounted_fcf = current_fcf / ((1 + wacc) ** i)
             projections.append({
@@ -489,16 +498,17 @@ def calculate_dcf(symbol, ticker=None, yf_info=None, yf_growth_estimates=None):
                 "discounted_fcf": float(discounted_fcf),
                 "growth_rate": float(rate)
             })
-        
-        # 6年目の成長率を growth_6_10y として保持 (Excel の C13 = C12-(C12-C14)/5 に相当)
+
+        # 6 年目の成長率 (Stage 2 開始時点) を保持。 旧名 growth_6_10y を維持して
+        # テンプレ互換性を保つが、 意味は「Stage 2 の初年度成長率」。
         if growth_1_5y <= terminal_growth:
             growth_6_10y = growth_1_5y
         else:
-            growth_6_10y = growth_1_5y - (growth_1_5y - terminal_growth) / 5
-            
-        # 継続価値 (Terminal Value)
+            growth_6_10y = growth_1_5y - (growth_1_5y - terminal_growth) / DECAY_YEARS
+
+        # 継続価値 (Terminal Value): Year 15 末の FCF を起点に永続成長
         tv = (current_fcf * (1 + terminal_growth)) / (wacc - terminal_growth)
-        npv_tv = tv / ((1 + wacc) ** 10)
+        npv_tv = tv / ((1 + wacc) ** FORECAST_YEARS)
         
         npv_fcf_sum = sum(p["discounted_fcf"] for p in projections)
         enterprise_value = npv_fcf_sum + npv_tv
@@ -589,24 +599,24 @@ def calculate_dcf(symbol, ticker=None, yf_info=None, yf_growth_estimates=None):
 
             if current_ev > 0 and base_fcf > 0:
                 def calculate_ev_for_growth(g):
-                    """指定の成長率で企業価値を計算"""
+                    """指定の成長率で企業価値を計算 (DCF と同じ 2 段階モデル)"""
                     fcf = base_fcf
                     pv_fcf_sum = 0
-                    for i in range(1, 11):
+                    for i in range(1, FORECAST_YEARS + 1):
                         if i <= 5 or g <= terminal_growth:
                             # g <= 永続成長率なら漸減ロジックが「加速」になるため
                             # 全年で g を維持する (リバース DCF の対称化)。
                             rate = g
                         else:
-                            rate = g - (i - 5) * (g - terminal_growth) / 5
+                            rate = g - (i - 5) * (g - terminal_growth) / DECAY_YEARS
                         fcf *= (1 + rate)
                         pv_fcf_sum += fcf / ((1 + wacc) ** i)
                     tv = (fcf * (1 + terminal_growth)) / (wacc - terminal_growth)
-                    npv_tv = tv / ((1 + wacc) ** 10)
+                    npv_tv = tv / ((1 + wacc) ** FORECAST_YEARS)
                     return pv_fcf_sum + npv_tv
 
                 # 二分探索で必要な成長率を求める
-                low, high = 0.001, 0.50  # 0.1% ～ 50%
+                low, high = 0.001, 0.60  # 0.1% ～ 60% (cap 40% + α)
                 tolerance = 0.0001
                 for _ in range(100):
                     mid = (low + high) / 2

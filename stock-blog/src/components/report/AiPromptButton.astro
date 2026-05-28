@@ -111,8 +111,8 @@ ${
     ? `- 現在株価: ${usd(dcf.current_price)}
 - DCF理論株価（フェアバリュー）: ${usd(dcf.fair_price)}${dcfUpside !== null ? `\n- 現在株価比乖離: ${Number(dcfUpside) >= 0 ? "+" : ""}${dcfUpside}% (${Number(dcfUpside) >= 0 ? "割安" : "割高"})` : ""}
 - WACC: ${pct(dcf.wacc_details?.wacc)}
-- 成長率（1〜5年）: ${pct(dcf.growth_1_5y)}
-- 成長率（6〜10年）: ${pct(dcf.growth_6_10y)}
+- 成長率（1〜5年, Stage 1）: ${pct(dcf.growth_1_5y)}
+- 成長率（6年目, Stage 2 開始時点）: ${pct(dcf.growth_6_10y)}
 - ターミナル成長率: ${pct(dcf.terminal_growth)}
 - 売上 3Y CAGR: ${pct(dcf.cagr_details?.revenue)}
 - EPS 9Y CAGR: ${pct(dcf.cagr_details?.eps_9y_cagr)}`
