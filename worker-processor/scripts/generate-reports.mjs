@@ -1974,10 +1974,10 @@ function generateSegmentChart(segmentData, stackName = 'segment', errorLabel = '
     orderedCols.map((col, i) => [col, _SEG_COLORS[i % _SEG_COLORS.length]]),
   );
 
-  // 四半期: 直近24四半期（通年6年に合わせた期間）
-  const quarterlyData = sorted.slice(-24);
+  // 四半期: 直近40四半期（通年10年に合わせた期間）
+  const quarterlyData = sorted.slice(-40);
 
-  // 通年: 年（決算期）ごとに集計して直近6年
+  // 通年: 年（決算期）ごとに集計して直近10年
   const byYear = {};
   for (const row of sorted) {
     const year = String(row.Date || row.report_date || '').slice(0, 4);
@@ -1987,7 +1987,7 @@ function generateSegmentChart(segmentData, stackName = 'segment', errorLabel = '
   }
   const annualData = Object.values(byYear)
     .sort((a, b) => a.Date.localeCompare(b.Date))
-    .slice(-6);
+    .slice(-10);
 
   const annual    = _tagGroupLabels(_segmentDatasets(annualData,    " (通年)",  false, stackName, orderedCols, colorMap));
   const quarterly = _tagGroupLabels(_segmentDatasets(quarterlyData, " (四半期)", true,  stackName, orderedCols, colorMap));

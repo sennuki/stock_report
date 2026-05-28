@@ -606,12 +606,32 @@ _GEO_KEYWORDS = (
     'geographical area',
     'external customer', # "Revenues From External Customers..."
     'country',
+    'region',            # "Geographic Region", "By Region"
 )
 _SEG_KEYWORDS = (
     'segment',           # "Segment Reporting", "Reportable Segments", ...
     'business segment',
     'operating segment',
 )
+
+# 汎用 breakdown_type (例: "Disaggregation of Revenue") の中身が地理データの
+# 場合に、item_name から地理表だと判定するためのキーワード。
+_GEO_ITEM_PATTERNS = (
+    'united states', 'u.s.', 'americas', 'emea', 'apac', 'asia',
+    'europe', 'north america', 'latin america', 'middle east', 'africa',
+    'china', 'japan', 'germany', 'united kingdom', 'india', 'canada',
+    'international', 'domestic', 'foreign', 'rest of world',
+)
+
+
+def _looks_like_geo(item_names) -> bool:
+    """item_name の集合が地理的分類に見えるかを判定する。
+    半数以上 (最低2個) が地理キーワードに合致すれば True。"""
+    lowered = [str(n).lower() for n in item_names if n]
+    if not lowered:
+        return False
+    matched = sum(1 for n in lowered if any(p in n for p in _GEO_ITEM_PATTERNS))
+    return matched >= max(2, len(lowered) // 2)
 
 
 def _classify_breakdown_type(bt: str) -> str:
@@ -655,11 +675,22 @@ def _pivot_breakdown_long_to_wide(long_df: "pd.DataFrame",
     """
     if long_df is None or long_df.empty:
         return pd.DataFrame()
-    df = long_df.copy()
-    if 'breakdown_type' not in df.columns:
+    df_all = long_df.copy()
+    if 'breakdown_type' not in df_all.columns:
         return pd.DataFrame()
-    df['__class'] = df['breakdown_type'].apply(_classify_breakdown_type)
-    df = df[df['__class'] == classification]
+    df_all['__class'] = df_all['breakdown_type'].apply(_classify_breakdown_type)
+    df = df_all[df_all['__class'] == classification]
+
+    # フォールバック: 地理分類でテーブル名マッチが空の場合、 'other' テーブルを
+    # item_name で判定して地理表を救い上げる (例: GOOGL は "Disaggregation of
+    # Revenue" のように汎用的なテーブル名で地理データを開示している)。
+    if df.empty and classification == 'geography':
+        other = df_all[df_all['__class'] == 'other']
+        for bt, group in other.groupby('breakdown_type'):
+            if _looks_like_geo(group['item_name'].unique()):
+                df = group
+                break
+
     if df.empty:
         return pd.DataFrame()
     # 階層がある場合は depth=1 のみ採用 (フォールバックあり)

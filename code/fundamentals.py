@@ -563,7 +563,7 @@ def _build_revenue_bar_chart(df, item_label: str):
     if not value_cols:
         return _NO_DATA_MSG
 
-    df_q = df.sort('Date').tail(24)
+    df_q = df.sort('Date').tail(40)
     active_q = [c for c in value_cols if df_q[c].sum() != 0]
 
     df_a = pl.DataFrame()
@@ -572,7 +572,7 @@ def _build_revenue_bar_chart(df, item_label: str):
         df_a = (
             df.with_columns(pl.col("Date").str.slice(0, 4).alias("Year"))
             .group_by("Year").agg([pl.col(c).sum() for c in value_cols])
-            .sort("Year").tail(5)
+            .sort("Year").tail(10)
         )
         active_a = [c for c in value_cols if df_a[c].sum() != 0]
     except Exception:
