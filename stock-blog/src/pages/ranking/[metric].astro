@@ -114,6 +114,164 @@ const METRIC_MAP: Record<string, { metricKey: string; label: string; subtitle: s
     label: "ベータランキング",
     subtitle: "ベータ値が大きい順 — 市場連動性が高い高ボラ銘柄",
   },
+  // アナリスト評価
+  "analyst-count": {
+    metricKey: "analyst_count",
+    label: "アナリスト数ランキング",
+    subtitle: "カバーするアナリストの人数が多い順 — 市場の注目度",
+  },
+  "target-upside": {
+    metricKey: "target_upside",
+    label: "目標株価乖離率ランキング",
+    subtitle: "現在株価と目標株価コンセンサス (mean) の乖離率が大きい順 — アップサイド候補",
+  },
+  "analyst-buy-ratio": {
+    metricKey: "analyst_buy_ratio",
+    label: "Buy評価比率ランキング",
+    subtitle: "Strong Buy + Buy の割合が高い順 — 5名以上のアナリスト評価がある銘柄が対象",
+  },
+  "recommendation-mean": {
+    metricKey: "recommendation_mean",
+    label: "コンセンサス推奨スコアランキング",
+    subtitle: "推奨スコア (1=Strong Buy 〜 5=Sell) が低い (=ブル) 順",
+  },
+  "target-price-dispersion": {
+    metricKey: "target_price_dispersion",
+    label: "目標株価レンジ幅ランキング",
+    subtitle: "(高値 − 安値) / 平均 が大きい順 — アナリスト間の意見の割れ度合い (3名以上対象)",
+  },
+  "analyst-strong-buy-ratio": {
+    metricKey: "analyst_strong_buy_ratio",
+    label: "Strong Buy 専一率ランキング",
+    subtitle: "Strong Buy 単独の割合が高い順 — 確信度の高い強気推奨が集中する銘柄",
+  },
+  "analyst-bear-ratio": {
+    metricKey: "analyst_bear_ratio",
+    label: "弱気評価比率ランキング",
+    subtitle: "Sell + Strong Sell の割合が高い順 — 逆張り候補 / 警戒銘柄",
+  },
+  // 財務健全性
+  "debt-to-equity-low": {
+    metricKey: "debt_to_equity_low",
+    label: "D/E 比率 (低) ランキング",
+    subtitle: "負債資本比率が低い順 — 健全な財務体質の銘柄",
+  },
+  "current-ratio": {
+    metricKey: "current_ratio",
+    label: "流動比率ランキング",
+    subtitle: "流動資産 ÷ 流動負債 が高い順 — 短期の支払能力に余裕",
+  },
+  "quick-ratio": {
+    metricKey: "quick_ratio",
+    label: "当座比率ランキング",
+    subtitle: "(流動資産 − 棚卸) ÷ 流動負債 が高い順 — 厳格な短期支払能力",
+  },
+  // キャッシュフロー
+  "free-cashflow": {
+    metricKey: "free_cashflow",
+    label: "フリーキャッシュフローランキング",
+    subtitle: "営業 CF − 設備投資 の絶対額が大きい順 — 創出するキャッシュの規模",
+  },
+  "fcf-margin": {
+    metricKey: "fcf_margin",
+    label: "FCF マージンランキング",
+    subtitle: "FCF ÷ 売上 が高い順 — 売上をどれだけキャッシュに転換できているか",
+  },
+  // 株主構成
+  "held-pct-institutions": {
+    metricKey: "held_pct_institutions",
+    label: "機関投資家保有率ランキング",
+    subtitle: "機関投資家の保有比率が高い順 — プロのマネーが集まっている銘柄",
+  },
+  "held-pct-insiders": {
+    metricKey: "held_pct_insiders",
+    label: "インサイダー保有率ランキング",
+    subtitle: "経営陣など内部関係者の保有比率が高い順 — 経営とのインセンティブ整合",
+  },
+  "short-pct-float": {
+    metricKey: "short_pct_float",
+    label: "空売り比率 (浮動株比) ランキング",
+    subtitle: "浮動株に占める空売り残高比率が高い順 — スクイーズ候補 / 警戒銘柄",
+  },
+  // モメンタム
+  "earnings-growth": {
+    metricKey: "earnings_growth",
+    label: "EPS 成長率 (YoY) ランキング",
+    subtitle: "通期 EPS の前年比成長率が高い順",
+  },
+  "earnings-quarterly-growth": {
+    metricKey: "earnings_quarterly_growth",
+    label: "EPS 成長率 (四半期 YoY) ランキング",
+    subtitle: "直近四半期 EPS の前年同期比成長率が高い順 — モメンタム指標",
+  },
+  // バリュエーション拡張
+  "high-forward-pe": {
+    metricKey: "high_forward_pe",
+    label: "PER 予想 (高) ランキング",
+    subtitle: "予想 PER が高い順 — 高成長プレミアムが乗っている銘柄",
+  },
+  "peg-ratio-low": {
+    metricKey: "peg_ratio_low",
+    label: "PEG レシオ (低) ランキング",
+    subtitle: "PEG が低い順 — 成長を加味した割安度 (Lynch 指標)",
+  },
+  "enterprise-to-revenue": {
+    metricKey: "enterprise_to_revenue",
+    label: "EV / Revenue (低) ランキング",
+    subtitle: "事業価値 ÷ 売上 が低い順 — 借入を加味した PSR の改良版",
+  },
+  "ebitda-margin": {
+    metricKey: "ebitda_margin",
+    label: "EBITDA マージンランキング",
+    subtitle: "EBITDA ÷ 売上 が高い順 — キャッシュベースの収益性",
+  },
+  "earnings-yield": {
+    metricKey: "earnings_yield",
+    label: "Earnings Yield ランキング",
+    subtitle: "EBIT ÷ EV が高い順 — Magic Formula の利回り要素",
+  },
+  "roic-proxy": {
+    metricKey: "roic_proxy",
+    label: "ROIC (推定) ランキング",
+    subtitle: "EBIT ÷ (総資産 − 流動負債) が高い順 — Greenblatt 流の資本効率",
+  },
+  // 低ベータ / パフォーマンス
+  "beta-low": {
+    metricKey: "beta_low",
+    label: "ベータ (低) ランキング",
+    subtitle: "ベータが低い順 — 市場連動が低いディフェンシブ候補",
+  },
+  "return-1y": {
+    metricKey: "return_1y",
+    label: "1年リターンランキング",
+    subtitle: "直近 1 年の年率リターンが高い順",
+  },
+  "return-ytd": {
+    metricKey: "return_ytd",
+    label: "年初来リターンランキング",
+    subtitle: "年初来のパフォーマンス (年率換算) が高い順",
+  },
+  "max-drawdown-1y": {
+    metricKey: "max_drawdown_1y",
+    label: "最大ドローダウン (1年) ランキング",
+    subtitle: "直近 1 年の最大下落幅が小さい順 — 下落耐性が高い銘柄",
+  },
+  // コンポジット
+  "piotroski-score": {
+    metricKey: "piotroski_score",
+    label: "Piotroski F-Score ランキング",
+    subtitle: "9 項目 (収益性・レバレッジ・効率) の財務健全性チェックを 0-9 点で評価",
+  },
+  "dividend-stability": {
+    metricKey: "dividend_stability",
+    label: "配当安定性スコアランキング",
+    subtitle: "配当継続性・FCF カバー率・利益安定性など 5 項目を 0-5 点で評価",
+  },
+  "magic-formula": {
+    metricKey: "magic_formula",
+    label: "Magic Formula ランキング",
+    subtitle: "Earnings Yield と ROIC の順位合計が小さい順 — Greenblatt 流のクオリティ × バリュー",
+  },
 };
 
 const { metric } = Astro.params as { metric: string };

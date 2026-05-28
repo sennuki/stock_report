@@ -499,7 +499,7 @@ def calculate_dcf(symbol, ticker=None, yf_info=None, yf_growth_estimates=None):
         
         equity_value = enterprise_value + cash_value - total_debt
         fair_price = equity_value / shares
-        
+
         # 現在価格: yf_info の最新値を優先、なければ defeatbeta price() にフォールバック
         current_price = None
         if yf_info is not None:
@@ -509,7 +509,34 @@ def calculate_dcf(symbol, ticker=None, yf_info=None, yf_growth_estimates=None):
         if not current_price:
             price_df = db_ticker.price()
             current_price = float(price_df['close'].iloc[-1]) if not price_df.empty else 0
-        
+
+        # DCF サニティチェック: 計算ロジックが通っても、入力データの不整合や
+        # 極端な成長率 / 低 WACC が組み合わさると無意味な fair_price になり得る。
+        #   - 負の理論株価: 企業価値 < (負債 - 現金) または TV が負
+        #   - 現在価格との極端な乖離: 入力データ品質に問題がある可能性が高い
+        # フロントに「割安/割高」を出す材料にならない値はここで dcf_applicable=False
+        # に倒して "DCF 評価対象外" の説明文を表示させる。
+        FAIR_PRICE_MAX_MULTIPLE = 5.0  # 現在価格の 5 倍を超える理論株価は要警戒
+        implausible_reason = None
+        if fair_price <= 0:
+            implausible_reason = "negative_fair_price"
+        elif current_price > 0 and fair_price > current_price * FAIR_PRICE_MAX_MULTIPLE:
+            implausible_reason = "implausible_fair_price"
+        if implausible_reason is not None:
+            return {
+                "dcf_applicable": False,
+                "dcf_not_applicable_reason": implausible_reason,
+                "fair_price_raw": float(fair_price),
+                "current_price": float(current_price),
+                "wacc_details": wacc_details,
+                "cagr_details": {k: (float(v) if v is not None else None) for k, v in cagr_details.items()},
+                "growth_1_5y": float(growth_1_5y),
+                "terminal_growth": float(terminal_growth),
+                "base_fcf": float(base_fcf),
+                "base_fcf_method": base_fcf_method,
+            }
+
+
         # リバースDCF：現在株価から逆算して必要な成長率を計算
         reverse_growth = None
         try:
@@ -599,20 +626,58 @@ def _normalize_revenue_df(df: "pd.DataFrame") -> "pd.DataFrame":
 
 # defeatbeta-api 0.0.57 から revenue_by_segment() / revenue_by_geography() が
 # 削除され、 revenue_by_breakdown() が XBRL の全 breakdown をロング形式で返す
-# 仕様に変わった。 ticker.breakdown_type は SEC ファイリングの XBRL テーブル名
-# そのままで、 セグメント/地域の分類はテーブル名キーワードで判定する。
-_GEO_KEYWORDS = (
-    'geograph',          # "Geographic", "Geographical"
-    'geographical area',
-    'external customer', # "Revenues From External Customers..."
-    'country',
-    'region',            # "Geographic Region", "By Region"
-)
-_SEG_KEYWORDS = (
-    'segment',           # "Segment Reporting", "Reportable Segments", ...
-    'business segment',
-    'operating segment',
-)
+# 仕様に変わった。 AAPL のように "Schedule Of Segment Reporting Information"
+# テーブルの中身が地域 (Americas/Europe/Greater China/Japan/Rest Of Asia
+# Pacific) であるケースがあるため、 テーブル名ではなく **item_name の中身** で
+# 各レコードを geography / segment に分類する。
+_GEO_TOKENS_EXACT = {
+    # ----- アメリカ大陸 -----
+    'americas', 'america', 'us', 'u.s.', 'u.s.a.', 'usa', 'united states',
+    'domestic', 'total united states', 'total us', 'total u.s.',
+    'outside united states', 'non us', 'non-us',
+    'north america', 'south america', 'central america', 'latin america',
+    'lacc', 'lacc geographic region', 'other americas', 'rest of americas',
+    'canada', 'mexico', 'brazil', 'argentina', 'colombia', 'chile', 'peru',
+    'caribbean', 'puerto rico',
+    # ----- 欧州・中東・アフリカ -----
+    'europe', 'european', 'european union', 'eu',
+    'emea', 'europe middle east and africa', 'europe middle east africa',
+    'middle east and africa', 'middle east', 'africa',
+    'eastern europe', 'western europe', 'central europe', 'northern europe',
+    'southern europe', 'rest of europe', 'other europe',
+    'germany', 'france', 'uk', 'u.k.', 'united kingdom', 'great britain',
+    'ireland', 'italy', 'spain', 'netherlands', 'switzerland', 'sweden',
+    'norway', 'finland', 'denmark', 'belgium', 'austria', 'poland', 'russia',
+    'turkey', 'portugal', 'czech republic', 'greece', 'hungary',
+    'saudi arabia', 'uae', 'united arab emirates', 'israel', 'egypt',
+    'south africa', 'nigeria',
+    # ----- アジア太平洋 -----
+    'asia', 'asia pacific', 'asia-pacific', 'apac', 'pacific',
+    'a. pacific',  # KO の表記
+    'asia middle east and africa',  # MDLZ の表記
+    'rest of asia pacific', 'rest of asia-pacific', 'rest of asia',
+    'rest of world', 'row', 'rest of the world',
+    'other asia pacific', 'other asia',
+    'greater china', 'china including hong kong', 'mainland china',
+    'china', 'hong kong', 'hk', 'macau', 'macao',
+    'taiwan', 'japan', 'korea', 'south korea', 'north korea',
+    'singapore', 'india', 'indonesia', 'vietnam', 'thailand', 'malaysia',
+    'philippines', 'australia', 'new zealand',
+    'japa geographic region',  # AXP の表記
+    'emea geographic region', 'united states geographic region',
+    # ----- 集計/その他 -----
+    'foreign', 'foreign countries', 'international', 'overseas',
+    'other countries', 'other foreign countries', 'all other foreign',
+    'all other countries', 'all other countries not separately disclosed',
+    'segment geographical groups of countries group one',
+    'segment geographical groups of countries group two',
+    'segment geographical groups of countries group three',
+    'segment geographical groups of countries group other',
+    'other geographic group',
+}
+# item_name の (case-insensitive) 部分文字列にヒットしたら geo。
+# 'country' は "Other Countries" などにマッチ。 'geograph' は "Geographic" などにマッチ。
+_GEO_SUBSTRINGS = ('country', 'countries', 'geograph')
 
 # 汎用 breakdown_type (例: "Disaggregation of Revenue") の中身が地理データの
 # 場合に、item_name から地理表だと判定するためのキーワード。
@@ -634,14 +699,53 @@ def _looks_like_geo(item_names) -> bool:
     return matched >= max(2, len(lowered) // 2)
 
 
-def _classify_breakdown_type(bt: str) -> str:
-    """XBRL テーブル名から 'segment' / 'geography' / 'other' を判定する。"""
+def _is_geo_item(name) -> bool:
+    """item_name が地理 (国/地域) を表すか判定する。"""
+    if not isinstance(name, str):
+        return False
+    s = name.strip()
+    sl = s.lower()
+    if not sl:
+        return False
+    if sl in _GEO_TOKENS_EXACT:
+        return True
+    # ISO 3166-1 alpha-2 のような 2 文字大文字略号は国コードと推定する。
+    # SEC の XBRL では geographic items が "US/CA/DE/JP/CN/FR/..." のように
+    # 2 文字略号で並ぶケースが多い (ABBV の Long Lived Assets テーブル等)。
+    if len(s) == 2 and s.isupper() and s.isalpha():
+        return True
+    return any(sub in sl for sub in _GEO_SUBSTRINGS)
+
+
+# セグメント側のテーブル優先度。 アイテム数最多ロジックだけだと
+# MSFT のように真のセグメント (Productivity & Business Processes /
+# Intelligent Cloud / More Personal Computing = 3 つ) が 製品別テーブル
+# (Office/Xbox/Surface/... = 10+ items) に負けてしまうため、 テーブル名
+# キーワードで優先度を与え、 priority 値が最小のテーブルを各 report_date で
+# 採用する。 また、 これらキーワードに該当しないテーブル (例: "Statement
+# Table" は損益計算書の生データであり、 Xbox/Office/Surface 等の製品名が
+# 混じることがある) はセグメント候補から **除外** する。
+_SEG_TABLE_PRIORITY_KEYWORDS = (
+    'segment',              # 真の財務報告セグメント (Schedule Of Segment Reporting...)
+    'disaggregation',       # 製品/サービス別 (Disaggregation Of Revenue Table)
+    'market',               # NVDA "Scheduleof Revenueby Markets Table" など
+)
+# 'products and services' (= Schedule Of Entity Wide Information Revenue
+# From External Customers By Products And Services Table) はあえて優先候補
+# から外している。 MSFT の 2014-2015 年は priority=0 の Segment Reporting
+# テーブルが defeatbeta データに欠損しており、 そのテーブルが fallback で
+# 採用されると Xbox/Office/Surface などの製品名がセグメントに混入してしまう
+# ため。 該当銘柄の該当期間はセグメント空欄を許容する。
+
+
+def _segment_table_priority(bt):
+    """セグメント表示に採用してよいテーブルなら整数優先度を、
+    採用すべきでないテーブル (Statement Table 等) なら None を返す。"""
     s = (bt or '').lower()
-    if any(k in s for k in _GEO_KEYWORDS):
-        return 'geography'
-    if any(k in s for k in _SEG_KEYWORDS):
-        return 'segment'
-    return 'other'
+    for i, kw in enumerate(_SEG_TABLE_PRIORITY_KEYWORDS):
+        if kw in s:
+            return i
+    return None
 
 
 def _period_span_days(period_label) -> int:
@@ -658,6 +762,11 @@ def _period_span_days(period_label) -> int:
         return None
 
 
+# 完全分解判定のときに採用する許容誤差 (テーブル合計 / 参照売上 の許容範囲)。
+# XBRL の丸めや小さなセグメント間調整を吸収するため、 ±5% を採用する。
+_COMPLETE_REVENUE_TOL = 0.05
+
+
 def _pivot_breakdown_long_to_wide(long_df: "pd.DataFrame",
                                   classification: str) -> "pd.DataFrame":
     """defeatbeta 0.0.57 のロング形式 breakdown データをワイド形式に変換する。
@@ -666,58 +775,131 @@ def _pivot_breakdown_long_to_wide(long_df: "pd.DataFrame",
            item_name, item_value, depth, parent_name}
     出力: {symbol, report_date, <item_name_1>, <item_name_2>, ...} (1 行 = 1 四半期)
 
-    - 同一 classification (segment/geography) 内で複数の XBRL テーブルがある場合は
-      最もアイテム数の多いテーブル 1 つを採用する。
-    - 親子階層による重複加算を避けるため depth=1 (ルート) のみ採用する。
-    - 同じ report_date 内に複数の period_label (四半期 / YTD 累積 / 年次) が
-      混在するため、 最も短いスパン (= 通常は 3 ヶ月の四半期値) のみを採用して
-      重複加算を防ぐ。
+    採用テーブルの選び方:
+    1. 親子重複を防ぐため depth=1 のみ採用。
+    2. 同じ report_date 内に複数 period_label (四半期 / YTD / 年次) が
+       並ぶときは最短スパン (通常は 3 ヶ月の四半期値) のみ採用。
+    3. 各 (report_date, breakdown_type) のアイテム合計を計算。 同 report_date
+       のテーブル合計の **最大値** を「参照売上」とみなし、 各テーブル合計
+       が参照売上の (1 ± _COMPLETE_REVENUE_TOL) の範囲なら "完全分解" と
+       判定する。 部分分解 (例: 主要地域だけ列挙して残りを合算しないテーブル)
+       や、 製品+地域が混在しているテーブルは合計が参照売上に満たないことが
+       多く、 ここで除外される。
+    4. 完全分解テーブルの中で、 全アイテムが geo (= 全 row で _is_geo_item)
+       なら geography 候補、 全アイテムが non-geo なら segment 候補と判定。
+       (純粋性チェック。 ユーザ指摘の「主要商品は US/EU で分けて、 サービスは
+       合算」のような混在テーブルは ここで除外。)
+    5. segment 側は更にテーブル優先度 (_segment_table_priority) で
+       'segment' > 'disaggregation' > 'market' の順に絞り、 同優先度内で
+       アイテム数最多のテーブルを report_date ごとに採用。
+    6. geography 側はアイテム数最多のテーブルを report_date ごとに採用。
     """
     if long_df is None or long_df.empty:
         return pd.DataFrame()
-    df_all = long_df.copy()
-    if 'breakdown_type' not in df_all.columns:
+    df = long_df.copy()
+    if 'item_name' not in df.columns or 'breakdown_type' not in df.columns:
         return pd.DataFrame()
-    df_all['__class'] = df_all['breakdown_type'].apply(_classify_breakdown_type)
-    df = df_all[df_all['__class'] == classification]
-
-    # フォールバック: 地理分類でテーブル名マッチが空の場合、 'other' テーブルを
-    # item_name で判定して地理表を救い上げる (例: GOOGL は "Disaggregation of
-    # Revenue" のように汎用的なテーブル名で地理データを開示している)。
-    if df.empty and classification == 'geography':
-        other = df_all[df_all['__class'] == 'other']
-        for bt, group in other.groupby('breakdown_type'):
-            if _looks_like_geo(group['item_name'].unique()):
-                df = group
-                break
-
-    if df.empty:
-        return pd.DataFrame()
-    # 階層がある場合は depth=1 のみ採用 (フォールバックあり)
+    # (1) depth=1 のみ採用
     if 'depth' in df.columns:
         depth1 = df[df['depth'] == 1]
         if not depth1.empty:
             df = depth1
-    # 同一 classification に複数 breakdown_type がある場合、 最もアイテム数の
-    # 多いテーブルを採用する (= より細かく分解されている方)。
-    counts = df.groupby('breakdown_type')['item_name'].nunique()
-    if counts.empty:
-        return pd.DataFrame()
-    chosen_bt = counts.idxmax()
-    df = df[df['breakdown_type'] == chosen_bt].copy()
-    # period_label ごとのスパン (日数) を計算し、 各 report_date で最短スパンを採用
+    # (2) period_label のスパン (日数) で四半期 / 年次データを分離。
+    #     - 四半期 = 60-120 日 (10-Q または 10-K 内の Q4 単独)
+    #     - 年次   = 300-400 日 (10-K の通年データ)
+    #     - YTD 累積 (180/270 日) は除外 (重複加算を避ける)
+    #
+    # 同じ breakdown_type で 四半期データを 1 行でも持つテーブルは "四半期
+    # スタイル" と判定し、 そのテーブル内では 四半期データのみ採用する。
+    # 四半期データが一切無いテーブル (例: ABBV の Long Lived Assets Table
+    # は 10-K の年次のみ) は "年次スタイル" として年次データを採用する。
+    # これにより、 GOOGL のように四半期データを持つテーブルで 12/31 の
+    # report_date に年次データしか無いケースを除外し、 通年売上が四半期
+    # として表示される異常を防ぐ。
     if 'period_label' in df.columns:
         df['__span'] = df['period_label'].apply(_period_span_days)
-        # 0 や None は除外して有効な期間スパンの最短を選ぶ。 全て None/0 なら
-        # __span にかかわらず最初の period_label を採用。
-        valid = df[df['__span'].fillna(-1) > 0]
-        if not valid.empty:
-            best = (valid.groupby('report_date')['__span'].idxmin())
-            chosen = valid.loc[best, ['report_date', 'period_label']]
-            df = df.merge(chosen, on=['report_date', 'period_label'], how='inner')
-        # 有効スパンが取れない (例: 全行で period_label が単一日付) 場合は
-        # period_label 列が単一値であることを前提に何もせず通す。
-        df = df.drop(columns=['__span'], errors='ignore')
+        df['__is_q'] = df['__span'].fillna(-1).between(60, 120)
+        df['__is_y'] = df['__span'].fillna(-1).between(300, 400)
+        # 採用 span は classification (geography/segment) ごとに判定する。
+        # 同じ銘柄でも segment は四半期データを持ち geography は年次のみ、
+        # というケース (例: ABBV) がある。 classification ターゲット側
+        # (item_name が geo か否か) で四半期データが 1 行でも存在するなら
+        # 全テーブル横断で四半期データのみ採用 (AAPL の 9/27 や GOOGL の
+        # 12/31 のような年次データ混入を防ぐ)。 一方、 ターゲット側に
+        # 四半期データが無ければ年次データを採用 (ABBV geography は
+        # 10-K の年次のみ提供されている)。
+        df['__row_is_geo'] = df['item_name'].apply(_is_geo_item)
+        target_geo = (classification == 'geography')
+        target_mask = (df['__row_is_geo'] == target_geo)
+        target_has_q = bool(df.loc[target_mask, '__is_q'].any())
+        if target_has_q:
+            df = df[df['__is_q']].copy()
+        else:
+            df = df[df['__is_y']].copy()
+        df = df.drop(
+            columns=['__span', '__is_q', '__is_y', '__row_is_geo'],
+            errors='ignore',
+        )
+    if df.empty:
+        return pd.DataFrame()
+    # (3) (4) 各テーブルの合計・純度を集計
+    df['__is_geo'] = df['item_name'].apply(_is_geo_item)
+    table_stats = (
+        df.groupby(['report_date', 'breakdown_type'])
+        .agg(
+            __sum=('item_value', 'sum'),
+            __n=('item_name', 'nunique'),
+            __geo_rows=('__is_geo', 'sum'),
+            __rows=('__is_geo', 'count'),
+        )
+        .reset_index()
+    )
+    # 参照売上 = 同 report_date のテーブル合計の最大値
+    ref = (
+        table_stats.groupby('report_date')['__sum']
+        .max()
+        .reset_index(name='__ref')
+    )
+    table_stats = table_stats.merge(ref, on='report_date')
+    # 完全分解判定 (合計が参照売上の ±_COMPLETE_REVENUE_TOL 以内)
+    table_stats['__complete'] = (
+        (table_stats['__ref'] > 0)
+        & ((table_stats['__sum'] / table_stats['__ref']).between(
+            1 - _COMPLETE_REVENUE_TOL, 1 + _COMPLETE_REVENUE_TOL
+        ))
+    )
+    # 純粋性判定
+    table_stats['__geo_ratio'] = table_stats['__geo_rows'] / table_stats['__rows']
+    table_stats['__pure_geo'] = table_stats['__geo_ratio'] == 1.0
+    table_stats['__pure_seg'] = table_stats['__geo_ratio'] == 0.0
+    # (5) (6) classification ごとに採用候補を絞る
+    if classification == 'geography':
+        candidates = table_stats[table_stats['__complete'] & table_stats['__pure_geo']].copy()
+        if candidates.empty:
+            return pd.DataFrame()
+        candidates = candidates.sort_values(
+            ['report_date', '__n'], ascending=[True, False]
+        )
+    elif classification == 'segment':
+        candidates = table_stats[table_stats['__complete'] & table_stats['__pure_seg']].copy()
+        if candidates.empty:
+            return pd.DataFrame()
+        candidates['__prio'] = candidates['breakdown_type'].apply(_segment_table_priority)
+        # Statement Table 等の優先度対象外テーブルは採用候補から外す
+        candidates = candidates[candidates['__prio'].notna()]
+        if candidates.empty:
+            return pd.DataFrame()
+        candidates = candidates.sort_values(
+            ['report_date', '__prio', '__n'], ascending=[True, True, False]
+        )
+    else:
+        return pd.DataFrame()
+    best_bt = candidates.drop_duplicates('report_date', keep='first')[
+        ['report_date', 'breakdown_type']
+    ]
+    df = df.merge(best_bt, on=['report_date', 'breakdown_type'], how='inner')
+    if df.empty:
+        return pd.DataFrame()
     pivot = df.pivot_table(
         index=['symbol', 'report_date'],
         columns='item_name',

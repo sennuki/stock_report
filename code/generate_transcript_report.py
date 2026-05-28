@@ -4,6 +4,8 @@ import time
 import random
 import json
 import re
+import numpy as np
+import pandas as pd
 from utils import get_gemini_client
 from defeatbeta_api.data.ticker import Ticker
 
@@ -118,7 +120,178 @@ def save_transcript_index(index):
     print(f"Index updated: {TRANSCRIPT_INDEX_PATH}")
 
 
-def update_transcript_index(symbol, fiscal_year, fiscal_quarter, sentiment=None, report_date=None):
+# --- 四半期財務ハイライト ------------------------------------------------
+# トランスクリプトページに、その期の主要 KPI（売上高・営業利益・純利益・EPS）と
+# 前年同期比 (YoY) を載せるためのデータを defeatbeta から取得する。
+# 索引 (index.json) の各エントリに `financials` として保存する。
+
+# defeatbeta / yfinance 両対応のための行ラベルエイリアス。
+_IS_ROW_ALIASES = {
+    "revenue": [
+        "Total Revenue", "Revenue", "Operating Revenue",
+        "TotalRevenue", "OperatingRevenue",
+    ],
+    "gross_profit": ["Gross Profit", "GrossProfit"],
+    "operating_income": [
+        "Operating Income", "OperatingIncome", "Operating Profit",
+    ],
+    "net_income": [
+        "Net Income", "NetIncome", "Net Income Common Stockholders",
+        "Net Income Continuous Operations",
+        "Net Income from Continuing Operations",
+        "Net Income Continuing Operations",
+    ],
+    "eps_diluted": ["Diluted EPS", "DilutedEPS", "Earnings Per Share Diluted"],
+    "eps_basic": ["Basic EPS", "BasicEPS", "Earnings Per Share Basic"],
+}
+
+
+def _find_is_row(df, aliases):
+    """行ラベル（大文字小文字・余分な空白を無視）を探して該当行を返す。"""
+    for alias in aliases:
+        if alias in df.index:
+            return df.loc[alias]
+    lower_idx = {str(i).strip().lower(): i for i in df.index}
+    for alias in aliases:
+        key = alias.strip().lower()
+        if key in lower_idx:
+            return df.loc[lower_idx[key]]
+    return None
+
+
+def _to_float(val):
+    if val is None:
+        return None
+    try:
+        f = float(val)
+    except (TypeError, ValueError):
+        return None
+    if np.isnan(f) or np.isinf(f):
+        return None
+    return f
+
+
+def _yoy(curr, prev):
+    if curr is None or prev is None or prev == 0:
+        return None
+    return (curr - prev) / abs(prev)
+
+
+def fetch_quarter_financials(ticker, report_date):
+    """report_date に対応する四半期の主要 KPI を defeatbeta から取得する。
+
+    quarterly_income_statement の列（四半期末日）のうち、report_date 以前で
+    最も近いものを当該四半期とみなす。前年同期は 4 列前（=約 1 年前）。
+    取得できない場合は None を返す（呼び出し側で索引に保存しない）。
+    """
+    if not report_date:
+        return None
+    try:
+        qis_obj = ticker.quarterly_income_statement()
+        df = qis_obj.df() if hasattr(qis_obj, "df") else None
+        if df is None or df.empty:
+            return None
+        if "Breakdown" in df.columns:
+            df = df.set_index("Breakdown")
+    except Exception as e:
+        print(f"  quarterly_income_statement の取得に失敗: {e}")
+        return None
+
+    try:
+        rd = pd.to_datetime(report_date)
+    except Exception:
+        return None
+
+    # 列名（四半期末日）を昇順に並べる
+    date_cols = []
+    for col in df.columns:
+        try:
+            d = pd.to_datetime(col)
+            date_cols.append((d, col))
+        except Exception:
+            continue
+    if not date_cols:
+        return None
+    date_cols.sort()
+
+    # report_date 以前で最新の四半期末を当該四半期とみなす
+    candidates = [(d, c) for d, c in date_cols if d <= rd]
+    if not candidates:
+        return None
+    period_date, period_col = candidates[-1]
+    # 四半期末と発表日の差が大きすぎる場合は対応する四半期データ無しとみなす
+    if (rd - period_date).days > 200:
+        return None
+
+    # 前年同期: period_date から約 1 年前に最も近い列
+    yoy_target = period_date - pd.Timedelta(days=365)
+    prior = [(d, c) for d, c in date_cols if d < period_date]
+    yoy_col = None
+    if prior:
+        yp, yc = min(prior, key=lambda x: abs((x[0] - yoy_target).days))
+        if abs((yp - yoy_target).days) <= 90:
+            yoy_col = yc
+
+    def val(metric_key, col):
+        if col is None:
+            return None
+        row = _find_is_row(df, _IS_ROW_ALIASES[metric_key])
+        if row is None:
+            return None
+        return _to_float(row.get(col))
+
+    revenue = val("revenue", period_col)
+    gross_profit = val("gross_profit", period_col)
+    op_income = val("operating_income", period_col)
+    net_income = val("net_income", period_col)
+    eps_diluted = val("eps_diluted", period_col)
+    eps_basic = val("eps_basic", period_col)
+    eps_type = "diluted" if eps_diluted is not None else "basic"
+    eps = eps_diluted if eps_diluted is not None else eps_basic
+
+    revenue_prev = val("revenue", yoy_col)
+    op_prev = val("operating_income", yoy_col)
+    ni_prev = val("net_income", yoy_col)
+    eps_prev = val(
+        "eps_diluted" if eps_type == "diluted" else "eps_basic", yoy_col
+    )
+
+    def margin(num, denom):
+        if num is None or not denom:
+            return None
+        return num / denom
+
+    result = {
+        "period_end": period_date.strftime("%Y-%m-%d"),
+        "revenue": revenue,
+        "revenue_yoy": _yoy(revenue, revenue_prev),
+        "gross_profit": gross_profit,
+        "gross_margin": margin(gross_profit, revenue),
+        "operating_income": op_income,
+        "operating_margin": margin(op_income, revenue),
+        "operating_income_yoy": _yoy(op_income, op_prev),
+        "net_income": net_income,
+        "net_margin": margin(net_income, revenue),
+        "net_income_yoy": _yoy(net_income, ni_prev),
+        "eps": eps,
+        "eps_type": eps_type,
+        "eps_yoy": _yoy(eps, eps_prev),
+    }
+    # 全項目が None の場合は保存しない
+    informative_keys = [k for k in result if k not in ("period_end", "eps_type")]
+    if all(result[k] is None for k in informative_keys):
+        return None
+    return result
+
+
+def update_transcript_index(
+    symbol,
+    fiscal_year,
+    fiscal_quarter,
+    sentiment=None,
+    report_date=None,
+    financials=None,
+):
     """1 銘柄分のエントリを索引に追記（同一 FY/Q は上書き）して保存する。"""
     index = load_transcript_index()
 
@@ -137,6 +310,8 @@ def update_transcript_index(symbol, fiscal_year, fiscal_quarter, sentiment=None,
         entry["report_date"] = report_date
     if sentiment:
         entry["sentiment"] = sentiment
+    if financials:
+        entry["financials"] = financials
     entries.append(entry)
     entries.sort(key=lambda e: (e["fy"], e["fq"]), reverse=True)
     index[symbol] = entries
@@ -516,8 +691,18 @@ def generate_transcript_report(symbol, fiscal_year, fiscal_quarter):
     ) or {}
     sentiment["hedging"] = compute_hedging_metrics(df, management, analysts, qa_start)
 
+    # 7-b. その期の財務ハイライト（売上高・営業利益・純利益・EPS と YoY）
+    print("Fetching quarterly financials...")
+    financials = fetch_quarter_financials(ticker, report_date)
+    if financials:
+        print(f"  四半期末 {financials.get('period_end')}: revenue={financials.get('revenue')}")
+    else:
+        print("  財務ハイライトは取得できませんでした")
+
     # 8. 銘柄ページがリンクを出すための索引を更新（Git にコミットして配信）
-    update_transcript_index(symbol, fiscal_year, fiscal_quarter, sentiment, report_date)
+    update_transcript_index(
+        symbol, fiscal_year, fiscal_quarter, sentiment, report_date, financials
+    )
 
     # 9. 本番 SSR ページ用に R2 へアップロード（R2 未設定ならスキップ）
     upload_transcript_to_r2(symbol, fiscal_year, fiscal_quarter, final_report)

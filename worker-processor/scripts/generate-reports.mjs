@@ -512,6 +512,158 @@ function calculateDailyChange(history) {
   return (last - prev) / prev;
 }
 
+// 直近 N 営業日における最大ドローダウンを計算。返値は負の小数 (-0.25 = -25%)。
+function calculateMaxDrawdown(history, days) {
+  if (!Array.isArray(history) || history.length < 5) return null;
+  const safe = history.filter((h) => h && h.Close > 0);
+  if (safe.length < 5) return null;
+  const start = Math.max(0, safe.length - days);
+  const slice = safe.slice(start);
+  let peak = slice[0].Close;
+  let maxDD = 0;
+  for (const h of slice) {
+    if (h.Close > peak) peak = h.Close;
+    const dd = (h.Close - peak) / peak;
+    if (dd < maxDD) maxDD = dd;
+  }
+  return Number.isFinite(maxDD) ? maxDD : null;
+}
+
+// 財務諸表 (income_stmt / balancesheet / cashflow) の row から日付キーだけを抽出し、
+// 新しい順 (降順) でソートして返す。Piotroski の YoY 比較で最新 2 期を取り出す用途。
+function getStmtLatestDates(stmt) {
+  if (!Array.isArray(stmt) || stmt.length === 0) return [];
+  const dates = new Set();
+  for (const row of stmt) {
+    for (const k of Object.keys(row)) {
+      if (/^\d{4}-\d{2}-\d{2}/.test(k)) dates.add(k);
+    }
+  }
+  return [...dates].sort().reverse();
+}
+
+// Piotroski F-Score (0-9 点)。年次決算 2 期の比較が必要。
+// 9 項目のうち最低 7 項目を評価できないと null を返す。
+function calcPiotroskiScore(rawData) {
+  const incomeStmt = rawData.income_stmt;
+  const bs = rawData.balancesheet;
+  const cf = rawData.cashflow;
+  if (!Array.isArray(incomeStmt) || !Array.isArray(bs) || !Array.isArray(cf)) return null;
+  const isDates = getStmtLatestDates(incomeStmt);
+  const bsDates = getStmtLatestDates(bs);
+  const cfDates = getStmtLatestDates(cf);
+  if (isDates.length < 2 || bsDates.length < 2 || cfDates.length < 2) return null;
+  const [d0, d1] = isDates;
+  const [bd0, bd1] = bsDates;
+  const [cd0] = cfDates;
+  const get = (stmt, field, date) => {
+    const v = getValFromArray(stmt, field, date);
+    return typeof v === "number" && Number.isFinite(v) ? v : null;
+  };
+  const ni0 = get(incomeStmt, "Net Income", d0);
+  const ni1 = get(incomeStmt, "Net Income", d1);
+  const cfo0 = get(cf, "Operating Cash Flow", cd0);
+  const ta0 = get(bs, "Total Assets", bd0);
+  const ta1 = get(bs, "Total Assets", bd1);
+  const ltd0 = get(bs, "Long Term Debt", bd0);
+  const ltd1 = get(bs, "Long Term Debt", bd1);
+  const ca0 = get(bs, "Current Assets", bd0);
+  const ca1 = get(bs, "Current Assets", bd1);
+  const cl0 = get(bs, "Current Liabilities", bd0);
+  const cl1 = get(bs, "Current Liabilities", bd1);
+  const sh0 = get(bs, "Ordinary Shares Number", bd0);
+  const sh1 = get(bs, "Ordinary Shares Number", bd1);
+  const rev0 = get(incomeStmt, "Total Revenue", d0);
+  const rev1 = get(incomeStmt, "Total Revenue", d1);
+  const gp0 = get(incomeStmt, "Gross Profit", d0);
+  const gp1 = get(incomeStmt, "Gross Profit", d1);
+  const roa0 = (ni0 != null && ta0 != null && ta0 > 0) ? ni0 / ta0 : null;
+  const roa1 = (ni1 != null && ta1 != null && ta1 > 0) ? ni1 / ta1 : null;
+  const cr0 = (ca0 != null && cl0 != null && cl0 > 0) ? ca0 / cl0 : null;
+  const cr1 = (ca1 != null && cl1 != null && cl1 > 0) ? ca1 / cl1 : null;
+  const gm0 = (gp0 != null && rev0 != null && rev0 > 0) ? gp0 / rev0 : null;
+  const gm1 = (gp1 != null && rev1 != null && rev1 > 0) ? gp1 / rev1 : null;
+  const at0 = (rev0 != null && ta0 != null && ta0 > 0) ? rev0 / ta0 : null;
+  const at1 = (rev1 != null && ta1 != null && ta1 > 0) ? rev1 / ta1 : null;
+  let score = 0;
+  let evaluated = 0;
+  const check = (cond) => { if (cond !== null) { evaluated++; if (cond === true) score++; } };
+  check(ni0 != null ? ni0 > 0 : null);                                  // 1. 純利益 > 0
+  check(cfo0 != null ? cfo0 > 0 : null);                                // 2. 営業 CF > 0
+  check(roa0 != null && roa1 != null ? roa0 > roa1 : null);             // 3. ΔROA > 0
+  check(cfo0 != null && ni0 != null ? cfo0 > ni0 : null);               // 4. CFO > NI (アクルーアル)
+  check(ltd0 != null && ltd1 != null ? ltd0 < ltd1 : null);             // 5. 長期負債減少
+  check(cr0 != null && cr1 != null ? cr0 > cr1 : null);                 // 6. 流動比率上昇
+  check(sh0 != null && sh1 != null ? sh0 <= sh1 * 1.001 : null);        // 7. 株式希薄化なし (0.1% 許容)
+  check(gm0 != null && gm1 != null ? gm0 > gm1 : null);                 // 8. 粗利率上昇
+  check(at0 != null && at1 != null ? at0 > at1 : null);                 // 9. 総資産回転率上昇
+  if (evaluated < 7) return null;
+  return score;
+}
+
+// 配当の継続性・安全性を 0-5 点でスコア化。
+function calcDividendStability(rawData) {
+  const info = rawData.info || {};
+  let score = 0;
+  // (1) 配当を払っているか
+  const divRate = info.dividendRate;
+  if (typeof divRate !== "number" || divRate <= 0) return null;
+  score++;
+  // (2) Payout Ratio が健全な範囲 (10%-80%)
+  const pr = info.payoutRatio;
+  if (typeof pr === "number" && pr > 0.1 && pr < 0.8) score++;
+  // (3) FCF カバー率 ≥ 1.5x
+  const fcf = info.freeCashflow;
+  const shares = info.sharesOutstanding;
+  if (typeof fcf === "number" && typeof shares === "number" && shares > 0) {
+    const totalDiv = divRate * shares;
+    if (totalDiv > 0 && fcf / totalDiv >= 1.5) score++;
+  }
+  // (4) 5 年平均利回りが存在する (= 配当履歴が一定期間ある)
+  if (typeof info.fiveYearAvgDividendYield === "number" && info.fiveYearAvgDividendYield > 0) score++;
+  // (5) 利益が出ている (trailing EPS > 0)
+  if (typeof info.trailingEps === "number" && info.trailingEps > 0) score++;
+  return score;
+}
+
+// Magic Formula (Greenblatt) 用: Earnings Yield = EBIT / EV。
+// EBIT が income_stmt に無い場合は EBITDA で代替。
+function calcEarningsYield(rawData) {
+  const ev = rawData.info?.enterpriseValue;
+  if (typeof ev !== "number" || ev <= 0) return null;
+  const incomeStmt = rawData.income_stmt;
+  if (Array.isArray(incomeStmt)) {
+    const dates = getStmtLatestDates(incomeStmt);
+    if (dates.length > 0) {
+      const ebit = getValFromArray(incomeStmt, "EBIT", dates[0]);
+      if (typeof ebit === "number" && Number.isFinite(ebit)) return ebit / ev;
+    }
+  }
+  const ebitda = rawData.info?.ebitda;
+  if (typeof ebitda === "number" && Number.isFinite(ebitda)) return ebitda / ev;
+  return null;
+}
+
+// Magic Formula 用 ROIC ≈ EBIT / (総資産 - 流動負債)。データ不足時は ROA 代替。
+function calcROIC(rawData) {
+  const incomeStmt = rawData.income_stmt;
+  const bs = rawData.balancesheet;
+  if (Array.isArray(incomeStmt) && Array.isArray(bs)) {
+    const isDates = getStmtLatestDates(incomeStmt);
+    const bsDates = getStmtLatestDates(bs);
+    if (isDates.length > 0 && bsDates.length > 0) {
+      const ebit = getValFromArray(incomeStmt, "EBIT", isDates[0]);
+      const ta = getValFromArray(bs, "Total Assets", bsDates[0]);
+      const cl = getValFromArray(bs, "Current Liabilities", bsDates[0]);
+      if (typeof ebit === "number" && typeof ta === "number" && typeof cl === "number" && ta - cl > 0) {
+        return ebit / (ta - cl);
+      }
+    }
+  }
+  const roa = rawData.info?.returnOnAssets;
+  return (typeof roa === "number" && Number.isFinite(roa)) ? roa : null;
+}
+
 // yfinance の info.regularMarketPrice はキャッシュで古い値を返すことがある。
 // history の最終 Close は毎回フレッシュに取得されるため、こちらをプライマリとする。
 function getLastClosePrice(rawData) {
@@ -1122,10 +1274,17 @@ function _isDatasets(stmt, suffix, hidden) {
     .filter((k) => k !== "index" && !k.includes("TTM"))
     .sort();
   if (dates.length === 0) return null;
-  const get = (label) =>
-    dates.map((d) => Number(getValFromArray(stmt, label, d)) || 0);
+  // 欠損 (null / undefined) と 0 を区別するため、生値配列と数値配列を別々に保持する。
+  // 金融セクター等は損益計算書に Gross Profit / Operating Income が無く、
+  // yfinance が null を返す。これを 0 として描画すると棒が消えるだけでなく
+  // 凡例・率の折れ線も無意味に並ぶため、全期間欠損のシリーズは丸ごと省略する。
+  const getRaw = (label) => dates.map((d) => getValFromArray(stmt, label, d));
+  const toNum = (raw) => raw.map((v) => Number(v) || 0);
+  const allMissing = (raw) =>
+    raw.every((v) => v === null || v === undefined || Number(v) === 0);
 
-  const revenue = get("Total Revenue");
+  const revenueRaw = getRaw("Total Revenue");
+  const revenue = toNum(revenueRaw);
   // 通年は最後の 6 期、四半期は最後の 8 期を使う (master の挙動に合わせる)
   const sliceCount = suffix === " (四半期)" ? 8 : 6;
   const validIdx = revenue
@@ -1136,32 +1295,49 @@ function _isDatasets(stmt, suffix, hidden) {
   const pick = (arr) => validIdx.map((i) => arr[i]);
   const labels = validIdx.map((i) => dates[i].split(" ")[0]);
 
+  const grossRaw = getRaw("Gross Profit");
+  const opIncomeRaw = getRaw("Operating Income");
+  const netRaw = getRaw("Net Income");
+
   const rev = pick(revenue);
-  const grossProfit = pick(get("Gross Profit"));
-  const operatingIncome = pick(get("Operating Income"));
-  const netIncome = pick(get("Net Income"));
+  const grossProfit = pick(toNum(grossRaw));
+  const operatingIncome = pick(toNum(opIncomeRaw));
+  const netIncome = pick(toNum(netRaw));
   const ratio = (num, den) =>
     num.map((v, i) => (den[i] ? v / den[i] : null));
+
+  // 表示対象期間 (validIdx) で値がすべて欠損/0 のシリーズは棒も率も省略。
+  // 金融・不動産セクター等で Gross Profit / Operating Income が未報告のときに発動。
+  const grossMissing = allMissing(validIdx.map((i) => grossRaw[i]));
+  const opMissing = allMissing(validIdx.map((i) => opIncomeRaw[i]));
 
   const datasets = [
     { type: "bar", label: `売上高${suffix}`, data: rev,
       backgroundColor: "rgba(174, 199, 232, 0.85)", yAxisID: "y", order: 2, hidden },
-    { type: "bar", label: `売上総利益${suffix}`, data: grossProfit,
-      backgroundColor: "rgba(31, 119, 180, 0.85)", yAxisID: "y", order: 2, hidden },
-    { type: "bar", label: `営業利益${suffix}`, data: operatingIncome,
-      backgroundColor: "rgba(255, 187, 120, 0.85)", yAxisID: "y", order: 2, hidden },
-    { type: "bar", label: `純利益${suffix}`, data: netIncome,
-      backgroundColor: "rgba(44, 160, 44, 0.85)", yAxisID: "y", order: 2, hidden },
-    { type: "line", label: `売上総利益率${suffix}`, data: ratio(grossProfit, rev),
-      borderColor: "#1f77b4", backgroundColor: "#1f77b4",
-      borderWidth: 2, fill: false, pointRadius: 4, yAxisID: "y1", order: 1, hidden },
-    { type: "line", label: `営業利益率${suffix}`, data: ratio(operatingIncome, rev),
-      borderColor: "#ffbb78", backgroundColor: "#ffbb78",
-      borderWidth: 2, fill: false, pointRadius: 4, yAxisID: "y1", order: 1, hidden },
-    { type: "line", label: `純利益率${suffix}`, data: ratio(netIncome, rev),
-      borderColor: "#2ca02c", backgroundColor: "#2ca02c",
-      borderWidth: 2, fill: false, pointRadius: 4, yAxisID: "y1", order: 1, hidden },
   ];
+  if (!grossMissing) {
+    datasets.push({ type: "bar", label: `売上総利益${suffix}`, data: grossProfit,
+      backgroundColor: "rgba(31, 119, 180, 0.85)", yAxisID: "y", order: 2, hidden });
+  }
+  if (!opMissing) {
+    datasets.push({ type: "bar", label: `営業利益${suffix}`, data: operatingIncome,
+      backgroundColor: "rgba(255, 187, 120, 0.85)", yAxisID: "y", order: 2, hidden });
+  }
+  datasets.push({ type: "bar", label: `純利益${suffix}`, data: netIncome,
+    backgroundColor: "rgba(44, 160, 44, 0.85)", yAxisID: "y", order: 2, hidden });
+  if (!grossMissing) {
+    datasets.push({ type: "line", label: `売上総利益率${suffix}`, data: ratio(grossProfit, rev),
+      borderColor: "#1f77b4", backgroundColor: "#1f77b4",
+      borderWidth: 2, fill: false, pointRadius: 4, yAxisID: "y1", order: 1, hidden });
+  }
+  if (!opMissing) {
+    datasets.push({ type: "line", label: `営業利益率${suffix}`, data: ratio(operatingIncome, rev),
+      borderColor: "#ffbb78", backgroundColor: "#ffbb78",
+      borderWidth: 2, fill: false, pointRadius: 4, yAxisID: "y1", order: 1, hidden });
+  }
+  datasets.push({ type: "line", label: `純利益率${suffix}`, data: ratio(netIncome, rev),
+    borderColor: "#2ca02c", backgroundColor: "#2ca02c",
+    borderWidth: 2, fill: false, pointRadius: 4, yAxisID: "y1", order: 1, hidden });
   return { labels, datasets };
 }
 
@@ -2085,6 +2261,171 @@ const RANK_METRICS = [
   }},
   { key: "dividend_rate",       label: "1株あたり配当 (年)",      group: "facts",    dir: "desc", unit: "price",    get: (r) => r.info?.dividendRate ?? null },
   { key: "beta",                label: "ベータ",                  group: "facts",    dir: "desc", unit: "ratio",    get: (r) => r.dcf_valuation?.wacc_details?.beta ?? r.info?.beta ?? null },
+  // --- アナリスト評価 ---
+  { key: "analyst_count",       label: "アナリスト数",            group: "analysis", dir: "desc", unit: "count",    get: (r) => {
+    const n = r.info?.numberOfAnalystOpinions;
+    return (typeof n === "number" && n > 0) ? n : null;
+  }},
+  { key: "target_upside",       label: "目標株価乖離率",          group: "analysis", dir: "desc", unit: "percent",  get: (r) => {
+    const target = r.info?.targetMeanPrice;
+    const cur = getLastClosePrice(r);
+    if (typeof target !== "number" || typeof cur !== "number" || cur <= 0 || target <= 0) return null;
+    return (target - cur) / cur;
+  }},
+  { key: "analyst_buy_ratio",   label: "Buy評価比率",             group: "analysis", dir: "desc", unit: "percent",  get: (r) => {
+    // 直近 (0m) のアナリスト推奨を集計し、(strongBuy + buy) / 総数 を返す。
+    // 母集団が小さいと比率が暴れるため、最低 5 件以上の評価がある銘柄のみ対象。
+    const ratingsRaw = r.analyst_ratings;
+    let cur = {};
+    if (Array.isArray(ratingsRaw)) {
+      cur = ratingsRaw.find((x) => x.period === "0m") || ratingsRaw[0] || {};
+    } else if (ratingsRaw && typeof ratingsRaw === "object") {
+      cur = ratingsRaw;
+    }
+    const sb = cur.strongBuy || 0, b = cur.buy || 0, h = cur.hold || 0, s = cur.sell || 0, ss = cur.strongSell || 0;
+    const total = sb + b + h + s + ss;
+    if (total < 5) return null;
+    return (sb + b) / total;
+  }},
+  { key: "recommendation_mean", label: "コンセンサス推奨スコア",  group: "analysis", dir: "asc",  unit: "ratio",    get: (r) => {
+    const v = r.info?.recommendationMean;
+    return (typeof v === "number" && v > 0 && v <= 5) ? v : null;
+  }},
+  { key: "target_price_dispersion", label: "目標株価レンジ幅",    group: "analysis", dir: "desc", unit: "percent",  get: (r) => {
+    const hi = r.info?.targetHighPrice, lo = r.info?.targetLowPrice, mean = r.info?.targetMeanPrice;
+    const n = r.info?.numberOfAnalystOpinions || 0;
+    if (n < 3 || typeof hi !== "number" || typeof lo !== "number" || typeof mean !== "number" || mean <= 0) return null;
+    return (hi - lo) / mean;
+  }},
+  { key: "analyst_strong_buy_ratio", label: "Strong Buy 専一率", group: "analysis", dir: "desc", unit: "percent",  get: (r) => {
+    const ratingsRaw = r.analyst_ratings;
+    let cur = {};
+    if (Array.isArray(ratingsRaw)) cur = ratingsRaw.find((x) => x.period === "0m") || ratingsRaw[0] || {};
+    else if (ratingsRaw && typeof ratingsRaw === "object") cur = ratingsRaw;
+    const sb = cur.strongBuy || 0, b = cur.buy || 0, h = cur.hold || 0, s = cur.sell || 0, ss = cur.strongSell || 0;
+    const total = sb + b + h + s + ss;
+    if (total < 5) return null;
+    return sb / total;
+  }},
+  { key: "analyst_bear_ratio",  label: "弱気評価比率",            group: "analysis", dir: "desc", unit: "percent",  get: (r) => {
+    const ratingsRaw = r.analyst_ratings;
+    let cur = {};
+    if (Array.isArray(ratingsRaw)) cur = ratingsRaw.find((x) => x.period === "0m") || ratingsRaw[0] || {};
+    else if (ratingsRaw && typeof ratingsRaw === "object") cur = ratingsRaw;
+    const sb = cur.strongBuy || 0, b = cur.buy || 0, h = cur.hold || 0, s = cur.sell || 0, ss = cur.strongSell || 0;
+    const total = sb + b + h + s + ss;
+    if (total < 5) return null;
+    return (s + ss) / total;
+  }},
+  // --- 財務健全性 ---
+  { key: "debt_to_equity_low",  label: "D/E 比率 (低)",           group: "analysis", dir: "asc",  unit: "ratio",    get: (r) => {
+    // yfinance の debtToEquity は % 表記 (154.5 = 1.545x) で返るので 100 で割る。
+    const v = r.info?.debtToEquity;
+    return (typeof v === "number" && v >= 0) ? v / 100 : null;
+  }},
+  { key: "current_ratio",       label: "流動比率",                group: "analysis", dir: "desc", unit: "ratio",    get: (r) => {
+    const v = r.info?.currentRatio;
+    return (typeof v === "number" && v > 0) ? v : null;
+  }},
+  { key: "quick_ratio",         label: "当座比率",                group: "analysis", dir: "desc", unit: "ratio",    get: (r) => {
+    const v = r.info?.quickRatio;
+    return (typeof v === "number" && v > 0) ? v : null;
+  }},
+  // --- キャッシュフロー ---
+  { key: "free_cashflow",       label: "フリーキャッシュフロー",  group: "analysis", dir: "desc", unit: "currency", get: (r) => {
+    const v = r.info?.freeCashflow;
+    return (typeof v === "number" && Number.isFinite(v)) ? v : null;
+  }},
+  { key: "fcf_margin",          label: "FCF マージン",            group: "analysis", dir: "desc", unit: "percent",  get: (r) => {
+    const fcf = r.info?.freeCashflow, rev = r.info?.totalRevenue;
+    return (typeof fcf === "number" && typeof rev === "number" && rev > 0) ? fcf / rev : null;
+  }},
+  // --- 株主構成 ---
+  { key: "held_pct_institutions", label: "機関投資家保有率",      group: "analysis", dir: "desc", unit: "percent",  get: (r) => {
+    const v = r.info?.heldPercentInstitutions;
+    return (typeof v === "number" && v > 0 && v <= 1.5) ? v : null;
+  }},
+  { key: "held_pct_insiders",   label: "インサイダー保有率",      group: "analysis", dir: "desc", unit: "percent",  get: (r) => {
+    const v = r.info?.heldPercentInsiders;
+    return (typeof v === "number" && v >= 0 && v <= 1) ? v : null;
+  }},
+  { key: "short_pct_float",     label: "空売り比率 (浮動株比)",   group: "analysis", dir: "desc", unit: "percent",  get: (r) => {
+    const v = r.info?.shortPercentOfFloat;
+    return (typeof v === "number" && v >= 0) ? v : null;
+  }},
+  // --- 直近モメンタム ---
+  { key: "earnings_growth",     label: "EPS 成長率 (YoY)",        group: "analysis", dir: "desc", unit: "percent",  get: (r) => {
+    const v = r.info?.earningsGrowth;
+    return (typeof v === "number" && Number.isFinite(v)) ? v : null;
+  }},
+  { key: "earnings_quarterly_growth", label: "EPS 成長率 (四半期 YoY)", group: "analysis", dir: "desc", unit: "percent", get: (r) => {
+    const v = r.info?.earningsQuarterlyGrowth;
+    return (typeof v === "number" && Number.isFinite(v)) ? v : null;
+  }},
+  // --- バリュエーション拡張 ---
+  { key: "high_forward_pe",     label: "PER 予想 (高)",           group: "analysis", dir: "desc", unit: "ratio",    get: (r) => {
+    const v = r.info?.forwardPE;
+    return (typeof v === "number" && v > 0 && v < 1000) ? v : null;
+  }},
+  { key: "peg_ratio_low",       label: "PEG レシオ (低)",         group: "analysis", dir: "asc",  unit: "ratio",    get: (r) => {
+    const v = r.info?.pegRatio ?? r.info?.trailingPegRatio;
+    return (typeof v === "number" && v > 0 && v < 100) ? v : null;
+  }},
+  { key: "enterprise_to_revenue", label: "EV / Revenue (低)",     group: "analysis", dir: "asc",  unit: "ratio",    get: (r) => {
+    const v = r.info?.enterpriseToRevenue;
+    return (typeof v === "number" && v > 0) ? v : null;
+  }},
+  { key: "ebitda_margin",       label: "EBITDA マージン",         group: "analysis", dir: "desc", unit: "percent",  get: (r) => {
+    const v = r.info?.ebitdaMargins;
+    return (typeof v === "number" && Number.isFinite(v)) ? v : null;
+  }},
+  { key: "earnings_yield",      label: "Earnings Yield",          group: "analysis", dir: "desc", unit: "percent",  get: (r) => calcEarningsYield(r) },
+  { key: "roic_proxy",          label: "ROIC (推定)",             group: "analysis", dir: "desc", unit: "percent",  get: (r) => calcROIC(r) },
+  // --- 低ベータ (defensive) ---
+  { key: "beta_low",            label: "ベータ (低)",             group: "facts",    dir: "asc",  unit: "ratio",    get: (r) => {
+    const v = r.dcf_valuation?.wacc_details?.beta ?? r.info?.beta;
+    return (typeof v === "number" && Number.isFinite(v) && v > 0) ? v : null;
+  }},
+  // --- パフォーマンス (history からの事前計算結果を使う) ---
+  { key: "return_1y",           label: "1年リターン (年率)",      group: "facts",    dir: "desc", unit: "percent",  get: (r) => {
+    const v = r._risk_return?.Ret_1Y;
+    return (typeof v === "number" && Number.isFinite(v)) ? v : null;
+  }},
+  { key: "return_ytd",          label: "年初来リターン (年率)",   group: "facts",    dir: "desc", unit: "percent",  get: (r) => {
+    const v = r._risk_return?.Ret_YTD;
+    return (typeof v === "number" && Number.isFinite(v)) ? v : null;
+  }},
+  { key: "max_drawdown_1y",     label: "最大ドローダウン (1年)",  group: "facts",    dir: "desc", unit: "percent",  get: (r) => {
+    const v = r._max_drawdown_1y;
+    return (typeof v === "number" && Number.isFinite(v)) ? v : null;
+  }},
+  // --- コンポジット (per-symbol で計算できるもの) ---
+  { key: "piotroski_score",     label: "Piotroski F-Score",       group: "analysis", dir: "desc", unit: "count",    get: (r) => calcPiotroskiScore(r) },
+  { key: "dividend_stability",  label: "配当安定性スコア",        group: "analysis", dir: "desc", unit: "count",    get: (r) => calcDividendStability(r) },
+];
+
+// クロス銘柄の順位合成が必要なコンポジット指標。
+// 各銘柄の per-metric ランクが揃ってから 2 パス目で計算するため、
+// 通常の RANK_METRICS とは別ループで処理する。
+// value: 表示する数値 (低いほど良い場合は asc、高いほど良いなら desc)。
+// compose: (out, universe, sectorBySymbol) => { [sym]: number | null }
+const COMPOSITE_METRICS = [
+  {
+    key: "magic_formula",
+    label: "Magic Formula スコア",
+    dir: "asc",
+    unit: "count",
+    // 値は「Earnings Yield のランク + ROIC のランク」の合計。低いほど両方上位。
+    compose: (out, universe) => {
+      const result = {};
+      for (const sym of universe) {
+        const ey = out[sym]?.earnings_yield?.overall?.rank;
+        const roic = out[sym]?.roic_proxy?.overall?.rank;
+        result[sym] = (ey && roic) ? (ey + roic) : null;
+      }
+      return result;
+    },
+  },
 ];
 
 // 配列をソートして rank を付与する。同値は同順位 (1, 2, 2, 4 形式) ではなく
@@ -2138,6 +2479,45 @@ const RANKING_PAGE_METRICS = [
   "stock_price",
   "range_position_52w",
   "beta",
+  // アナリスト評価
+  "analyst_count",
+  "target_upside",
+  "analyst_buy_ratio",
+  "recommendation_mean",
+  "target_price_dispersion",
+  "analyst_strong_buy_ratio",
+  "analyst_bear_ratio",
+  // 財務健全性
+  "debt_to_equity_low",
+  "current_ratio",
+  "quick_ratio",
+  // キャッシュフロー
+  "free_cashflow",
+  "fcf_margin",
+  // 株主構成
+  "held_pct_institutions",
+  "held_pct_insiders",
+  "short_pct_float",
+  // 直近モメンタム
+  "earnings_growth",
+  "earnings_quarterly_growth",
+  // バリュエーション拡張
+  "high_forward_pe",
+  "peg_ratio_low",
+  "enterprise_to_revenue",
+  "ebitda_margin",
+  "earnings_yield",
+  "roic_proxy",
+  // 低ベータ
+  "beta_low",
+  // パフォーマンス
+  "return_1y",
+  "return_ytd",
+  "max_drawdown_1y",
+  // コンポジット
+  "piotroski_score",
+  "dividend_stability",
+  "magic_formula",
 ];
 
 // 同会社の複数株式クラスのうち、ランキングで非表示にする銘柄。
@@ -2156,7 +2536,10 @@ const RANKING_DUPLICATE_CLASS_EXCLUDED = new Set([
 // 各指標について上位 100 銘柄を抽出して { metric_key: { label, unit, top: [...] } } を返す。
 // 表示に必要な最小限の情報 (シンボル、社名、セクター、値、順位) だけ含める。
 function buildRankings(ranksBySymbol, metadataBySymbol) {
-  const metricMap = Object.fromEntries(RANK_METRICS.map((m) => [m.key, m]));
+  const metricMap = Object.fromEntries([
+    ...RANK_METRICS.map((m) => [m.key, m]),
+    ...COMPOSITE_METRICS.map((m) => [m.key, m]),
+  ]);
   const out = {};
   for (const key of RANKING_PAGE_METRICS) {
     const metric = metricMap[key];
@@ -2233,6 +2616,47 @@ function computeRanks(rawDataMap, sectorBySymbol, isEtf) {
       const value = metric.get(rawDataMap[sym]);
       out[sym][metric.key] = {
         value: typeof value === "number" && Number.isFinite(value) ? value : null,
+        overall: overallRanks[sym] || null,
+        sector: sectorRanks[sym]
+          ? {
+              rank: sectorRanks[sym].rank,
+              total: sectorRanks[sym].total,
+              percentile: sectorRanks[sym].percentile,
+            }
+          : null,
+      };
+    }
+  }
+
+  // コンポジット指標 (Magic Formula 等) は他指標のランクを参照するため
+  // 通常の per-metric ループが終わった後に 2 パス目で計算する。
+  for (const composite of COMPOSITE_METRICS) {
+    const valueBySymbol = composite.compose(out, universe, sectorBySymbol);
+    const overallEntries = [];
+    for (const sym of universe) {
+      const v = valueBySymbol[sym];
+      if (typeof v === "number" && Number.isFinite(v)) {
+        overallEntries.push({ symbol: sym, value: v });
+      }
+    }
+    const overallRanks = rankSymbols(overallEntries, composite.dir);
+    const bySector = {};
+    for (const e of overallEntries) {
+      const sec = sectorBySymbol[e.symbol];
+      if (!sec || sec === "Unknown") continue;
+      (bySector[sec] = bySector[sec] || []).push(e);
+    }
+    const sectorRanks = {};
+    for (const [sec, entries] of Object.entries(bySector)) {
+      const ranked = rankSymbols(entries, composite.dir);
+      for (const sym of Object.keys(ranked)) {
+        sectorRanks[sym] = { ...ranked[sym], sector: sec };
+      }
+    }
+    for (const sym of universe) {
+      const v = valueBySymbol[sym];
+      out[sym][composite.key] = {
+        value: typeof v === "number" && Number.isFinite(v) ? v : null,
         overall: overallRanks[sym] || null,
         sector: sectorRanks[sym]
           ? {
@@ -2359,7 +2783,13 @@ async function main() {
   for (const symbol of Object.keys(rawDataMap)) {
     const rawData = rawDataMap[symbol];
     const rr = calculateRiskReturn(rawData.history, symbol);
-    if (rr) riskReturnMetrics.push(rr);
+    if (rr) {
+      riskReturnMetrics.push(rr);
+      // ランキング計算 (computeRanks) で参照するため rawData に貼り付ける。
+      // 後段の個別レポート生成にも影響しない (rr は読み取り専用扱い)。
+      rawData._risk_return = rr;
+    }
+    rawData._max_drawdown_1y = calculateMaxDrawdown(rawData.history, 252);
     const metadata =
       baseStocksList.find(
         (s) => s.Symbol_YF === symbol || s.Symbol === symbol,

@@ -9,6 +9,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { env } from "cloudflare:workers";
 import SentimentPanel from "@/components/report/SentimentPanel.astro";
+import FinancialHighlightsPanel from "@/components/report/FinancialHighlightsPanel.astro";
 
 export const prerender = false;
 
@@ -94,6 +95,7 @@ const indexEntry = (transcriptIndex[symbol as string] || []).find(
 );
 const sentiment = indexEntry?.sentiment ?? null;
 const reportDate = indexEntry?.report_date ?? null;
+const financials = indexEntry?.financials ?? null;
 
 // YYYY-MM-DD → "YYYY年M月D日" 日本語表記。パース失敗時は元の文字列を返す。
 function formatJaDate(iso: string | null): string | null {
@@ -195,6 +197,8 @@ const description = markdownRaw
             原文のニュアンスと異なる場合があります。投資判断の際は必ず企業公式の
             IR 情報および原文トランスクリプトをご確認ください。
           </div>
+
+          {financials && <FinancialHighlightsPanel financials={financials} />}
 
           {sentiment && <SentimentPanel sentiment={sentiment} />}
 

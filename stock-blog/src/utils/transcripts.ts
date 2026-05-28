@@ -32,6 +32,36 @@ function splitSpeakerTurns(text: string): string[] {
 }
 
 /**
+ * 話者ターンの本文（話者行の後）に段落区切りを挿入する。
+ * 日本語の句点（。）を文境界とし、SENTENCES_PER_PARA 文ごとに空行を入れる。
+ * すでに段落が複数ある場合は各段落内のみ処理する。
+ */
+const SENTENCES_PER_PARA = 4;
+
+function insertParagraphBreaks(turn: string): string {
+  // 話者行 (**名前**) と本文を分離
+  const m = turn.match(/^(\*\*[^\n]+\*\*[ \t]*\n+)([\s\S]*)$/);
+  const [speakerLine, body] = m ? [m[1], m[2]] : ["", turn];
+
+  const processedBody = body
+    .split(/\n\n+/)
+    .map(para => {
+      // 句点で分割（直後の空白は取り込む）
+      const sentences = para.split(/(?<=。)\s*/).filter(s => s.trim());
+      if (sentences.length <= SENTENCES_PER_PARA) return para;
+      const groups: string[] = [];
+      for (let i = 0; i < sentences.length; i += SENTENCES_PER_PARA) {
+        const g = sentences.slice(i, i + SENTENCES_PER_PARA).join("").trim();
+        if (g) groups.push(g);
+      }
+      return groups.join("\n\n");
+    })
+    .join("\n\n");
+
+  return speakerLine + processedBody;
+}
+
+/**
  * トランスクリプト本文を HTML 化する。「## 逐次翻訳」見出し以降は発言ごとに
  * <div class="transcript-turn"> で囲み、灰色ボックスとして表示できるようにする。
  * 見出しが無い場合は全体をそのままレンダリングする。
@@ -46,7 +76,7 @@ export function renderTranscriptBody(md: string): string {
   const turns = splitSpeakerTurns(translationPart)
     .map(
       turn =>
-        `<div class="transcript-turn">${renderTranscriptMarkdown(turn)}</div>`
+        `<div class="transcript-turn">${renderTranscriptMarkdown(insertParagraphBreaks(turn))}</div>`
     )
     .join("\n");
   return (
@@ -54,6 +84,28 @@ export function renderTranscriptBody(md: string): string {
     renderTranscriptMarkdown(heading[0]) +
     turns
   );
+}
+
+/** 当該四半期の主要 KPI。generate_transcript_report.py が defeatbeta の
+ * quarterly_income_statement から該当列を抽出して索引に書き込む。
+ * 値はすべて報告通貨ベース（多くの場合 USD）。比率 (margin/yoy) は小数（0.087 = 8.7%）。 */
+export interface QuarterFinancials {
+  /** 四半期末日 (YYYY-MM-DD)。 */
+  period_end: string;
+  revenue?: number | null;
+  revenue_yoy?: number | null;
+  gross_profit?: number | null;
+  gross_margin?: number | null;
+  operating_income?: number | null;
+  operating_margin?: number | null;
+  operating_income_yoy?: number | null;
+  net_income?: number | null;
+  net_margin?: number | null;
+  net_income_yoy?: number | null;
+  eps?: number | null;
+  /** "diluted" or "basic" — 取得できた方を採用。 */
+  eps_type?: "diluted" | "basic";
+  eps_yoy?: number | null;
 }
 
 export interface TranscriptEntry {
@@ -66,6 +118,8 @@ export interface TranscriptEntry {
   /** 決算発表日 (YYYY-MM-DD)。defeatbeta の transcripts list 由来。 */
   report_date?: string;
   sentiment?: Sentiment;
+  /** その期の主要 KPI（売上高・営業利益・純利益・EPS と YoY）。 */
+  financials?: QuarterFinancials;
 }
 
 export type TranscriptIndex = Record<string, TranscriptEntry[]>;
