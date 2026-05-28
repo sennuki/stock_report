@@ -11,7 +11,6 @@ import path from "node:path";
 import { env } from "cloudflare:workers";
 import ChartJs from "@/components/report/ChartJs.astro";
 import TradingViewWidget from "@/components/report/TradingViewWidget.astro";
-import PeerLinks from "@/components/report/PeerLinks.astro";
 import ShareCard from "@/components/report/ShareCard.astro";
 import TranscriptLinks from "@/components/report/TranscriptLinks.astro";
 import AiPromptButton from "@/components/report/AiPromptButton.astro";
@@ -512,7 +511,6 @@ const dcfBroken =
                 <li><a href="#stock-chart" class="text-skin-accent hover:underline">{symbol}の株価推移・概要</a></li>
                 <li><a href="#risk-return" class="text-skin-accent hover:underline">{symbol}のリスク・リターン分析</a></li>
                 <li><a href="#peers" class="text-skin-accent hover:underline">{symbol}の同業種比較テーブル</a></li>
-                <li><a href="#sector-peers" class="text-skin-accent hover:underline">{symbol}の同セクター他社</a></li>
                 <li><a href="#ranks" class="text-skin-accent hover:underline">{symbol}のランキング</a></li>
                 <li><a href="#performance" class="text-skin-accent hover:underline">{symbol}のパフォーマンス比較</a></li>
                 <li><a href="#earnings-highlights" class="text-skin-accent hover:underline">{symbol}の直近決算・財務ハイライト</a></li>
@@ -701,6 +699,7 @@ const dcfBroken =
                   <tr class="bg-skin-fill/10 text-xs uppercase tracking-wider">
                     <th class="px-4 py-3 text-left font-semibold opacity-70 sticky left-0 bg-skin-fill/10">銘柄</th>
                     <th class="px-4 py-3 text-right font-semibold opacity-70">時価総額</th>
+                    <th class="px-4 py-3 text-right font-semibold opacity-70">年初来</th>
                     <th class="px-4 py-3 text-right font-semibold opacity-70">PER<br/><span class="font-normal normal-case opacity-60">TTM</span></th>
                     <th class="px-4 py-3 text-right font-semibold opacity-70">PER<br/><span class="font-normal normal-case opacity-60">予想</span></th>
                     <th class="px-4 py-3 text-right font-semibold opacity-70">PBR</th>
@@ -726,7 +725,7 @@ const dcfBroken =
                       const fmtPct = (v: number | null) => v != null
                         ? (v >= 0 ? '+' : '') + (v * 100).toFixed(1) + '%'
                         : '---';
-                      const growthColor = (v: number | null) =>
+                      const pctColor = (v: number | null) =>
                         v == null ? '' : v >= 0.1 ? 'text-green-600' : v >= 0 ? 'text-green-500' : 'text-red-500';
                       const baseRow = p.is_self
                         ? 'bg-skin-accent/5 font-bold border-l-2 border-skin-accent'
@@ -744,28 +743,21 @@ const dcfBroken =
                                   : null}
                             </a>
                           </td>
-                          <td class="px-4 py-3 text-right font-mono">{fmtCap(p.market_cap)}</td>
+                          <td class="px-4 py-3 text-right font-mono text-xs">{fmtCap(p.market_cap)}</td>
+                          <td class={`px-4 py-3 text-right font-bold ${pctColor(p.ytd_return)}`}>{fmtPct(p.ytd_return)}</td>
                           <td class="px-4 py-3 text-right">{fmtRatio(p.pe_ttm)}</td>
                           <td class="px-4 py-3 text-right">{fmtRatio(p.pe_forward)}</td>
                           <td class="px-4 py-3 text-right">{fmtRatio(p.pbr)}</td>
                           <td class="px-4 py-3 text-right">{p.roe != null ? (p.roe * 100).toFixed(1) + '%' : '---'}</td>
-                          <td class={`px-4 py-3 text-right font-bold ${growthColor(p.revenue_growth)}`}>{fmtPct(p.revenue_growth)}</td>
+                          <td class={`px-4 py-3 text-right font-bold ${pctColor(p.revenue_growth)}`}>{fmtPct(p.revenue_growth)}</td>
                         </tr>
                       );
                     })}
                 </tbody>
               </table>
             </div>
-          ) : (
-            <div class="overflow-x-auto rounded-lg border border-skin-line">
-              <PeerLinks title="" peers={reportData.peers?.sub_industry || []} icon="" />
-            </div>
-          )}
+          ) : null}
           <p class="text-xs opacity-40 mt-2">※ yfinance (Yahoo Finance) より取得。PER・PBRは正値のみ表示。売上成長率は直近12ヶ月 YoY。時価総額降順。</p>
-        </section>
-
-        <section id="sector-peers" class="mt-6">
-          <PeerLinks title={`${symbol}の同セクター他社 (${reportData.sector}${reportData.index ? ` / ${reportData.index}` : ''})`} peers={reportData.peers?.sector || []} collapsible={true} icon="corporate_fare" />
         </section>
 
         {reportData.ranks?.metrics && Object.keys(reportData.ranks.metrics).length > 0 && (

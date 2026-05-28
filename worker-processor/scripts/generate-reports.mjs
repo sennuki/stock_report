@@ -512,6 +512,19 @@ function calculateDailyChange(history) {
   return (last - prev) / prev;
 }
 
+function calculateYtdReturn(history) {
+  if (!Array.isArray(history) || history.length < 2) return null;
+  const safe = history.filter((h) => h && h.Close > 0);
+  if (safe.length < 2) return null;
+  const lastDate = new Date(safe[safe.length - 1].Date || safe[safe.length - 1].index);
+  const ytdStart = new Date(Date.UTC(lastDate.getUTCFullYear(), 0, 1));
+  let startIdx = safe.findIndex((h) => new Date(h.Date || h.index) >= ytdStart);
+  if (startIdx === -1) startIdx = Math.max(0, safe.length - 21);
+  const startClose = safe[startIdx].Close;
+  const lastClose = safe[safe.length - 1].Close;
+  return (lastClose - startClose) / startClose;
+}
+
 // 直近 N 営業日における最大ドローダウンを計算。返値は負の小数 (-0.25 = -25%)。
 function calculateMaxDrawdown(history, days) {
   if (!Array.isArray(history) || history.length < 5) return null;
@@ -2827,6 +2840,7 @@ async function main() {
       pbr: typeof info.priceToBook === "number" && info.priceToBook > 0 ? info.priceToBook : null,
       roe: info.returnOnEquity ?? null,
       revenue_growth: info.revenueGrowth ?? null,
+      ytd_return: calculateYtdReturn(rawData.history),
     };
     if (!sectorMap[sector]) sectorMap[sector] = [];
     sectorMap[sector].push(peerInfo);
@@ -3086,6 +3100,7 @@ async function main() {
               roe: selfInfo.returnOnEquity ?? null,
               revenue_growth: selfInfo.revenueGrowth ?? null,
               daily_change: calculateDailyChange(rawData.history),
+              ytd_return: calculateYtdReturn(rawData.history),
             };
             const peerComparison = [
               selfEntry,
@@ -3105,6 +3120,7 @@ async function main() {
                   roe: p.roe,
                   revenue_growth: p.revenue_growth,
                   daily_change: p.Daily_Change,
+                  ytd_return: p.ytd_return,
                 })),
             ];
 
