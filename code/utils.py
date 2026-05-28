@@ -393,8 +393,11 @@ def calculate_dcf(symbol, ticker=None, yf_info=None, yf_growth_estimates=None):
             cf = db_ticker.annual_cash_flow()
             cf_df = cf.df() if cf is not None else None
             if cf_df is not None and not cf_df.empty and 'Breakdown' in cf_df.columns:
-                fcf_rows = cf_df[cf_df['Breakdown'].astype(str)
-                                 .str.contains('Free Cash Flow', case=False, na=False)]
+                # 'Free Cash Flow' に完全一致する行のみ採用する。
+                # case-insensitive の contains だと "Levered Free Cash Flow" や
+                # "Unlevered Free Cash Flow" が混入し、 iloc[0] で取った行が
+                # 本来の Free Cash Flow とは別物 (場合によっては負値) になる事故が起きる。
+                fcf_rows = cf_df[cf_df['Breakdown'].astype(str).str.strip() == 'Free Cash Flow']
                 if not fcf_rows.empty:
                     # 列は年度。新しい順に直近 3 年を採用。
                     date_cols = sorted(
