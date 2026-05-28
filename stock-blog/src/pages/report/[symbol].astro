@@ -435,22 +435,18 @@ const dcfBroken =
   (dcfFairPrice <= 0 ||
     (typeof dcfCurrentPrice === 'number' && dcfCurrentPrice > 0 && dcfFairPrice > dcfCurrentPrice * 5));
 
-// Pre-compute flat rank rows (header + data) so the template avoids
-// a mutable-counter IIFE inside JSX, which confuses Astro's esbuild compiler.
-type RankRowHeader = { type: 'header'; genre: string };
-type RankRowData   = { type: 'data'; key: string; label: string; unit: RankUnit; m: any; overall: ReturnType<typeof fmtRank>; sector: ReturnType<typeof fmtRank>; stripe: boolean };
-type RankRowItem   = RankRowHeader | RankRowData;
-const rankRows: RankRowItem[] = [];
+// Pre-compute which rank rows get a stripe. A mutable counter must not live
+// inside the JSX (an IIFE or a flat ternary .map confuses Astro's compiler and
+// produces malformed output). We keep the proven nested map + Fragment template
+// structure and only look up the stripe flag per metric key here.
+const rankStripeByKey: Record<string, boolean> = {};
 if (reportData?.ranks?.metrics) {
   let rowIdx = 0;
   for (const group of RANK_GROUPS) {
     const rows = group.keys.filter(([key]) => reportData.ranks.metrics[key]);
     if (rows.length === 0) continue;
-    rankRows.push({ type: 'header', genre: group.genre });
-    for (const [key, label, unit] of rows) {
-      const m = reportData.ranks.metrics[key];
-      if (!m) continue;
-      rankRows.push({ type: 'data', key, label, unit, m, overall: fmtRank(m.overall), sector: fmtRank(m.sector), stripe: rowIdx++ % 2 === 0 });
+    for (const [key] of rows) {
+      rankStripeByKey[key] = rowIdx++ % 2 === 0;
     }
   }
 }
@@ -808,32 +804,44 @@ if (reportData?.ranks?.metrics) {
                       </tr>
                     </thead>
                     <tbody>
-                      {rankRows.map((item) =>
-                        item.type === 'header' ? (
-                          <tr class="bg-skin-fill/10 border-y border-skin-line/40">
-                            <td colspan="4" class="px-4 py-1.5 text-xs font-bold uppercase tracking-wide opacity-80">
-                              {item.genre}
-                            </td>
-                          </tr>
-                        ) : (
-                          <tr class={`border-b border-skin-line/40 last:border-b-0 ${item.stripe ? 'bg-skin-fill/5' : ''} hover:bg-skin-fill/10`}>
-                            <td class="pl-8 pr-4 py-2 opacity-70">
-                              <a href={`/ranking/${rankingSlug(item.key)}`} class="underline underline-offset-2 decoration-dotted hover:text-skin-accent">{item.label}</a>
-                            </td>
-                            <td class="px-4 py-2 text-right font-medium">
-                              {(item.key === 'dividend_rate' || item.key === 'dividend_yield') && (item.m.value == null || !Number.isFinite(item.m.value) || item.m.value === 0)
-                                ? '無配'
-                                : fmtRankValue(item.m.value, item.unit)}
-                            </td>
-                            <td class={`px-4 py-2 text-right ${item.overall ? rankTierClass(item.overall.tier) : 'opacity-40'}`}>
-                              {item.overall ? item.overall.text : '対象外'}
-                            </td>
-                            <td class={`px-4 py-2 text-right ${item.sector ? rankTierClass(item.sector.tier) : 'opacity-40'}`}>
-                              {item.sector ? item.sector.text : '対象外'}
-                            </td>
-                          </tr>
-                        )
-                      )}
+                      {RANK_GROUPS.map((group) => {
+                        const rows = group.keys.filter(([key]) => reportData.ranks.metrics[key]);
+                        if (rows.length === 0) return null;
+                        return (
+                          <Fragment>
+                            <tr class="bg-skin-fill/10 border-y border-skin-line/40">
+                              <td colspan="4" class="px-4 py-1.5 text-xs font-bold uppercase tracking-wide opacity-80">
+                                {group.genre}
+                              </td>
+                            </tr>
+                            {rows.map(([key, label, unit]) => {
+                              const m = reportData.ranks.metrics[key];
+                              if (!m) return null;
+                              const overall = fmtRank(m.overall);
+                              const sector = fmtRank(m.sector);
+                              const stripe = rankStripeByKey[key] ? 'bg-skin-fill/5' : '';
+                              return (
+                                <tr class={`border-b border-skin-line/40 last:border-b-0 ${stripe} hover:bg-skin-fill/10`}>
+                                  <td class="pl-8 pr-4 py-2 opacity-70">
+                                    <a href={`/ranking/${rankingSlug(key)}`} class="underline underline-offset-2 decoration-dotted hover:text-skin-accent">{label}</a>
+                                  </td>
+                                  <td class="px-4 py-2 text-right font-medium">
+                                    {(key === 'dividend_rate' || key === 'dividend_yield') && (m.value == null || !Number.isFinite(m.value) || m.value === 0)
+                                      ? '無配'
+                                      : fmtRankValue(m.value, unit)}
+                                  </td>
+                                  <td class={`px-4 py-2 text-right ${overall ? rankTierClass(overall.tier) : 'opacity-40'}`}>
+                                    {overall ? overall.text : '対象外'}
+                                  </td>
+                                  <td class={`px-4 py-2 text-right ${sector ? rankTierClass(sector.tier) : 'opacity-40'}`}>
+                                    {sector ? sector.text : '対象外'}
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </Fragment>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
@@ -1381,11 +1389,9 @@ if (reportData?.ranks?.metrics) {
                     if (c == null) return '---';
                     const cStr = fmt(c);
                     if (r == null || Math.abs(r - c) < 1e-9) return cStr;
-                    return (
-                      <>
-                        {cStr} <span class="whitespace-nowrap">(元 {fmt(r)})</span>
-                      </>
-                    );
+                    // 通常スペースで折り返し位置を「(」の前にし、括弧内は NBSP で
+                    // つなげて「元」と数値が分断されないようにする。
+                    return cStr + ' (元 ' + fmt(r) + ')';
                   };
                   const signalRows: Array<[string, string, string]> = useMultiSignal ? [
                     ["EPS 9Y CAGR", "過去9年間の TTM EPS 年率成長", "eps_9y"],
