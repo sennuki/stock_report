@@ -1706,38 +1706,53 @@ const dcfBroken =
                 </div>
               </div>
             </div>
-            {reportData.institutional_ownership.holders?.length > 0 && (
-              <div class="overflow-x-auto rounded-lg border border-skin-line">
-                <table class="min-w-full divide-y divide-skin-line text-sm">
-                  <thead>
-                    <tr class="bg-skin-fill/10 text-xs uppercase tracking-wider">
-                      <th scope="col" class="px-4 py-3 text-left font-semibold opacity-70">機関名</th>
-                      <th scope="col" class="px-4 py-3 text-right font-semibold opacity-70">保有株数</th>
-                      <th scope="col" class="px-4 py-3 text-right font-semibold opacity-70">保有率</th>
-                      <th scope="col" class="px-4 py-3 text-right font-semibold opacity-70 hidden md:table-cell">報告日</th>
-                    </tr>
-                  </thead>
-                  <tbody class="divide-y divide-skin-line">
-                    {reportData.institutional_ownership.holders.map((h: any, idx: number) => (
-                      <tr class={idx % 2 === 0 ? 'hover:bg-skin-fill/10' : 'bg-skin-fill/5 hover:bg-skin-fill/10'}>
-                        <td class="px-4 py-3 font-medium">{h.holder}</td>
-                        <td class="px-4 py-3 text-right font-mono text-xs opacity-80">
-                          {typeof h.shares === 'number'
-                            ? (h.shares >= 1e9 ? (h.shares / 1e9).toFixed(2) + 'B' : h.shares >= 1e6 ? (h.shares / 1e6).toFixed(1) + 'M' : h.shares.toLocaleString())
-                            : '---'}
-                        </td>
-                        <td class="px-4 py-3 text-right font-bold text-skin-accent">
-                          {typeof h.pct_out === 'number' ? (h.pct_out * 100).toFixed(2) + '%' : '---'}
-                        </td>
-                        <td class="px-4 py-3 text-right opacity-60 text-xs hidden md:table-cell">
-                          {h.date_reported?.split(' ')[0] || '---'}
-                        </td>
+            {reportData.institutional_ownership.holders?.length > 0 && (() => {
+              const holders = reportData.institutional_ownership.holders;
+              const dates = holders.map((h: any) => h.date_reported?.split(' ')[0] || '').filter(Boolean);
+              const allSame = dates.length > 0 && dates.every((d: string) => d === dates[0]);
+              const sharedDate = allSame ? dates[0] : null;
+              return (
+              <div>
+                <div class="overflow-x-auto rounded-lg border border-skin-line">
+                  <table class="min-w-full divide-y divide-skin-line text-sm">
+                    <thead>
+                      <tr class="bg-skin-fill/10 text-xs uppercase tracking-wider">
+                        <th scope="col" class="px-4 py-3 text-left font-semibold opacity-70">機関名</th>
+                        <th scope="col" class="px-4 py-3 text-right font-semibold opacity-70">保有株数</th>
+                        <th scope="col" class="px-4 py-3 text-right font-semibold opacity-70">保有率</th>
+                        {!sharedDate && (
+                          <th scope="col" class="px-4 py-3 text-right font-semibold opacity-70 hidden md:table-cell">報告日</th>
+                        )}
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody class="divide-y divide-skin-line">
+                      {holders.map((h: any, idx: number) => (
+                        <tr class={idx % 2 === 0 ? 'hover:bg-skin-fill/10' : 'bg-skin-fill/5 hover:bg-skin-fill/10'}>
+                          <td class="px-4 py-3 font-medium">{h.holder}</td>
+                          <td class="px-4 py-3 text-right font-mono text-xs opacity-80">
+                            {typeof h.shares === 'number'
+                              ? (h.shares >= 1e9 ? (h.shares / 1e9).toFixed(2) + 'B' : h.shares >= 1e6 ? (h.shares / 1e6).toFixed(1) + 'M' : h.shares.toLocaleString())
+                              : '---'}
+                          </td>
+                          <td class="px-4 py-3 text-right font-bold text-skin-accent">
+                            {typeof h.pct_out === 'number' ? (h.pct_out * 100).toFixed(2) + '%' : '---'}
+                          </td>
+                          {!sharedDate && (
+                            <td class="px-4 py-3 text-right opacity-60 text-xs hidden md:table-cell">
+                              {h.date_reported?.split(' ')[0] || '---'}
+                            </td>
+                          )}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                {sharedDate && (
+                  <p class="text-xs opacity-50 mt-2 text-right">報告日: {sharedDate}</p>
+                )}
               </div>
-            )}
+              );
+            })()}
           </section>
         )}
 
