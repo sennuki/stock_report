@@ -407,7 +407,7 @@ def calculate_dcf(symbol, ticker=None, yf_info=None, yf_growth_estimates=None):
             # 何も取れなければ最保守 = リスクフリーレートで成長する想定
             growth_1_5y = risk_free_rate
 
-        # 永続成長率 = 5年平均リスクフリーレート
+        # 永続成長率 = 3年中央値リスクフリーレート
         # ただし Gordon Growth モデルは WACC > terminal_growth が前提のため、
         # WACC との差を最低 3pt 確保する。 これによって TV = FCF / (WACC - g)
         # の分母が極小になって理論株価が発散することを防ぐ。
