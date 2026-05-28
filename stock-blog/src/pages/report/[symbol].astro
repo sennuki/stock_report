@@ -1281,7 +1281,7 @@ const dcfBroken =
                       <table class="min-w-full divide-y divide-skin-line text-sm">
                         <tbody class="divide-y divide-skin-line">
                           <tr class="bg-skin-fill/5"><td class="px-4 py-2 opacity-70">ベータ (β)</td><td class="px-4 py-2 text-right font-medium">{reportData.dcf_valuation.wacc_details.beta?.toFixed(4)}</td></tr>
-                          <tr><td class="px-4 py-2 opacity-70">リスクフリーレート (5年平均)</td><td class="px-4 py-2 text-right font-medium">{(reportData.dcf_valuation.wacc_details.risk_free_rate * 100).toFixed(2)}%</td></tr>
+                          <tr><td class="px-4 py-2 opacity-70">リスクフリーレート (3年中央値)</td><td class="px-4 py-2 text-right font-medium">{(reportData.dcf_valuation.wacc_details.risk_free_rate * 100).toFixed(2)}%</td></tr>
                           <tr class="bg-skin-fill/5"><td class="px-4 py-2 opacity-70">市場期待リターン (S&P500)</td><td class="px-4 py-2 text-right font-medium">{(reportData.dcf_valuation.wacc_details.market_return * 100).toFixed(2)}%</td></tr>
                           <tr><td class="px-4 py-2 opacity-70">株主資本コスト (Cost of Equity)</td><td class="px-4 py-2 text-right font-medium">{(reportData.dcf_valuation.wacc_details.cost_of_equity * 100).toFixed(2)}%</td></tr>
                           <tr class="bg-skin-fill/5"><td class="px-4 py-2 opacity-70">負債コスト (Cost of Debt)</td><td class="px-4 py-2 text-right font-medium">{(reportData.dcf_valuation.wacc_details.cost_of_debt * 100).toFixed(2)}%</td></tr>
@@ -1477,7 +1477,7 @@ const dcfBroken =
                             <img src="https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Cbg%7Bwhite%7D%20R_e%20%3D%20R_f%20%2B%20%5Cbeta_%7B5y%7D%20%5Ctimes%20%28R_m%20-%20R_f%29" alt="Cost of Equity" class="dark:invert h-8" />
                           </div>
                           <div class="opacity-60 text-[10px] flex flex-wrap justify-center gap-x-4 gap-y-1.5 font-sans border-t border-skin-line/10 pt-3">
-                            <span><strong>R_f</strong>: 長期リスクフリーレート (5年平均)</span>
+                            <span><strong>R_f</strong>: 長期リスクフリーレート (3年中央値)</span>
                             <span><strong>β_5y</strong>: 5年ベータ値</span>
                             <span><strong>R_m</strong>: S&P 500 期待リターン (10Y CAGR)</span>
                           </div>
@@ -1512,7 +1512,7 @@ const dcfBroken =
                           <div class="opacity-60 text-[10px] flex flex-wrap justify-center gap-x-4 gap-y-1.5 font-sans border-t border-skin-line/10 pt-3">
                             <span><strong>S</strong>: EPS 9Y CAGR, 売上 3Y CAGR, FCF 3Y CAGR, EBITDA 3Y CAGR, アナリスト長期予想, 内部成長率 (ROE × 留保率)</span>
                             <span><strong>wins(x, lo, hi)</strong>: x を [lo, hi] の範囲に丸める</span>
-                            <span><strong>R_f</strong>: 長期リスクフリーレート (5年平均)</span>
+                            <span><strong>R_f</strong>: 長期リスクフリーレート (3年中央値)</span>
                           </div>
                         </div>
 
@@ -1706,38 +1706,53 @@ const dcfBroken =
                 </div>
               </div>
             </div>
-            {reportData.institutional_ownership.holders?.length > 0 && (
-              <div class="overflow-x-auto rounded-lg border border-skin-line">
-                <table class="min-w-full divide-y divide-skin-line text-sm">
-                  <thead>
-                    <tr class="bg-skin-fill/10 text-xs uppercase tracking-wider">
-                      <th scope="col" class="px-4 py-3 text-left font-semibold opacity-70">機関名</th>
-                      <th scope="col" class="px-4 py-3 text-right font-semibold opacity-70">保有株数</th>
-                      <th scope="col" class="px-4 py-3 text-right font-semibold opacity-70">保有率</th>
-                      <th scope="col" class="px-4 py-3 text-right font-semibold opacity-70 hidden md:table-cell">報告日</th>
-                    </tr>
-                  </thead>
-                  <tbody class="divide-y divide-skin-line">
-                    {reportData.institutional_ownership.holders.map((h: any, idx: number) => (
-                      <tr class={idx % 2 === 0 ? 'hover:bg-skin-fill/10' : 'bg-skin-fill/5 hover:bg-skin-fill/10'}>
-                        <td class="px-4 py-3 font-medium">{h.holder}</td>
-                        <td class="px-4 py-3 text-right font-mono text-xs opacity-80">
-                          {typeof h.shares === 'number'
-                            ? (h.shares >= 1e9 ? (h.shares / 1e9).toFixed(2) + 'B' : h.shares >= 1e6 ? (h.shares / 1e6).toFixed(1) + 'M' : h.shares.toLocaleString())
-                            : '---'}
-                        </td>
-                        <td class="px-4 py-3 text-right font-bold text-skin-accent">
-                          {typeof h.pct_out === 'number' ? (h.pct_out * 100).toFixed(2) + '%' : '---'}
-                        </td>
-                        <td class="px-4 py-3 text-right opacity-60 text-xs hidden md:table-cell">
-                          {h.date_reported?.split(' ')[0] || '---'}
-                        </td>
+            {reportData.institutional_ownership.holders?.length > 0 && (() => {
+              const holders = reportData.institutional_ownership.holders;
+              const dates = holders.map((h: any) => h.date_reported?.split(' ')[0] || '').filter(Boolean);
+              const allSame = dates.length > 0 && dates.every((d: string) => d === dates[0]);
+              const sharedDate = allSame ? dates[0] : null;
+              return (
+              <div>
+                <div class="overflow-x-auto rounded-lg border border-skin-line">
+                  <table class="min-w-full divide-y divide-skin-line text-sm">
+                    <thead>
+                      <tr class="bg-skin-fill/10 text-xs uppercase tracking-wider">
+                        <th scope="col" class="px-4 py-3 text-left font-semibold opacity-70">機関名</th>
+                        <th scope="col" class="px-4 py-3 text-right font-semibold opacity-70">保有株数</th>
+                        <th scope="col" class="px-4 py-3 text-right font-semibold opacity-70">保有率</th>
+                        {!sharedDate && (
+                          <th scope="col" class="px-4 py-3 text-right font-semibold opacity-70 hidden md:table-cell">報告日</th>
+                        )}
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody class="divide-y divide-skin-line">
+                      {holders.map((h: any, idx: number) => (
+                        <tr class={idx % 2 === 0 ? 'hover:bg-skin-fill/10' : 'bg-skin-fill/5 hover:bg-skin-fill/10'}>
+                          <td class="px-4 py-3 font-medium">{h.holder}</td>
+                          <td class="px-4 py-3 text-right font-mono text-xs opacity-80">
+                            {typeof h.shares === 'number'
+                              ? (h.shares >= 1e9 ? (h.shares / 1e9).toFixed(2) + 'B' : h.shares >= 1e6 ? (h.shares / 1e6).toFixed(1) + 'M' : h.shares.toLocaleString())
+                              : '---'}
+                          </td>
+                          <td class="px-4 py-3 text-right font-bold text-skin-accent">
+                            {typeof h.pct_out === 'number' ? (h.pct_out * 100).toFixed(2) + '%' : '---'}
+                          </td>
+                          {!sharedDate && (
+                            <td class="px-4 py-3 text-right opacity-60 text-xs hidden md:table-cell">
+                              {h.date_reported?.split(' ')[0] || '---'}
+                            </td>
+                          )}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                {sharedDate && (
+                  <p class="text-xs opacity-50 mt-2 text-right">報告日: {sharedDate}</p>
+                )}
               </div>
-            )}
+              );
+            })()}
           </section>
         )}
 
