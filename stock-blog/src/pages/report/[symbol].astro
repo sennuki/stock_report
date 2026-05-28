@@ -727,12 +727,11 @@ const dcfBroken =
                         : '---';
                       const pctColor = (v: number | null) =>
                         v == null ? '' : v >= 0.1 ? 'text-green-600' : v >= 0 ? 'text-green-500' : 'text-red-500';
-                      const baseRow = p.is_self
-                        ? 'bg-skin-accent/5 font-bold border-l-2 border-skin-accent'
-                        : (idx % 2 === 0 ? 'hover:bg-skin-fill/10' : 'bg-skin-fill/5 hover:bg-skin-fill/10');
+                      const stripe = idx % 2 === 0 ? '' : 'bg-skin-fill/5';
+                      const selfBorder = p.is_self ? 'border-l-2 border-skin-accent font-bold' : '';
                       return (
-                        <tr class={baseRow}>
-                          <td class={`px-4 py-3 sticky left-0 ${p.is_self ? 'bg-skin-accent/5' : (idx % 2 === 0 ? 'bg-skin-fill' : 'bg-skin-fill/5')}`}>
+                        <tr class={`hover:bg-skin-fill/10 ${stripe} ${selfBorder}`}>
+                          <td class={`px-4 py-3 sticky left-0 ${idx % 2 === 0 ? 'bg-skin-fill' : 'bg-skin-fill/5'}`}>
                             <a href={`/report/${p.symbol_yf}`} class={`hover:underline ${p.is_self ? 'text-skin-accent' : ''}`}>
                               <span class="font-bold">{p.symbol}</span>
                               {p.is_self && <span class="ml-1 text-[10px] opacity-60 font-normal">（自社）</span>}
