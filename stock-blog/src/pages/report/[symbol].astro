@@ -11,7 +11,6 @@ import path from "node:path";
 import { env } from "cloudflare:workers";
 import ChartJs from "@/components/report/ChartJs.astro";
 import TradingViewWidget from "@/components/report/TradingViewWidget.astro";
-import PeerLinks from "@/components/report/PeerLinks.astro";
 import ShareCard from "@/components/report/ShareCard.astro";
 import TranscriptLinks from "@/components/report/TranscriptLinks.astro";
 import AiPromptButton from "@/components/report/AiPromptButton.astro";
@@ -511,8 +510,7 @@ const dcfBroken =
             <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 list-disc pl-5">
                 <li><a href="#stock-chart" class="text-skin-accent hover:underline">{symbol}の株価推移・概要</a></li>
                 <li><a href="#risk-return" class="text-skin-accent hover:underline">{symbol}のリスク・リターン分析</a></li>
-                <li><a href="#peers" class="text-skin-accent hover:underline">{symbol}の同業種・競合</a></li>
-                <li><a href="#sector-peers" class="text-skin-accent hover:underline">{symbol}の同セクター他社</a></li>
+                <li><a href="#peers" class="text-skin-accent hover:underline">{symbol}の同業種比較テーブル</a></li>
                 <li><a href="#ranks" class="text-skin-accent hover:underline">{symbol}のランキング</a></li>
                 <li><a href="#performance" class="text-skin-accent hover:underline">{symbol}のパフォーマンス比較</a></li>
                 <li><a href="#earnings-highlights" class="text-skin-accent hover:underline">{symbol}の直近決算・財務ハイライト</a></li>
@@ -688,12 +686,78 @@ const dcfBroken =
             </details>
           </div>
         </section>
+        {/* 同業種比較テーブル */}
         <section id="peers" class="mt-12">
-          <PeerLinks title={`${symbol}の同業種・競合 (${reportData.sub_industry} / S&P 1500)`} peers={reportData.peers.sub_industry} icon="corporate_fare" />
-        </section>
-
-        <section id="sector-peers">
-          <PeerLinks title={`${symbol}の同セクター他社 (${reportData.sector}${reportData.index ? ` / ${reportData.index}` : ''})`} peers={reportData.peers.sector} collapsible={true} icon="corporate_fare" />
+          <h2 class="text-2xl font-bold mb-6 border-b pb-2 flex items-center gap-2">
+            <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">corporate_fare</span>
+            {symbol}の同業種・競合比較 ({reportData.sub_industry})
+          </h2>
+          {reportData.peers?.comparison?.length > 0 ? (
+            <div class="overflow-x-auto rounded-lg border border-skin-line">
+              <table class="min-w-full divide-y divide-skin-line text-sm">
+                <thead>
+                  <tr class="bg-skin-fill/10 text-xs uppercase tracking-wider">
+                    <th class="px-4 py-3 text-left font-semibold opacity-70 sticky left-0 bg-skin-fill/10">銘柄</th>
+                    <th class="px-4 py-3 text-right font-semibold opacity-70">時価総額</th>
+                    <th class="px-4 py-3 text-right font-semibold opacity-70">年初来</th>
+                    <th class="px-4 py-3 text-right font-semibold opacity-70">PER<br/><span class="font-normal normal-case opacity-60">TTM</span></th>
+                    <th class="px-4 py-3 text-right font-semibold opacity-70">PER<br/><span class="font-normal normal-case opacity-60">予想</span></th>
+                    <th class="px-4 py-3 text-right font-semibold opacity-70">PBR</th>
+                    <th class="px-4 py-3 text-right font-semibold opacity-70">ROE</th>
+                    <th class="px-4 py-3 text-right font-semibold opacity-70">売上成長率<br/><span class="font-normal normal-case opacity-60">YoY</span></th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-skin-line">
+                  {reportData.peers.comparison
+                    .sort((a: any, b: any) => {
+                      if (a.is_self) return -1;
+                      if (b.is_self) return 1;
+                      return (b.market_cap || 0) - (a.market_cap || 0);
+                    })
+                    .map((p: any, idx: number) => {
+                      const fmtCap = (v: number | null) => {
+                        if (v == null) return '---';
+                        if (v >= 1e12) return '$' + (v / 1e12).toFixed(2) + 'T';
+                        if (v >= 1e9)  return '$' + (v / 1e9).toFixed(1) + 'B';
+                        return '$' + (v / 1e6).toFixed(0) + 'M';
+                      };
+                      const fmtRatio = (v: number | null) => v != null ? v.toFixed(1) + 'x' : '---';
+                      const fmtPct = (v: number | null) => v != null
+                        ? (v >= 0 ? '+' : '') + (v * 100).toFixed(1) + '%'
+                        : '---';
+                      const pctColor = (v: number | null) =>
+                        v == null ? '' : v >= 0.1 ? 'text-green-600' : v >= 0 ? 'text-green-500' : 'text-red-500';
+                      const baseRow = p.is_self
+                        ? 'bg-skin-accent/5 font-bold border-l-2 border-skin-accent'
+                        : (idx % 2 === 0 ? 'hover:bg-skin-fill/10' : 'bg-skin-fill/5 hover:bg-skin-fill/10');
+                      return (
+                        <tr class={baseRow}>
+                          <td class={`px-4 py-3 sticky left-0 ${p.is_self ? 'bg-skin-accent/5' : (idx % 2 === 0 ? 'bg-skin-fill' : 'bg-skin-fill/5')}`}>
+                            <a href={`/report/${p.symbol_yf}`} class={`hover:underline ${p.is_self ? 'text-skin-accent' : ''}`}>
+                              <span class="font-bold">{p.symbol}</span>
+                              {p.is_self && <span class="ml-1 text-[10px] opacity-60 font-normal">（自社）</span>}
+                              {p.security_ja
+                                ? <span class="block text-[11px] font-normal opacity-50 leading-tight truncate max-w-[140px]">{p.security_ja}</span>
+                                : p.security
+                                  ? <span class="block text-[11px] font-normal opacity-50 leading-tight truncate max-w-[140px]">{p.security}</span>
+                                  : null}
+                            </a>
+                          </td>
+                          <td class="px-4 py-3 text-right font-mono text-xs">{fmtCap(p.market_cap)}</td>
+                          <td class={`px-4 py-3 text-right font-bold ${pctColor(p.ytd_return)}`}>{fmtPct(p.ytd_return)}</td>
+                          <td class="px-4 py-3 text-right">{fmtRatio(p.pe_ttm)}</td>
+                          <td class="px-4 py-3 text-right">{fmtRatio(p.pe_forward)}</td>
+                          <td class="px-4 py-3 text-right">{fmtRatio(p.pbr)}</td>
+                          <td class="px-4 py-3 text-right">{p.roe != null ? (p.roe * 100).toFixed(1) + '%' : '---'}</td>
+                          <td class={`px-4 py-3 text-right font-bold ${pctColor(p.revenue_growth)}`}>{fmtPct(p.revenue_growth)}</td>
+                        </tr>
+                      );
+                    })}
+                </tbody>
+              </table>
+            </div>
+          ) : null}
+          <p class="text-xs opacity-40 mt-2">※ yfinance (Yahoo Finance) より取得。PER・PBRは正値のみ表示。売上成長率は直近12ヶ月 YoY。時価総額降順。</p>
         </section>
 
         {reportData.ranks?.metrics && Object.keys(reportData.ranks.metrics).length > 0 && (

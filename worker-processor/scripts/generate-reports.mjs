@@ -512,6 +512,19 @@ function calculateDailyChange(history) {
   return (last - prev) / prev;
 }
 
+function calculateYtdReturn(history) {
+  if (!Array.isArray(history) || history.length < 2) return null;
+  const safe = history.filter((h) => h && h.Close > 0);
+  if (safe.length < 2) return null;
+  const lastDate = new Date(safe[safe.length - 1].Date || safe[safe.length - 1].index);
+  const ytdStart = new Date(Date.UTC(lastDate.getUTCFullYear(), 0, 1));
+  let startIdx = safe.findIndex((h) => new Date(h.Date || h.index) >= ytdStart);
+  if (startIdx === -1) startIdx = Math.max(0, safe.length - 21);
+  const startClose = safe[startIdx].Close;
+  const lastClose = safe[safe.length - 1].Close;
+  return (lastClose - startClose) / startClose;
+}
+
 // 直近 N 営業日における最大ドローダウンを計算。返値は負の小数 (-0.25 = -25%)。
 function calculateMaxDrawdown(history, days) {
   if (!Array.isArray(history) || history.length < 5) return null;
@@ -2810,6 +2823,7 @@ async function main() {
       metadata["GICS Sub-Industry"] || rawData.info?.industry || "Unknown";
     sectorBySymbol[symbol] = sector;
     const dailyChange = calculateDailyChange(rawData.history);
+    const info = rawData.info || {};
     const peerInfo = {
       Symbol: metadata.Symbol || symbol,
       Symbol_YF: symbol,
@@ -2817,6 +2831,16 @@ async function main() {
       // metadata が無い銘柄 (ETF など) は null。
       Index: metadata["Index"] || null,
       Daily_Change: dailyChange,
+      // 比較テーブル用メトリクス (rawDataMap が後で削除される前に確保)
+      Security: metadata.Security || info.shortName || info.longName || symbol,
+      Security_JA: metadata.Security_JA || null,
+      market_cap: info.marketCap ?? null,
+      pe_ttm: typeof info.trailingPE === "number" && info.trailingPE > 0 ? info.trailingPE : null,
+      pe_forward: typeof info.forwardPE === "number" && info.forwardPE > 0 ? info.forwardPE : null,
+      pbr: typeof info.priceToBook === "number" && info.priceToBook > 0 ? info.priceToBook : null,
+      roe: info.returnOnEquity ?? null,
+      revenue_growth: info.revenueGrowth ?? null,
+      ytd_return: calculateYtdReturn(rawData.history),
     };
     if (!sectorMap[sector]) sectorMap[sector] = [];
     sectorMap[sector].push(peerInfo);
@@ -3057,15 +3081,57 @@ async function main() {
             const sectorFiltered = targetIndex
               ? sectorPool.filter((s) => s.Index === targetIndex)
               : sectorPool;
+            const subIndustryPeers = (subIndustryMap[subInd] || []).filter(
+              (s) => s.Symbol_YF !== symbol,
+            );
+
+            // 比較テーブル: 自社 + 同業種ピア (時価総額降順、最大10社)
+            const selfInfo = rawData.info || {};
+            const selfEntry = {
+              symbol: metadata.Symbol || symbol,
+              symbol_yf: symbol,
+              security: metadata.Security || selfInfo.shortName || selfInfo.longName || symbol,
+              security_ja: metadata.Security_JA || null,
+              is_self: true,
+              market_cap: selfInfo.marketCap ?? null,
+              pe_ttm: typeof selfInfo.trailingPE === "number" && selfInfo.trailingPE > 0 ? selfInfo.trailingPE : null,
+              pe_forward: typeof selfInfo.forwardPE === "number" && selfInfo.forwardPE > 0 ? selfInfo.forwardPE : null,
+              pbr: typeof selfInfo.priceToBook === "number" && selfInfo.priceToBook > 0 ? selfInfo.priceToBook : null,
+              roe: selfInfo.returnOnEquity ?? null,
+              revenue_growth: selfInfo.revenueGrowth ?? null,
+              daily_change: calculateDailyChange(rawData.history),
+              ytd_return: calculateYtdReturn(rawData.history),
+            };
+            const peerComparison = [
+              selfEntry,
+              ...subIndustryPeers
+                .sort((a, b) => (b.market_cap || 0) - (a.market_cap || 0))
+                .slice(0, 10)
+                .map((p) => ({
+                  symbol: p.Symbol,
+                  symbol_yf: p.Symbol_YF,
+                  security: p.Security,
+                  security_ja: p.Security_JA || null,
+                  is_self: false,
+                  market_cap: p.market_cap,
+                  pe_ttm: p.pe_ttm,
+                  pe_forward: p.pe_forward,
+                  pbr: p.pbr,
+                  roe: p.roe,
+                  revenue_growth: p.revenue_growth,
+                  daily_change: p.Daily_Change,
+                  ytd_return: p.ytd_return,
+                })),
+            ];
+
             return {
-              sub_industry: (subIndustryMap[subInd] || []).filter(
-                (s) => s.Symbol_YF !== symbol,
-              ),
+              sub_industry: subIndustryPeers,
               sector: sectorFiltered.filter(
                 (s) =>
                   s.Symbol_YF !== symbol &&
                   !subIndustryMap[subInd]?.find((si) => si.Symbol_YF === s.Symbol_YF),
               ),
+              comparison: peerComparison,
             };
           })(),
           dcf_valuation: rawData.dcf_valuation || null,
