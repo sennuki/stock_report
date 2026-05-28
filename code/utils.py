@@ -247,20 +247,22 @@ def calculate_dcf(symbol, ticker=None, yf_info=None, yf_growth_estimates=None):
 
         wacc = wacc_recalc
 
-        # リスクフリーレート: 直近5年の10年国債利回りの median (Excelの L9 相当)
-        # mean ではなく median を使うのは、 defeatbeta-api の daily_treasure_yield()
-        # に時折 outlier (欠損補完値・スケール混在等) が紛れ込み、 mean が異常値に
-        # 引っ張られて Rf が 30%+ になる事故が観測されたため (NVDA/AAPL 等)。
-        # さらに % 形式 (4.5) と 小数形式 (0.045) を混在させる可能性があるため
-        # _to_decimal で正規化したうえで、 0.5%〜10% の範囲にサニティクランプする
-        # (10Y 国債利回りが 10% を超えるのは現代では異常値)。 これによって
-        # winsorize の floor が cap (20%) を超えて全シグナルが degenerate に
-        # クリップされる事故 (= 全シグナル一律 20% になる) を防ぐ。
+        # リスクフリーレート: 直近3年の10年国債利回りの median
+        # 5 年だと 2021 年の超低金利期 (1.5%) が含まれて現在の金利環境 (~4.5%) と
+        # 乖離するため 3 年に短縮。 mean ではなく median を使うのは、 defeatbeta-api の
+        # daily_treasure_yield() に時折 outlier (欠損補完値・スケール混在等) が
+        # 紛れ込み、 mean が異常値に引っ張られて Rf が 30%+ になる事故が観測された
+        # ため (NVDA/AAPL 等)。 さらに % 形式 (4.5) と 小数形式 (0.045) を混在させる
+        # 可能性があるため _to_decimal で正規化したうえで、 0.5%〜10% の範囲に
+        # サニティクランプする (10Y 国債利回りが 10% を超えるのは現代では異常値)。
+        # これによって winsorize の floor が cap (20%) を超えて全シグナルが
+        # degenerate にクリップされる事故 (= 全シグナル一律 20% になる) を防ぐ。
+        RF_LOOKBACK_YEARS = 3
         try:
             treasure_df = db_ticker.treasure.daily_treasure_yield()
             treasure_df['report_date'] = pd.to_datetime(treasure_df['report_date'])
-            five_years_ago = pd.Timestamp.now() - pd.DateOffset(years=5)
-            recent_treasure = treasure_df[treasure_df['report_date'] >= five_years_ago]
+            cutoff = pd.Timestamp.now() - pd.DateOffset(years=RF_LOOKBACK_YEARS)
+            recent_treasure = treasure_df[treasure_df['report_date'] >= cutoff]
             yields = recent_treasure['bc_10year'].dropna() if not recent_treasure.empty else None
             if yields is not None and len(yields) > 0:
                 raw_rf = float(yields.median())
