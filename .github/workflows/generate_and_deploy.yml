@@ -97,8 +97,10 @@ jobs:
           cd code
           python main.py
         env:
-          # 全銘柄を取得する (TEST_MODE=false)。
-          TEST_MODE: "false"
+          # TEST_SYMBOLS が "all" / 空のときは本番フル取得 (TEST_MODE=false)。
+          # workflow_dispatch で具体銘柄を指定した場合のみ TEST_MODE=true にし、
+          # main.py が symbols_override 経由でその銘柄群だけを処理するようにする。
+          TEST_MODE: ${{ (env.TEST_SYMBOLS != '' && env.TEST_SYMBOLS != 'all') && 'true' || 'false' }}
           PYTHON_MAX_WORKERS: 2
           R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
