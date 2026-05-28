@@ -680,6 +680,21 @@ def _normalize_revenue_df(df: "pd.DataFrame") -> "pd.DataFrame":
     return df
 
 
+def _dedupe_annual(df: "pd.DataFrame") -> "pd.DataFrame":
+    """trailing(TTM) ベースのワイド表を「年次1点」に集約する。
+
+    trailing_revenue_by_breakdown() は TTM 値のため、 同一年に複数 report_date が
+    あると _build_revenue_bar_chart の通年集計 (Year でグループ sum) が二重計上に
+    なる。 各年の最新 report_date の行のみ残すことで年次相当の系列にする。
+    """
+    if df is None or df.empty or 'report_date' not in df.columns:
+        return df
+    tmp = df.copy()
+    tmp['__year'] = tmp['report_date'].astype(str).str.slice(0, 4)
+    tmp = tmp.sort_values('report_date').drop_duplicates('__year', keep='last')
+    return tmp.drop(columns='__year').reset_index(drop=True)
+
+
 # defeatbeta-api 0.0.57 から revenue_by_segment() / revenue_by_geography() が
 # 削除され、 revenue_by_breakdown() が全 breakdown をロング形式で返す仕様に
 # 変わった。 さらに 0.0.58 で revenue_by_breakdown() も廃止され、
@@ -1439,28 +1454,44 @@ class YFinanceAdapterTicker:
         'Outside United States': 'International', 'Foreign': 'International',
     }
 
-    def _revenue_breakdown_raw(self):
-        """defeatbeta 0.0.58 の quarterly_revenue_by_breakdown() 結果を旧 (0.0.57)
-        スキーマに変換して 1 回だけ呼んでキャッシュ。"""
+    def _revenue_breakdown_raw(self, period_type='quarterly'):
+        """defeatbeta 0.0.58 の {quarterly,trailing}_revenue_by_breakdown() 結果を
+        旧 (0.0.57) スキーマに変換して period_type ごとにキャッシュ。"""
         if not hasattr(self, '_breakdown_cache'):
+            self._breakdown_cache = {}
+        if period_type not in self._breakdown_cache:
+            method = (self._db_ticker.quarterly_revenue_by_breakdown
+                      if period_type == 'quarterly'
+                      else self._db_ticker.trailing_revenue_by_breakdown)
             try:
-                raw = self._db_ticker.quarterly_revenue_by_breakdown()
-                self._breakdown_cache = _adapt_breakdown_schema(raw)
+                self._breakdown_cache[period_type] = _adapt_breakdown_schema(method())
             except Exception as e:
                 log_event("DEBUG", self.ticker,
-                          f"Error in quarterly_revenue_by_breakdown: {e}")
-                self._breakdown_cache = pd.DataFrame()
-        return self._breakdown_cache
+                          f"Error in {period_type}_revenue_by_breakdown: {e}")
+                self._breakdown_cache[period_type] = pd.DataFrame()
+        return self._breakdown_cache[period_type]
+
+    def _breakdown_wide(self, classification):
+        """quarterly を主データに分類別ワイド表を作る。 当該分類が quarterly に
+        全く無い場合 (ABBV のように地域を 10-K 年次でしか開示しない銘柄) は
+        trailing(TTM) にフォールバックし、 年次1点に集約して返す。"""
+        df = _pivot_breakdown_long_to_wide(
+            self._revenue_breakdown_raw('quarterly'), classification)
+        if df is not None and not df.empty:
+            return df
+        df_t = _pivot_breakdown_long_to_wide(
+            self._revenue_breakdown_raw('trailing'), classification)
+        if df_t is None or df_t.empty:
+            return df_t
+        return _dedupe_annual(df_t)
 
     def revenue_by_segment(self):
-        raw = self._revenue_breakdown_raw()
-        df = _pivot_breakdown_long_to_wide(raw, 'segment')
-        return _normalize_revenue_df(df) if not df.empty else df
+        df = self._breakdown_wide('segment')
+        return _normalize_revenue_df(df) if df is not None and not df.empty else df
 
     def revenue_by_geography(self):
-        raw = self._revenue_breakdown_raw()
-        df = _pivot_breakdown_long_to_wide(raw, 'geography')
-        if df.empty:
+        df = self._breakdown_wide('geography')
+        if df is None or df.empty:
             return df
         df.columns = [self._GEO_NORM.get(c.strip(), c.strip()) if isinstance(c, str) else c
                       for c in df.columns]
