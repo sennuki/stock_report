@@ -1,9 +1,12 @@
-"""defeatbeta-api 0.0.57 の revenue_by_breakdown() を実データで検証するテスト。
+"""defeatbeta-api 0.0.58 の quarterly_revenue_by_breakdown() を実データで検証するテスト。
 
 目的:
-- utils._is_geo_item() / _pivot_breakdown_long_to_wide() / YFinanceAdapterTicker
-  の revenue_by_segment / revenue_by_geography が、 実際の戻り値で正しく動くか確認する。
+- utils._is_geo_item() / _adapt_breakdown_schema() / _pivot_breakdown_long_to_wide()
+  / YFinanceAdapterTicker の revenue_by_segment / revenue_by_geography が、
+  実際の戻り値で正しく動くか確認する。
 - 期待値: AAPL/MSFT/NVDA はセグメント & 地域の両方が取得できる。 TSCO/VLO は空。
+
+注意: 実データ取得には HuggingFace データセットへのネットワークアクセスが必要。
 """
 from __future__ import annotations
 
@@ -17,6 +20,7 @@ from defeatbeta_api.data.ticker import Ticker as DBTicker
 from utils import (
     YFinanceAdapterTicker,
     _is_geo_item,
+    _adapt_breakdown_schema,
     _pivot_breakdown_long_to_wide,
 )
 
@@ -35,9 +39,9 @@ def header(title: str) -> None:
 
 def inspect_classification(symbol: str) -> dict:
     """各 breakdown_type に対する item の geo/seg 内訳を表示する。"""
-    raw = DBTicker(symbol).revenue_by_breakdown()
+    raw = _adapt_breakdown_schema(DBTicker(symbol).quarterly_revenue_by_breakdown())
     if raw is None or raw.empty:
-        print(f'[{symbol}] revenue_by_breakdown() empty')
+        print(f'[{symbol}] quarterly_revenue_by_breakdown() empty')
         return {}
     print(f'[{symbol}] total rows = {len(raw)}')
     rows = []
