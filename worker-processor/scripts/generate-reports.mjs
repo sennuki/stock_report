@@ -853,6 +853,16 @@ function extractInstitutionalOwnership(rawData) {
   if ((!Array.isArray(raw) || raw.length === 0) && pctInst == null && pctIns == null)
     return null;
 
+  // yfinance 1.3.0+ では列名が "% Out" → "pctHeld" に変更されている
+  // (yfinance/scrapers/holders.py の rename から "pctHeld": "% Out" が削除済み)。
+  // 旧キーも fallback として残す。
+  const pickPct = (h) => {
+    for (const k of ["pctHeld", "% Out", "pct_held", "pctOut"]) {
+      const v = h[k];
+      if (typeof v === "number" && Number.isFinite(v)) return v;
+    }
+    return null;
+  };
   const holders = Array.isArray(raw)
     ? raw
         .filter((h) => h.Holder || h.holder)
@@ -860,7 +870,7 @@ function extractInstitutionalOwnership(rawData) {
           holder: String(h.Holder || h.holder || ""),
           shares: typeof h.Shares === "number" ? h.Shares : null,
           date_reported: String(h["Date Reported"] || h.dateReported || "").split(" ")[0],
-          pct_out: typeof h["% Out"] === "number" ? h["% Out"] : null,
+          pct_out: pickPct(h),
           value: typeof h.Value === "number" ? h.Value : null,
         }))
         .sort((a, b) => (b.pct_out || 0) - (a.pct_out || 0))
