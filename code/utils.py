@@ -226,8 +226,12 @@ def calculate_dcf(symbol, ticker=None, yf_info=None, yf_growth_estimates=None):
 
         # WACC 再計算
         wacc_recalc = w_eq * cost_of_equity + w_de * cod_d * (1.0 - tax_d)
-        # 合理的な範囲にクランプ (4% ≤ WACC ≤ 25%)
-        wacc_recalc = max(0.04, min(0.25, wacc_recalc))
+        # 合理的な範囲にクランプ。 下限は max(Rf + 3pt, 6%): Gordon Growth の
+        # 分母 (WACC - g_term) が小さすぎると TV が爆発するため、 リスクフリー
+        # レートに対し最低 3pt の equity risk premium を要求する。
+        # 上限は 25% (高成長/高 β 企業でもこれ以上は実質的に資金調達不可能)。
+        wacc_floor = max(rfr_d + 0.03, 0.06)
+        wacc_recalc = max(wacc_floor, min(0.25, wacc_recalc))
 
         wacc_details = {
             "wacc": wacc_recalc,
@@ -337,13 +341,18 @@ def calculate_dcf(symbol, ticker=None, yf_info=None, yf_growth_estimates=None):
 
         # Sustainable Growth (内部成長率) = ROE × (1 - 配当性向)
         # ファンダ理論的な成長持続可能性指標。balance sheet ベースで forward-looking。
+        # ただし大規模自社株買いで純資産が圧縮される企業 (AAPL, MCD, HD, AZO 等)
+        # は ROE が 50%+ に膨張し、 sustainable も非現実的な値 (100%+) になる。
+        # この場合は分子の利益が正常でも算出原理が成り立たないため、 シグナルから
+        # 除外する (median が他の正常なシグナルだけで決まるようにする)。
         sustainable = None
         if yf_info is not None:
             roe = yf_info.get("returnOnEquity")
             payout = yf_info.get("payoutRatio")
             if (isinstance(roe, (int, float)) and not pd.isna(roe)
                 and isinstance(payout, (int, float)) and not pd.isna(payout)
-                and 0 <= payout <= 1):
+                and 0 <= payout <= 1
+                and 0 < float(roe) < 0.50):  # ROE 50% 未満のみ採用
                 sustainable = float(roe) * (1.0 - float(payout))
 
         # 6 シグナルを集約
@@ -356,12 +365,14 @@ def calculate_dcf(symbol, ticker=None, yf_info=None, yf_growth_estimates=None):
             "sustainable": sustainable,
         }
 
-        # 将来成長率 (1-5年): 各シグナルを (R_f, 30%) で winsorize し median を取る。
+        # 将来成長率 (1-5年): 各シグナルを (R_f, 20%) で winsorize し median を取る。
         # ハードクリップ (5-20%) と異なり 1 つの外れ値で結果が引っ張られないため、
         # EPS 9Y CAGR が一時的に異常値でも他 5 つで補正できる。
+        # 上限は 20%: 5 年連続 20% 成長は実質トップ 5% 銘柄でも珍しく、 これ以上は
+        # DCF の永続成長率前提と整合しなくなる (TV の分母が小さくなりすぎる)。
         # フロアを R_f に揃えることで 5→6 年目の成長率ジャンプが消えグライドパスが
         # 滑らかになる (永続成長率 = R_f のため)。
-        WINSORIZE_CAP = 0.30
+        WINSORIZE_CAP = 0.20
         signals_clipped = {
             k: (min(max(v, risk_free_rate), WINSORIZE_CAP) if v is not None else None)
             for k, v in signals_raw.items()
@@ -378,10 +389,9 @@ def calculate_dcf(symbol, ticker=None, yf_info=None, yf_growth_estimates=None):
 
         # 永続成長率 = 5年平均リスクフリーレート
         # ただし Gordon Growth モデルは WACC > terminal_growth が前提のため、
-        # ディフェンシブ銘柄 (低 β + 高負債) で WACC が risk-free rate を
-        # 下回るケースでは TV が負になり破綻する。WACC より十分小さく
-        # キャップする (最低 1pt のスプレッドを確保)。
-        terminal_growth = min(risk_free_rate, max(0.0, wacc - 0.01))
+        # WACC との差を最低 3pt 確保する。 これによって TV = FCF / (WACC - g)
+        # の分母が極小になって理論株価が発散することを防ぐ。
+        terminal_growth = min(risk_free_rate, max(0.0, wacc - 0.03))
         
         # 3. キャッシュフロー予測
         # 基準 FCF: 直近 1 四半期末の TTM 単一値は運転資本変動などのノイズが
@@ -513,22 +523,17 @@ def calculate_dcf(symbol, ticker=None, yf_info=None, yf_growth_estimates=None):
             price_df = db_ticker.price()
             current_price = float(price_df['close'].iloc[-1]) if not price_df.empty else 0
 
-        # DCF サニティチェック: 計算ロジックが通っても、入力データの不整合や
-        # 極端な成長率 / 低 WACC が組み合わさると無意味な fair_price になり得る。
-        #   - 負の理論株価: 企業価値 < (負債 - 現金) または TV が負
-        #   - 現在価格との極端な乖離: 入力データ品質に問題がある可能性が高い
-        # フロントに「割安/割高」を出す材料にならない値はここで dcf_applicable=False
-        # に倒して "DCF 評価対象外" の説明文を表示させる。
-        FAIR_PRICE_MAX_MULTIPLE = 5.0  # 現在価格の 5 倍を超える理論株価は要警戒
-        implausible_reason = None
+        # DCF サニティチェック:
+        # - 負の理論株価 (企業価値 < 純有利子負債) → 計算は通っているが投資判断
+        #   材料にならないため dcf_applicable=False で早期 return。
+        # - 現在価格との極端な乖離 (3 倍超) → 過去は "DCF 評価対象外" として
+        #   結果を完全に隠していたが、 値そのものを表示しないとユーザーが
+        #   原因を切り分けられないため、 結果は返したうえで high_uncertainty
+        #   フラグを立て、 テンプレ側で警告バナーを出す方針に変更。
         if fair_price <= 0:
-            implausible_reason = "negative_fair_price"
-        elif current_price > 0 and fair_price > current_price * FAIR_PRICE_MAX_MULTIPLE:
-            implausible_reason = "implausible_fair_price"
-        if implausible_reason is not None:
             return {
                 "dcf_applicable": False,
-                "dcf_not_applicable_reason": implausible_reason,
+                "dcf_not_applicable_reason": "negative_fair_price",
                 "fair_price_raw": float(fair_price),
                 "current_price": float(current_price),
                 "wacc_details": wacc_details,
@@ -537,7 +542,24 @@ def calculate_dcf(symbol, ticker=None, yf_info=None, yf_growth_estimates=None):
                 "terminal_growth": float(terminal_growth),
                 "base_fcf": float(base_fcf),
                 "base_fcf_method": base_fcf_method,
+                "enterprise_value": float(enterprise_value),
+                "equity_value": float(equity_value),
+                "cash_value": float(cash_value),
+                "total_debt": float(total_debt),
+                "shares": float(shares),
             }
+
+        # 高乖離フラグ (現在価格の 3 倍超 or 0.2 倍未満)
+        high_uncertainty = False
+        uncertainty_reason = None
+        if current_price > 0:
+            ratio = fair_price / current_price
+            if ratio > 3.0:
+                high_uncertainty = True
+                uncertainty_reason = "fair_price_much_higher_than_current"
+            elif ratio < 0.2:
+                high_uncertainty = True
+                uncertainty_reason = "fair_price_much_lower_than_current"
 
 
         # リバースDCF：現在株価から逆算して必要な成長率を計算
@@ -607,6 +629,8 @@ def calculate_dcf(symbol, ticker=None, yf_info=None, yf_growth_estimates=None):
             "annual_fcfs": [float(x) for x in annual_fcfs],
             "ttm_fcf": float(ttm_fcf) if ttm_fcf is not None else None,
             "dcf_applicable": True,
+            "high_uncertainty": bool(high_uncertainty),
+            "uncertainty_reason": uncertainty_reason,
             "reverse_growth": float(reverse_growth) if reverse_growth is not None else None
         }
     except Exception as e:
