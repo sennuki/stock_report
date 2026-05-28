@@ -788,43 +788,47 @@ const dcfBroken =
                       </tr>
                     </thead>
                     <tbody>
-                      {RANK_GROUPS.map((group) => {
-                        const rows = group.keys.filter(([key]) => reportData.ranks.metrics[key]);
-                        if (rows.length === 0) return null;
-                        return (
-                          <Fragment>
-                            <tr class="bg-skin-fill/10 border-y border-skin-line/40">
-                              <td colspan="4" class="px-4 py-1.5 text-xs font-bold uppercase tracking-wide opacity-80">
-                                {group.genre}
-                              </td>
-                            </tr>
-                            {rows.map(([key, label, unit]) => {
-                              const m = reportData.ranks.metrics[key];
-                              if (!m) return null;
-                              const overall = fmtRank(m.overall);
-                              const sector = fmtRank(m.sector);
-                              return (
-                                <tr class="border-b border-skin-line/40 last:border-b-0 odd:bg-skin-fill/5 even:bg-skin-fill hover:bg-skin-fill/10">
-                                  <td class="pl-8 pr-4 py-2 opacity-70">
-                                    <a href={`/ranking/${rankingSlug(key)}`} class="underline underline-offset-2 decoration-dotted hover:text-skin-accent">{label}</a>
-                                  </td>
-                                  <td class="px-4 py-2 text-right font-medium">
-                                    {(key === 'dividend_rate' || key === 'dividend_yield') && (m.value == null || !Number.isFinite(m.value) || m.value === 0)
-                                      ? '無配'
-                                      : fmtRankValue(m.value, unit)}
-                                  </td>
-                                  <td class={`px-4 py-2 text-right ${overall ? rankTierClass(overall.tier) : 'opacity-40'}`}>
-                                    {overall ? overall.text : '対象外'}
-                                  </td>
-                                  <td class={`px-4 py-2 text-right ${sector ? rankTierClass(sector.tier) : 'opacity-40'}`}>
-                                    {sector ? sector.text : '対象外'}
-                                  </td>
-                                </tr>
-                              );
-                            })}
-                          </Fragment>
-                        );
-                      })}
+                      {(() => {
+                        let rowIdx = 0;
+                        return RANK_GROUPS.map((group) => {
+                          const rows = group.keys.filter(([key]) => reportData.ranks.metrics[key]);
+                          if (rows.length === 0) return null;
+                          return (
+                            <Fragment>
+                              <tr class="bg-skin-fill/10 border-y border-skin-line/40">
+                                <td colspan="4" class="px-4 py-1.5 text-xs font-bold uppercase tracking-wide opacity-80">
+                                  {group.genre}
+                                </td>
+                              </tr>
+                              {rows.map(([key, label, unit]) => {
+                                const m = reportData.ranks.metrics[key];
+                                if (!m) return null;
+                                const overall = fmtRank(m.overall);
+                                const sector = fmtRank(m.sector);
+                                const stripe = rowIdx++ % 2 === 0 ? 'bg-skin-fill/5' : '';
+                                return (
+                                  <tr class={`border-b border-skin-line/40 last:border-b-0 ${stripe} hover:bg-skin-fill/10`}>
+                                    <td class="pl-8 pr-4 py-2 opacity-70">
+                                      <a href={`/ranking/${rankingSlug(key)}`} class="underline underline-offset-2 decoration-dotted hover:text-skin-accent">{label}</a>
+                                    </td>
+                                    <td class="px-4 py-2 text-right font-medium">
+                                      {(key === 'dividend_rate' || key === 'dividend_yield') && (m.value == null || !Number.isFinite(m.value) || m.value === 0)
+                                        ? '無配'
+                                        : fmtRankValue(m.value, unit)}
+                                    </td>
+                                    <td class={`px-4 py-2 text-right ${overall ? rankTierClass(overall.tier) : 'opacity-40'}`}>
+                                      {overall ? overall.text : '対象外'}
+                                    </td>
+                                    <td class={`px-4 py-2 text-right ${sector ? rankTierClass(sector.tier) : 'opacity-40'}`}>
+                                      {sector ? sector.text : '対象外'}
+                                    </td>
+                                  </tr>
+                                );
+                              })}
+                            </Fragment>
+                          );
+                        });
+                      })()}
                     </tbody>
                   </table>
                 </div>
@@ -1717,7 +1721,7 @@ const dcfBroken =
                     const isSale = txLower.includes('sale') || txLower.includes('sell') || txLower.startsWith('s -');
                     const isBuy = txLower.includes('purchase') || txLower.includes('buy') || txLower.startsWith('p -');
                     return (
-                      <tr class={idx % 2 === 0 ? 'hover:bg-skin-fill/10' : 'bg-skin-fill/5 hover:bg-skin-fill/10'}>
+                      <tr class={idx % 2 === 0 ? 'bg-skin-fill/5 hover:bg-skin-fill/10' : 'hover:bg-skin-fill/10'}>
                         <td class="px-4 py-3 whitespace-nowrap opacity-80 font-mono text-xs">{t.date}</td>
                         <td class="px-4 py-3 font-medium">{t.insider}</td>
                         <td class="px-4 py-3 opacity-60 text-xs hidden md:table-cell">{t.title || '---'}</td>
@@ -1790,7 +1794,7 @@ const dcfBroken =
                     </thead>
                     <tbody class="divide-y divide-skin-line">
                       {holders.map((h: any, idx: number) => (
-                        <tr class={idx % 2 === 0 ? 'hover:bg-skin-fill/10' : 'bg-skin-fill/5 hover:bg-skin-fill/10'}>
+                        <tr class={idx % 2 === 0 ? 'bg-skin-fill/5 hover:bg-skin-fill/10' : 'hover:bg-skin-fill/10'}>
                           <td class="px-4 py-3 font-medium">{h.holder}</td>
                           <td class="px-4 py-3 text-right font-mono text-xs opacity-80">
                             {typeof h.shares === 'number'
@@ -1985,7 +1989,7 @@ const dcfBroken =
                         const upsideCurrent = (currentPrice > 0 && targetPrice > 0) ? (targetPrice / currentPrice - 1) * 100 : null;
 
                         return (
-                        <tr class={`hover:bg-skin-fill/10 ${idx % 2 === 0 ? '' : 'bg-skin-fill/5'}`}>
+                        <tr class={`hover:bg-skin-fill/10 ${idx % 2 === 0 ? 'bg-skin-fill/5' : ''}`}>
                           <td class="px-4 py-3 whitespace-nowrap opacity-80">{change.GradeDate}</td>
                           <td class="px-4 py-3 font-medium">{change.Firm}</td>
                           <td class="px-4 py-3">
