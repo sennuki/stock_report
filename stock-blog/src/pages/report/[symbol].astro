@@ -1576,12 +1576,36 @@ const dcfBroken =
                 <span class="material-symbols-outlined text-orange-500" aria-hidden="true">info</span>
                 DCF 評価対象外
               </h3>
-              <p class="text-sm opacity-80 leading-relaxed">
-                {symbol} は基準となるフリーキャッシュフロー（直近3会計年度の中央値）が
-                マイナスのため、DCF理論株価およびリバースDCFを算出していません。
-                将来FCFがマイナスのままでは理論株価が成立しないためで、大型投資フェーズや
-                構造的にキャッシュを消費する企業で起こります。
-              </p>
+              {reportData.dcf_valuation.dcf_not_applicable_reason === 'negative_normalized_fcf' ? (
+                <p class="text-sm opacity-80 leading-relaxed">
+                  {symbol} は基準となるフリーキャッシュフロー（直近3会計年度の中央値）が
+                  マイナスのため、DCF理論株価およびリバースDCFを算出していません。
+                  将来FCFがマイナスのままでは理論株価が成立しないためで、大型投資フェーズや
+                  構造的にキャッシュを消費する企業で起こります。
+                </p>
+              ) : reportData.dcf_valuation.dcf_not_applicable_reason === 'negative_fair_price' ? (
+                <p class="text-sm opacity-80 leading-relaxed">
+                  {symbol} は DCF 計算の結果、理論株価が負になりました
+                  （企業価値が純有利子負債を下回るケース）。
+                  入力データの不整合または資本構造の特殊性により評価対象外としています。
+                </p>
+              ) : reportData.dcf_valuation.dcf_not_applicable_reason === 'implausible_fair_price' ? (
+                <p class="text-sm opacity-80 leading-relaxed">
+                  {symbol} は DCF 計算の結果、理論株価が現在価格の 5 倍を超えました
+                  （極端な低 WACC や高成長率の組み合わせによる発散）。
+                  実用的な評価値とならないため算出を見送っています。
+                  {typeof reportData.dcf_valuation.fair_price_raw === 'number' &&
+                   typeof reportData.dcf_valuation.current_price === 'number' && (
+                    <span class="block mt-1 opacity-60">
+                      参考値: 理論株価 ${reportData.dcf_valuation.fair_price_raw.toFixed(0)} / 現在価格 ${reportData.dcf_valuation.current_price.toFixed(2)}
+                    </span>
+                  )}
+                </p>
+              ) : (
+                <p class="text-sm opacity-80 leading-relaxed">
+                  {symbol} は DCF 評価の前提が成立しないため算出していません。
+                </p>
+              )}
               {typeof reportData.dcf_valuation.base_fcf === 'number' && (
                 <div class="text-sm">
                   <span class="opacity-60">基準FCF（中央値）:</span>{' '}
