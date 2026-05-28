@@ -1439,34 +1439,34 @@ const dcfBroken =
                     <table class="min-w-full divide-y divide-skin-line text-xs">
                       <thead class="bg-skin-fill/20">
                         <tr>
-                          <th class="px-3 py-3 text-left font-bold">年</th>
+                          <th class="sticky left-0 z-20 bg-skin-card px-3 py-3 text-left font-bold border-r border-skin-line whitespace-nowrap">年</th>
                           {reportData.dcf_valuation.projections.map((p: any) => (
-                            <th class="px-3 py-3 text-right font-bold">{p.year}年目</th>
+                            <th class="px-3 py-3 text-right font-bold whitespace-nowrap">{p.year}年目</th>
                           ))}
-                          <th class="px-3 py-3 text-right font-bold bg-skin-accent/10">TV</th>
+                          <th class="px-3 py-3 text-right font-bold bg-skin-accent/10 whitespace-nowrap">TV</th>
                         </tr>
                       </thead>
                       <tbody class="divide-y divide-skin-line">
                         <tr class="odd:bg-skin-fill/5 even:bg-skin-fill">
-                          <td class="px-3 py-3 font-medium">予想FCF</td>
+                          <td class="sticky left-0 z-10 bg-skin-card px-3 py-3 font-medium border-r border-skin-line whitespace-nowrap">予想FCF</td>
                           {reportData.dcf_valuation.projections.map((p: any) => (
-                            <td class="px-3 py-3 text-right">${(p.fcf / 1e9).toFixed(2)}B</td>
+                            <td class="px-3 py-3 text-right whitespace-nowrap">${(p.fcf / 1e9).toFixed(2)}B</td>
                           ))}
-                          <td class="px-3 py-3 text-right font-bold bg-skin-fill/10">${(reportData.dcf_valuation.terminal_value / 1e9).toFixed(1)}B</td>
+                          <td class="px-3 py-3 text-right font-bold bg-skin-fill/10 whitespace-nowrap">${(reportData.dcf_valuation.terminal_value / 1e9).toFixed(1)}B</td>
                         </tr>
                         <tr class="odd:bg-skin-fill/5 even:bg-skin-fill">
-                          <td class="px-3 py-3 font-medium">現在価値 (割引後)</td>
+                          <td class="sticky left-0 z-10 bg-skin-card px-3 py-3 font-medium border-r border-skin-line whitespace-nowrap">現在価値 (割引後)</td>
                           {reportData.dcf_valuation.projections.map((p: any) => (
-                            <td class="px-3 py-3 text-right font-medium text-skin-accent">${(p.discounted_fcf / 1e9).toFixed(2)}B</td>
+                            <td class="px-3 py-3 text-right font-medium text-skin-accent whitespace-nowrap">${(p.discounted_fcf / 1e9).toFixed(2)}B</td>
                           ))}
-                          <td class="px-3 py-3 text-right font-bold bg-skin-accent/10 text-skin-accent">${(reportData.dcf_valuation.npv_tv / 1e9).toFixed(2)}B</td>
+                          <td class="px-3 py-3 text-right font-bold bg-skin-accent/10 text-skin-accent whitespace-nowrap">${(reportData.dcf_valuation.npv_tv / 1e9).toFixed(2)}B</td>
                         </tr>
                         <tr class="odd:bg-skin-fill/5 even:bg-skin-fill opacity-80">
-                          <td class="px-3 py-2 font-medium">成長率仮定</td>
+                          <td class="sticky left-0 z-10 bg-skin-card px-3 py-2 font-medium border-r border-skin-line whitespace-nowrap">成長率仮定</td>
                           {reportData.dcf_valuation.projections.map((p: any) => (
-                            <td class="px-3 py-2 text-right opacity-60">{(p.growth_rate * 100).toFixed(1)}%</td>
+                            <td class="px-3 py-2 text-right opacity-60 whitespace-nowrap">{(p.growth_rate * 100).toFixed(1)}%</td>
                           ))}
-                          <td class="px-3 py-2 text-right opacity-60">{(reportData.dcf_valuation.terminal_growth * 100).toFixed(1)}%</td>
+                          <td class="px-3 py-2 text-right opacity-60 whitespace-nowrap">{(reportData.dcf_valuation.terminal_growth * 100).toFixed(1)}%</td>
                         </tr>
                       </tbody>
                     </table>
@@ -1707,12 +1707,12 @@ const dcfBroken =
               <table class="min-w-full divide-y divide-skin-line text-sm">
                 <thead>
                   <tr class="bg-skin-fill/10 text-xs uppercase tracking-wider">
-                    <th scope="col" class="px-4 py-3 text-left font-semibold opacity-70">日付</th>
-                    <th scope="col" class="px-4 py-3 text-left font-semibold opacity-70">インサイダー</th>
-                    <th scope="col" class="px-4 py-3 text-left font-semibold opacity-70 hidden md:table-cell">役職</th>
-                    <th scope="col" class="px-4 py-3 text-left font-semibold opacity-70">取引種別</th>
-                    <th scope="col" class="px-4 py-3 text-right font-semibold opacity-70">株数</th>
-                    <th scope="col" class="px-4 py-3 text-right font-semibold opacity-70">取引額</th>
+                    <th scope="col" class="px-4 py-3 text-left font-semibold opacity-70 whitespace-nowrap">日付</th>
+                    <th scope="col" class="px-4 py-3 text-left font-semibold opacity-70 whitespace-nowrap">インサイダー</th>
+                    <th scope="col" class="px-4 py-3 text-left font-semibold opacity-70 whitespace-nowrap">役職</th>
+                    <th scope="col" class="px-4 py-3 text-left font-semibold opacity-70 whitespace-nowrap">取引種別</th>
+                    <th scope="col" class="px-4 py-3 text-right font-semibold opacity-70 whitespace-nowrap">株数</th>
+                    <th scope="col" class="px-4 py-3 text-right font-semibold opacity-70 whitespace-nowrap">取引額</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-skin-line">
@@ -1723,17 +1723,17 @@ const dcfBroken =
                     return (
                       <tr class={idx % 2 === 0 ? 'bg-skin-fill/5 hover:bg-skin-fill/10' : 'hover:bg-skin-fill/10'}>
                         <td class="px-4 py-3 whitespace-nowrap opacity-80 font-mono text-xs">{t.date}</td>
-                        <td class="px-4 py-3 font-medium">{t.insider}</td>
-                        <td class="px-4 py-3 opacity-60 text-xs hidden md:table-cell">{t.title || '---'}</td>
-                        <td class="px-4 py-3">
+                        <td class="px-4 py-3 whitespace-nowrap font-medium">{t.insider}</td>
+                        <td class="px-4 py-3 whitespace-nowrap opacity-60 text-xs">{t.title || '---'}</td>
+                        <td class="px-4 py-3 whitespace-nowrap">
                           <span class={`text-xs font-medium px-2 py-0.5 rounded-full ${isSale ? 'bg-red-100 text-red-700' : isBuy ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
                             {isSale ? '売却' : isBuy ? '購入' : (t.transaction || '---').split(',')[0].trim().slice(0, 20)}
                           </span>
                         </td>
-                        <td class="px-4 py-3 text-right font-mono text-xs">
+                        <td class="px-4 py-3 whitespace-nowrap text-right font-mono text-xs">
                           {typeof t.shares === 'number' ? t.shares.toLocaleString() : '---'}
                         </td>
-                        <td class="px-4 py-3 text-right font-mono text-xs">
+                        <td class="px-4 py-3 whitespace-nowrap text-right font-mono text-xs">
                           {typeof t.value === 'number'
                             ? '$' + (t.value >= 1e6 ? (t.value / 1e6).toFixed(1) + 'M' : t.value.toLocaleString())
                             : '---'}
