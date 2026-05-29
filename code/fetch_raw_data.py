@@ -331,6 +331,13 @@ def main(symbols_override=None):
     import sys
     args = [a for a in sys.argv[1:] if not a.startswith('--')]
 
+    # "all" / "full" は「全銘柄取得」の別名キーワード。 単独で渡された場合は
+    # ティッカーとして扱わず、 引数なし (= 下の S&P 全件取得) と同じ経路に流す。
+    # (ユーザーが全件実行のつもりで "FULL" と入力するケースを救済)
+    if len(args) == 1 and args[0].lower() in ("all", "full"):
+        print(f'"{args[0]}" keyword detected: running full S&P 500/400/600 fetch.')
+        args = []
+
     if args:
         print(f"Fetching specific symbols: {args}")
         symbols = args

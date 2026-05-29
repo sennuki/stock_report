@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
     inputs:
       test_symbols:
-        description: 'Comma-separated symbols to process (or "all" for full run). Empty = default test set MSFT,AAPL,NVDA'
+        description: 'Comma-separated symbols to process (or "all"/"full" for full run). Empty = default test set MSFT,AAPL,NVDA'
         required: false
         default: ''
 
@@ -97,10 +97,12 @@ jobs:
           cd code
           python main.py
         env:
-          # TEST_SYMBOLS が "all" / 空のときは本番フル取得 (TEST_MODE=false)。
+          # TEST_SYMBOLS が "all" / "full" / 空のときは本番フル取得 (TEST_MODE=false)。
           # workflow_dispatch で具体銘柄を指定した場合のみ TEST_MODE=true にし、
           # main.py が symbols_override 経由でその銘柄群だけを処理するようにする。
-          TEST_MODE: ${{ (env.TEST_SYMBOLS != '' && env.TEST_SYMBOLS != 'all') && 'true' || 'false' }}
+          # ("full" は "all" の別名。GitHub Actions の文字列比較は大小無視なので
+          #  "FULL"/"All" 等も同じ扱いになる)
+          TEST_MODE: ${{ (env.TEST_SYMBOLS != '' && env.TEST_SYMBOLS != 'all' && env.TEST_SYMBOLS != 'full') && 'true' || 'false' }}
           PYTHON_MAX_WORKERS: 2
           R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
