@@ -680,12 +680,33 @@ def _normalize_revenue_df(df: "pd.DataFrame") -> "pd.DataFrame":
     return df
 
 
+def _dedupe_annual(df: "pd.DataFrame") -> "pd.DataFrame":
+    """trailing(TTM) ベースのワイド表を「年次1点」に集約する。
+
+    trailing_revenue_by_breakdown() は TTM 値のため、 同一年に複数 report_date が
+    あると _build_revenue_bar_chart の通年集計 (Year でグループ sum) が二重計上に
+    なる。 各年の最新 report_date の行のみ残すことで年次相当の系列にする。
+    """
+    if df is None or df.empty or 'report_date' not in df.columns:
+        return df
+    tmp = df.copy()
+    tmp['__year'] = tmp['report_date'].astype(str).str.slice(0, 4)
+    tmp = tmp.sort_values('report_date').drop_duplicates('__year', keep='last')
+    return tmp.drop(columns='__year').reset_index(drop=True)
+
+
 # defeatbeta-api 0.0.57 から revenue_by_segment() / revenue_by_geography() が
-# 削除され、 revenue_by_breakdown() が XBRL の全 breakdown をロング形式で返す
-# 仕様に変わった。 AAPL のように "Schedule Of Segment Reporting Information"
-# テーブルの中身が地域 (Americas/Europe/Greater China/Japan/Rest Of Asia
-# Pacific) であるケースがあるため、 テーブル名ではなく **item_name の中身** で
-# 各レコードを geography / segment に分類する。
+# 削除され、 revenue_by_breakdown() が全 breakdown をロング形式で返す仕様に
+# 変わった。 さらに 0.0.58 で revenue_by_breakdown() も廃止され、
+# quarterly_revenue_by_breakdown() / trailing_revenue_by_breakdown() に分割
+# されたうえ列名も変更された (item_name→series_name, item_value→value,
+# breakdown_type→breakdown_name, period_label/depth は廃止)。
+# このモジュールは _adapt_breakdown_schema() で 0.0.58 のロング形式を旧
+# (0.0.57) スキーマの列名に揃えてから処理する。 AAPL のように "Revenue by
+# Geography" テーブルの中身が地域 (Americas/Europe/Greater China/Japan/Rest
+# Of Asia Pacific) であるケースがあるため、 テーブル名ではなく
+# **item_name (= series_name) の中身** で各レコードを geography / segment に
+# 分類する。
 _GEO_TOKENS_EXACT = {
     # ----- アメリカ大陸 -----
     'americas', 'america', 'us', 'u.s.', 'u.s.a.', 'usa', 'united states',
@@ -777,26 +798,25 @@ def _is_geo_item(name) -> bool:
 # MSFT のように真のセグメント (Productivity & Business Processes /
 # Intelligent Cloud / More Personal Computing = 3 つ) が 製品別テーブル
 # (Office/Xbox/Surface/... = 10+ items) に負けてしまうため、 テーブル名
-# キーワードで優先度を与え、 priority 値が最小のテーブルを各 report_date で
-# 採用する。 また、 これらキーワードに該当しないテーブル (例: "Statement
-# Table" は損益計算書の生データであり、 Xbox/Office/Surface 等の製品名が
-# 混じることがある) はセグメント候補から **除外** する。
+# (0.0.58 では breakdown_name, 例 "Revenue by Segment" / "Revenue by Product")
+# のキーワードで優先度を与え、 priority 値が最小のテーブルを各 report_date で
+# 採用する。 0.0.58 の breakdown_name は全て "Revenue by ..." 形式なので、
+# 末尾の総受けキーワード 'revenue' により未知の収益テーブルも最低優先度で
+# 採用しつつ、 'segment' 等の明示的テーブルを優先する。 'revenue' を含まない
+# テーブル (損益計算書の生データ等) はセグメント候補から **除外** する。
 _SEG_TABLE_PRIORITY_KEYWORDS = (
-    'segment',              # 真の財務報告セグメント (Schedule Of Segment Reporting...)
-    'disaggregation',       # 製品/サービス別 (Disaggregation Of Revenue Table)
-    'market',               # NVDA "Scheduleof Revenueby Markets Table" など
+    'segment',              # 真の財務報告セグメント ("Revenue by Segment")
+    'disaggregation',       # 旧 0.0.57 互換 (Disaggregation Of Revenue)
+    'product',              # 製品別 ("Revenue by Product")
+    'service',              # サービス別 ("Revenue by Service")
+    'market',               # 市場別 ("Revenue by Market", NVDA 等)
+    'revenue',              # その他の "Revenue by ..." 全般 (最低優先度の総受け)
 )
-# 'products and services' (= Schedule Of Entity Wide Information Revenue
-# From External Customers By Products And Services Table) はあえて優先候補
-# から外している。 MSFT の 2014-2015 年は priority=0 の Segment Reporting
-# テーブルが defeatbeta データに欠損しており、 そのテーブルが fallback で
-# 採用されると Xbox/Office/Surface などの製品名がセグメントに混入してしまう
-# ため。 該当銘柄の該当期間はセグメント空欄を許容する。
 
 
 def _segment_table_priority(bt):
     """セグメント表示に採用してよいテーブルなら整数優先度を、
-    採用すべきでないテーブル (Statement Table 等) なら None を返す。"""
+    採用すべきでないテーブル (収益分解でない生データ等) なら None を返す。"""
     s = (bt or '').lower()
     for i, kw in enumerate(_SEG_TABLE_PRIORITY_KEYWORDS):
         if kw in s:
@@ -823,12 +843,54 @@ def _period_span_days(period_label) -> int:
 _COMPLETE_REVENUE_TOL = 0.05
 
 
+def _adapt_breakdown_schema(df: "pd.DataFrame") -> "pd.DataFrame":
+    """defeatbeta 0.0.58 の breakdown ロング形式を、 _pivot_breakdown_long_to_wide
+    が期待する旧 (0.0.57) スキーマの列名に揃える。
+
+    0.0.58 の列: symbol, breakdown, breakdown_name, period_type, report_date,
+                 series_name, value, value_type, currency
+    旧 0.0.57 の列: symbol, report_date, period_label, form_type, breakdown_type,
+                    item_name, item_value, depth, parent_name
+
+    変換方針:
+      - series_name → item_name, value → item_value, breakdown_name → breakdown_type
+      - period_label / depth は 0.0.58 に存在しない:
+          * quarterly_revenue_by_breakdown() は四半期データのみ返すため、
+            period_label ベースの四半期/年次フィルタ (pivot 側 step 2) は不要。
+            列が無ければ pivot 側で自動的にスキップされる。
+          * depth による親子重複除去 (pivot 側 step 1) も、 0.0.58 のデータが
+            leaf series のみで構成されるため不要。 万一 親子が混在しても、
+            完全分解判定 (__complete: テーブル合計 ≒ 参照売上) が二重計上テーブルを
+            弾く安全網になる。
+      - value_type != 'CURRENCY' の行 (subscriber 数等の KPI) は収益チャートの
+        対象外なので除外する。
+    """
+    if df is None or getattr(df, "empty", True):
+        return pd.DataFrame()
+    out = df.copy()
+    if 'value_type' in out.columns:
+        out = out[out['value_type'].astype(str).str.upper() == 'CURRENCY']
+    if out.empty:
+        return pd.DataFrame()
+    rename = {
+        'series_name': 'item_name',
+        'value': 'item_value',
+        'breakdown_name': 'breakdown_type',
+    }
+    out = out.rename(columns={k: v for k, v in rename.items() if k in out.columns})
+    keep = [c for c in ('symbol', 'report_date', 'breakdown_type',
+                        'item_name', 'item_value') if c in out.columns]
+    return out[keep].reset_index(drop=True)
+
+
 def _pivot_breakdown_long_to_wide(long_df: "pd.DataFrame",
                                   classification: str) -> "pd.DataFrame":
-    """defeatbeta 0.0.57 のロング形式 breakdown データをワイド形式に変換する。
+    """_adapt_breakdown_schema() で旧 (0.0.57) スキーマに揃えたロング形式 breakdown
+    データをワイド形式に変換する。
 
-    入力: {symbol, report_date, period_label, form_type, breakdown_type,
-           item_name, item_value, depth, parent_name}
+    入力 (旧スキーマ): {symbol, report_date, breakdown_type, item_name, item_value}
+           ※ period_label / depth は 0.0.58 では存在しないため、 これらに依存する
+             ステップ (step 1/2) は列の有無で自動スキップされる。
     出力: {symbol, report_date, <item_name_1>, <item_name_2>, ...} (1 行 = 1 四半期)
 
     採用テーブルの選び方:
@@ -1392,25 +1454,44 @@ class YFinanceAdapterTicker:
         'Outside United States': 'International', 'Foreign': 'International',
     }
 
-    def _revenue_breakdown_raw(self):
-        """defeatbeta 0.0.57 の revenue_by_breakdown() 結果を 1 回だけ呼んでキャッシュ。"""
+    def _revenue_breakdown_raw(self, period_type='quarterly'):
+        """defeatbeta 0.0.58 の {quarterly,trailing}_revenue_by_breakdown() 結果を
+        旧 (0.0.57) スキーマに変換して period_type ごとにキャッシュ。"""
         if not hasattr(self, '_breakdown_cache'):
+            self._breakdown_cache = {}
+        if period_type not in self._breakdown_cache:
+            method = (self._db_ticker.quarterly_revenue_by_breakdown
+                      if period_type == 'quarterly'
+                      else self._db_ticker.trailing_revenue_by_breakdown)
             try:
-                self._breakdown_cache = self._db_ticker.revenue_by_breakdown()
+                self._breakdown_cache[period_type] = _adapt_breakdown_schema(method())
             except Exception as e:
-                log_event("DEBUG", self.ticker, f"Error in revenue_by_breakdown: {e}")
-                self._breakdown_cache = pd.DataFrame()
-        return self._breakdown_cache
+                log_event("DEBUG", self.ticker,
+                          f"Error in {period_type}_revenue_by_breakdown: {e}")
+                self._breakdown_cache[period_type] = pd.DataFrame()
+        return self._breakdown_cache[period_type]
+
+    def _breakdown_wide(self, classification):
+        """quarterly を主データに分類別ワイド表を作る。 当該分類が quarterly に
+        全く無い場合 (ABBV のように地域を 10-K 年次でしか開示しない銘柄) は
+        trailing(TTM) にフォールバックし、 年次1点に集約して返す。"""
+        df = _pivot_breakdown_long_to_wide(
+            self._revenue_breakdown_raw('quarterly'), classification)
+        if df is not None and not df.empty:
+            return df
+        df_t = _pivot_breakdown_long_to_wide(
+            self._revenue_breakdown_raw('trailing'), classification)
+        if df_t is None or df_t.empty:
+            return df_t
+        return _dedupe_annual(df_t)
 
     def revenue_by_segment(self):
-        raw = self._revenue_breakdown_raw()
-        df = _pivot_breakdown_long_to_wide(raw, 'segment')
-        return _normalize_revenue_df(df) if not df.empty else df
+        df = self._breakdown_wide('segment')
+        return _normalize_revenue_df(df) if df is not None and not df.empty else df
 
     def revenue_by_geography(self):
-        raw = self._revenue_breakdown_raw()
-        df = _pivot_breakdown_long_to_wide(raw, 'geography')
-        if df.empty:
+        df = self._breakdown_wide('geography')
+        if df is None or df.empty:
             return df
         df.columns = [self._GEO_NORM.get(c.strip(), c.strip()) if isinstance(c, str) else c
                       for c in df.columns]
