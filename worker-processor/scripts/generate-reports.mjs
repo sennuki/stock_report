@@ -2896,13 +2896,15 @@ async function main() {
 
   // 処理する銘柄を決定する。
   //   - TEST_SYMBOLS 環境変数 (例: "MSFT,AAPL,NVDA") があればそのリストを優先
-  //   - "all" を指定するとフィルタを掛けず raw データにある全銘柄を処理する
+  //   - "all" / "full" を指定するとフィルタを掛けず raw データにある全銘柄を処理する
+  //     ("full" は "all" の別名)
   //   - 未指定の場合はテスト用デフォルト ["MSFT", "AAPL", "NVDA"]
   // テスト時は数銘柄に絞ることで Actions の所要時間を 30 秒程度に抑えられる。
   console.log("Generating reports/*.json...");
   const testSymbolsEnv = (process.env.TEST_SYMBOLS || "").trim();
+  const FULL_RUN_KEYWORDS = ["all", "full"];
   let symbols;
-  if (testSymbolsEnv.toLowerCase() === "all") {
+  if (FULL_RUN_KEYWORDS.includes(testSymbolsEnv.toLowerCase())) {
     symbols = Object.keys(rawDataMap);
   } else if (testSymbolsEnv) {
     symbols = testSymbolsEnv
