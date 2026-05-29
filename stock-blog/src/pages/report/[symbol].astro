@@ -712,8 +712,8 @@ if (reportData?.ranks?.metrics) {
             <div class="overflow-x-auto rounded-lg border border-skin-line">
               <table class="min-w-full divide-y divide-skin-line text-sm">
                 <thead>
-                  <tr class="bg-skin-fill/10 text-xs uppercase tracking-wider">
-                    <th class="px-4 py-3 text-left font-semibold opacity-70 sticky left-0 bg-skin-fill/10">銘柄</th>
+                  <tr class="bg-skin-fill text-xs uppercase tracking-wider">
+                    <th class="px-4 py-3 text-left font-semibold opacity-70 sticky left-0 z-20 bg-skin-fill">銘柄</th>
                     <th class="px-4 py-3 text-right font-semibold opacity-70">時価総額</th>
                     <th class="px-4 py-3 text-right font-semibold opacity-70">年初来</th>
                     <th class="px-4 py-3 text-right font-semibold opacity-70">PER<br/><span class="font-normal normal-case opacity-60">TTM</span></th>
@@ -743,11 +743,15 @@ if (reportData?.ranks?.metrics) {
                         : '---';
                       const pctColor = (v: number | null) =>
                         v == null ? '' : v >= 0.1 ? 'text-green-600' : v >= 0 ? 'text-green-500' : 'text-red-500';
-                      const stripe = idx % 2 === 0 ? '' : 'bg-skin-fill/5';
+                      // 交互の背景色は不透明な skin-card / skin-fill を使う。
+                      // 左端の「銘柄」列は sticky で固定され、 横スクロール時に
+                      // 他セルがその下を通過するため、 行と同じ不透明色を明示的に
+                      // 指定して透けないようにする (半透明の bg-*/5 は透ける)。
+                      const rowBg = idx % 2 === 0 ? 'bg-skin-card' : 'bg-skin-fill';
                       const selfBorder = p.is_self ? 'border-l-2 border-skin-accent font-bold' : '';
                       return (
-                        <tr class={`hover:bg-skin-fill/10 ${stripe} ${selfBorder}`}>
-                          <td class={`px-4 py-3 sticky left-0 ${idx % 2 === 0 ? 'bg-skin-fill' : 'bg-skin-fill/5'}`}>
+                        <tr class={`${rowBg} ${selfBorder}`}>
+                          <td class={`px-4 py-3 sticky left-0 z-10 ${rowBg}`}>
                             <a href={`/report/${p.symbol_yf}`} class={`hover:underline ${p.is_self ? 'text-skin-accent' : ''}`}>
                               <span class="font-bold">{p.symbol}</span>
                               {p.is_self && <span class="ml-1 text-[10px] opacity-60 font-normal">（自社）</span>}
@@ -1809,7 +1813,7 @@ if (reportData?.ranks?.metrics) {
                     </thead>
                     <tbody class="divide-y divide-skin-line">
                       {holders.map((h: any, idx: number) => (
-                        <tr class={idx % 2 === 0 ? 'bg-skin-fill/5 hover:bg-skin-fill/10' : 'hover:bg-skin-fill/10'}>
+                        <tr class={`${idx % 2 === 0 ? 'bg-skin-card' : 'bg-skin-fill'} hover:bg-skin-fill/10`}>
                           <td class="px-4 py-3 font-medium">{h.holder}</td>
                           <td class="px-4 py-3 text-right font-mono text-xs opacity-80">
                             {typeof h.shares === 'number'
@@ -2005,7 +2009,7 @@ if (reportData?.ranks?.metrics) {
                         const upsideCurrent = (currentPrice > 0 && targetPrice > 0) ? (targetPrice / currentPrice - 1) * 100 : null;
 
                         return (
-                        <tr class={`hover:bg-skin-fill/10 ${idx % 2 === 0 ? 'bg-skin-fill/5' : ''}`}>
+                        <tr class={`hover:bg-skin-fill/10 ${idx % 2 === 0 ? 'bg-skin-card' : 'bg-skin-fill'}`}>
                           <td class="px-4 py-3 whitespace-nowrap opacity-80">{change.GradeDate}</td>
                           <td class="px-4 py-3 font-medium">{change.Firm}</td>
                           <td class="px-4 py-3">
