@@ -191,6 +191,7 @@ def calculate_dcf(symbol, ticker=None, yf_info=None, yf_growth_estimates=None):
         # 1. WACCと基本データの取得
         df_wacc = db_ticker.wacc()
         if df_wacc.empty:
+            log_event("WARN", symbol, "calculate_dcf: wacc() returned empty -> None")
             return None
         last_wacc_data = df_wacc.iloc[-1]
 
@@ -455,6 +456,8 @@ def calculate_dcf(symbol, ticker=None, yf_info=None, yf_growth_estimates=None):
             base_fcf = ttm_fcf
             base_fcf_method = "ttm_fcf_fallback"
         else:
+            log_event("WARN", symbol,
+                      "calculate_dcf: no annual FCF (>=2y) and no ttm_fcf -> None")
             return None
 
         # FCF が継続的にマイナスの企業は DCF / リバース DCF の前提が成立しない
@@ -536,6 +539,8 @@ def calculate_dcf(symbol, ticker=None, yf_info=None, yf_growth_estimates=None):
         # 発行済株式数
         mc_df = db_ticker.market_capitalization()
         if mc_df.empty:
+            log_event("WARN", symbol,
+                      "calculate_dcf: market_capitalization() returned empty -> None")
             return None
         shares = float(mc_df.iloc[-1]['shares_outstanding'])
         
@@ -663,6 +668,14 @@ def calculate_dcf(symbol, ticker=None, yf_info=None, yf_growth_estimates=None):
             "reverse_growth": float(reverse_growth) if reverse_growth is not None else None
         }
     except Exception as e:
+        # 例外を握りつぶして None を返すと、 レポート側は「DCF分析データは現在
+        # 利用できません」を表示するだけで原因が一切残らない (print は手動実行時
+        # しか見えず、 バッチ実行のログには残らない)。 失敗時はトレースバック付きで
+        # log_event に記録し、 次回実行時に根本原因を切り分けられるようにする。
+        import traceback
+        log_event("ERROR", symbol,
+                  f"calculate_dcf failed: {type(e).__name__}: {e} | "
+                  f"{traceback.format_exc().splitlines()[-3:]}")
         print(f"Error calculating detailed DCF for {symbol}: {e}")
         return None
 
