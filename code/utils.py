@@ -26,6 +26,64 @@ load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env"), ov
 
 LOG_FILE = "run_log.txt"
 
+
+def _normalize_db_update_time(value):
+    """defeatbeta-api の spec.json が返す update_time を旧フォーマットへ正規化する。
+
+    0.0.58 時点で HuggingFace 側の spec.json が update_time を ISO 8601
+    ("2026-05-29T00:05:50Z") で返すようになったが、 ticker.beta() は旧フォーマット
+    '%Y-%m-%d %H:%M:%S' で strptime しているため例外になり、 beta() を内部で呼ぶ
+    wacc() が落ち、 calculate_dcf() 全体が None になっていた
+    (= レポートで DCF が表示されない原因)。 0.0.58 が最新で上流に修正が無いため、
+    ここで戻り値を旧フォーマットへ正規化する。 既に旧フォーマット、 または解釈
+    不能な値はそのまま返す。"""
+    if not isinstance(value, str):
+        return value
+    s = value.strip()
+    try:
+        return datetime.datetime.strptime(
+            s, '%Y-%m-%d %H:%M:%S').strftime('%Y-%m-%d %H:%M:%S')
+    except ValueError:
+        pass
+    try:
+        return datetime.datetime.fromisoformat(
+            s.replace('Z', '+00:00')).strftime('%Y-%m-%d %H:%M:%S')
+    except ValueError:
+        return s
+
+
+def _patch_defeatbeta_update_time():
+    """get_data_update_time() と、 duckdb キャッシュ比較が読む生 spec の
+    _read_cached_spec_update_time() の双方を同じ正規化に通す。
+
+    beta()/wacc()/DCF を復活させつつ、 ディスク上の生 ISO 値とリモート値を
+    比較する duckdb_client のキャッシュ判定が「毎回不一致 → 全 httpfs キャッシュ
+    再ダウンロード」になるのを防ぐ (両側を正規化すれば一致する)。 クラスレベルで
+    1 度だけ適用し、 並行ワーカー下でも安全 (per-call で属性を書き換えない)。"""
+    try:
+        from defeatbeta_api.client.hugging_face_client import HuggingFaceClient as _HFClient
+        if not getattr(_HFClient, '_update_time_normalized', False):
+            _orig_gdut = _HFClient.get_data_update_time
+            def _patched_gdut(self, _orig=_orig_gdut):
+                return _normalize_db_update_time(_orig(self))
+            _HFClient.get_data_update_time = _patched_gdut
+            _HFClient._update_time_normalized = True
+    except Exception:
+        pass
+    try:
+        from defeatbeta_api.client.duckdb_client import DuckDBClient as _DuckDBClient
+        if not getattr(_DuckDBClient, '_update_time_normalized', False):
+            _orig_rcsut = _DuckDBClient._read_cached_spec_update_time
+            def _patched_rcsut(self, _orig=_orig_rcsut):
+                return _normalize_db_update_time(_orig(self))
+            _DuckDBClient._read_cached_spec_update_time = _patched_rcsut
+            _DuckDBClient._update_time_normalized = True
+    except Exception:
+        pass
+
+
+_patch_defeatbeta_update_time()
+
 def get_gemini_client():
     """
     最新の google-genai SDK クライアントを初期化して返します。
