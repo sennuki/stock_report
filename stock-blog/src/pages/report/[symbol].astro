@@ -1813,7 +1813,7 @@ if (reportData?.ranks?.metrics) {
                     </thead>
                     <tbody class="divide-y divide-skin-line">
                       {holders.map((h: any, idx: number) => (
-                        <tr class={idx % 2 === 0 ? 'bg-skin-fill/5 hover:bg-skin-fill/10' : 'hover:bg-skin-fill/10'}>
+                        <tr class={`${idx % 2 === 0 ? 'bg-skin-card' : 'bg-skin-fill'} hover:bg-skin-fill/10`}>
                           <td class="px-4 py-3 font-medium">{h.holder}</td>
                           <td class="px-4 py-3 text-right font-mono text-xs opacity-80">
                             {typeof h.shares === 'number'
@@ -2009,7 +2009,7 @@ if (reportData?.ranks?.metrics) {
                         const upsideCurrent = (currentPrice > 0 && targetPrice > 0) ? (targetPrice / currentPrice - 1) * 100 : null;
 
                         return (
-                        <tr class={`hover:bg-skin-fill/10 ${idx % 2 === 0 ? 'bg-skin-fill/5' : ''}`}>
+                        <tr class={`hover:bg-skin-fill/10 ${idx % 2 === 0 ? 'bg-skin-card' : 'bg-skin-fill'}`}>
                           <td class="px-4 py-3 whitespace-nowrap opacity-80">{change.GradeDate}</td>
                           <td class="px-4 py-3 font-medium">{change.Firm}</td>
                           <td class="px-4 py-3">
