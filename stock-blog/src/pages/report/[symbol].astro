@@ -1739,14 +1739,28 @@ if (reportData?.ranks?.metrics) {
                     const txLower = (t.transaction || '').toLowerCase();
                     const isSale = txLower.includes('sale') || txLower.includes('sell') || txLower.startsWith('s -');
                     const isBuy = txLower.includes('purchase') || txLower.includes('buy') || txLower.startsWith('p -');
+                    const isAward = txLower.includes('award') || txLower.includes('grant');
+                    // 取引種別を日本語化。未知の種別は元の英語テキストを短縮表示する。
+                    const txLabel = isSale ? '売却'
+                      : isBuy ? '購入'
+                      : isAward ? '株式報酬'
+                      : txLower.includes('gift') ? '贈与'
+                      : txLower.includes('exercise') ? '権利行使'
+                      : txLower.includes('conversion') ? '転換'
+                      : txLower.includes('disposition') ? '処分'
+                      : (t.transaction || '---').split(',')[0].trim().slice(0, 20);
+                    const txClass = isSale ? 'bg-red-100 text-red-700'
+                      : isBuy ? 'bg-green-100 text-green-700'
+                      : isAward ? 'bg-blue-100 text-blue-700'
+                      : 'bg-gray-100 text-gray-700';
                     return (
                       <tr class={idx % 2 === 0 ? 'bg-skin-fill/5 hover:bg-skin-fill/10' : 'hover:bg-skin-fill/10'}>
                         <td class="px-4 py-3 whitespace-nowrap opacity-80 font-mono text-xs">{t.date}</td>
                         <td class="px-4 py-3 whitespace-nowrap font-medium">{t.insider}</td>
                         <td class="px-4 py-3 whitespace-nowrap opacity-60 text-xs">{t.title || '---'}</td>
                         <td class="px-4 py-3 whitespace-nowrap">
-                          <span class={`text-xs font-medium px-2 py-0.5 rounded-full ${isSale ? 'bg-red-100 text-red-700' : isBuy ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
-                            {isSale ? '売却' : isBuy ? '購入' : (t.transaction || '---').split(',')[0].trim().slice(0, 20)}
+                          <span title={t.transaction || ''} class={`text-xs font-medium px-2 py-0.5 rounded-full ${txClass}`}>
+                            {txLabel}
                           </span>
                         </td>
                         <td class="px-4 py-3 whitespace-nowrap text-right font-mono text-xs">
