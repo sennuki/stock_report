@@ -309,6 +309,66 @@ if (reportData?.analyst_ratings) {
   };
 }
 
+// --- インサイダー取引の整形 ---------------------------------------------
+// Yahoo Finance のインサイダー取引フィードには 2 種類の「分かりにくい」行がある:
+//  (1) 価格を伴わない重複行: 同一人物・同一日・同一株数で、片方は売買価格付き
+//      ("Sale at price 80.00" など) なのに、もう片方は取引種別も金額も空。
+//      → 同じ Form 4 の処分が二重計上されたものなので、空の裸行を除去する。
+//  (2) RSU 権利確定・税金源泉徴収などの市場外取引: 取引種別テキストも 1 株あたり
+//      価格も存在しない (SEC Form 4 のコード M / F に相当)。market 価格が無いため
+//      Yahoo は金額を出さず空欄になるが、これは欠損ではなく「市場での売買では
+//      ない株式報酬イベント」。種別を明示してラベル表示する。
+function classifyInsiderTx(t: any): string {
+  const s = (t.transaction || "").toLowerCase();
+  if (s.includes("sale") || s.includes("sell") || s.startsWith("s -")) return "sale";
+  if (s.includes("purchase") || s.includes("buy") || s.startsWith("p -")) return "buy";
+  if (s.includes("award") || s.includes("grant")) return "award";
+  if (s.includes("gift")) return "gift";
+  if (s.includes("exercise")) return "exercise";
+  if (s.includes("conversion")) return "conversion";
+  if (s.includes("disposition")) return "disposition";
+  // テキストも価格も無い → RSU 権利確定・源泉徴収など価格を伴わない株式報酬イベント
+  if (!t.transaction && t.value == null) return "equity_settlement";
+  return "other";
+}
+const insiderTxRaw: any[] = Array.isArray(reportData?.insider_transactions)
+  ? reportData.insider_transactions
+  : [];
+// 売買価格付きの (人物|日付|株数) キー集合。空の裸行がこれに一致したら重複として除去。
+const pricedInsiderKeys = new Set(
+  insiderTxRaw
+    .filter((t) => t.value != null || (t.transaction && t.transaction.length > 0))
+    .map((t) => `${t.insider}|${t.date}|${t.shares}`)
+);
+const insiderTx = insiderTxRaw
+  .filter((t) => {
+    const isBlank = (!t.transaction || t.transaction.length === 0) && t.value == null;
+    if (isBlank && pricedInsiderKeys.has(`${t.insider}|${t.date}|${t.shares}`)) return false;
+    return true;
+  })
+  .map((t) => ({ ...t, kind: classifyInsiderTx(t) }));
+const INSIDER_KIND_LABEL: Record<string, string> = {
+  sale: "売却",
+  buy: "購入",
+  award: "株式報酬",
+  gift: "贈与",
+  exercise: "権利行使",
+  conversion: "転換",
+  disposition: "処分",
+  equity_settlement: "権利確定・源泉徴収",
+};
+const INSIDER_KIND_CLASS: Record<string, string> = {
+  sale: "bg-red-100 text-red-700",
+  buy: "bg-green-100 text-green-700",
+  award: "bg-blue-100 text-blue-700",
+  exercise: "bg-blue-100 text-blue-700",
+  conversion: "bg-blue-100 text-blue-700",
+  equity_settlement: "bg-amber-100 text-amber-700",
+  gift: "bg-gray-100 text-gray-700",
+  disposition: "bg-gray-100 text-gray-700",
+  other: "bg-gray-100 text-gray-700",
+};
+
 // ランキング表示用ヘルパー (テンプレート内に TypeScript 型を書くと JSX 解析と
 // 衝突するため frontmatter にまとめる)。
 type RankUnit = "currency" | "percent" | "price" | "count" | "ratio";
@@ -1716,7 +1776,7 @@ if (reportData?.ranks?.metrics) {
         </section>
 
         {/* インサイダー取引 */}
-        {reportData.insider_transactions && reportData.insider_transactions.length > 0 && (
+        {insiderTx.length > 0 && (
           <section id="insider-transactions" class="mt-12">
             <h2 class="text-2xl font-bold mb-6 border-b pb-2 flex items-center gap-2">
               <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">manage_accounts</span>
@@ -1735,31 +1795,23 @@ if (reportData?.ranks?.metrics) {
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-skin-line">
-                  {reportData.insider_transactions.map((t: any, idx: number) => {
-                    const txLower = (t.transaction || '').toLowerCase();
-                    const isSale = txLower.includes('sale') || txLower.includes('sell') || txLower.startsWith('s -');
-                    const isBuy = txLower.includes('purchase') || txLower.includes('buy') || txLower.startsWith('p -');
-                    const isAward = txLower.includes('award') || txLower.includes('grant');
-                    // 取引種別を日本語化。未知の種別は元の英語テキストを短縮表示する。
-                    const txLabel = isSale ? '売却'
-                      : isBuy ? '購入'
-                      : isAward ? '株式報酬'
-                      : txLower.includes('gift') ? '贈与'
-                      : txLower.includes('exercise') ? '権利行使'
-                      : txLower.includes('conversion') ? '転換'
-                      : txLower.includes('disposition') ? '処分'
-                      : (t.transaction || '---').split(',')[0].trim().slice(0, 20);
-                    const txClass = isSale ? 'bg-red-100 text-red-700'
-                      : isBuy ? 'bg-green-100 text-green-700'
-                      : isAward ? 'bg-blue-100 text-blue-700'
-                      : 'bg-gray-100 text-gray-700';
+                  {insiderTx.map((t: any, idx: number) => {
+                    const isSettlement = t.kind === 'equity_settlement';
+                    // 種別ラベル。未知の種別 (other) は元の英語テキストを短縮表示する。
+                    const txLabel = INSIDER_KIND_LABEL[t.kind]
+                      || (t.transaction || '---').split(',')[0].trim().slice(0, 20);
+                    const txClass = INSIDER_KIND_CLASS[t.kind] || INSIDER_KIND_CLASS.other;
+                    // 市場外取引 (権利確定・源泉徴収) はマウスオーバーで補足説明を出す。
+                    const txTitle = isSettlement
+                      ? 'RSU権利確定や税金の源泉徴収など、市場での売買価格を伴わない取引です'
+                      : (t.transaction || '');
                     return (
                       <tr class={idx % 2 === 0 ? 'bg-skin-fill/5 hover:bg-skin-fill/10' : 'hover:bg-skin-fill/10'}>
                         <td class="px-4 py-3 whitespace-nowrap opacity-80 font-mono text-xs">{t.date}</td>
                         <td class="px-4 py-3 whitespace-nowrap font-medium">{t.insider}</td>
                         <td class="px-4 py-3 whitespace-nowrap opacity-60 text-xs">{t.title || '---'}</td>
                         <td class="px-4 py-3 whitespace-nowrap">
-                          <span title={t.transaction || ''} class={`text-xs font-medium px-2 py-0.5 rounded-full ${txClass}`}>
+                          <span title={txTitle} class={`text-xs font-medium px-2 py-0.5 rounded-full ${txClass}`}>
                             {txLabel}
                           </span>
                         </td>
@@ -1769,7 +1821,9 @@ if (reportData?.ranks?.metrics) {
                         <td class="px-4 py-3 whitespace-nowrap text-right font-mono text-xs">
                           {typeof t.value === 'number'
                             ? '$' + (t.value >= 1e6 ? (t.value / 1e6).toFixed(1) + 'M' : t.value.toLocaleString())
-                            : '---'}
+                            : isSettlement
+                              ? <span class="opacity-50" title="市場価格を伴わない取引のため金額なし">—（市場外）</span>
+                              : '---'}
                         </td>
                       </tr>
                     );
@@ -1777,7 +1831,7 @@ if (reportData?.ranks?.metrics) {
                 </tbody>
               </table>
             </div>
-            <p class="text-xs text-gray-400 mt-3">※米国SEC Form 4に基づく開示情報です。直近最大20件を表示しています。</p>
+            <p class="text-xs text-gray-400 mt-3">※米国SEC Form 4に基づく開示情報です。直近最大20件を表示しています。<br/>「権利確定・源泉徴収」はRSU等の株式報酬が確定し、課税分を株式で源泉徴収した取引で、市場での売買価格を伴わないため金額は「市場外」と表示しています。</p>
           </section>
         )}
 
