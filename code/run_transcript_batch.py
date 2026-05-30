@@ -4,8 +4,14 @@
   - 対象銘柄を R2 の reports/stocks.json（無ければローカルの stocks.json）から取得
   - 各銘柄の「最新四半期」のトランスクリプトを 1 本だけ対象とする
   - 索引 (reports/transcripts/index.json) に既出ならスキップ
-  - 1 回の実行で生成する本数を TRANSCRIPT_LIMIT で制限
+  - 未生成の候補を「決算発表日 (report_date) の新しい順」に並べ、銘柄を問わず
+    最近発表された決算を優先して TRANSCRIPT_LIMIT 本まで生成する
   - 経過時間が TRANSCRIPT_MAX_MINUTES を超えたら打ち切る
+
+優先順位の決め方:
+  - 発表日順に並べるには生成前に全銘柄の一覧 API を走査する必要があるため、
+    走査フェーズは TRANSCRIPT_SCAN_MAX_MINUTES（既定: 全体上限の半分）で頭打ち
+    にし、生成フェーズの時間を確保する。
 
 制約への配慮:
   - gemma-4-26b-a4b-it は 1 日 1500 リクエスト。1 本あたり概算 14 回消費。
@@ -17,10 +23,13 @@
   - R2 は 10GB まで。md 1 本は約 90KB と小さく、最新四半期のみのため増加は緩やか。
 
 環境変数:
-  TRANSCRIPT_LIMIT        1 回の実行で生成する最大本数（既定 25。実際は
-                          TRANSCRIPT_MAX_MINUTES により約 22 本で頭打ち）
-  TRANSCRIPT_MAX_MINUTES  この分数を超えたら新規生成を打ち切る（既定 300）
-  TRANSCRIPT_SCAN_LIMIT   走査する銘柄数の上限。0 で全件（既定 0）
+  TRANSCRIPT_LIMIT          1 回の実行で生成する最大本数（既定 25。実際は
+                            TRANSCRIPT_MAX_MINUTES により約 22 本で頭打ち）
+  TRANSCRIPT_MAX_MINUTES    この分数を超えたら新規生成を打ち切る（既定 300）
+  TRANSCRIPT_SCAN_MAX_MINUTES 走査フェーズの時間上限（既定: 全体上限の半分）。
+                            発表日順に並べるための全銘柄走査が生成時間を食い潰さ
+                            ないよう別予算で頭打ちにする
+  TRANSCRIPT_SCAN_LIMIT     走査する銘柄数の上限。0 で全件（既定 0）
 """
 import os
 import sys
@@ -65,14 +74,23 @@ def load_symbols():
 
 
 def latest_period(symbol):
-    """defeatbeta から銘柄の最新トランスクリプトの (fy, fq) を返す。無ければ None。"""
+    """defeatbeta から銘柄の最新トランスクリプトの (fy, fq, report_date) を返す。
+
+    report_date は決算発表日 (YYYY-MM-DD)。取得できない場合は None。
+    一覧が無ければ全体として None を返す。
+    """
     try:
         transcripts = Ticker(symbol).earning_call_transcripts()
         lst = transcripts.get_transcripts_list()
         if lst is None or lst.empty:
             return None
         latest = lst.sort_values(["fiscal_year", "fiscal_quarter"]).iloc[-1]
-        return int(latest["fiscal_year"]), int(latest["fiscal_quarter"])
+        report_date = None
+        if "report_date" in lst.columns:
+            raw = latest["report_date"]
+            if raw is not None:
+                report_date = str(raw)[:10] or None
+        return int(latest["fiscal_year"]), int(latest["fiscal_quarter"]), report_date
     except Exception as e:
         print(f"  [{symbol}] トランスクリプト一覧の取得に失敗: {e}")
         return None
@@ -87,9 +105,15 @@ def main():
     def elapsed_min():
         return (time.time() - started) / 60
 
+    # 走査（一覧 API 取得）に充てる時間上限。発表日順にするには生成前に全銘柄を
+    # 走査する必要があるため、生成時間を食い潰さないよう別予算で頭打ちにする。
+    scan_max_minutes = float(
+        os.getenv("TRANSCRIPT_SCAN_MAX_MINUTES", str(max_minutes / 2))
+    )
+
     symbols = load_symbols()
-    # 走査開始位置をシャッフルし、長期的に全銘柄をカバーする
-    # （走査上限を設けても特定銘柄に偏らないため）。
+    # 走査順をシャッフルする。発表日順に並べ替えるため最終的な優先度には影響
+    # しないが、走査が時間上限で打ち切られた場合に特定銘柄へ偏らないようにする。
     random.shuffle(symbols)
     if scan_limit > 0:
         symbols = symbols[:scan_limit]
@@ -97,32 +121,43 @@ def main():
     index = load_transcript_index()
     print(
         f"--- 走査開始: {len(symbols)} 銘柄 / 生成上限 {limit} 本 "
-        f"/ 時間上限 {max_minutes:.0f} 分 ---"
+        f"/ 走査時間上限 {scan_max_minutes:.0f} 分 / 全体時間上限 {max_minutes:.0f} 分 ---"
     )
 
-    # 1) 未生成の最新四半期を探す
-    todo = []
+    # 1) 全銘柄の「最新四半期」を走査し、未生成のものを発表日とともに集める。
+    candidates = []  # (report_date_or_empty, sym, fy, fq)
     skipped = 0
+    no_date = 0
     for sym in symbols:
-        if len(todo) >= limit:
-            break
-        if elapsed_min() > max_minutes:
-            print("時間上限に達したため走査を打ち切ります。")
+        if elapsed_min() > scan_max_minutes:
+            print("走査時間上限に達したため走査を打ち切ります。")
             break
         period = latest_period(sym)
         if period is None:
             continue
-        fy, fq = period
+        fy, fq, report_date = period
         if any(
             e.get("fy") == fy and e.get("fq") == fq
             for e in index.get(sym, [])
         ):
             skipped += 1
             continue
-        todo.append((sym, fy, fq))
-        print(f"  [対象] {sym} FY{fy} Q{fq}")
+        if not report_date:
+            no_date += 1
+        candidates.append((report_date or "", sym, fy, fq))
 
-    print(f"--- 生成対象 {len(todo)} 本 / 既出スキップ {skipped} 件 ---")
+    # 2) 発表日の新しい順に並べ替え、生成上限まで採用する。
+    #    report_date 不明（空文字）は末尾に回す。銘柄は問わず、最近発表された
+    #    決算を優先する。
+    candidates.sort(key=lambda c: c[0], reverse=True)
+    todo = [(sym, fy, fq) for _rd, sym, fy, fq in candidates[:limit]]
+    for rd, sym, fy, fq in candidates[:limit]:
+        print(f"  [対象] {sym} FY{fy} Q{fq}（発表日: {rd or '不明'}）")
+
+    print(
+        f"--- 未生成候補 {len(candidates)} 本（うち発表日不明 {no_date} 本）"
+        f" / 生成対象 {len(todo)} 本 / 既出スキップ {skipped} 件 ---"
+    )
 
     # 2) 生成（索引・md は generate_transcript_report 内で R2 に保存される）
     generated = 0
