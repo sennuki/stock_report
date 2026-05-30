@@ -218,6 +218,11 @@ def fetch_raw_data_for_ticker(symbol):
             d = _safe_get(lambda: ticker.institutional_holders, symbol, "institutional_holders")
             return df_to_dict_safe(d)
 
+        def _insider_roster_holders():
+            # ファウンダー・CEO・役員など個人インサイダーの氏名・直近保有株数。
+            d = _safe_get(lambda: ticker.insider_roster_holders, symbol, "insider_roster_holders")
+            return df_to_dict_safe(d)
+
         def _sustainability():
             d = _safe_get(lambda: ticker.sustainability, symbol, "sustainability")
             if d is None or (hasattr(d, 'empty') and d.empty):
@@ -274,6 +279,7 @@ def fetch_raw_data_for_ticker(symbol):
             "revenue_by_geography": _rev_geo(),
             "insider_transactions": _insider_trans(),
             "institutional_holders": _institutional_holders(),
+            "insider_roster_holders": _insider_roster_holders(),
             "sustainability": _sustainability(),
         }
 

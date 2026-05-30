@@ -860,10 +860,16 @@ function extractInsiderTransactions(rawData) {
 function extractInstitutionalOwnership(rawData) {
   const info = rawData.info || {};
   const raw = rawData.institutional_holders;
+  const rosterRaw = rawData.insider_roster_holders;
   const pctInst = info.heldPercentInstitutions ?? null;
   const pctIns = info.heldPercentInsiders ?? null;
 
-  if ((!Array.isArray(raw) || raw.length === 0) && pctInst == null && pctIns == null)
+  if (
+    (!Array.isArray(raw) || raw.length === 0) &&
+    (!Array.isArray(rosterRaw) || rosterRaw.length === 0) &&
+    pctInst == null &&
+    pctIns == null
+  )
     return null;
 
   // yfinance 1.3.0+ では列名が "% Out" → "pctHeld" に変更されている
@@ -890,7 +896,37 @@ function extractInstitutionalOwnership(rawData) {
         .slice(0, 10)
     : [];
 
-  return { holders, pct_held_institutions: pctInst, pct_held_insiders: pctIns };
+  // 個人インサイダー（ファウンダー・CEO・役員など）の保有。yfinance の
+  // insider_roster_holders は直接保有・間接保有の株数を分けて返すため合算する。
+  const num = (v) => (typeof v === "number" && Number.isFinite(v) ? v : 0);
+  const insiders = Array.isArray(rosterRaw)
+    ? rosterRaw
+        .filter((h) => h.Name || h.name)
+        .map((h) => {
+          const direct = num(h["Shares Owned Directly"] ?? h.positionDirect);
+          const indirect = num(h["Shares Owned Indirectly"] ?? h.positionIndirect);
+          const dateRaw =
+            h["Position Direct Date"] || h["Position Indirect Date"] || "";
+          return {
+            name: String(h.Name || h.name || ""),
+            position: String(h.Position || h.relation || ""),
+            shares: direct + indirect,
+            recent_transaction: String(
+              h["Most Recent Transaction"] || h.transactionDescription || ""
+            ),
+            date_reported: String(dateRaw).split(" ")[0],
+          };
+        })
+        .sort((a, b) => (b.shares || 0) - (a.shares || 0))
+        .slice(0, 10)
+    : [];
+
+  return {
+    holders,
+    insiders,
+    pct_held_institutions: pctInst,
+    pct_held_insiders: pctIns,
+  };
 }
 
 function extractEsgScores(rawData) {
