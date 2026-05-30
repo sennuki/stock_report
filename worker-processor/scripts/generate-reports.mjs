@@ -840,7 +840,7 @@ function extractInsiderTransactions(rawData) {
   const raw = rawData.insider_transactions;
   if (!Array.isArray(raw) || raw.length === 0) return [];
 
-  return raw
+  const mapped = raw
     .map((t) => {
       // df_to_dict_safe は reset_index() するため各行に整数の index 列
       // (0,1,2...) が付く。日付は "Start Date" 列にあるのでこれを優先する。
@@ -859,7 +859,21 @@ function extractInsiderTransactions(rawData) {
         value: typeof t.Value === "number" ? t.Value : null,
       };
     })
-    .filter((t) => t.date && t.date.length === 10 && t.insider)
+    .filter((t) => t.date && t.date.length === 10 && t.insider);
+
+  // Yahoo のフィードは同一 Form 4 の処分を二重計上することがある: 同一人物・同一日・
+  // 同一株数で、片方は売買価格付き ("Sale at price ...")、もう片方は種別も金額も空。
+  // 空の裸行は重複なので除去し、直近 20 件の枠を実データで埋める。
+  const pricedKeys = new Set(
+    mapped
+      .filter((t) => t.value != null || t.transaction.length > 0)
+      .map((t) => `${t.insider}|${t.date}|${t.shares}`)
+  );
+  return mapped
+    .filter((t) => {
+      const isBlank = t.transaction.length === 0 && t.value == null;
+      return !(isBlank && pricedKeys.has(`${t.insider}|${t.date}|${t.shares}`));
+    })
     .sort((a, b) => b.date.localeCompare(a.date))
     .slice(0, 20);
 }
