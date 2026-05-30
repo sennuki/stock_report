@@ -842,7 +842,14 @@ function extractInsiderTransactions(rawData) {
 
   return raw
     .map((t) => {
-      const dateStr = String(t.index || t["Start Date"] || t.date || "").split(" ")[0];
+      // df_to_dict_safe は reset_index() するため各行に整数の index 列
+      // (0,1,2...) が付く。日付は "Start Date" 列にあるのでこれを優先する。
+      // index は日付らしい文字列のときだけフォールバックに使う。
+      const idxDateLike =
+        typeof t.index === "string" && t.index.includes("-") ? t.index : "";
+      const dateStr = String(
+        t["Start Date"] || t.date || idxDateLike || ""
+      ).split(" ")[0];
       return {
         date: dateStr,
         insider: String(t.Insider || t.insider || ""),
