@@ -1854,6 +1854,41 @@ if (reportData?.ranks?.metrics) {
               </div>
               );
             })()}
+            {reportData.institutional_ownership.insiders?.length > 0 && (
+              <div class="mt-8">
+                <h3 class="text-lg font-bold mb-3 flex items-center gap-2">
+                  <span class="material-symbols-outlined text-skin-accent" aria-hidden="true">person</span>
+                  個人インサイダー（ファウンダー・役員）
+                </h3>
+                <div class="overflow-x-auto rounded-lg border border-skin-line">
+                  <table class="min-w-full divide-y divide-skin-line text-sm">
+                    <thead>
+                      <tr class="bg-skin-fill/10 text-xs uppercase tracking-wider">
+                        <th scope="col" class="px-4 py-3 text-left font-semibold opacity-70">氏名</th>
+                        <th scope="col" class="px-4 py-3 text-left font-semibold opacity-70">役職</th>
+                        <th scope="col" class="px-4 py-3 text-right font-semibold opacity-70">保有株数</th>
+                        <th scope="col" class="px-4 py-3 text-left font-semibold opacity-70 hidden md:table-cell">直近取引</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-skin-line">
+                      {reportData.institutional_ownership.insiders.map((p: any, idx: number) => (
+                        <tr class={`${idx % 2 === 0 ? 'bg-skin-card' : 'bg-skin-fill'} hover:bg-skin-fill/10`}>
+                          <td class="px-4 py-3 font-medium">{p.name}</td>
+                          <td class="px-4 py-3 opacity-80 text-xs">{p.position || '---'}</td>
+                          <td class="px-4 py-3 text-right font-mono text-xs opacity-80">
+                            {typeof p.shares === 'number' && p.shares > 0
+                              ? (p.shares >= 1e9 ? (p.shares / 1e9).toFixed(2) + 'B' : p.shares >= 1e6 ? (p.shares / 1e6).toFixed(1) + 'M' : p.shares.toLocaleString())
+                              : '---'}
+                          </td>
+                          <td class="px-4 py-3 opacity-60 text-xs hidden md:table-cell">{p.recent_transaction || '---'}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <p class="text-xs text-gray-400 mt-3">※直接保有・間接保有の合算値です。ファウンダーや経営陣など個人インサイダーの保有状況を示します（出典: Yahoo Finance）。</p>
+              </div>
+            )}
           </section>
         )}
 
