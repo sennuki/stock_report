@@ -98,6 +98,42 @@ uv run python thematic/tests/test_metrics.py
 
 スキーマの各項目は `themes/_template.json` の `_field_help` を参照。
 
+## 既存 DuckDB 横断分析への取り込み（`code/analysis/`）
+
+thematic の出力を `theme_metrics` テーブルとして既存 `code/analysis/analysis.duckdb`
+に載せ、`query.py` から `stocks` / `transcripts` と **symbol で JOIN** して横断分析できる。
+
+```bash
+# 1) テーマを実行して output/<theme>/report.json を作る（要ネットワーク）
+uv run python thematic/run.py --theme saas_apocalypse
+
+# 2) output/*/report.json を全て theme_metrics テーブルへ取り込む
+uv run python thematic/to_duckdb.py
+
+# 3) 名前付きクエリで横断分析（既存 query.py を再利用）
+uv run python code/analysis/query.py --named theme_cohort_summary
+uv run python code/analysis/query.py --named theme_price_fundamental_divergence
+```
+
+- `theme_metrics` の粒度は 1 テーマ × 1 銘柄（列: `theme` `symbol` `cohort`
+  `drawdown_52w` `ret_since_event` `excess_event` `revenue_yoy_latest`
+  `operating_margin` `net_signal` ほか）。
+- 取り込みは `build_dataset._write_table` を再利用し、`output/*/report.json` を
+  **毎回全走査して作り直す**（report.json が正）。
+- 結合キーは `theme_metrics.symbol = stocks.symbol_yf`（thematic は yfinance 表記）。
+
+`queries.sql` に追加した名前付きクエリ:
+
+| クエリ ID | 内容 | `stocks` 要否 |
+| --- | --- | --- |
+| `theme_cohort_summary` | テーマ×コホートの中央値（下落幅 / 成長 / 論調） | 不要 |
+| `theme_price_fundamental_divergence` | 暴落だが売上 YoY 未減速 ＝ 売られ過ぎ候補 | 不要 |
+| `theme_oversold_value` | affected で割安かつ DCF 上振れ大 ＝ 逆張り候補 | 要 |
+| `theme_signal_vs_sentiment` | 語彙 `net_signal` と LLM センチメントの乖離 | 要 |
+
+> `stocks` / `transcripts` は別途 `python code/analysis/build_dataset.py`（R2 レポートが前提）
+> で作る。`theme_metrics` 単独のクエリ（上表「不要」）は R2 無しでも動く。
+
 ## ファイル構成
 
 | ファイル | 役割 |
@@ -107,6 +143,7 @@ uv run python thematic/tests/test_metrics.py
 | `sources.py` | yfinance/defeatbeta アダプタ（既存 `utils` 再利用・遅延 import・キャッシュ） |
 | `metrics.py` | 価格/ファンダ/トランスクリプトの指標計算（**純関数**・オフライン単体テスト可） |
 | `report.py` | コホート比較表・サマリ生成（MD/CSV/JSON・stdlib のみ） |
+| `to_duckdb.py` | 出力を `theme_metrics` として `code/analysis/analysis.duckdb` へ取り込む |
 | `themes/*.json` | テーマ定義（`saas_apocalypse.json` ＝実例、`_template.json` ＝雛形） |
 | `tests/test_metrics.py` | ネットワーク不要の単体テスト |
 

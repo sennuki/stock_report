@@ -126,12 +126,81 @@ def test_cache_roundtrip():
     print("  ok: cache_roundtrip")
 
 
+def test_to_duckdb():
+    import json
+    import shutil
+    import tempfile
+
+    import duckdb
+
+    import to_duckdb
+
+    d = tempfile.mkdtemp(prefix="thematic_test_")
+    try:
+        theme_dir = os.path.join(d, "demo_theme")
+        os.makedirs(theme_dir)
+        payload = {
+            "theme": "demo_theme",
+            "title": "Demo",
+            "meta": {"asof": "2026-05-29"},
+            "rows": [
+                {"symbol": "AAA", "cohort": "affected", "cohort_label": "x",
+                 "drawdown_52w": -0.5, "ret_since_event": -0.3,
+                 "revenue_yoy_latest": 0.2, "revenue_yoy_prev": 0.3,
+                 "operating_margin": 0.1, "net_margin": 0.05,
+                 "net_signal": -1.0, "transcript_period": "FY2026 Q1", "error": None},
+                {"symbol": "BBB", "cohort": "resilient", "cohort_label": "y",
+                 "drawdown_52w": -0.1, "ret_since_event": 0.05,
+                 "revenue_yoy_latest": 0.4, "revenue_yoy_prev": 0.35,
+                 "operating_margin": 0.2, "net_margin": 0.12,
+                 "net_signal": 1.5, "transcript_period": "FY2026 Q1", "error": None},
+            ],
+        }
+        with open(os.path.join(theme_dir, "report.json"), "w", encoding="utf-8") as f:
+            json.dump(payload, f)
+
+        db = os.path.join(d, "analysis.duckdb")
+        n, per_theme = to_duckdb.build(db, d)
+        assert n == 2, n
+        assert per_theme == [("demo_theme", 2)], per_theme
+
+        con = duckdb.connect(db, read_only=True)
+        try:
+            # 数値列が DOUBLE に揃っていること(全 NULL でも median/比較が通るように)
+            dtype = con.execute(
+                "SELECT data_type FROM information_schema.columns "
+                "WHERE table_name='theme_metrics' AND column_name='drawdown_52w'"
+            ).fetchone()[0]
+            assert "DOUBLE" in dtype.upper(), dtype
+            # 行の中身
+            rows = con.execute(
+                "SELECT symbol, cohort, drawdown_52w FROM theme_metrics ORDER BY symbol"
+            ).fetchall()
+            assert rows[0][0] == "AAA" and _approx(rows[0][2], -0.5), rows
+            # median 集計が通ること
+            agg = dict(con.execute(
+                "SELECT cohort, median(drawdown_52w) FROM theme_metrics GROUP BY cohort"
+            ).fetchall())
+            assert agg["affected"] is not None, agg
+            # 数値比較の WHERE が通ること(価格×ファンダ乖離クエリ相当)
+            div = con.execute(
+                "SELECT symbol FROM theme_metrics WHERE drawdown_52w < -0.4"
+            ).fetchall()
+            assert [r[0] for r in div] == ["AAA"], div
+        finally:
+            con.close()
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+    print("  ok: to_duckdb")
+
+
 def main() -> int:
     tests = [
         test_price_metrics,
         test_fundamental_trend,
         test_transcript_signal_scan,
         test_cache_roundtrip,
+        test_to_duckdb,
     ]
     failed = 0
     for t in tests:
