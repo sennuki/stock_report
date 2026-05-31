@@ -27,7 +27,14 @@ SIGNAL_FIELDS = [
     ("bull_density", "bull密度", "num"),
     ("net_signal", "net", "num"),
 ]
-ALL_FIELDS = PRICE_FIELDS + FUND_FIELDS + SIGNAL_FIELDS
+# prebuilt(R2 由来)モードのトーン指標(LLM センチメント・ヘッジ密度)。
+# live モードでは空、prebuilt モードでは SIGNAL_FIELDS が空になる(下の列自動省略で整う)。
+TONE_FIELDS = [
+    ("sentiment_overall", "総合sent", "num"),
+    ("sentiment_mgmt", "経営陣sent", "num"),
+    ("hedge_density", "ヘッジ密度", "num"),
+]
+ALL_FIELDS = PRICE_FIELDS + FUND_FIELDS + SIGNAL_FIELDS + TONE_FIELDS
 
 
 def _fmt(v, kind: str) -> str:
@@ -53,6 +60,7 @@ def build_rows(theme, per_ticker: dict, bench=None) -> list:
             price = d.get("price") or {}
             fund = d.get("fund") or {}
             sig = d.get("signal") or {}
+            tone = d.get("tone") or {}
             row = {"symbol": sym, "cohort": c.key, "cohort_label": c.label}
             for key, *_ in PRICE_FIELDS:
                 row[key] = price.get(key)
@@ -65,6 +73,8 @@ def build_rows(theme, per_ticker: dict, bench=None) -> list:
                 row[key] = fund.get(key)
             for key, *_ in SIGNAL_FIELDS:
                 row[key] = sig.get(key)
+            for key, *_ in TONE_FIELDS:
+                row[key] = tone.get(key)
             row["transcript_period"] = d.get("transcript_period")
             row["error"] = d.get("error")
             rows.append(row)
@@ -114,27 +124,30 @@ def to_markdown(theme, rows, aggs, meta=None) -> str:
     if info:
         lines += [" / ".join(info), ""]
 
+    # 値が全く無い指標列は Markdown では省く(読みやすさ優先。CSV/JSON は全列保持)。
+    fields = [f for f in ALL_FIELDS if any(r.get(f[0]) is not None for r in rows)] or ALL_FIELDS
+
     # 1) コホート別サマリ(中央値)
     lines += ["## コホート別サマリ(各指標の中央値)", ""]
-    headers = ["コホート", "n(被覆)"] + [name for _, name, _ in ALL_FIELDS]
+    headers = ["コホート", "n(被覆)"] + [name for _, name, _ in fields]
     cells = []
     for key, a in aggs.items():
         row = [f"{a['label']} ({key})", f"{a['n_covered']}/{a['n']}"]
-        row += [_fmt(a.get(k), kind) for k, _, kind in ALL_FIELDS]
+        row += [_fmt(a.get(k), kind) for k, _, kind in fields]
         cells.append(row)
     lines += [_md_table(headers, cells), ""]
 
     # 2) 銘柄別
     lines += ["## 銘柄別", ""]
-    headers = ["銘柄", "コホート", "決算期"] + [name for _, name, _ in ALL_FIELDS]
+    headers = ["銘柄", "コホート", "決算期"] + [name for _, name, _ in fields]
     cells = []
     for r in rows:
         if r.get("error"):
-            row = [r["symbol"], r["cohort"], "—"] + ["—"] * len(ALL_FIELDS)
+            row = [r["symbol"], r["cohort"], "—"] + ["—"] * len(fields)
             cells.append(row)
             continue
         row = [r["symbol"], r["cohort"], r.get("transcript_period") or ""]
-        row += [_fmt(r.get(k), kind) for k, _, kind in ALL_FIELDS]
+        row += [_fmt(r.get(k), kind) for k, _, kind in fields]
         cells.append(row)
     lines += [_md_table(headers, cells), ""]
 

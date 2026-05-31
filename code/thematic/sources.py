@@ -19,6 +19,11 @@ import sys
 import time
 
 CACHE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".cache")
+# prebuilt(R2 由来)テーブルの既定 DuckDB(code/analysis/build_dataset.py が生成)
+DEFAULT_PREBUILT_DB = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    "analysis", "analysis.duckdb",
+)
 
 
 def _ensure_code_on_path() -> None:
@@ -213,3 +218,83 @@ def get_latest_transcript(symbol: str, max_age_hours=72):
         "transcript_meta", symbol, {k: v for k, v in res.items() if k != "df"}
     )
     return res
+
+
+# --------------------------------------------------------------------------
+# prebuilt(R2 由来)テーブルからの読み取り
+# --------------------------------------------------------------------------
+def load_prebuilt(symbols, db_path: str | None = None) -> dict:
+    """既存 DuckDB の transcripts テーブル(R2 由来・build_dataset.py で構築)から
+    ファンダとトーンを一括で読む。{symbol: {"fund": {...}, "tone": {...}}}。
+
+    defeatbeta を叩かずに済むので prebuilt/auto モードを高速化する。価格は
+    時系列が無いため対象外(常に yfinance)。DB / テーブルが無い、対象外銘柄は
+    結果に含めない(呼び出し側で live フォールバックする)。
+    """
+    if not symbols:
+        return {}
+    db_path = db_path or DEFAULT_PREBUILT_DB
+    if not os.path.exists(db_path):
+        print(f"  [warn] prebuilt DB が見つかりません: {db_path}"
+              f"（先に `python code/analysis/build_dataset.py` を実行）")
+        return {}
+
+    import duckdb
+
+    try:
+        con = duckdb.connect(db_path, read_only=True)
+    except Exception as e:
+        print(f"  [warn] prebuilt DB を開けません: {e}")
+        return {}
+    try:
+        tables = {r[0] for r in con.execute(
+            "SELECT table_name FROM information_schema.tables"
+        ).fetchall()}
+        if "transcripts" not in tables:
+            print("  [warn] prebuilt に transcripts テーブルがありません"
+                  "（build_dataset.py を実行してください）")
+            return {}
+        placeholders = ",".join("?" for _ in symbols)
+        rows = con.execute(
+            f"""SELECT symbol, fy, fq, revenue_yoy, operating_margin, net_margin,
+                       period_end, sentiment_overall, sentiment_management,
+                       hedge_density, qa_ratio
+                FROM transcripts
+                WHERE symbol IN ({placeholders})
+                ORDER BY symbol, fy, fq""",
+            list(symbols),
+        ).fetchall()
+    except Exception as e:
+        print(f"  [warn] prebuilt の読み込みに失敗: {e}")
+        return {}
+    finally:
+        con.close()
+
+    from collections import defaultdict
+
+    by_sym = defaultdict(list)
+    for r in rows:
+        by_sym[r[0]].append(r)
+
+    out = {}
+    for sym, rs in by_sym.items():
+        rs.sort(key=lambda x: ((x[1] or 0), (x[2] or 0)))  # (fy, fq) 昇順
+        last = rs[-1]
+        prev = rs[-2] if len(rs) >= 2 else None
+        out[sym] = {
+            "fund": {
+                "revenue_yoy_latest": last[3],
+                "revenue_yoy_prev": prev[3] if prev else None,
+                "operating_margin": last[4],
+                "net_margin": last[5],
+                "latest_period_end": last[6],
+            },
+            "tone": {
+                "sentiment_overall": last[7],
+                "sentiment_mgmt": last[8],
+                "hedge_density": last[9],
+                "qa_ratio": last[10],
+                "transcript_period": f"FY{last[1]} Q{last[2]}" if last[1] else None,
+            },
+        }
+    return out

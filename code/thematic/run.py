@@ -33,32 +33,48 @@ from theme import list_themes, load_theme  # noqa: E402
 DEFAULT_OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output")
 
 
-def _collect_symbol(sources, sym, theme, period, do_transcripts, refresh) -> dict:
-    """1 銘柄分の price / fund / signal を集める。失敗は error に格納して継続。
+def _collect_symbol(sources, sym, theme, period, do_transcripts, refresh, source, prebuilt) -> dict:
+    """1 銘柄分の price / fund / signal(or tone) を集める。失敗は error に格納し継続。
 
-    refresh=True のときはキャッシュを無視(max_age_hours=None)。通常時は各
-    get_* の既定鮮度(価格 12h / ファンダ・トランスクリプト 72h)を使う。
+    source:
+      live     … ファンダ=defeatbeta、トーン=トランスクリプトの語彙スキャン
+      prebuilt … ファンダ/トーン=既存 stocks/transcripts(R2 由来)。defeatbeta は叩かない
+      auto     … prebuilt 被覆銘柄は prebuilt、未被覆は live にフォールバック
+    価格は常に yfinance(prebuilt にも日次系列は無い)。
     """
     price_age = None if refresh else 12
     data_age = None if refresh else 72
+    pb = (prebuilt or {}).get(sym)
+    use_prebuilt = source in ("prebuilt", "auto") and pb is not None
     out: dict = {}
     errors = []
-    # 価格(yfinance)
+
+    # 価格は常に yfinance
     try:
         close = sources.get_price_history(sym, period=period, max_age_hours=price_age)
         if close is not None and len(close):
             out["price"] = metrics.price_metrics(close, event_date=theme.event_date)
     except Exception as e:
         errors.append(f"price: {e}")
-    # ファンダ(defeatbeta 四半期損益計算書)
-    try:
-        qis = sources.get_quarterly_income_statement(sym, max_age_hours=data_age)
-        if qis is not None:
-            out["fund"] = metrics.fundamental_trend(qis)
-    except Exception as e:
-        errors.append(f"fund: {e}")
-    # トランスクリプト(defeatbeta)
-    if do_transcripts:
+
+    # ファンダ
+    if use_prebuilt:
+        out["fund"] = pb.get("fund") or {}
+    elif source != "prebuilt":  # live、または auto で未被覆
+        try:
+            qis = sources.get_quarterly_income_statement(sym, max_age_hours=data_age)
+            if qis is not None:
+                out["fund"] = metrics.fundamental_trend(qis)
+        except Exception as e:
+            errors.append(f"fund: {e}")
+
+    # トーン / シグナル
+    if use_prebuilt:
+        tone = pb.get("tone") or {}
+        out["tone"] = tone
+        if tone.get("transcript_period"):
+            out["transcript_period"] = tone["transcript_period"]
+    elif do_transcripts and source != "prebuilt":  # live、または auto 未被覆
         try:
             tx = sources.get_latest_transcript(sym, max_age_hours=data_age)
             if tx and tx.get("df") is not None:
@@ -68,6 +84,7 @@ def _collect_symbol(sources, sym, theme, period, do_transcripts, refresh) -> dic
                 out["transcript_period"] = f"FY{tx.get('fy')} Q{tx.get('fq')}"
         except Exception as e:
             errors.append(f"transcript: {e}")
+
     if errors and not out:
         out["error"] = "; ".join(errors)
     elif errors:
@@ -88,6 +105,12 @@ def main() -> int:
     p.add_argument("--out", default=DEFAULT_OUT, help="出力ディレクトリ(既定 thematic/output)")
     p.add_argument("--limit", type=int, default=0, help="先頭 N 銘柄だけ処理(動作確認用。0=全件)")
     p.add_argument("--sleep", type=float, default=0.5, help="銘柄間の待機秒(レート配慮。既定 0.5)")
+    p.add_argument("--source", choices=["live", "auto", "prebuilt"], default="live",
+                   help="ファンダ/トーンの取得元。live=defeatbeta / "
+                        "prebuilt=既存 stocks-transcripts(R2由来,要 build_dataset.py) / "
+                        "auto=prebuilt優先→未被覆は live。価格は常に yfinance")
+    p.add_argument("--prebuilt-db", default=None,
+                   help="prebuilt DuckDB のパス(既定 code/analysis/analysis.duckdb)")
     args = p.parse_args()
 
     if args.list_themes:
@@ -131,6 +154,12 @@ def main() -> int:
     if args.limit and args.limit > 0:
         tickers = tickers[: args.limit]
 
+    # prebuilt/auto: ファンダ・トーンを既存 DuckDB(R2 由来)から一括ロード
+    prebuilt_map = {}
+    if args.source in ("auto", "prebuilt"):
+        prebuilt_map = sources.load_prebuilt(tickers, args.prebuilt_db)
+        print(f"prebuilt 被覆: {len(prebuilt_map)}/{len(tickers)} 銘柄（source={args.source}）")
+
     # ベンチマーク(対 BM 超過の基準)
     bench_metrics = None
     if theme.benchmarks:
@@ -149,7 +178,8 @@ def main() -> int:
     for i, sym in enumerate(tickers, 1):
         print(f"[{i}/{n}] {sym} ...", flush=True)
         per_ticker[sym] = _collect_symbol(
-            sources, sym, theme, args.period, not args.no_transcripts, args.refresh
+            sources, sym, theme, args.period, not args.no_transcripts,
+            args.refresh, args.source, prebuilt_map,
         )
         if args.sleep and i < n:
             time.sleep(args.sleep)
@@ -163,7 +193,8 @@ def main() -> int:
              if per_ticker.get(s, {}).get("price", {}).get("asof")),
             None,
         )
-    meta = {"asof": asof, "benchmark_metrics": bench_metrics, "n_tickers": n}
+    meta = {"asof": asof, "benchmark_metrics": bench_metrics, "n_tickers": n,
+            "source": args.source}
 
     out_dir = os.path.join(args.out, theme.name)
     os.makedirs(out_dir, exist_ok=True)

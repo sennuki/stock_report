@@ -46,6 +46,7 @@ NUMERIC_FIELDS = [
     "drawdown_52w", "ret_since_event", "excess_event", "ret_ytd", "ret_12m",
     "revenue_yoy_latest", "revenue_yoy_prev", "operating_margin", "net_margin",
     "bear_density", "bull_density", "net_signal",
+    "sentiment_overall", "sentiment_mgmt", "hedge_density",
 ]
 TEXT_FIELDS = ["theme", "title", "asof", "symbol", "cohort", "cohort_label",
                "transcript_period", "error"]

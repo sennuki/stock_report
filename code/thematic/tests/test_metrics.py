@@ -194,6 +194,50 @@ def test_to_duckdb():
     print("  ok: to_duckdb")
 
 
+def test_load_prebuilt():
+    import shutil
+    import tempfile
+
+    import duckdb
+
+    import sources
+
+    d = tempfile.mkdtemp(prefix="thematic_pb_")
+    try:
+        db = os.path.join(d, "analysis.duckdb")
+        con = duckdb.connect(db)
+        con.execute(
+            "CREATE TABLE transcripts (symbol VARCHAR, fy INTEGER, fq INTEGER, "
+            "revenue_yoy DOUBLE, operating_margin DOUBLE, net_margin DOUBLE, "
+            "period_end VARCHAR, sentiment_overall DOUBLE, sentiment_management DOUBLE, "
+            "hedge_density DOUBLE, qa_ratio DOUBLE)"
+        )
+        con.executemany(
+            "INSERT INTO transcripts VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+            [
+                ("AAA", 2025, 4, 0.30, 0.18, 0.10, "2025-12-31", 20, 25, 5.0, 0.5),
+                ("AAA", 2026, 1, 0.22, 0.17, 0.09, "2026-03-31", 10, 12, 7.0, 0.55),
+                ("BBB", 2026, 1, 0.45, 0.25, 0.15, "2026-03-31", 40, 45, 3.0, 0.4),
+            ],
+        )
+        con.close()
+
+        pb = sources.load_prebuilt(["AAA", "BBB", "CCC"], db)
+        assert set(pb) == {"AAA", "BBB"}, set(pb)  # CCC は未被覆
+        a = pb["AAA"]
+        assert _approx(a["fund"]["revenue_yoy_latest"], 0.22), a["fund"]  # 最新Q
+        assert _approx(a["fund"]["revenue_yoy_prev"], 0.30), a["fund"]    # 前Q
+        assert _approx(a["fund"]["operating_margin"], 0.17), a["fund"]
+        assert _approx(a["tone"]["sentiment_mgmt"], 12.0), a["tone"]
+        assert a["tone"]["transcript_period"] == "FY2026 Q1", a["tone"]
+        # DB 不在 → 空 / symbols 空 → 空
+        assert sources.load_prebuilt(["AAA"], os.path.join(d, "nope.duckdb")) == {}
+        assert sources.load_prebuilt([], db) == {}
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+    print("  ok: load_prebuilt")
+
+
 def main() -> int:
     tests = [
         test_price_metrics,
@@ -201,6 +245,7 @@ def main() -> int:
         test_transcript_signal_scan,
         test_cache_roundtrip,
         test_to_duckdb,
+        test_load_prebuilt,
     ]
     failed = 0
     for t in tests:

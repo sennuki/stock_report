@@ -67,6 +67,27 @@ uv run python thematic/run.py --theme saas_apocalypse --refresh --period 3y
 uv run python thematic/tests/test_metrics.py
 ```
 
+## データ取得元の切り替え（`--source`）
+
+ファンダ・トーンの取得元を選べる（**価格は常に yfinance**。R2/prebuilt に日次系列が無いため）。
+
+| `--source` | ファンダ | トーン | defeatbeta | 速度 | 前提 |
+| --- | --- | --- | --- | --- | --- |
+| `live`（既定） | defeatbeta 四半期PL | bear/bull 語彙スキャン | 叩く | 標準 | なし |
+| `prebuilt` | 既存 `transcripts`（R2由来） | 既存 `transcripts` の sentiment / hedge_density | 叩かない | 速い | `build_dataset.py` 実行済み |
+| `auto` | 被覆→prebuilt / 未被覆→defeatbeta | 同左 | 未被覆のみ | 速い | 一部 prebuilt |
+
+```bash
+# R2 由来の既存テーブルからファンダ/センチメントを読む（defeatbeta を回避＝速い）
+uv run python code/analysis/build_dataset.py                       # まず stocks/transcripts（要 R2）
+uv run python thematic/run.py --theme saas_apocalypse --source auto
+```
+
+- `prebuilt`/`auto` のトーンは LLM センチメント（`総合sent`/`経営陣sent`/`ヘッジ密度`）、`live` は
+  語彙密度（`bear密度`/`bull密度`/`net`）。**レポートは値のある列だけ表示**するのでモードに応じた列が出る。
+- 被覆率は実行時に表示（`prebuilt 被覆: N/M 銘柄`）。`auto` は未被覆のみ defeatbeta にフォールバック。
+- `--prebuilt-db` で DuckDB のパスを変更可（既定 `code/analysis/analysis.duckdb`）。
+
 ## 算出する指標
 
 | 区分 | 指標 | 意味 / 検証する問い |
@@ -80,6 +101,8 @@ uv run python thematic/tests/test_metrics.py
 | ファンダ | `operating_margin` / `net_margin` | 直近四半期の利益率 |
 | トランスクリプト | `bear_density` / `bull_density` | 経営陣が懸念語 / 反証語をどれだけ語ったか（出現数/1000語） |
 | トランスクリプト | `net_signal` | `bull_density - bear_density`。負ほど懸念寄り |
+| トランスクリプト（prebuilt） | `sentiment_overall` / `sentiment_mgmt` | LLM センチメント（`--source prebuilt`/`auto` 時。R2 由来） |
+| トランスクリプト（prebuilt） | `hedge_density` | ヘッジ表現の密度（同上） |
 
 **読み筋**: 懸念が正しいなら、`affected` は `resilient` より ①ドローダウンが深く
 ②売上 YoY が鈍化／減速し ③`net_signal` が低い（座席等の懸念を多く語る）はず。
