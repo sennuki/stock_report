@@ -79,7 +79,7 @@ uv run python thematic/tests/test_metrics.py
 
 ```bash
 # R2 由来の既存テーブルからファンダ/センチメントを読む（defeatbeta を回避＝速い）
-uv run python code/analysis/build_dataset.py                       # まず stocks/transcripts（要 R2）
+uv run python analysis/build_dataset.py                            # まず stocks/transcripts（要 R2）
 uv run python thematic/run.py --theme saas_apocalypse --source auto
 ```
 
@@ -134,8 +134,8 @@ uv run python thematic/run.py --theme saas_apocalypse
 uv run python thematic/to_duckdb.py
 
 # 3) 名前付きクエリで横断分析（既存 query.py を再利用）
-uv run python code/analysis/query.py --named theme_cohort_summary
-uv run python code/analysis/query.py --named theme_price_fundamental_divergence
+uv run python analysis/query.py --named theme_cohort_summary
+uv run python analysis/query.py --named theme_price_fundamental_divergence
 ```
 
 - `theme_metrics` の粒度は 1 テーマ × 1 銘柄（列: `theme` `symbol` `cohort`
@@ -154,7 +154,7 @@ uv run python code/analysis/query.py --named theme_price_fundamental_divergence
 | `theme_oversold_value` | affected で割安かつ DCF 上振れ大 ＝ 逆張り候補 | 要 |
 | `theme_signal_vs_sentiment` | 語彙 `net_signal` と LLM センチメントの乖離 | 要 |
 
-> `stocks` / `transcripts` は別途 `python code/analysis/build_dataset.py`（R2 レポートが前提）
+> `stocks` / `transcripts` は別途 `uv run python analysis/build_dataset.py`（R2 レポートが前提）
 > で作る。`theme_metrics` 単独のクエリ（上表「不要」）は R2 無しでも動く。
 
 ## ファイル構成

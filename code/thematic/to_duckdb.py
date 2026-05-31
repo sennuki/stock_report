@@ -4,22 +4,22 @@
 仕組みは build_dataset.py と同型: output/<theme>/report.json を全て走査し、
 「1 テーマ × 1 銘柄」の行へ平坦化して、build_dataset._write_table を再利用して
 `theme_metrics` テーブルを作る(既存 stocks / transcripts は触らない)。これにより
-code/analysis/query.py から symbol で JOIN して横断クエリできる。
+analysis/query.py から symbol で JOIN して横断クエリできる。
 
 build_dataset と同様、出力ディレクトリにある **全テーマの report.json から毎回
 作り直す**(report.json が正)。特定テーマだけ残したいときは output/ を整理する。
 
 使い方:
     uv run python thematic/to_duckdb.py
-    uv run python thematic/to_duckdb.py --db code/analysis/analysis.duckdb \
+    uv run python thematic/to_duckdb.py --db analysis/analysis.duckdb \
         --output-dir thematic/output
 
 その後:
-    uv run python code/analysis/query.py --named theme_cohort_summary
-    uv run python code/analysis/query.py --named theme_price_fundamental_divergence
+    uv run python analysis/query.py --named theme_cohort_summary
+    uv run python analysis/query.py --named theme_price_fundamental_divergence
 
 注意: stocks / transcripts を伴う JOIN クエリ(theme_oversold_value など)は、別途
-`python code/analysis/build_dataset.py`(R2 レポートが前提)で stocks を作る必要がある。
+`uv run python analysis/build_dataset.py`(R2 レポートが前提)で stocks を作る必要がある。
 theme_metrics 単独のクエリは stocks 無しでも動く。
 """
 from __future__ import annotations
@@ -164,8 +164,8 @@ def main() -> int:
         detail = ", ".join(f"{t}({c})" for t, c in per_theme)
         print(f"完了: theme_metrics={n} 行 [{detail}] -> {args.db}")
         print("クエリ例:")
-        print("  uv run python code/analysis/query.py --named theme_cohort_summary")
-        print("  uv run python code/analysis/query.py --named theme_price_fundamental_divergence")
+        print("  uv run python analysis/query.py --named theme_cohort_summary")
+        print("  uv run python analysis/query.py --named theme_price_fundamental_divergence")
     return 0 if n else 1
 
 
