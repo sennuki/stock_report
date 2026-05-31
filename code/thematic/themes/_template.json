@@ -1,0 +1,29 @@
+{
+  "name": "my_theme",
+  "title": "わかりやすいテーマ名",
+  "thesis": "このテーマの懸念/仮説を1〜3文で。何が起これば仮説が正しいと言えるか(決算/トランスクリプトに現れる兆候)まで書くと検証しやすい。",
+  "event_date": "2026-02-24",
+  "benchmarks": ["IGV", "SPY"],
+  "cohorts": {
+    "affected": {
+      "label": "懸念に該当するとされる群",
+      "tickers": ["AAA", "BBB", "CCC"]
+    },
+    "resilient": {
+      "label": "類似だが影響を受けにくいとされる対照群",
+      "tickers": ["XXX", "YYY", "ZZZ"]
+    }
+  },
+  "signals": {
+    "bear": ["懸念を裏づける語/フレーズ(小文字化して単語境界/部分一致で数える)"],
+    "bull": ["懸念に反証する語/フレーズ"]
+  },
+  "notes": "任意。出典や線引きの根拠、見直すべき点など。JSONはコメント不可なのでここに書く。",
+  "_field_help": {
+    "name": "themes/<name>.json のファイル名と一致させる。先頭'_'のファイルは一覧から除外。",
+    "event_date": "省略可。指定すると『イベント以降のリターン』を算出する(YYYY-MM-DD)。",
+    "benchmarks": "相対比較に使うETF/指数のyfinance表記。先頭が基準(超過リターンの分母)。",
+    "cohorts": "1つ以上。キー(affected/resilient等)は任意。各コホートは label と tickers(>=1)。",
+    "signals.bear/bull": "トランスクリプト本文をスキャンして bear/bull 密度(出現数/1000語)を出す。空配列可。"
+  }
+}

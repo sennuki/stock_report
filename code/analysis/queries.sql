@@ -12,7 +12,7 @@
 -- 利用可能な列を確認する。
 SELECT table_name, column_name, data_type
 FROM information_schema.columns
-WHERE table_name IN ('stocks', 'transcripts')
+WHERE table_name IN ('stocks', 'transcripts', 'theme_metrics')
 ORDER BY table_name, ordinal_position;
 
 
@@ -146,3 +146,58 @@ SELECT symbol, period, sentiment_management, sentiment_analyst,
 FROM transcripts
 WHERE sentiment_management IS NOT NULL AND eps_yoy IS NOT NULL
 ORDER BY (sentiment_management - 100 * eps_yoy) DESC;
+
+
+-- ============================================================================
+-- テーマ別分析（theme_metrics）。先に `python thematic/to_duckdb.py` で
+-- theme_metrics を作る。比率系は小数（-0.5 = -50%）。
+-- ============================================================================
+
+-- name: theme_cohort_summary
+-- テーマ別 × コホート別の中央値サマリ（theme_metrics のみで完結）。
+-- affected と resilient の「下落幅・成長・論調」の差が一目で分かる。
+SELECT theme, cohort,
+       count(*)                    AS n,
+       median(drawdown_52w)        AS drawdown_median,
+       median(ret_since_event)     AS since_event_median,
+       median(excess_event)        AS excess_vs_bm_median,
+       median(revenue_yoy_latest)  AS rev_yoy_median,
+       median(operating_margin)    AS op_margin_median,
+       median(net_signal)          AS net_signal_median
+FROM theme_metrics
+GROUP BY theme, cohort
+ORDER BY theme, cohort;
+
+
+-- name: theme_price_fundamental_divergence
+-- 価格は大きく下落（52週高値比 < -40%）だが売上 YoY が減速していない
+-- ＝「売られ過ぎ」候補（価格とファンダの乖離）。theme_metrics のみで完結。
+SELECT theme, symbol, cohort, drawdown_52w, ret_since_event,
+       revenue_yoy_latest, revenue_yoy_prev, net_signal
+FROM theme_metrics
+WHERE drawdown_52w < -0.4
+  AND revenue_yoy_latest IS NOT NULL
+  AND (revenue_yoy_prev IS NULL OR revenue_yoy_latest >= revenue_yoy_prev)
+ORDER BY drawdown_52w ASC;
+
+
+-- name: theme_oversold_value
+-- 【要 stocks】懸念コホート（affected）で売られているのに、予想 PER が低く
+-- DCF 上振れ余地が大きい ＝ 逆張り候補。stocks（build_dataset.py）が必要。
+SELECT t.theme, t.symbol, t.cohort, t.drawdown_52w, t.net_signal,
+       s.pe_forward, s.dcf_upside, s.target_upside, s.revenue_growth
+FROM theme_metrics t
+LEFT JOIN stocks s ON s.symbol_yf = t.symbol
+WHERE t.cohort = 'affected'
+  AND s.dcf_upside IS NOT NULL
+ORDER BY t.drawdown_52w ASC;
+
+
+-- name: theme_signal_vs_sentiment
+-- 【要 stocks】語彙ベースの net_signal（経営陣が反証/懸念どちらを語ったか）と、
+-- レポートの LLM センチメント（stocks.latest_sentiment_overall）を突合し乖離を探す。
+SELECT t.theme, t.symbol, t.cohort, t.net_signal, t.bear_density, t.bull_density,
+       s.latest_sentiment_overall, s.latest_hedge_density, s.latest_rev_yoy
+FROM theme_metrics t
+LEFT JOIN stocks s ON s.symbol_yf = t.symbol
+ORDER BY t.net_signal ASC;

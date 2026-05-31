@@ -1,0 +1,29 @@
+{
+  "name": "saas_apocalypse",
+  "title": "SaaS Apocalypse (2026)",
+  "thesis": "エージェント型AI(2026-02-24のClaude Cowork等)が座席(per-seat)課金SaaSの需要を圧縮し、ターミナルバリューが毀損するという懸念。『10体のAIエージェントが100人分働くなら座席は100ではなく10で済む』。これが正しければ、座席課金主体のSaaSは売上成長鈍化・座席数頭打ちが決算/トランスクリプトに現れ、従量課金(consumption)型やバーティカル/AI受益銘柄は相対的に堅調なはず。",
+  "event_date": "2026-02-24",
+  "benchmarks": ["IGV", "SPY"],
+  "cohorts": {
+    "affected": {
+      "label": "座席課金SaaS(下落懸念)",
+      "tickers": ["CRM", "ADBE", "HUBS", "TEAM", "WDAY", "MNDY", "NOW", "ASAN", "DOCU", "BILL", "ZM", "FIG"]
+    },
+    "resilient": {
+      "label": "類似だが堅調(従量課金/バーティカル/AI受益)",
+      "tickers": ["DDOG", "SNOW", "NET", "MDB", "PLTR", "VEEV", "TYL", "CRWD", "ZS"]
+    }
+  },
+  "signals": {
+    "bear": [
+      "per-seat", "per seat", "seat", "seats", "seat count", "seat expansion",
+      "headcount", "reduce headcount", "fewer seats"
+    ],
+    "bull": [
+      "usage-based", "consumption", "consumption-based", "net revenue retention",
+      "NRR", "remaining performance obligation", "RPO", "outcome-based",
+      "AI agent", "agentic", "credits", "platform"
+    ]
+  },
+  "notes": "コホート/シグナルは出発点(2026-05時点のWeb調査ベース)。下落幅の大きい代表例: HUBS/TEAM/FIG(52週高値比-70〜80%), WDAY/ADBE(-26〜38%), CRM/MNDY(約-25%)。affected/resilientの線引き(特にCRWD/ZS/DDOGは従量寄りだが売られた局面あり)は実行前に見直すこと。tickersはyfinance表記。"
+}
